@@ -1,0 +1,18 @@
+<ng-container *ngIf="updateState | async; let state">
+  <button mat-button [disabled]="state !== 'not-updating'" (click)="update()">
+    <mat-icon class="update" *ngIf="state !== 'updated'"
+              [class.updating]="state === 'updating'">
+      refresh
+    </mat-icon>
+
+    <ng-container [ngSwitch]="state">
+      <ng-container *ngSwitchCase="'not-updating'"> Update </ng-container>
+      <ng-container *ngSwitchCase="'updating'"> Updating </ng-container>
+      <ng-container *ngSwitchCase="'updated'"> Updated </ng-container>
+    </ng-container>
+  </button>
+</ng-container>
+
+<button mat-icon-button (click)="remove()">
+  <mat-icon> delete </mat-icon>
+</button>

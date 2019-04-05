@@ -1,0 +1,69 @@
+@import '~@angular/material/theming';
+
+@import './repository/shared/nav/nav-theme';
+
+@mixin themed-styles($theme) {
+  @include angular-material-theme($theme);
+
+  // Import and load component-specific themes here.
+  @include nav-theme($theme);
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  .theme-text { color: mat-color($foreground, text); }
+  .theme-secondary-text { color: mat-color($foreground, secondary-text); }
+  .theme-icon { color: mat-color($foreground, icon); }
+  .theme-border { border-color: mat-color($foreground, divider); }
+
+  .theme-background { background: mat-color($background, background); }
+  .theme-background-warn { background: mat-color($warn); }
+  .theme-background-app-bar { background: mat-color($background, app-bar); }
+  .theme-background-card { background: mat-color($background, card); }
+  .theme-background-hover { background: mat-color($background, hover); }
+  .theme-background-positive { background: map-get($theme, positive); }
+  .theme-hover:hover { background: mat-color($background, hover); }
+
+  .theme-primary { color: mat-color($primary); }
+  .theme-accent { color: mat-color($accent); }
+  .theme-warn { color: mat-color($warn); }
+}
+
+@include mat-core();
+
+.light-theme {
+  $primary: mat-palette($mat-blue, 800);
+  $accent:  mat-palette($mat-blue, 500);
+  $warn:    mat-palette($mat-red);
+
+  $theme: mat-light-theme($primary, $accent, $warn);
+
+  // Add any additional light-theme keys here.
+  $theme: map-merge($theme, (
+    positive: #66fb66,
+  ));
+
+  @include themed-styles($theme);
+}
+
+.dark-theme {
+  $primary: mat-palette($mat-blue, 800);
+  $accent:  mat-palette($mat-blue, 500);
+  $warn:    mat-palette($mat-red);
+
+  $theme: mat-dark-theme($primary, $accent, $warn);
+
+  // Add any additional dark-theme keys here.
+  $theme: map-merge($theme, (
+    positive: #048604,
+  ));
+
+  @include themed-styles($theme);
+
+  a {
+    color: #2196f3;
+  }
+}

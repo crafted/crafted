@@ -1,0 +1,29 @@
+
+:host {
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  align-items: center;
+}
+
+.title {
+  font-size: 20px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+loading {
+  padding: 32px 0;
+}

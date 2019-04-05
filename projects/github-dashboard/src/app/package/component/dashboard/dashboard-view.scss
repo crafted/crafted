@@ -1,0 +1,99 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+}
+
+.column-group {
+  display: flex;
+  flex-direction: column;
+  margin: 16px 16px 0 16px;
+}
+
+.columns {
+  display: flex;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-width: 1px;
+  border-style: solid;
+
+  :host:not(.edit-mode) & {
+    border-width: 0;
+  }
+
+  & + .column {
+    margin-left: 16px;
+  }
+}
+
+button {
+  margin: 8px;
+
+  &.add-widget {
+    margin: 16px 0;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  &.add-widget, &.remove-column, &.add-column {
+    height: 64px;
+  }
+
+  &.add-column {
+    align-self: start;
+  }
+
+  &.add-column-group {
+    height: 200px;
+  }
+}
+
+widget-view + widget-view {
+  margin-top: 16px;
+}
+
+.widgets-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.widgets {
+  flex: 1;
+}
+
+:host.edit-mode .widgets {
+  min-height: 120px;
+}
+
+/** Drag and drop styles **/
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging widget-view:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+widget-view:not(.cdk-drag-disabled) {
+  cursor: move;
+}
+
+.widgets:not(.cdk-drop-list-dragging):not(.cdk-drop-list-receiving) {
+  background: inherit;
+}

@@ -1,0 +1,13 @@
+<ng-container [formGroup]="form">
+  <mat-select formControlName="equality" class="theme-border">
+    <mat-option *ngFor="let e of equalities" [value]="e.id">
+      {{e.label}}
+    </mat-option>
+  </mat-select>
+
+  <mat-select formControlName="state" class="state theme-border">
+    <mat-option *ngFor="let state of states" [value]="state">
+      {{state}}
+    </mat-option>
+  </mat-select>
+</ng-container>

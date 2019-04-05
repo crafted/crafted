@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Save Dashboard As</h1>
+
+<div mat-dialog-content [formGroup]="formGroup">
+  <mat-form-field appearance="outline">
+    <mat-label> Name </mat-label>
+    <input matInput formControlName="name">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label> Description (optional) </mat-label>
+    <textarea matInput formControlName="description" cdkTextareaAutosize></textarea>
+  </mat-form-field>
+
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close> Cancel </button>
+  <button mat-raised-button color="primary" [disabled]="!formGroup.valid"
+          (click)="save()"> Save </button>
+</div>

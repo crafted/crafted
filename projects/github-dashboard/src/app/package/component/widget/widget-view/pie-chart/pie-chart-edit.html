@@ -1,0 +1,17 @@
+<ng-container [formGroup]="form">
+  <button-toggle-group-option formControlName="dataSourceType" label="Data"
+                              [options]="dataOptions">
+  </button-toggle-group-option>
+
+  <input-option formControlName="filteredGroups" label="Filter"
+                placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">
+  </input-option>
+
+  <group-state-option formControlName="grouperState" label="Grouping"
+                      [grouper]="grouper"></group-state-option>
+
+  <filter-state-option formControlName="filtererState" [filterer]="filterer"
+                       [dataSource]="dataSource"
+                       [savedFiltererStates]="savedFiltererStates | async">
+  </filter-state-option>
+</ng-container>

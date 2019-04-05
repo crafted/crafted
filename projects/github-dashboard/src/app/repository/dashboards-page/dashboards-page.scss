@@ -1,0 +1,49 @@
+:host {
+  display: flex;
+  width: 100%;
+}
+
+.dashboard {
+  display: inline-flex;
+  flex-direction: column;
+  width: 350px;
+  height: 150px;
+  padding: 16px;
+  margin: 16px;
+  border-width: 1px;
+  border-style: solid;
+  cursor: pointer;
+
+  &.new {
+    align-items: center;
+    justify-content: center;
+    border: none;
+
+    button {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.heading {
+  display: flex;
+    justify-content: space-between;
+}
+
+.name {
+  align-self: center;
+  font-size: 18px;
+}
+
+button.create {
+  margin-right: 16px;
+}
+
+.settings {
+  cursor: pointer;
+}
+
+.description {
+  margin-top: 16px;
+}

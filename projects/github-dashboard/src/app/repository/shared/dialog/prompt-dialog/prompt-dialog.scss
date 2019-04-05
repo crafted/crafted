@@ -1,0 +1,16 @@
+mat-form-field {
+  width: 100%;
+}
+
+:host ::ng-deep .mat-form-field-infix {
+  border-top-width: 4px;
+}
+
+.description {
+  margin-bottom: 24px;
+}
+
+input, textarea {
+  display: block;
+  width: 250px;
+}

@@ -1,0 +1,19 @@
+<form [formGroup]="form">
+  <div mat-dialog-content>
+    <input class="theme-border title" matInput
+           placeholder="(Optional) Widget Title" autocomplete="off"
+           formControlName="title">
+
+    <button-toggle-group-option formControlName="displayType" label="Type"
+                                [options]="widgetConfigs">
+    </button-toggle-group-option>
+
+    <div [cdkPortalOutlet]="optionsPortal"></div>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close> Cancel </button>
+    <button mat-raised-button (click)="save()" color="primary" cdkFocusInitial>
+      Save </button>
+  </div>
+</form>

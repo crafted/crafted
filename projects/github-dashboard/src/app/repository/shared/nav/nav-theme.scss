@@ -1,0 +1,24 @@
+@import '~@angular/material/theming';
+
+@mixin nav-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+  $primary: map-get($theme, primary);
+
+  nav-content {
+    .link.active,
+    .link.active mat-icon {
+      color: mat-color($foreground, text);
+    }
+
+    .link.active .link-highlight {
+      background: mat-color($primary);
+      opacity: .2;
+    }
+
+    .link:hover:not(.active) .link-highlight {
+      background: mat-color($primary);
+      opacity: .1;
+    }
+  }
+}

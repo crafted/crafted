@@ -1,0 +1,46 @@
+@import '../constants';
+
+.app-title {
+  padding-left: 16px;
+}
+
+button.toolbar-menu {
+  min-width: 0;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.toolbar-menu mat-icon {
+  font-size: 32px;
+  line-height: 32px;
+  height: 32px;
+  display: block;
+  width: 32px;
+  padding: 4px;
+}
+
+mat-sidenav {
+  max-width: 85%;
+}
+
+mat-sidenav-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.router-content {
+  overflow: auto;
+  flex: 1;
+  display: flex;
+}

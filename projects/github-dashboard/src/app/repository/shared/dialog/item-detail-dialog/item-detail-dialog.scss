@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  max-height: 80vh;
+}
+
+button {
+  align-self: flex-end;
+}

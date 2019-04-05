@@ -1,0 +1,21 @@
+<dashboard-view *ngIf="dashboard" [dashboard]="dashboard" [edit]="edit | async"
+                [dataResourcesMap]="dataResourcesMap" (openWidget)="openQuery($event)"
+                [widgetConfigs]="widgetConfigs"
+                [savedFiltererStates]="savedFiltererStates | async"
+                (dashboardChange)="saveDashboard($event)"></dashboard-view>
+
+<ng-template cdkPortal>
+  <button mat-raised-button color="primary" class="view"
+          *ngIf="edit | async; else editButton" (click)="edit.next(false)">
+    View </button>
+
+  <ng-template #editButton>
+    <button mat-icon-button (click)="fullscreen()" class="fullscreen">
+      <mat-icon> fullscreen </mat-icon>
+    </button>
+    <button mat-stroked-button class="view theme-background-card"
+            (click)="edit.next(true)">
+      Edit
+    </button>
+  </ng-template>
+</ng-template>

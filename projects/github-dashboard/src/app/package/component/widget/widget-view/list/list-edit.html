@@ -1,0 +1,19 @@
+<ng-container [formGroup]="form">
+  <button-toggle-group-option formControlName="dataSourceType" label="Data"
+                              [options]="dataOptions">
+  </button-toggle-group-option>
+
+  <input-option formControlName="listLength" label="List length" type="number">
+  </input-option>
+
+  <sort-state-option formControlName="sorterState" label="Sort state"
+                     [sorter]="sorter"></sort-state-option>
+
+  <view-state-option formControlName="viewerState" label="Views"
+                     [viewer]="viewer"></view-state-option>
+
+  <filter-state-option formControlName="filtererState" [filterer]="filterer"
+                       [dataSource]="dataSource"
+                       [savedFiltererStates]="savedFiltererStates | async">
+  </filter-state-option>
+</ng-container>

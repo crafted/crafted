@@ -1,0 +1,32 @@
+<div class="info">
+  <div class="title"> {{activeRepo.name | async}} </div>
+
+  <load-data #loadData></load-data>
+
+  <div class="description" *ngIf="!(isEmpty | async)">
+    <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
+      <div class="type issues theme-border theme-background-card"
+           *ngIf="(typeInfo.count | async) !== null">
+        <div class="type-title">
+          {{typeInfo.count | async}} {{typeInfo.label}}
+
+          <type-actions *ngIf="!(loadData.isLoading | async)"
+                        [type]="typeInfo.type">
+          </type-actions>
+        </div>
+
+        <ng-container [ngSwitch]="typeInfo.type">
+          <ng-container *ngSwitchCase="'labels'">
+            <label-list [labelIds]="(repoLabels | async) || []"> </label-list>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <button mat-button class="remove" *ngIf="(isLoaded | async) && loadData"
+            color="warn" (click)="remover.removeAllData()">
+      Remove all locally stored data (includes dashboards, recommendations, and
+      queries)
+    </button>
+  </div>
+</div>

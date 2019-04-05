@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  max-height: 500px;
+  max-width: 500px;
+}

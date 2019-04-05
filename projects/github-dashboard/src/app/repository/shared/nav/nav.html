@@ -1,0 +1,55 @@
+<div class="header theme-background-app-bar">
+  <mat-select [formControl]="repository">
+    <mat-option *ngFor="let repo of repositories | async" [value]="repo">
+      <div>{{repo}}</div>
+    </mat-option>
+  </mat-select>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="link-list">
+  <ng-container *ngFor="let link of links">
+    <div mat-button class="link theme-text" (click)="sidenav.close()"
+         routerLinkActive="active" [routerLink]="link.route">
+      <div class="link-highlight"></div>
+      <div class="link-text">
+        <mat-icon>{{link.icon}}</mat-icon>
+        {{link.label}}
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="settings">
+  <ng-container *ngIf="auth.token$ | async; let token; else settingsLabel">
+    <ng-container *ngIf="auth.user$ | async; let user">
+      <div class="pic"
+           [style.backgroundImage]="'url(https://github.com/' + user + '.png)'">
+      </div>
+      <div class="username"> {{user}} </div>
+    </ng-container>
+  </ng-container>
+  <ng-template #settingsLabel>
+    <button mat-button (click)="auth.signIn()" class="sign-in">
+      Login to GitHub
+    </button>
+  </ng-template>
+  <button mat-icon-button [mat-menu-trigger-for]="settings">
+    <mat-icon> settings </mat-icon>
+  </button>
+</div>
+
+<mat-menu #settings="matMenu">
+  <button mat-menu-item (click)="theme.toggle()">
+    <mat-icon> wb_sunny </mat-icon>
+    Use {{theme.isLight ? 'Dark' : 'Light' }} Theme
+  </button>
+
+  <button mat-menu-item (click)="auth.signOut()" *ngIf="auth.token$ | async">
+    <mat-icon> exit_to_app </mat-icon>
+    Logout
+  </button>
+</mat-menu>

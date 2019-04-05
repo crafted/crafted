@@ -1,0 +1,27 @@
+<div class="center">
+  <div class="app-title">GitHub Dashboard</div>
+
+  <div class="list"
+       *ngIf="(loadedRepos.repos$ | async).length; else suggestions">
+    <div class="repos">
+      <a mat-stroked-button [routerLink]="repo"
+         *ngFor="let repo of loadedRepos.repos$ | async">
+        {{repo}} </a>
+    </div>
+  </div>
+
+  <ng-template #suggestions>
+    <div class="list"
+         *ngIf="popularTypescriptRepos | async; let repos; else loading">
+      <div class="repos-title mat-secondary-text"> Suggestions </div>
+      <div class="repos">
+        <a mat-stroked-button [routerLink]="repo" *ngFor="let repo of repos">
+          {{repo}} </a>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #loading>
+  <loading label="repos"></loading>
+</ng-template>

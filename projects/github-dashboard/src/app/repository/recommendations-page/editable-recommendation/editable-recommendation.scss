@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  border-style: solid;
+  border-width: 1px;
+  border-color: transparent;
+  padding: 4px 16px;
+  transition: all 250ms ease-in-out;
+}
+
+form {
+  overflow: hidden;
+}
+
+mat-form-field {
+  display: block;
+}
+
+advanced-search {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.delete {
+  display: flex;
+  justify-content: flex-end;
+}
+
+mat-button-toggle-group {
+  margin-bottom: 24px;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+
+  .message {
+    flex: 1;
+    border-width: 0;
+    outline: none;
+    background: inherit;
+    color: inherit;
+    font: inherit;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-bottom: 8px;
+  }
+
+  mat-select.type {
+    margin-right: 16px;
+    width: 48px;
+  }
+}
+
+.action {
+  display: flex;
+  margin: 16px;
+  line-height: 34px;
+
+  mat-select {
+    width: inherit;
+    margin-right: 8px;
+  }
+
+  ::ng-deep .mat-select-value {
+    max-width: 100%;
+    width: auto;
+    padding-right: 4px;
+  }
+
+  .action-list {
+    flex: 1;
+  }
+}

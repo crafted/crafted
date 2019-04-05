@@ -1,0 +1,59 @@
+:host {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.data-to-load {
+  margin-top: 16px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+button {
+  margin-right: 16px;
+}
+
+mat-select {
+  width: initial;
+
+  ::ng-deep .mat-select-value {
+    max-width: 100%;
+    width: auto;
+    padding-right: 4px;
+  }
+}
+
+.datepicker {
+  display: inline-block;
+  margin-left: 16px;
+
+  input {
+    border: none;
+    outline: none;
+    background: inherit;
+    color: inherit;
+    font-size: inherit;
+    width: 77px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding: 8px;
+    text-align: center;
+  }
+}
+
+.loading {
+  text-align: center;
+  margin: 32px 0 16px;
+}

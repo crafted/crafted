@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 64px;
+  overflow: auto;
+}
+
+.app-title {
+  font-size: 26px;
+  margin-bottom: 64px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.repos-title {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+a {
+  margin: 8px;
+  display: inline-block;
+}
+
+.repos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 950px;
+}

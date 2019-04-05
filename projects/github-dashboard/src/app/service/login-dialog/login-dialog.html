@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+  <div class="message">
+    Log in to increase the number of requests this app can make to GitHub per
+    hour.
+  </div>
+
+  <div class="message">
+    You may optionally give the following permissions to enable additional
+    features in the app.
+  </div>
+
+  <div class="scope">
+    <mat-checkbox [formControl]="enableRepo"> Repo </mat-checkbox>
+    <div class="reason theme-secondary-text">
+      Allows the app to show actions that let you make changes to issues and
+      pull requests, such as adding or removing labels.
+    </div>
+  </div>
+
+
+  <div class="scope">
+    <mat-checkbox [formControl]="enableGist"> Gist </mat-checkbox>
+    <div class="reason theme-secondary-text">
+
+      Allows the app to backup your saved queries, dashboards,
+      and recommendations in a private gist.
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close> Dismiss </button>
+  <button mat-raised-button color="primary" (click)="signIn()"> Log in
+  </button>
+</div>

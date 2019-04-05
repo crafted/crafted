@@ -1,0 +1,30 @@
+<div class="message">
+  <div class="heading">
+    <div class="title">
+      <mat-icon>warning</mat-icon>
+      Github rate limit reached.
+    </div>
+    <div class="close">
+      <button mat-icon-button (click)="snackBarRef.dismiss()">
+        <mat-icon> close </mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="details">
+    <div>
+      Retrying in {{secondsLeftMessage | async}}
+    </div>
+
+    <div> or </div>
+
+    <div>
+      Sign in to Github for higher rates.
+    </div>
+  </div>
+</div>
+
+<div class="sign-in">
+  <button mat-raised-button color="primary" (click)="signIn()"> Sign In
+  </button>
+</div>

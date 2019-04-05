@@ -1,0 +1,52 @@
+:host {
+  display: flex;
+  overflow: hidden;
+  flex: 1;
+}
+
+.master {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  width: 500px;
+  border-right-width: 1px;
+  border-right-style: solid;
+  overflow: auto;
+  max-width: 30%;
+
+  :host.is-mobile & {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.title {
+  flex: 1;
+}
+
+.detail {
+  flex: 1;
+  display: flex;
+}
+
+advanced-search {
+  display: block;
+  padding: 8px;
+}
+
+display-options-header {
+  margin-bottom: 24px;
+}
+
+query-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  width: 64px;
+}
+
+.save-as {
+  margin-right: 16px;
+}

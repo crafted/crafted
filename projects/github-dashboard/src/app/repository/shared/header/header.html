@@ -1,0 +1,24 @@
+<mat-toolbar>
+  <button mat-button class="left-button" (click)="leftButtonClicked()"
+          [style.visibility]="!(isEmpty | async) ? 'visible' : 'hidden'">
+    <ng-container *ngIf="header.goBack; else menu">
+      <mat-icon> arrow_back </mat-icon>
+    </ng-container>
+
+    <ng-template #menu>
+      <mat-icon>
+        menu
+      </mat-icon>
+    </ng-template>
+  </button>
+
+  <div class="name"> {{header.title | async}}</div>
+
+  <div class="end">
+    <ng-template *ngIf="header.toolbarOutlet | async; let toolbarOutlet"
+                 [cdkPortalOutlet]="toolbarOutlet">
+    </ng-template>
+  </div>
+</mat-toolbar>
+
+<mat-divider></mat-divider>

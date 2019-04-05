@@ -1,0 +1,30 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+action-option + action-option {
+  margin-top: 16px;
+}
+
+.date-values button {
+  height: 32px;
+  line-height: 32px;
+  width: 32px;
+
+  mat-icon {
+    font-size: 18px;
+  }
+}
+
+.buttons {
+  display: flex;
+  margin-top: 32px;
+  justify-content: flex-end;
+}

@@ -1,0 +1,31 @@
+<div class="config-option">
+  <div class="label query">
+    Query
+    <button mat-icon-button *ngIf="savedFiltererStateGroups.length"
+            [matMenuTriggerFor]="loadFiltererStates" type="button"
+            matTooltip="Load from saved searches">
+      <mat-icon> save_alt </mat-icon>
+    </button>
+  </div>
+  <div class="option">
+    <advanced-search [filterer]="filterer" [dataSource]="dataSource">
+    </advanced-search>
+  </div>
+</div>
+
+<mat-menu #loadFiltererStates="matMenu">
+  <ng-container *ngFor="let group of savedFiltererStateGroups">
+    <button mat-menu-item [matMenuTriggerFor]="statesMenu">
+      {{group.name}}
+    </button>
+
+    <mat-menu #statesMenu="matMenu">
+      <button mat-menu-item
+              *ngFor="let savedFiltererState of group.savedFiltererStates"
+              (click)="filterer.setState(savedFiltererState.state)">
+        {{savedFiltererState.label}}
+      </button>
+    </mat-menu>
+
+  </ng-container>
+</mat-menu>

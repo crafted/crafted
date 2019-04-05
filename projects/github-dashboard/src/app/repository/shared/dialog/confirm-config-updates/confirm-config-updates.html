@@ -1,0 +1,26 @@
+<h1 mat-dialog-title> Confirm Updates </h1>
+
+<div mat-dialog-content>
+  Some updates are available from your gist. Would you like to apply them?
+</div>
+
+<ng-container *ngFor="let confirmation of confirmations">
+  <li *ngIf="data[confirmation].toAdd.length; let count">
+    {{count}} {{confirmation}} to add.
+  </li>
+
+  <li *ngIf="data[confirmation].toUpdate.length; let count">
+    {{count}} {{confirmation}} to update.
+  </li>
+
+  <li *ngIf="data[confirmation].toRemove.length; let count">
+    {{count}} {{confirmation}} to remove.
+  </li>
+</ng-container>
+
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close> Cancel </button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true"> Confirm
+  </button>
+</div>

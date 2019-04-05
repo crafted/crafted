@@ -1,0 +1,37 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div class="config">
+    <div class="action">
+      <mat-select class="theme-border auto-width" formControlName="type">
+        <mat-option *ngFor="let option of actionTypeOptions"
+                    [value]="option.id">
+          {{option.label}}
+        </mat-option>
+      </mat-select>
+
+      <div class="desc theme-secondary-text"> by value </div>
+
+      <mat-select class="theme-border auto-width" value="count">
+        <mat-option *ngFor="let option of [{id: 'count', label: 'Count'}]"
+                    [value]="option.id">
+          {{option.label}}
+        </mat-option>
+      </mat-select>
+
+      <div class="desc theme-secondary-text"> on date </div>
+
+      <mat-select class="theme-border auto-width"
+                  formControlName="datePropertyId">
+        <mat-option *ngFor="let option of datePropertyIdOptions"
+                    [value]="option.id">
+          {{option.label}}
+        </mat-option>
+      </mat-select>
+    </div>
+
+    <button mat-icon-button class="remove-action"
+            [style.visibility]="canRemove ? 'visible' : 'hidden'"
+            (click)="remove.emit()" type="button">
+      <mat-icon> close </mat-icon>
+    </button>
+  </div>
+</ng-container>

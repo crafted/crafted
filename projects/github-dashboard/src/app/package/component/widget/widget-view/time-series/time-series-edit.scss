@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.dataset {
+  padding: 16px 16px 8px 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  margin: 8px -16px;
+}
+
+button.add-dataset {
+  margin: 0 -16px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+button.add-action {
+  margin-left: 140px;
+  margin-bottom: 16px;
+}

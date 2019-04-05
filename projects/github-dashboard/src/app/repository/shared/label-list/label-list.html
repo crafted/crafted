@@ -1,0 +1,12 @@
+<mat-chip-list>
+  <ng-container *ngFor="let label of labels | async">
+    <mat-chip class="label" (click)="select(label)"
+              [class.selectable]="selectable" [ngStyle]="{
+                color: label.textColor,
+                backgroundColor: label.backgroundColor,
+                borderColor: label.borderColor
+              }">
+      {{label.name}}
+    </mat-chip>
+  </ng-container>
+</mat-chip-list>

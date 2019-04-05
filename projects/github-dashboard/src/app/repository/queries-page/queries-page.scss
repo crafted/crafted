@@ -1,0 +1,85 @@
+@import '../../constants';
+
+:host {
+  display: flex;
+  align-items: center;
+  padding-bottom: 32px;
+  flex-direction: column;
+  flex: 1;
+}
+
+.group {
+  width: 100%;
+  max-width: 650px;
+  padding: 16px;
+}
+
+.group-title {
+  font-size: 22px;
+  font-weight: lighter;
+  margin: 8px 16px;
+}
+
+.group:last-child {
+  padding-bottom: 120px;
+}
+
+.query {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+  outline: none;
+  height: 48px;
+
+  @media (max-width: $mobile-width - 1) {
+    height: 56px;
+  }
+}
+
+.name {
+  flex: 1;
+  font-size: 14px;
+
+  @media (max-width: $mobile-width - 1) {
+    font-size: 16px;
+  }
+}
+
+.end {
+  display: flex;
+  align-items: center;
+
+  .query-type {
+    border-width: 1px;
+    border-style: solid;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+}
+
+.secondary {
+  height: 40px;
+  width: 40px;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+
+  .new-buttons:hover &, .new-buttons.menu-open & {
+    opacity: 1;
+  }
+}
+
+::ng-deep .recommendations-menu {
+  max-width: 40vw;
+}
+
+button.create {
+  margin-right: 16px;
+
+  .button-text {
+    display: flex;
+    align-items: center;
+  }
+}

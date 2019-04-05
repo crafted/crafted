@@ -1,0 +1,32 @@
+<div class="recommendations" *ngIf="sortedRecommendations | async; let list">
+
+  <div *ngIf="!list.length" class="empty-state theme-secondary-text">
+    <mat-icon class="page-icon"> label </mat-icon>
+    <div>
+      Configure actionable warnings and suggestions for your data.
+    </div>
+
+    <div class="create-new">
+      <ng-container *ngTemplateOutlet="newButton"></ng-container>
+    </div>
+  </div>
+
+
+  <div class="heading" *ngIf="(recommendations | async)?.length > 3">
+    <input [formControl]="filter" class="theme-border"
+           placeholder="Filter recommendations">
+    <button mat-button class="collapse" (click)="collapseAll()"> Collapse All
+    </button>
+  </div>
+
+  <div *ngFor="let recommendation of list; trackBy: trackById">
+    <editable-recommendation [recommendation]="recommendation">
+    </editable-recommendation>
+  </div>
+</div>
+
+<ng-template cdkPortal #newButton>
+  <button mat-raised-button color="primary" class="create" (click)="add()">
+    Create New Recommendation
+  </button>
+</ng-template>

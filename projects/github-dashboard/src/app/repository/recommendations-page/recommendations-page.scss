@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 32px 16px;
+  flex: 1;
+}
+
+.recommendations {
+  max-width: 800px;
+  width: 100%;
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+}
+
+button.create {
+  margin-right: 16px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.collapse {
+  align-self: flex-end;
+  margin: 8px 0;
+}
+
+input {
+  flex: 1;
+  outline: none;
+  background: inherit;
+  color: inherit;
+  border-style: solid;
+  border-width: 1px;
+  padding: 16px;
+  font-size: inherit;
+}

@@ -1,0 +1,24 @@
+mat-chip-list {
+  display: block;
+}
+
+mat-chip {
+  border: 1px solid;
+  min-height: 24px;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.selectable {
+  cursor: pointer;
+
+  &:not(:hover) {
+    color: inherit !important;
+    background-color: transparent !important;
+    border-color: inherit !important;
+  }
+}
+
+:host ::ng-deep .mat-chip-list-wrapper {
+  margin: 0;
+}

@@ -1,0 +1,19 @@
+<div class="widget-header theme-text" *ngIf="editMode || widget.title">
+  <div class="title" (click)="!editMode ? open.emit() : null">
+    {{widget.title}}
+  </div>
+  <button mat-icon-button *ngIf="editMode" [matMenuTriggerFor]="settings">
+    <mat-icon> settings </mat-icon>
+  </button>
+</div>
+
+<div [ngSwitch]="widget.displayType"
+     [style.pointer-events]="editMode ? 'none' : ''">
+  <ng-template [cdkPortalOutlet]="widgetComponentPortal"></ng-template>
+</div>
+
+<mat-menu #settings="matMenu">
+  <button mat-menu-item (click)="edit.emit()"> Edit </button>
+  <button mat-menu-item (click)="duplicate.emit()"> Duplicate </button>
+  <button mat-menu-item (click)="remove.emit()"> Remove </button>
+</mat-menu>

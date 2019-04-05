@@ -1,0 +1,32 @@
+<span>{{timelineEvent.actor}}</span>
+
+<span [ngSwitch]="timelineEvent.type">
+  <ng-container *ngSwitchCase="'closed'">
+    closed this
+  </ng-container>
+  <ng-container *ngSwitchCase="'labeled'">
+    added <label-list [labelIds]="timelineEvent.labels"></label-list>
+  </ng-container>
+  <ng-container *ngSwitchCase="'assigned'">
+    <ng-container
+                  *ngIf="timelineEvent.actor === timelineEvent.assignees[0]; else differentAssignee">
+      self-assigned this
+    </ng-container>
+    <ng-template #differentAssignee>
+      assigned this to {{timelineEvent.assignees.join(', ')}}
+    </ng-template>
+    <label-list [labelIds]="timelineEvent.labels"></label-list>
+  </ng-container>
+  <ng-container *ngSwitchCase="'renamed'">
+    renamed this from "{{timelineEvent.rename.from}}" to
+    "{{timelineEvent.rename.to}}"
+  </ng-container>
+
+  <!-- For now, hiding unknown types
+  <ng-container *ngSwitchDefault>
+    Unknown type: {{timelineEvent | json}}
+  </ng-container>
+  -->
+</span>
+
+<span>{{timelineEvent.created | timeAgo}}</span>

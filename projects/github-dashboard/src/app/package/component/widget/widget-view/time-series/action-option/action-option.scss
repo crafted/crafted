@@ -1,0 +1,26 @@
+.config {
+  display: flex;
+  justify-content: space-between;
+  height: 32px;
+  align-items: center;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .desc {
+    margin: 0 8px;
+  }
+}
+
+.remove-action {
+  height: 32px;
+  width: 32px;
+  line-height: 32px;
+
+  mat-icon {
+    font-size: 18px;
+  }
+}

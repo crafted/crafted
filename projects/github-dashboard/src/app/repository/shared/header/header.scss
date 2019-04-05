@@ -1,0 +1,39 @@
+@import '../../../constants';
+
+:host {
+  z-index: 2;
+}
+
+mat-toolbar {
+  padding: 0;
+  height: 64px;
+}
+
+.left-button {
+  padding: 0;
+  margin: 0 8px;
+  min-width: 48px;
+  height: 48px;
+  width: 48px;
+  border-radius: 8px;
+}
+
+.name {
+  padding-right: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: $mobile-width - 1) {
+    padding-right: 0;
+    font-size: 18px;
+  }
+}
+
+.end {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  height: 100%;
+  align-items: center;
+}

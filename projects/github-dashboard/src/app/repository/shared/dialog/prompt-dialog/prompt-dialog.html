@@ -1,0 +1,21 @@
+<h1 mat-dialog-title> {{ title }} </h1>
+
+<div mat-dialog-content (keydown.Enter)="save(); $event.preventDefault()">
+  <div class="description">
+    {{description}}
+  </div>
+
+  <mat-form-field appearance="outline" *ngIf="!useTextArea">
+    <input matInput [type]="type" [formControl]="newInput">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="useTextArea">
+    <textarea matInput mat-autosize [formControl]="newInput"></textarea>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close> Cancel </button>
+  <button mat-raised-button color="primary"
+          (click)="save()"> Save </button>
+</div>

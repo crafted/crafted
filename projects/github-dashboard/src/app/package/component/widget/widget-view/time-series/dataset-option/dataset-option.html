@@ -1,0 +1,48 @@
+<ng-container [formGroup]="controlContainer.control">
+
+  <input-option formControlName="label" label="Series Name"></input-option>
+
+  <button-toggle-group-option formControlName="dataSourceType" label="Data"
+                              [options]="dataSourceTypeOptions">
+  </button-toggle-group-option>
+
+  <input-option formControlName="color" label="Color (optional)"></input-option>
+
+
+  <filter-state-option formControlName="filtererState" [filterer]="filterer" [dataSource]="dataSource"
+                       [savedFiltererStates]="savedFiltererStates">
+  </filter-state-option>
+
+  <button-toggle-group-option formControlName="seriesType" label="Type"
+                              [options]="seriesTypeOptions">
+  </button-toggle-group-option>
+
+  <div class="config-option">
+    <div class="label date-values">
+      Date Values
+      <button mat-icon-button (click)="addAction.emit()" type="button">
+        <mat-icon> add </mat-icon>
+      </button>
+    </div>
+
+    <div class="actions">
+      <ng-container *ngFor="let action of controlContainer.control.get('actions').controls; let index = index"
+                    formArrayName="actions">
+        <action-option [formGroupName]="index" [canRemove]="index > 0"
+                       [providerMetadata]="provider.metadata"
+                       (remove)="removeAction(index)"></action-option>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button mat-button class="duplicate-dataset" (click)="duplicate.emit()"
+            type="button">
+      Duplicate
+    </button>
+    <button mat-button class="remove-dataset theme-warn" (click)="remove.emit()"
+            type="button">
+      Remove
+    </button>
+  </div>
+</ng-container>

@@ -1,0 +1,63 @@
+.top-bar-container {
+  display: flex;
+  justify-content: center;
+
+  .top-bar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 8px;
+  }
+
+  .input-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+
+    button.new-filter {
+      height: 48px;
+      width: 48px;
+    }
+  }
+}
+
+input {
+  border: none;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  outline: none;
+  width: 100%;
+  color: inherit;
+  background: transparent;
+  font-size: 18px;
+  padding-bottom: 4px;
+  padding-left: 0;
+  margin-top: 5px; // Balance the bottom padding and border
+}
+
+.filter-container {
+  overflow: hidden;
+  display: flex;
+}
+
+::ng-deep .mat-menu-panel.filter-menu {
+  max-height: 288px;
+}
+
+.filter-type {
+  padding: 0 8px 0 16px;
+  font-size: 14px;
+  display: flex;
+  line-height: 48px;
+}
+
+.remove-filter {
+  margin: 0 4px;
+
+  mat-icon {
+    font-size: 18px;
+  }
+}

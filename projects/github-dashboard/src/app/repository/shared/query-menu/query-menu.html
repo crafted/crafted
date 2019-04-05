@@ -1,0 +1,13 @@
+<button mat-icon-button class="menu"
+        [mat-menu-trigger-for]="editMenu">
+  <mat-icon> {{icon}} </mat-icon>
+</button>
+
+<mat-menu #editMenu="matMenu">
+  <button mat-menu-item *ngIf="query.id" (click)="openEditNameDialog()">
+    <mat-icon> edit </mat-icon> Edit
+  </button>
+  <button mat-menu-item *ngIf="query.id" (click)="deleteQuery()">
+    <mat-icon> delete </mat-icon> Delete
+  </button>
+</mat-menu>

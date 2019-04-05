@@ -1,0 +1,22 @@
+<div class="labels-recommendation">
+  <ng-container [ngSwitch]="recommendation.type">
+    <mat-icon *ngSwitchCase="'warning'" class="theme-warn"> warning </mat-icon>
+    <mat-icon *ngSwitchCase="'suggestion'"> label_important </mat-icon>
+  </ng-container>
+
+  <span class="message"> {{recommendation.message}} </span>
+
+  <ng-container [ngSwitch]="recommendation.actionType">
+    <div *ngSwitchCase="'add-label'">
+      <label-list [labelIds]="recommendation.action.labels" [selectable]="true"
+                  (selected)="addLabel($event)"></label-list>
+    </div>
+    <div *ngSwitchCase="'add-assignee'">
+      <div class="assignee theme-hover" mat-ripple
+           (click)="addAssignee(assignee)"
+           *ngFor="let assignee of recommendation.action.assignees">
+        {{assignee}}
+      </div>
+    </div>
+  </ng-container>
+</div>

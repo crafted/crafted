@@ -1,0 +1,28 @@
+<div class="master theme-border">
+  <items-list *ngIf="query" [viewer]="viewer" [grouper]="grouper"
+              [sorter]="sorter" [filterer]="filterer" [dataSource]="dataSource"
+              [activeItem]="activeItem | async"
+              (itemSelected)="navigateToItem($event.number)">
+  </items-list>
+</div>
+
+<div class="detail" *ngIf="!isMobile()">
+  <item-detail [itemId]="itemId | async"></item-detail>
+</div>
+
+<ng-template cdkPortal>
+  <ng-container *ngIf="query">
+    <button mat-raised-button color="primary" *ngIf="!query.id" class="save-as"
+            (click)="openSaveAsDialog()">
+      Save As
+    </button>
+
+    <button mat-raised-button color="primary" *ngIf="query.id"
+            (click)="saveState()" [disabled]="!(canSave | async)">
+      {{canSave ? 'Save' : 'Saved'}}
+    </button>
+
+    <query-menu [query]="query" icon="settings" *ngIf="query.id">
+    </query-menu>
+  </ng-container>
+</ng-template>

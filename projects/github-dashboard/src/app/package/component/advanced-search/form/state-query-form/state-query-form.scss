@@ -1,0 +1,9 @@
+@import '../form';
+
+mat-select.state {
+  flex: 1;
+}
+
+mat-select.state ::ng-deep .mat-select-value {
+  width: 100%;
+}

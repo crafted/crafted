@@ -1,0 +1,18 @@
+.labels-recommendation {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+
+  .message {
+    padding: 0 8px;
+  }
+}
+
+.assignee {
+  font-size: 13px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
