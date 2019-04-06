@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject, Query} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
-import {Dashboard} from 'projects/github-dashboard/src/app/package/component/dashboard/dashboard';
+import {Dashboard} from '@crafted/components';
 import {Recommendation} from '../../../services/dao/config/recommendation';
 import {LocalToRemoteComparison} from '../../../services/dao/list-dao';
 

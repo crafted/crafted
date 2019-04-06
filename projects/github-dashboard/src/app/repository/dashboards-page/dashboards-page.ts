@@ -1,12 +1,12 @@
 import {CdkPortal} from '@angular/cdk/portal';
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
+import {Dashboard} from '@crafted/components';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';
 import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
-import {Dashboard} from '../../package/component/dashboard/dashboard';
 
 
 @Component({

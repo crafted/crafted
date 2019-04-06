@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material';
+import {Dashboard} from '@crafted/components';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
-import {Dashboard} from '../../package/component/dashboard/dashboard';
 import {Config, RepoConfig} from '../../service/config';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
 import {ConfigStore} from './dao/config/config-dao';

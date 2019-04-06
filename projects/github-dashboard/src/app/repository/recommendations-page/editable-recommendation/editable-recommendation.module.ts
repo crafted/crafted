@@ -8,12 +8,7 @@ import {
   MatSelectModule,
   MatSnackBarModule
 } from '@angular/material';
-import {
-  AdvancedSearchModule
-} from '../../../package/component/advanced-search/advanced-search.module';
-import {
-  EditableChipListModule
-} from '../../../package/component/editable-chip-list/editable-chip-list.module';
+import {AdvancedSearchModule, EditableChipListModule} from '@crafted/components';
 import {
   DeleteConfirmationModule
 } from '../../shared/dialog/delete-confirmation/delete-confirmation.module';

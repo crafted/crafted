@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Dashboard} from 'projects/github-dashboard/src/app/package/component/dashboard/dashboard';
+import {Dashboard} from '@crafted/components';
 import {Config} from 'projects/github-dashboard/src/app/service/config';
 import {combineLatest, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';

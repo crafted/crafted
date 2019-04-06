@@ -8,11 +8,11 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Widget} from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
 import {map, take, takeUntil} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
-import {Widget} from '../../package/component/widget/widget';
 import {isMobile} from '../../utility/media-matcher';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';

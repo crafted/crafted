@@ -4,15 +4,13 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatIconModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
-import {DashboardViewModule} from '../../package/component/dashboard/dashboard-view.module';
-import {CountModule} from '../../package/component/widget/widget-view/count/count.module';
-import {ListModule} from '../../package/component/widget/widget-view/list/list.module';
 import {
-  PieChartModule
-} from '../../package/component/widget/widget-view/pie-chart/pie-chart.module';
-import {
+  CountModule,
+  DashboardViewModule,
+  ListModule,
+  PieChartModule,
   TimeSeriesModule
-} from '../../package/component/widget/widget-view/time-series/time-series.module';
+} from '@crafted/components';
 import {DashboardPage} from './dashboard-page';
 
 const routes: Routes = [{

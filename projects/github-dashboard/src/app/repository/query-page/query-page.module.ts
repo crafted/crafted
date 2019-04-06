@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
-import {ItemsListModule} from '../../package/component/items-list/items-list.module';
+import {ItemsListModule} from '@crafted/components';
 import {
   ItemDetailDialogModule
 } from '../shared/dialog/item-detail-dialog/item-detail-dialog.module';

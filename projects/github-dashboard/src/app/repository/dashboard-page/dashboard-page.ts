@@ -9,22 +9,23 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
+import {
+  Column,
+  Dashboard,
+  getCountWidgetConfig,
+  getListWidgetConfig,
+  getPieChartWidgetConfig,
+  getTimeSeriesWidgetConfig,
+  hasWidgets,
+  SavedFiltererState,
+  Widget,
+  WidgetConfig
+} from '@crafted/components';
 import {DataResources} from '@crafted/data';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
 import {delay, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
-import {Column, Dashboard, hasWidgets} from '../../package/component/dashboard/dashboard';
-import {SavedFiltererState} from '../../package/component/widget/edit-widget/edit-widget';
-import {Widget, WidgetConfig} from '../../package/component/widget/widget';
-import {getCountWidgetConfig} from '../../package/component/widget/widget-view/count/count';
-import {getListWidgetConfig} from '../../package/component/widget/widget-view/list/list';
-import {
-  getPieChartWidgetConfig
-} from '../../package/component/widget/widget-view/pie-chart/pie-chart';
-import {
-  getTimeSeriesWidgetConfig
-} from '../../package/component/widget/widget-view/time-series/time-series';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';

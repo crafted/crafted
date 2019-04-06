@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
+import {Dashboard} from '@crafted/components';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {ActiveStore} from '../../../services/active-store';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {DashboardEdit} from './dashboard-edit/dashboard-edit';
-import { ActiveStore } from '../../../services/active-store';
-import { Dashboard } from 'projects/github-dashboard/src/app/package/component/dashboard/dashboard';
 
 @Injectable()
 export class DashboardDialog {

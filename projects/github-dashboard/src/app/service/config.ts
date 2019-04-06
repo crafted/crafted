@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Query} from '../repository/services/dao/config/query';
-import {Recommendation} from '../repository/services/dao/config/recommendation';
+import {Dashboard} from '@crafted/components';
 import {Observable, of} from 'rxjs';
 import {map, mergeMap, take} from 'rxjs/operators';
+import {Query} from '../repository/services/dao/config/query';
+import {Recommendation} from '../repository/services/dao/config/recommendation';
 import {Github} from './github';
-import { Dashboard } from '../package/component/dashboard/dashboard';
 
 
 export interface DashboardConfig {
