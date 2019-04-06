@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import * as Chart from 'chart.js';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -8,8 +9,6 @@ import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
 import {MaterialColors} from '../widget-view';
 
 import {TimeSeriesEdit} from './time-series-edit';
-import {FiltererState, Filterer} from '../../../../data-source/filterer';
-import {DataSource} from '../../../../data-source/data-source';
 
 
 export type TimeSeriesDataResourcesMap = Map<string, {

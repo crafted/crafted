@@ -1,14 +1,19 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
+import {
+  DataSource,
+  Filterer,
+  FiltererState,
+  Sorter,
+  SorterState,
+  Viewer,
+  ViewerState
+} from '@crafted/data';
 import {Observable} from 'rxjs';
 
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
 
 import {ListEdit} from './list-edit';
-import {FiltererState, Filterer} from '../../../../data-source/filterer';
-import {SorterState, Sorter} from '../../../../data-source/sorter';
-import {ViewerState, Viewer} from '../../../../data-source/viewer';
-import {DataSource} from '../../../../data-source/data-source';
 
 
 export type ListDataResourcesMap = Map<string, {

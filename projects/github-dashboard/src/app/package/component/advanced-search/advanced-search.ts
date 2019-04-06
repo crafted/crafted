@@ -8,11 +8,9 @@ import {
   OnInit
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {DataSource, Filter, Filterer, Query} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
-import {DataSource} from '../../data-source/data-source';
-import {Filter, Filterer} from '../../data-source/filterer';
-import {Query} from '../../data-source/query';
 
 export const ANIMATION_DURATION = '250ms cubic-bezier(0.35, 0, 0.25, 1)';
 

@@ -1,8 +1,14 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {
+  Grouper,
+  GrouperMetadata,
+  Sorter,
+  SortingMetadata,
+  Viewer,
+  ViewerMetadata
+} from '@crafted/data';
 import {take} from 'rxjs/operators';
-import {Grouper, GrouperMetadata} from '../../data-source/grouper';
-import {Sorter, SortingMetadata} from '../../data-source/sorter';
-import {Viewer, ViewerMetadata} from '../../data-source/viewer';
+
 
 @Component({
   selector: 'display-options-header',

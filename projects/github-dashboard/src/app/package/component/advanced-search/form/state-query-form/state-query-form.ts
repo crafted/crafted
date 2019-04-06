@@ -8,9 +8,9 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {InputEquality, StateQuery} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {InputEquality, StateQuery} from '../../../../data-source/query';
 
 @Component({
   selector: 'state-query-form',

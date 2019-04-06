@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@crafted/data": [
+        "dist/data"
+      ],
+      "@crafted/data/*": [
+        "dist/data/*"
+      ]
+    }
   }
 }

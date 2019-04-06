@@ -1,6 +1,6 @@
 import {combineLatest, Observable} from 'rxjs';
 import {auditTime, debounceTime, map, startWith} from 'rxjs/operators';
-import {Group} from '../data-source/grouper';
+import {Group} from '../grouper';
 
 export interface RendererState<T> {
   groups: Group<T>[];

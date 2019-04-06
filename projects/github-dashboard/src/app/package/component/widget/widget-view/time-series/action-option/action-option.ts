@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer} from '@angular/forms';
-import {
-  DataSourceMetadata
-} from 'projects/github-dashboard/src/app/package/data-source/data-source';
+import {DataSourceMetadata} from 'projects/data/src/lib/data-source';
 import {ButtonToggleOption} from '../../../edit-widget/button-toggle-option/button-toggle-option';
 
 @Component({

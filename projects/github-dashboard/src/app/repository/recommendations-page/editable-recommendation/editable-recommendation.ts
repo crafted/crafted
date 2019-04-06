@@ -1,12 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatDialog, MatSnackBar} from '@angular/material';
+import {DataResources, DataSource, Filterer} from '@crafted/data';
 import {combineLatest, of, Subject} from 'rxjs';
 import {debounceTime, map, mergeMap, take, takeUntil} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
-import {DataSource} from '../../../package/data-source/data-source';
-import {Filterer} from '../../../package/data-source/filterer';
-import {DataResources} from '../../../package/utility/data-resources';
 import {EXPANSION_ANIMATION} from '../../../utility/animations';
 import {DATA_RESOURCES_MAP} from '../../repository';
 import {ActiveStore} from '../../services/active-store';

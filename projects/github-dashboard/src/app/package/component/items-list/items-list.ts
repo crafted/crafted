@@ -7,14 +7,18 @@ import {
   NgZone,
   Output
 } from '@angular/core';
+import {
+  DataSource,
+  Filterer,
+  Group,
+  Grouper,
+  RendererState,
+  renderItemGroups,
+  Sorter,
+  Viewer
+} from '@crafted/data';
 import {fromEvent, Observable, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import {DataSource} from '../../data-source/data-source';
-import {Filterer} from '../../data-source/filterer';
-import {Group, Grouper} from '../../data-source/grouper';
-import {Sorter} from '../../data-source/sorter';
-import {Viewer} from '../../data-source/viewer';
-import {RendererState, renderItemGroups} from '../../utility/renderer';
 
 @Component({
   selector: 'items-list',

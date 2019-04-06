@@ -10,9 +10,9 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {InputEquality, InputQuery} from '@crafted/data';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {debounceTime, map, startWith, takeUntil} from 'rxjs/operators';
-import {InputEquality, InputQuery} from '../../../../data-source/query';
 
 @Component({
   selector: 'input-query-form',

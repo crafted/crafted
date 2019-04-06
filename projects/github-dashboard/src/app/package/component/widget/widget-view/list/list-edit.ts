@@ -1,5 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
+import {Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
@@ -7,11 +9,6 @@ import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
 
 import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
-import { Observable } from 'rxjs';
-import {DataSource} from '../../../../data-source/data-source';
-import {Viewer} from '../../../../data-source/viewer';
-import {Sorter} from '../../../../data-source/sorter';
-import {Filterer} from '../../../../data-source/filterer';
 
 
 @Component({

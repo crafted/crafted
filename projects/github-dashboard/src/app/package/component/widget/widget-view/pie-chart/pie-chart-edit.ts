@@ -1,11 +1,9 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 
-import {DataSource} from '../../../../data-source/data-source';
-import {Filterer} from '../../../../data-source/filterer';
-import {Grouper} from '../../../../data-source/grouper';
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';

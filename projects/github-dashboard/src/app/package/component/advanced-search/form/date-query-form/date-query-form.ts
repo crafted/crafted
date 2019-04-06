@@ -7,9 +7,9 @@ import {
   Output
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {DateEquality, DateQuery} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {DateEquality, DateQuery} from '../../../../data-source/query';
 
 @Component({
   selector: 'date-query-form',

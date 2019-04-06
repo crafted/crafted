@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
+import {DataResources} from '@crafted/data';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
 import {delay, map, mergeMap, takeUntil} from 'rxjs/operators';
@@ -24,7 +25,6 @@ import {
 import {
   getTimeSeriesWidgetConfig
 } from '../../package/component/widget/widget-view/time-series/time-series';
-import {DataResources} from '../../package/utility/data-resources';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';

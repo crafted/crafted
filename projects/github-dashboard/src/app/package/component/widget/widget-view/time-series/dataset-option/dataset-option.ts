@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ControlContainer, FormArray } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
-import { ButtonToggleOption } from '../../../edit-widget/button-toggle-option/button-toggle-option';
-import { SavedFiltererState } from '../../../edit-widget/edit-widget';
-import { TimeSeriesDataResourcesMap } from '../time-series';
-import {Filterer} from 'projects/github-dashboard/src/app/package/data-source/filterer';
-import {DataSource} from 'projects/github-dashboard/src/app/package/data-source/data-source';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ControlContainer, FormArray} from '@angular/forms';
+import {DataSource, Filterer} from '@crafted/data';
+import {Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
+import {ButtonToggleOption} from '../../../edit-widget/button-toggle-option/button-toggle-option';
+import {SavedFiltererState} from '../../../edit-widget/edit-widget';
+import {TimeSeriesDataResourcesMap} from '../time-series';
 
 @Component({
   selector: 'dataset-option',

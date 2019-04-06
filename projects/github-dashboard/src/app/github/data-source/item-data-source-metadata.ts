@@ -1,5 +1,5 @@
+import {DataSource, DataSourceMetadata} from '@crafted/data';
 import {Observable} from 'rxjs';
-import {DataSource, DataSourceMetadata} from '../../package/data-source/data-source';
 import {Item} from '../app-types/item';
 
 export function getDataSourceProvider(data: Observable<Item[]>) {

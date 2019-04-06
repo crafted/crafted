@@ -1,5 +1,5 @@
+import {Sorter, SorterState, SortingMetadata} from '@crafted/data';
 import {of} from 'rxjs';
-import {Sorter, SorterState, SortingMetadata} from '../../package/data-source/sorter';
 import {Item} from '../app-types/item';
 
 export function getSorterProvider() {

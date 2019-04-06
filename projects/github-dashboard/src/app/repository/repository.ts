@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Router} from '@angular/router';
+import {DataResources} from '@crafted/data';
 import {interval} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
@@ -7,7 +8,6 @@ import {getFiltererProvider} from '../github/data-source/item-filter-metadata';
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
-import {DataResources} from '../package/utility/data-resources';
 import {Auth} from '../service/auth';
 import {LoadedRepos} from '../service/loaded-repos';
 import {ActiveStore} from './services/active-store';

@@ -1,4 +1,4 @@
-import {FiltererState} from 'projects/github-dashboard/src/app/package/data-source/filterer';
+import {FiltererState} from 'projects/data/src/lib/filterer';
 
 export interface AddLabelAction {
   labels: string[];

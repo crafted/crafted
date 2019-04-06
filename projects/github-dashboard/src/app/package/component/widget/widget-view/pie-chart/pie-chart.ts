@@ -1,11 +1,9 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import {DataSource, Filterer, FiltererState, Group, Grouper, GrouperState} from '@crafted/data';
 import * as Chart from 'chart.js';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {DataSource} from '../../../../data-source/data-source';
-import {Filterer, FiltererState} from '../../../../data-source/filterer';
-import {Group, Grouper, GrouperState} from '../../../../data-source/grouper';
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
 import {MaterialColors} from '../widget-view';

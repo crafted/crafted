@@ -1,9 +1,9 @@
 
+import {filterItems, searchItems} from '@crafted/data';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {ItemsFilterMetadata} from '../../github/data-source/item-filter-metadata';
 import {tokenizeItem} from '../../github/utility/tokenize-item';
-import {filterItems, searchItems} from '../../package/data-source/filterer';
 import {Recommendation} from '../services/dao/config/recommendation';
 
 export function getRecommendations(

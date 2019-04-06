@@ -1,5 +1,3 @@
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {
   getGroupByListValues,
   getGroupByValue,
@@ -7,7 +5,9 @@ import {
   GrouperContextProvider,
   GrouperMetadata,
   GrouperState
-} from '../../package/data-source/grouper';
+} from '@crafted/data';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';

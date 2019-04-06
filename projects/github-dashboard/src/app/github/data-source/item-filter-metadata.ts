@@ -1,25 +1,21 @@
-import {combineLatest, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {
-  Filterer,
-  FiltererContextProvider,
-  FiltererMetadata,
-  FiltererState
-} from '../../package/data-source/filterer';
-import {
-  DateQuery,
-  InputQuery,
-  NumberQuery,
-  Query,
-  StateQuery
-} from '../../package/data-source/query';
 import {
   arrayContainsQuery,
   dateMatchesEquality,
+  DateQuery,
+  Filterer,
+  FiltererContextProvider,
+  FiltererMetadata,
+  FiltererState,
+  InputQuery,
   numberMatchesEquality,
+  NumberQuery,
+  Query,
   stateMatchesEquality,
+  StateQuery,
   stringContainsQuery
-} from '../../package/utility/query-matcher';
+} from '@crafted/data';
+import {combineLatest, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Recommendation} from '../../repository/services/dao/config/recommendation';
 import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';

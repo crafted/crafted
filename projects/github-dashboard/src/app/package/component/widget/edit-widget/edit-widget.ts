@@ -2,10 +2,10 @@ import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {FiltererState} from '@crafted/data';
 import {ReplaySubject} from 'rxjs';
 import {startWith, take} from 'rxjs/operators';
 
-import {FiltererState} from '../../../data-source/filterer';
 import {EDIT_WIDGET_DATA, EditWidgetData, Widget, WidgetConfig} from '../../widget/widget';
 
 

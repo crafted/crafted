@@ -6,8 +6,8 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
+import {RenderedView, Viewer} from '@crafted/data';
 import {Observable} from 'rxjs';
-import {RenderedView, Viewer} from '../../../data-source/viewer';
 
 @Component({
   selector: 'item-summary',

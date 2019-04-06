@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {DataSource, Filterer} from '@crafted/data';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {DataSource} from '../../../../data-source/data-source';
-import {Filterer} from '../../../../data-source/filterer';
 import {SavedFiltererState} from '../edit-widget';
 
 interface SavedFiltererStateGroup {

@@ -1,13 +1,13 @@
 import {DatePipe} from '@angular/common';
+import {Viewer, ViewerMetadata, ViewerState} from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {Recommendation} from '../../repository/services/dao/config/recommendation';
+import {getRecommendations} from '../../repository/utility/get-recommendations';
 import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';
 import {getBorderColor, getTextColor} from '../utility/label-colors';
-import {Recommendation} from '../../repository/services/dao/config/recommendation';
-import {ViewerState, Viewer, ViewerMetadata} from '../../package/data-source/viewer';
-import {getRecommendations} from '../../repository/utility/get-recommendations';
 
 export function getViewerProvider(
     labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):

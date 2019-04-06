@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {FiltererState} from '../../../../data-source/filterer';
+import {FiltererState} from '@crafted/data';
 import {
   ButtonToggleGroupOptionModule
 } from '../../edit-widget/button-toggle-option/button-toggle-option.module';

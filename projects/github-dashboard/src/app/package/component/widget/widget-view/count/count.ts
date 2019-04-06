@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
+import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -7,8 +8,6 @@ import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
 
 import {EditCount} from './count-edit';
 import {CountDisplayTypeOptions} from './count.module';
-import {FiltererState, Filterer} from '../../../../data-source/filterer';
-import {DataSource} from '../../../../data-source/data-source';
 
 
 export type CountDataResourcesMap = Map<string, {

@@ -8,9 +8,9 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
+import {DataResources} from '@crafted/data';
 
 import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget';
-import {DataResources} from '../../../utility/data-resources';
 
 
 @Component({

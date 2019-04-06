@@ -9,9 +9,9 @@ import {
   Output
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import {NumberEquality, NumberQuery} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {NumberEquality, NumberQuery} from '../../../../data-source/query';
 
 @Component({
   selector: 'number-query-form',

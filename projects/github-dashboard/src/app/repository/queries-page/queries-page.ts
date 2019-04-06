@@ -1,6 +1,7 @@
 import {CdkPortal} from '@angular/cdk/portal';
 import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
+import {DataResources} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {delay, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
@@ -8,7 +9,6 @@ import {ActiveStore} from '../services/active-store';
 import {Query} from '../services/dao/config/query';
 import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
-import {DataResources} from '../../package/utility/data-resources';
 
 interface QueryListItem {
   id: string;

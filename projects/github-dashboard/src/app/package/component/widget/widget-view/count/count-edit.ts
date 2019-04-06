@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Subject, Observable} from 'rxjs';
+import {DataSource, Filterer} from '@crafted/data';
+import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
@@ -9,8 +10,6 @@ import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
 
 import {CountWidgetDataConfig} from './count';
 import {CountDisplayTypeOptions} from './count.module';
-import {DataSource} from '../../../../data-source/data-source';
-import {Filterer} from '../../../../data-source/filterer';
 
 
 @Component({

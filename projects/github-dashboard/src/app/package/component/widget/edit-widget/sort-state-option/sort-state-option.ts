@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges, ViewChild} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatSelect} from '@angular/material';
-import {Sorter} from '../../../../data-source/sorter';
+import {Sorter} from '@crafted/data';
 
 @Component({
   selector: 'sort-state-option',

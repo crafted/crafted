@@ -1,8 +1,8 @@
-import {Filterer, FiltererState} from '../data-source/filterer';
-import {Grouper, GrouperState} from '../data-source/grouper';
-import {DataSource} from '../data-source/data-source';
-import {Sorter, SorterState} from '../data-source/sorter';
-import {Viewer, ViewerState} from '../data-source/viewer';
+import {DataSource} from '../data-source';
+import {Filterer, FiltererState} from '../filterer';
+import {Grouper, GrouperState} from '../grouper';
+import {Sorter, SorterState} from '../sorter';
+import {Viewer, ViewerState} from '../viewer';
 
 export interface DataResources {
   id: string;
