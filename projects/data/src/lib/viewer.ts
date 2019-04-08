@@ -6,23 +6,15 @@ export interface ViewerState {
 }
 
 export interface RenderedView {
-  label: string;
-  containerClassList?: string;
-  containerStyles?: {[key in string]: string};
-  renderedParts: RenderedPart[];
-}
-
-export interface RenderedPart {
-  text: string;
+  text?: string;
   classList?: string;
   styles?: {[key in string]: string};
+  children?: RenderedView[];
 }
 
 export interface ViewerMetadata<C> {
   label: string;
-  containerClassList?: string;
-  containerStyles?: {[key in string]: string};
-  renderParts: (context: C) => RenderedPart[];
+  render: (context: C) => RenderedView;
 }
 
 export interface ViewLabel {
@@ -83,16 +75,7 @@ export class Viewer<T = any, C = any> {
     return combineLatest(this.state, this.contextProvider).pipe(map(results => {
       const views = results[0].views.map(v => this.metadata.get(v)!);
       const context = results[1](item);
-
-      return views.map(view => {
-        const renderedView: RenderedView = {
-          label: view.label,
-          containerClassList: view.containerClassList,
-          containerStyles: view.containerStyles,
-          renderedParts: view.renderParts(context)
-        };
-        return renderedView;
-      });
+      return views.map(view => view.render(context));
     }));
   }
 }

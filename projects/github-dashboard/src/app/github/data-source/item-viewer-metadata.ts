@@ -40,14 +40,11 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'title',
     {
       label: 'Title',
-      containerClassList: 'title theme-text',
-      containerStyles: {
-        marginBottom: '4px',
-        fontSize: '15px',
-      },
-      renderParts: (c: ViewContext) => [{
-        text: c.item.title,
-      }],
+      render: (c: ViewContext) => ({
+        classList: 'title theme-text',
+        styles: {display: 'block', marginBottom: '4px', fontSize: '15px', padding: '2px 0'},
+        text: `Title: ${c.item.title}`
+      }),
     },
   ],
 
@@ -55,11 +52,11 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'reporter',
     {
       label: 'Reporter',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-secondary-text',
-      renderParts: (c: ViewContext) => [{
-        text: `Reporter: ${c.item.reporter}`,
-      }],
+      render: (c: ViewContext) => ({
+        classList: 'theme-secondary-text',
+        styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+        text: `Reporter: ${c.item.reporter}`
+      }),
     },
   ],
 
@@ -67,13 +64,14 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'creationDate',
     {
       label: 'Date Created',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-secondary-text',
-      renderParts: (c: ViewContext) => {
+
+      render: (c: ViewContext) => {
         const datePipe = new DatePipe('en-us');
-        return [
-          {text: `Created: ${datePipe.transform(c.item.created)}`},
-        ];
+        return {
+          classList: 'theme-secondary-text',
+              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+              text: `Created: ${datePipe.transform(c.item.created)}`,
+        }
       },
     },
   ],
@@ -82,13 +80,13 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'updatedDate',
     {
       label: 'Date Last Updated',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-secondary-text',
-      renderParts: (c: ViewContext) => {
+      render: (c: ViewContext) => {
         const datePipe = new DatePipe('en-us');
-        return [{
-          text: `Last updated: ${datePipe.transform(c.item.updated)}`,
-        }];
+        return {
+          classList: 'theme-secondary-text',
+              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+              text: `Updated: ${datePipe.transform(c.item.updated)}`,
+        }
       },
     },
   ],
@@ -97,15 +95,15 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'assignees',
     {
       label: 'Assignees',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-secondary-text',
-      renderParts: (c: ViewContext) => {
+      render: (c: ViewContext) => {
         if (!c.item.assignees.length) {
-          return [];
+          return {};
         }
-        return [{
-          text: `Assignees: ${c.item.assignees.join(',')}`,
-        }];
+        return {
+          classList: 'theme-secondary-text',
+          styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+          text: `Assignees: ${c.item.assignees.join(',')}`
+        };
       }
     },
   ],
@@ -114,12 +112,18 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'suggestions',
     {
       label: 'Suggestions',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-secondary-text',
-      renderParts: (c: ViewContext) => {
+      render: (c: ViewContext) => {
         const allSuggestions = c.recommendations.filter(r => r.type === 'suggestion');
         const suggestions = getRecommendations(c.item, allSuggestions, c.labelsMap);
-        return suggestions.map(r => ({text: r.message || ''}));
+
+        return {
+          classList: 'section theme-secondary-text',
+              children: suggestions.map(r => ({
+                                          text: r.message || '',
+                                          styles: {display: 'block', padding: '2px 0'},
+                                        })),
+              styles: {fontSize: '13px'},
+        }
       },
     },
   ],
@@ -128,12 +132,18 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'warnings',
     {
       label: 'Warnings',
-      containerStyles: {fontSize: '13px'},
-      containerClassList: 'theme-warn',
-      renderParts: (c: ViewContext) => {
+      render: (c: ViewContext) => {
         const allWarnings = c.recommendations.filter(r => r.type === 'warning');
         const warnings = getRecommendations(c.item, allWarnings, c.labelsMap);
-        return warnings.map(r => ({text: r.message || ''}));
+
+        return {
+          classList: 'theme-warn',
+              children: warnings.map(r => ({
+                                       text: r.message || '',
+                                       styles: {display: 'block', padding: '2px 0'},
+                                     })),
+              styles: {fontSize: '13px'},
+        }
       },
     },
   ],
@@ -142,34 +152,37 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'labels',
     {
       label: 'Labels',
-      containerStyles: {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        flexWrap: 'wrap',
-        fontSize: '13px',
-        marginTop: '8px',
-      },
-      renderParts: (c: ViewContext) => {
-        return c.item.labels.map(id => {
-          const label = c.labelsMap.get(`${id}`);
+      render: (c: ViewContext) => {
+        return {
+          styles: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexWrap: 'wrap',
+            fontSize: '13px',
+            marginTop: '8px',
+            padding: '2px 0'
+          },
+              children: c.item.labels.map(id => {
+                const label = c.labelsMap.get(`${id}`);
 
-          if (!label) {
-            return {text: ''};
-          }
+                if (!label) {
+                  return {text: ''};
+                }
 
-          const styles = {
-            color: getTextColor(label.color),
-            borderColor: getBorderColor(label.color),
-            backgroundColor: '#' + label.color,
-            display: 'inline-block',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            marginRight: '4px',
-            marginBottom: '4px',
-          };
+                const styles = {
+                  color: getTextColor(label.color),
+                  borderColor: getBorderColor(label.color),
+                  backgroundColor: '#' + label.color,
+                  display: 'inline-block',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  marginRight: '4px',
+                  marginBottom: '4px',
+                };
 
-          return {text: label.name, styles};
-        });
+                return {text: label.name, styles};
+              }),
+        }
       },
     },
   ],

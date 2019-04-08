@@ -1,16 +1,11 @@
 <div class="item theme-hover" mat-ripple
      [class.theme-background-hover]="active">
   <div class="info">
-    <ng-container *ngFor="let view of views | async">
-      <div *ngIf="view.renderedParts.length" [class]="view.containerClassList"
-           [ngStyle]="view.containerStyles">
-        <div *ngFor="let renderedPart of view.renderedParts"
-             [class]="'section ' + (renderedPart.classList || '')"
-             [ngStyle]="renderedPart.styles || {}">
-          {{renderedPart.text}}
-        </div>
-      </div>
-    </ng-container>
+    <item-rendered-view *ngFor="let view of views | async"
+                        [class]="view.classList || ''"
+                        [ngStyle]="view.styles || {}" [text]="view.text"
+                        [childrenViews]="view.children">
+    </item-rendered-view>
   </div>
 
   <div class="active" [style.visibility]="active ? 'visible' : 'hidden' ">
