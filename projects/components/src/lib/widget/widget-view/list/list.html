@@ -1,7 +1,7 @@
 <ng-container
               *ngFor="let item of (items | async)?.slice(0, listLength); trackBy: trackByIndex; let last = last">
-  <item-summary [item]="item" [viewer]="viewer"
-                (select)="data.config.onSelect($event)">
+  <item-summary [item]="item" [viewer]="viewer" mat-ripple
+                (click)="data.config.onSelect(item)">
   </item-summary>
   <mat-divider *ngIf="!last"></mat-divider>
 </ng-container>

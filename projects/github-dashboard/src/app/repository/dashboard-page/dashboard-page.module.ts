@@ -11,6 +11,9 @@ import {
   PieChartModule,
   TimeSeriesModule
 } from '@crafted/components';
+import {
+  ItemDetailDialogModule
+} from '../shared/dialog/item-detail-dialog/item-detail-dialog.module';
 import {DashboardPage} from './dashboard-page';
 
 const routes: Routes = [{
@@ -35,6 +38,7 @@ export class DashboardPageRoutingModule {
     ListModule,
     CountModule,
     TimeSeriesModule,
+    ItemDetailDialogModule,
   ],
   declarations: [DashboardPage],
   exports: [DashboardPage],

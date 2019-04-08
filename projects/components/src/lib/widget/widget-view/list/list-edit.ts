@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
-import {Observable} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
@@ -33,6 +33,8 @@ export class ListEdit {
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
+
+  destroyed = new Subject();
 
   constructor(@Inject(EDIT_WIDGET_DATA) public data:
                   EditWidgetData<ListDisplayTypeOptions<any>, ListWidgetDataConfig>) {
@@ -69,8 +71,14 @@ export class ListEdit {
         }
       }
     });
-    this.form.valueChanges.subscribe(value => {
-      data.options.next(value);
-    });
+    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
+        .subscribe(value => {
+          data.options.next(value);
+        });
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 }

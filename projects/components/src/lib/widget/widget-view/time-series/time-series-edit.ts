@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
-import {take} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
 import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
@@ -31,6 +32,8 @@ export class TimeSeriesEdit {
 
   datasetsFormArray = this.form.get('datasets') as FormArray;
 
+  destroyed = new Subject();
+
   constructor(@Inject(EDIT_WIDGET_DATA) public data:
                   EditWidgetData<TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig>) {
     data.options.pipe(take(1)).subscribe(value => {
@@ -40,7 +43,9 @@ export class TimeSeriesEdit {
         this.addDataset();
       }
     });
-    this.form.valueChanges.subscribe(value => data.options.next(value));
+
+    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
+        .subscribe(value => data.options.next(value));
   }
 
   removeDataset(index: number) {

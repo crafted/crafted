@@ -54,6 +54,7 @@ export interface ListDisplayTypeOptions<S> {
 @Component({
   selector: 'list',
   templateUrl: 'list.html',
+  styleUrls: ['list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class List<S, V> {

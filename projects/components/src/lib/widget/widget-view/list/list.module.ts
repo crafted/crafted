@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatDividerModule} from '@angular/material';
+import {MatDividerModule, MatRippleModule} from '@angular/material';
 import {ItemSummaryModule} from '../../../item-summary/item-summary.module';
 import {
   ButtonToggleGroupOptionModule
@@ -19,6 +19,7 @@ import {ListEdit} from './list-edit';
   imports: [
     CommonModule,
     MatDividerModule,
+    MatRippleModule,
     ReactiveFormsModule,
     ItemSummaryModule,
     SortStateOptionModule,

@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
-import {Observable} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
@@ -31,6 +31,8 @@ export class PieChartEdit {
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
+
+  destroyed = new Subject();
 
   constructor(@Inject(EDIT_WIDGET_DATA) public data:
                   EditWidgetData<PieChartDisplayTypeOptions<any>, PieChartWidgetDataConfig>) {
@@ -63,8 +65,10 @@ export class PieChartEdit {
         }
       }
     });
-    this.form.valueChanges.subscribe(value => {
-      data.options.next(value);
-    });
+
+    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
+        .subscribe(value => {
+          data.options.next(value);
+        });
   }
 }
