@@ -1,0 +1,18 @@
+@mixin editable-chip-list-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  editable-chip-list {
+    .chip, .chip-add {
+      border-color: mat-color($foreground, divider);
+    }
+
+    .chip-add {
+      background: mat-color($background, hover);
+    }
+
+    .remove:hover {
+      background: mat-color($background, hover);
+    }
+  }
+}

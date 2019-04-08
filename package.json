@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-components": "ng build components; ./node_modules/scss-bundle/dist/bundle-cli.js -e projects/components/src/lib/_theming.scss -d ./dist/components/theming.scss"
   },
   "private": true,
   "dependencies": {
@@ -31,9 +32,9 @@
     "hammerjs": "^2.0.8",
     "highlight.js": "^9.15.6",
     "idb": "^3.0.2",
-    "time-ago-pipe": "^1.3.2",
     "remarkable": "^1.7.1",
     "rxjs": "~6.3.3",
+    "time-ago-pipe": "^1.3.2",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },
@@ -60,6 +61,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "ng-packagr": "^4.2.0",
     "protractor": "~5.4.0",
+    "scss-bundle": "^2.5.1",
     "ts-node": "~7.0.0",
     "tsickle": ">=0.34.0",
     "tslib": "^1.9.0",

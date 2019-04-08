@@ -1,16 +1,14 @@
-<span class="chip theme-border" *ngFor="let value of values; let index = index">
+<span class="chip" *ngFor="let value of values; let index = index">
   <div class="value">
     {{labels.get(value)}}
   </div>
 
-  <button mat-icon-button class="remove theme-hover" type="button"
-          (click)="remove(index)">
+  <button mat-icon-button class="remove" type="button" (click)="remove(index)">
     <mat-icon> close </mat-icon>
   </button>
 </span>
 
-<span class="chip theme-border theme-background-hover"
-      *ngIf="displayedOptions.length">
+<span class="chip-add" *ngIf="displayedOptions.length">
   <button mat-icon-button class="add" type="button"
           [matMenuTriggerFor]="addOptionMenu">
     <mat-icon> add </mat-icon>

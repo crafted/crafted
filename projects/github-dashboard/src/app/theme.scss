@@ -1,9 +1,11 @@
 @import '~@angular/material/theming';
+@import '../../../../dist/components/theming';
 
 @import './repository/shared/nav/nav-theme';
 
 @mixin themed-styles($theme) {
   @include angular-material-theme($theme);
+  @include crafted-components-theme($theme);
 
   // Import and load component-specific themes here.
   @include nav-theme($theme);

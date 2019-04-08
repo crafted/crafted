@@ -1,0 +1,5 @@
+@import 'editable-chip-list/editable-chip-list-theme.scss';
+
+@mixin crafted-components-theme($theme) {
+  @include editable-chip-list-theme($theme);
+}
