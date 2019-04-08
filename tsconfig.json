@@ -22,15 +22,9 @@
       "@crafted/data": [
         "dist/data"
       ],
-      "@crafted/data/*": [
-        "dist/data/*"
-      ],
       "@crafted/components": [
         "dist/components"
       ],
-      "@crafted/components/*": [
-        "dist/components/*"
-      ]
     }
   }
 }

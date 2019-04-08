@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  SimpleChanges
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {RenderedView, Viewer} from '@crafted/data';
 import {Observable} from 'rxjs';
 
@@ -14,7 +7,6 @@ import {Observable} from 'rxjs';
   templateUrl: 'item-summary.html',
   styleUrls: ['item-summary.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {'(click)': 'select.emit(item)'}
 })
 export class ItemSummary<T, V> {
   views: Observable<RenderedView[]>;
@@ -24,8 +16,6 @@ export class ItemSummary<T, V> {
   @Input() active: boolean;
 
   @Input() viewer: Viewer<T, any>;
-
-  @Output() select = new EventEmitter<T>();
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges['viewer'] || simpleChanges['item']) {

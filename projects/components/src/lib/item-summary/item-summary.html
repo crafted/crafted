@@ -1,5 +1,4 @@
-<div class="item theme-hover" mat-ripple
-     [class.theme-background-hover]="active">
+<div class="item theme-hover" [class.theme-background-hover]="active">
   <div class="info">
     <ng-container *ngFor="let view of views | async">
       <item-rendered-view *ngIf="view" [class]="view.classList || ''"

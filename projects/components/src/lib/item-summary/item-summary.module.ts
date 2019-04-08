@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatIconModule, MatRippleModule} from '@angular/material';
+import {MatIconModule} from '@angular/material';
 import {ItemSummary} from './item-summary';
 import {RenderedViewModule} from './rendered-view/rendered-view.module';
 
@@ -9,7 +9,6 @@ import {RenderedViewModule} from './rendered-view/rendered-view.module';
   imports: [
     CommonModule,
     MatIconModule,
-    MatRippleModule,
     RenderedViewModule,
   ],
   declarations: [ItemSummary],

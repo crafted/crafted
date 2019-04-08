@@ -223,7 +223,7 @@
               "projects/docs/src/assets"
             ],
             "styles": [
-              "projects/docs/src/styles.css"
+              "projects/docs/src/styles.scss"
             ],
             "scripts": [],
             "es5BrowserSupport": true
@@ -280,7 +280,7 @@
             "tsConfig": "projects/docs/tsconfig.spec.json",
             "karmaConfig": "projects/docs/karma.conf.js",
             "styles": [
-              "projects/docs/src/styles.css"
+              "projects/docs/src/styles.scss"
             ],
             "scripts": [],
             "assets": [

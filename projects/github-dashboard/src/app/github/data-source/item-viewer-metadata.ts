@@ -40,7 +40,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'title',
     {
       label: 'Title',
-      render: (c: ViewContext) => ({
+      render: (item: Item, _c: ViewContext) => ({
         classList: 'title theme-text',
         styles: {
           display: 'block',
@@ -48,7 +48,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
           fontSize: '15px',
           padding: '2px 0',
         },
-        text: `Title: ${c.item.title}`
+        text: `Title: ${item.title}`
       }),
     },
   ],
@@ -57,14 +57,14 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'reporter',
     {
       label: 'Reporter',
-      render: (c: ViewContext) => ({
+      render: (item: Item, _c: ViewContext) => ({
         classList: 'theme-secondary-text',
         styles: {
           display: 'block',
           fontSize: '13px',
           padding: '2px 0',
         },
-        text: `Reporter: ${c.item.reporter}`
+        text: `Reporter: ${item.reporter}`
       }),
     },
   ],
@@ -74,12 +74,12 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     {
       label: 'Date Created',
 
-      render: (c: ViewContext) => {
+      render: (item: Item, _c: ViewContext) => {
         const datePipe = new DatePipe('en-us');
         return {
           classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-              text: `Created: ${datePipe.transform(c.item.created)}`,
+              text: `Created: ${datePipe.transform(item.created)}`,
         }
       },
     },
@@ -89,12 +89,12 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'updatedDate',
     {
       label: 'Date Last Updated',
-      render: (c: ViewContext) => {
+      render: (item: Item, _c: ViewContext) => {
         const datePipe = new DatePipe('en-us');
         return {
           classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-              text: `Updated: ${datePipe.transform(c.item.updated)}`,
+              text: `Updated: ${datePipe.transform(item.updated)}`,
         }
       },
     },
@@ -104,15 +104,15 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'assignees',
     {
       label: 'Assignees',
-      render: (c: ViewContext) => {
-        if (!c.item.assignees.length) {
+      render: (item: Item, _c: ViewContext) => {
+        if (!item.assignees.length) {
           return null;
         }
 
         return {
           classList: 'theme-secondary-text',
           styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-          text: `Assignees: ${c.item.assignees.join(',')}`
+          text: `Assignees: ${item.assignees.join(',')}`
         };
       }
     },
@@ -122,9 +122,9 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'suggestions',
     {
       label: 'Suggestions',
-      render: (c: ViewContext) => {
+      render: (item: Item, c: ViewContext) => {
         const allSuggestions = c.recommendations.filter(r => r.type === 'suggestion');
-        const suggestions = getRecommendations(c.item, allSuggestions, c.labelsMap);
+        const suggestions = getRecommendations(item, allSuggestions, c.labelsMap);
 
         return {
           classList: 'section theme-secondary-text',
@@ -142,9 +142,9 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'warnings',
     {
       label: 'Warnings',
-      render: (c: ViewContext) => {
+      render: (item: Item, c: ViewContext) => {
         const allWarnings = c.recommendations.filter(r => r.type === 'warning');
-        const warnings = getRecommendations(c.item, allWarnings, c.labelsMap);
+        const warnings = getRecommendations(item, allWarnings, c.labelsMap);
 
         if (!warnings.length) {
           return null;
@@ -166,8 +166,8 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     'labels',
     {
       label: 'Labels',
-      render: (c: ViewContext) => {
-        if (!c.item.labels.length) {
+      render: (item: Item, c: ViewContext) => {
+        if (!item.labels.length) {
           return null;
         }
 
@@ -189,7 +189,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
         }
 
         return {
-          styles: containerStyles, children: c.item.labels.map(id => {
+          styles: containerStyles, children: item.labels.map(id => {
             const label = c.labelsMap.get(`${id}`);
 
             if (!label) {

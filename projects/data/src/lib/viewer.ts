@@ -1,4 +1,4 @@
-import {combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 
 export interface ViewerState {
@@ -21,7 +21,7 @@ export type RenderedView = RenderedViewWithText|RenderedViewWithChildren;
 
 export interface ViewerMetadata<C> {
   label: string;
-  render: (context: C) => RenderedView | null;
+  render: (item: any, context: C) => RenderedView | null;
 }
 
 export interface ViewLabel {
@@ -37,7 +37,7 @@ export class Viewer<T = any, C = any> {
 
   constructor(
       public metadata: Map<string, ViewerMetadata<C>>,
-      private contextProvider: ViewerContextProvider<T, C>) {}
+      private contextProvider?: ViewerContextProvider<T, C>) {}
 
   getViews(): ViewLabel[] {
     const views: ViewLabel[] = [];
@@ -79,10 +79,11 @@ export class Viewer<T = any, C = any> {
   }
 
   getRenderedViews(item: T): Observable<RenderedView[]> {
-    return combineLatest(this.state, this.contextProvider).pipe(map(results => {
+    const contextProvider = this.contextProvider || of(() => null);
+    return combineLatest(this.state, contextProvider).pipe(map(results => {
       const views = results[0].views.map(v => this.metadata.get(v)!);
       const context = results[1](item);
-      return views.map(view => view.render(context));
+      return views.map(view => view.render(item, context));
     }));
   }
 }
