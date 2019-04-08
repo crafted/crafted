@@ -5,16 +5,23 @@ export interface ViewerState {
   views: string[];
 }
 
-export interface RenderedView {
-  text?: string;
+interface RenderedViewWithText {
+  text: string;
   classList?: string;
   styles?: {[key in string]: string};
-  children?: RenderedView[];
 }
+
+interface RenderedViewWithChildren {
+  children: RenderedView[];
+  classList?: string;
+  styles?: {[key in string]: string};
+}
+
+export type RenderedView = RenderedViewWithText|RenderedViewWithChildren;
 
 export interface ViewerMetadata<C> {
   label: string;
-  render: (context: C) => RenderedView;
+  render: (context: C) => RenderedView | null;
 }
 
 export interface ViewLabel {

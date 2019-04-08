@@ -7,11 +7,13 @@ import {Observable} from 'rxjs';
   template: `
     {{text}}
 
-    <item-rendered-view *ngFor="let view of childrenViews"
-                        [class]="view.classList || ''"
-                        [ngStyle]="view.styles || {}"
-                        [text]="view.text" [childrenViews]="view.children">
-    </item-rendered-view>
+    <ng-container *ngFor="let view of childrenViews">
+      <item-rendered-view *ngIf="view"
+                          [class]="view.classList || ''"
+                          [ngStyle]="view.styles || {}"
+                          [text]="view.text" [childrenViews]="view.children">
+      </item-rendered-view>
+    </ng-container>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

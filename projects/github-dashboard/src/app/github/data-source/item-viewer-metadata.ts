@@ -42,7 +42,12 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
       label: 'Title',
       render: (c: ViewContext) => ({
         classList: 'title theme-text',
-        styles: {display: 'block', marginBottom: '4px', fontSize: '15px', padding: '2px 0'},
+        styles: {
+          display: 'block',
+          marginBottom: '4px',
+          fontSize: '15px',
+          padding: '2px 0',
+        },
         text: `Title: ${c.item.title}`
       }),
     },
@@ -54,7 +59,11 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
       label: 'Reporter',
       render: (c: ViewContext) => ({
         classList: 'theme-secondary-text',
-        styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+        styles: {
+          display: 'block',
+          fontSize: '13px',
+          padding: '2px 0',
+        },
         text: `Reporter: ${c.item.reporter}`
       }),
     },
@@ -97,8 +106,9 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
       label: 'Assignees',
       render: (c: ViewContext) => {
         if (!c.item.assignees.length) {
-          return {};
+          return null;
         }
+
         return {
           classList: 'theme-secondary-text',
           styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
@@ -136,6 +146,10 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
         const allWarnings = c.recommendations.filter(r => r.type === 'warning');
         const warnings = getRecommendations(c.item, allWarnings, c.labelsMap);
 
+        if (!warnings.length) {
+          return null;
+        }
+
         return {
           classList: 'theme-warn',
               children: warnings.map(r => ({
@@ -153,35 +167,44 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<ViewContext>>([
     {
       label: 'Labels',
       render: (c: ViewContext) => {
+        if (!c.item.labels.length) {
+          return null;
+        }
+
+        const containerStyles = {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          flexWrap: 'wrap',
+          fontSize: '13px',
+          marginTop: '8px',
+          padding: '2px 0'
+        };
+
+        const labelStyles = {
+          display: 'inline-block',
+          padding: '4px 8px',
+          borderRadius: '4px',
+          marginRight: '4px',
+          marginBottom: '4px',
+        }
+
         return {
-          styles: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            flexWrap: 'wrap',
-            fontSize: '13px',
-            marginTop: '8px',
-            padding: '2px 0'
-          },
-              children: c.item.labels.map(id => {
-                const label = c.labelsMap.get(`${id}`);
+          styles: containerStyles, children: c.item.labels.map(id => {
+            const label = c.labelsMap.get(`${id}`);
 
-                if (!label) {
-                  return {text: ''};
-                }
+            if (!label) {
+              return {text: ''};
+            }
 
-                const styles = {
-                  color: getTextColor(label.color),
-                  borderColor: getBorderColor(label.color),
-                  backgroundColor: '#' + label.color,
-                  display: 'inline-block',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  marginRight: '4px',
-                  marginBottom: '4px',
-                };
+            const styles = {
+              ...labelStyles,
+              color: getTextColor(label.color),
+              borderColor: getBorderColor(label.color),
+              backgroundColor: '#' + label.color,
+            };
 
-                return {text: label.name, styles};
-              }),
+            return {text: label.name, styles};
+          }),
         }
       },
     },
