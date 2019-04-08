@@ -1,4 +1,4 @@
-export interface DocumentationData {
+export interface ExampleItem {
   id: number;
   name: string;
   color: string;
@@ -6,11 +6,11 @@ export interface DocumentationData {
   anniversary: string;
 }
 
-export const DATA: DocumentationData[] = [
+export const EXAMPLE_ITEMS: ExampleItem[] = [
   {
     'id': 1,
     'name': 'Phasianus colchicus',
-    'color': 'Khaki',
+    'color': 'Yellow',
     'age': 79,
     'anniversary': '1984-06-09T12:25:01Z'
   },
@@ -25,7 +25,7 @@ export const DATA: DocumentationData[] = [
     'id': 3,
     'name': 'Irania gutteralis',
     'color': 'Teal',
-    'age': 79,
+    'age': 14,
     'anniversary': '1985-04-18T19:16:55Z'
   },
   {

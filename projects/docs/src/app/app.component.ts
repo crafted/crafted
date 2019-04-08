@@ -1,19 +1,23 @@
 import {Component} from '@angular/core';
 import {Viewer} from '@crafted/data';
-import {DATA} from './data';
-import {DocsDataViewerMetadata} from './data-resources/view-metadata';
+
+import {EXAMPLE_ITEMS, ExampleItem} from './data';
+import {DocsDataViewerMetadata as ExampleViewerMetadata} from './data-resources/viewer-metadata';
+
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  items = DATA;
+  exampleItems = EXAMPLE_ITEMS;
 
-  viewer = new Viewer(DocsDataViewerMetadata);
+  viewer = new Viewer<ExampleItem>(ExampleViewerMetadata);
+  viewOptions = this.viewer.getViews();
 
   ngOnInit() {
     this.viewer.setState({views: this.viewer.getViews().map(v => v.id)});
   }
 }
+3

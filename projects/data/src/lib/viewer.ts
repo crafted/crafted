@@ -19,7 +19,7 @@ interface RenderedViewWithChildren {
 
 export type RenderedView = RenderedViewWithText|RenderedViewWithChildren;
 
-export interface ViewerMetadata<C> {
+export interface ViewerMetadata<C = any> {
   label: string;
   render: (item: any, context: C) => RenderedView | null;
 }

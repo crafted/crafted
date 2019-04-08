@@ -1,2 +1,10 @@
-<item-summary *ngFor="let item of items" [item]="item" [viewer]="viewer">
-</item-summary>
+<editable-chip-list [values]="(viewer.state | async)?.views"
+                    [options]="viewOptions"
+                    (valuesChange)="viewer.setState({views: $event})">
+</editable-chip-list>
+
+<div class="items">
+  <item-summary *ngFor="let item of exampleItems.slice(0, 10)" [item]="item"
+                [viewer]="viewer">
+  </item-summary>
+</div>

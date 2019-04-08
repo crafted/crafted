@@ -1,11 +1,15 @@
 import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {ItemSummaryModule} from '@crafted/components';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {EditableChipListModule, ItemSummaryModule} from '@crafted/components';
 import {AppComponent} from './app.component';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, ItemSummaryModule],
+  imports: [
+    ItemSummaryModule,
+    EditableChipListModule,
+    BrowserAnimationsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
