@@ -9,8 +9,16 @@
   flex-direction: column;
 }
 
-item-summary {
+.selectable-item {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 12px 16px;
+
+  item-summary {
+    flex: 1
+  }
 }
 
 mat-spinner {

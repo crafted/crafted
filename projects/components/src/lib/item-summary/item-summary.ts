@@ -13,8 +13,6 @@ export class ItemSummary<T, V> {
 
   @Input() item: T;
 
-  @Input() active: boolean;
-
   @Input() viewer: Viewer<T, any>;
 
   ngOnChanges(simpleChanges: SimpleChanges) {

@@ -13,10 +13,15 @@
 
     <ng-container *ngFor="let item of itemGroup.items; trackBy:trackByIndex">
       <mat-divider></mat-divider>
-      <item-summary [item]="item" [active]="activeItem === item"
-                    [viewer]="viewer" (click)="itemSelected.emit(item)"
-                    mat-ripple>
-      </item-summary>
+      <div class="selectable-item theme-hover" mat-ripple
+           [class.theme-background-hover]="activeItem === item"
+           (click)="itemSelected.emit(item)">
+        <item-summary [item]="item" [viewer]="viewer"></item-summary>
+        <div class="active"
+             [style.visibility]="activeItem === item ? 'visible' : 'hidden' ">
+          <mat-icon> keyboard_arrow_right </mat-icon>
+        </div>
+      </div>
     </ng-container>
   </div>
 </div>
