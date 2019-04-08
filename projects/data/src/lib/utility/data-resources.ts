@@ -7,7 +7,7 @@ import {Viewer, ViewerState} from '../viewer';
 export interface DataResources {
   id: string;
   label: string;
-  viewer: (initialState?: ViewerState) => Viewer<any, any, any>;
+  viewer: (initialState?: ViewerState) => Viewer;
   filterer: (initialState?: FiltererState) => Filterer;
   grouper: (initialState?: GrouperState) => Grouper;
   sorter: (initialState?: SorterState) => Sorter;

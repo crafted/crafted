@@ -45,12 +45,12 @@
 
 <!-- View Menu -->
 <mat-menu #viewingMenu="matMenu">
-  <button mat-menu-item *ngFor="let viewId of viewIds"
-          [class.selected]="(viewer.state | async).views.indexOf(viewId) !== -1"
-          (click)="viewer.toggle(viewId); $event.stopPropagation();">
+  <button mat-menu-item *ngFor="let view of views"
+          [class.selected]="(viewer.state | async).views.indexOf(view.id) !== -1"
+          (click)="viewer.toggle(view.id); $event.stopPropagation();">
     <div class="button-content">
       <mat-icon>check</mat-icon>
-      {{views.get(viewId)?.label}}
+      {{view.label}}
     </div>
   </button>
 </mat-menu>

@@ -39,7 +39,7 @@ export class QueryPage<T> {
 
   dataSource: DataSource<T>;
 
-  viewer: Viewer<T, any, any>;
+  viewer: Viewer<T, any>;
 
   set query(query: Query) {
     this._query = query;

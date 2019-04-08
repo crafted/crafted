@@ -1,12 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {
-  Grouper,
-  GrouperMetadata,
-  Sorter,
-  SortingMetadata,
-  Viewer,
-  ViewerMetadata
-} from '@crafted/data';
+import {Grouper, GrouperMetadata, Sorter, SortingMetadata, Viewer, ViewLabel} from '@crafted/data';
 import {take} from 'rxjs/operators';
 
 
@@ -16,15 +9,14 @@ import {take} from 'rxjs/operators';
   styleUrls: ['display-options-header.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DisplayOptionsHeader<G, S, V> {
+export class DisplayOptionsHeader<G, S> {
   groups: Map<G, GrouperMetadata<any, G, any>>;
   groupIds: G[] = [];
 
   sorts: Map<S, SortingMetadata<any, S, null>>;
   sortIds: S[] = [];
 
-  views: Map<V, ViewerMetadata<V, any>>;
-  viewIds: V[] = [];
+  views: ViewLabel[];
 
   @Input() hideGrouping: boolean;
 
@@ -57,17 +49,16 @@ export class DisplayOptionsHeader<G, S, V> {
   _sorter: Sorter<any, S, any>;
 
   @Input()
-  set viewer(viewer: Viewer<V, any, any>) {
+  set viewer(viewer: Viewer<any, any>) {
     this._viewer = viewer;
     if (this.viewer) {
-      this.views = this.viewer.metadata;
-      this.viewIds = this.viewer.getViews().map(value => value.id);
+      this.views = this.viewer.getViews();
     }
   }
-  get viewer(): Viewer<V, any, any> {
+  get viewer(): Viewer<any, any> {
     return this._viewer;
   }
-  _viewer: Viewer<V, any, any>;
+  _viewer: Viewer<any, any>;
 
   setGroup(group: G) {
     this.grouper.state.pipe(take(1)).subscribe(state => {
@@ -88,7 +79,7 @@ export class DisplayOptionsHeader<G, S, V> {
     });
   }
 
-  toggleViewKey(view: V) {
+  toggleViewKey(view: string) {
     this.viewer.toggle(view);
   }
 }

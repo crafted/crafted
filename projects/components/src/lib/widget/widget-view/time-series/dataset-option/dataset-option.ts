@@ -36,7 +36,7 @@ export class DatasetOption {
 
   dataSource: DataSource<any>;
 
-  actionsFormArray = this.controlContainer.control.get('actions') as FormArray;
+  actionsFormArray: FormArray;
 
   private destroyed = new Subject();
 
@@ -53,6 +53,8 @@ export class DatasetOption {
   constructor(public controlContainer: ControlContainer) {}
 
   ngOnInit() {
+    this.actionsFormArray = this.controlContainer.control.get('actions') as FormArray;
+
     this.dataResourcesMap.forEach(
         dataResource =>
             this.dataSourceTypeOptions.push({id: dataResource.id, label: dataResource.label}));
@@ -77,7 +79,6 @@ export class DatasetOption {
   }
 
   removeAction(index: number) {
-    const actionsFormArray = this.controlContainer.control!.get('actions') as FormArray;
-    actionsFormArray.removeAt(index);
+    this.actionsFormArray.removeAt(index);
   }
 }

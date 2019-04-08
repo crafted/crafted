@@ -1,8 +1,8 @@
 import {combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 
-export interface ViewerState<V = any> {
-  views: V[];
+export interface ViewerState {
+  views: string[];
 }
 
 export interface RenderedView {
@@ -18,31 +18,35 @@ export interface RenderedPart {
   styles?: {[key in string]: string};
 }
 
-export interface ViewerMetadata<V, C> {
-  id: V;
+export interface ViewerMetadata<C> {
   label: string;
   containerClassList?: string;
   containerStyles?: {[key in string]: string};
   renderParts: (context: C) => RenderedPart[];
 }
 
+export interface ViewLabel {
+  id: string;
+  label: string;
+}
+
 export type ViewerContextProvider<T, C> = Observable<(item: T) => C>;
 
 /** The viewer carries information to render the items to the view. */
-export class Viewer<T = any, V = any, C = any> {
-  state = new ReplaySubject<ViewerState<V>>(1);
+export class Viewer<T = any, C = any> {
+  state = new ReplaySubject<ViewerState>(1);
 
   constructor(
-      public metadata: Map<V, ViewerMetadata<V, C>>,
+      public metadata: Map<string, ViewerMetadata<C>>,
       private contextProvider: ViewerContextProvider<T, C>) {}
 
-  getViews(): ViewerMetadata<V, C>[] {
-    const views: ViewerMetadata<V, C>[] = [];
-    this.metadata.forEach(view => views.push(view));
+  getViews(): ViewLabel[] {
+    const views: ViewLabel[] = [];
+    this.metadata.forEach((value, view) => views.push({id: view, label: value.label}));
     return views;
   }
 
-  toggle(view: V) {
+  toggle(view: string) {
     this.state.pipe(take(1)).subscribe(state => {
       const views = state.views;
 
@@ -58,11 +62,11 @@ export class Viewer<T = any, V = any, C = any> {
     });
   }
 
-  setState(state: ViewerState<V>) {
+  setState(state: ViewerState) {
     this.state.next({...state});
   }
 
-  isEquivalent(otherState?: ViewerState<V>): Observable<boolean> {
+  isEquivalent(otherState?: ViewerState): Observable<boolean> {
     return this.state.pipe(map(state => {
       if (!otherState) {
         return false;

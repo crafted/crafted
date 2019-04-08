@@ -23,7 +23,7 @@ export class ItemSummary<T, V> {
 
   @Input() active: boolean;
 
-  @Input() viewer: Viewer<T, V, any>;
+  @Input() viewer: Viewer<T, any>;
 
   @Output() select = new EventEmitter<T>();
 

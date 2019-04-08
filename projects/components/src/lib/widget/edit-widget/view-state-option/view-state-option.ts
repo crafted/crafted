@@ -31,7 +31,7 @@ export class ViewStateOption implements ControlValueAccessor {
 
   @Input() label: string;
 
-  @Input() viewer: Viewer<any, any, any>;
+  @Input() viewer: Viewer<any, any>;
 
   @Input() placeholder: string;
 
@@ -39,12 +39,12 @@ export class ViewStateOption implements ControlValueAccessor {
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges['viewer']) {
-      this.options = this.viewer.getViews().map(v => ({id: v.id, label: v.label}));
+      this.options = this.viewer.getViews();
       this.views = this.options.map(o => o.id);
     }
   }
 
-  writeValue(value: ViewerState<any>): void {
+  writeValue(value: ViewerState): void {
     if (value) {
       this.views = value.views;
     }

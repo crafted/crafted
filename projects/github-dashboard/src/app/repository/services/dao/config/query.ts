@@ -13,5 +13,5 @@ export interface Query {
   filtererState?: FiltererState;
   grouperState?: GrouperState<any>;
   sorterState?: SorterState<any>;
-  viewerState?: ViewerState<any>;
+  viewerState?: ViewerState;
 }
