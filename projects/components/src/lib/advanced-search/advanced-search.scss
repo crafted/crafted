@@ -1,26 +1,17 @@
-.top-bar-container {
+:host {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
 
-  .top-bar {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 8px;
-  }
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  flex: 1;
 
-  .input-bar {
-    display: flex;
-    align-items: center;
-    margin-left: 16px;
-
-    button.new-filter {
-      height: 48px;
-      width: 48px;
-    }
+  button.new-filter {
+    height: 48px;
+    width: 48px;
   }
 }
 

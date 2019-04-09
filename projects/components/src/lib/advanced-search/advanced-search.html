@@ -1,52 +1,45 @@
-<div class="top-bar-container">
-  <div class="top-bar">
-    <div class="input-bar">
-      <input [formControl]="searchFormControl" placeholder="Search">
-      <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu"
-              type="button" matTooltip="Add filter" class="new-filter">
-        <mat-icon> filter_list </mat-icon>
-      </button>
+<div class="search-bar">
+  <input [formControl]="searchFormControl" placeholder="Search" class="search">
+  <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu" type="button"
+          matTooltip="Add filter" class="new-filter">
+    <mat-icon> filter_list </mat-icon>
+  </button>
+</div>
+
+<div class="filter-container" [@expand]="expandState"
+     *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
+  <ng-container *ngIf="!filter.isImplicit">
+    <div class="filter-type">
+      {{filterer.metadata.get(filter.type).label}}:
     </div>
 
-    <div class="details">
-      <div class="filter-container" [@expand]="expandState"
-           *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
-        <ng-container *ngIf="!filter.isImplicit">
-          <div class="filter-type">
-            {{filterer.metadata.get(filter.type).label}}:
-          </div>
+    <ng-container [ngSwitch]="filterer.metadata.get(filter.type).queryType">
+      <input-query-form *ngSwitchCase="'input'" [query]="filter.query"
+                        [options]="autocomplete.get(filter.type) | async"
+                        [focusInput]="focusInput"
+                        (queryChange)="queryChange(index, $event)">
+      </input-query-form>
 
-          <ng-container
-                        [ngSwitch]="filterer.metadata.get(filter.type).queryType">
-            <input-query-form *ngSwitchCase="'input'" [query]="filter.query"
-                              [options]="autocomplete.get(filter.type) | async"
-                              [focusInput]="focusInput"
-                              (queryChange)="queryChange(index, $event)">
-            </input-query-form>
+      <number-query-form *ngSwitchCase="'number'" [query]="filter.query"
+                         [focusInput]="focusInput"
+                         (queryChange)="queryChange(index, $event)">
+      </number-query-form>
 
-            <number-query-form *ngSwitchCase="'number'" [query]="filter.query"
-                               [focusInput]="focusInput"
-                               (queryChange)="queryChange(index, $event)">
-            </number-query-form>
+      <date-query-form *ngSwitchCase="'date'" [query]="filter.query"
+                       (queryChange)="queryChange(index, $event)">
+      </date-query-form>
 
-            <date-query-form *ngSwitchCase="'date'" [query]="filter.query"
-                             (queryChange)="queryChange(index, $event)">
-            </date-query-form>
+      <state-query-form *ngSwitchCase="'state'" [query]="filter.query"
+                        [states]="filterer.metadata.get(filter.type).queryTypeData.states"
+                        (queryChange)="queryChange(index, $event)">
+      </state-query-form>
+    </ng-container>
 
-            <state-query-form *ngSwitchCase="'state'" [query]="filter.query"
-                              [states]="filterer.metadata.get(filter.type).queryTypeData.states"
-                              (queryChange)="queryChange(index, $event)">
-            </state-query-form>
-          </ng-container>
-
-          <button mat-icon-button class="remove-filter" type="button"
-                  (click)="removeFilter(filter)">
-            <mat-icon> close </mat-icon>
-          </button>
-        </ng-container>
-      </div>
-    </div>
-  </div>
+    <button mat-icon-button class="remove-filter" type="button"
+            (click)="removeFilter(filter)">
+      <mat-icon> close </mat-icon>
+    </button>
+  </ng-container>
 </div>
 
 <!-- Filter Types Menu -->

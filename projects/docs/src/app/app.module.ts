@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {MatDividerModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AdvancedSearchModule, EditableChipListModule, ItemSummaryModule} from '@crafted/components';
@@ -10,6 +11,7 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
   declarations: [AppComponent, DemoItemsSummary, DemoAdvancedSearch],
   imports: [
     ItemSummaryModule,
+    MatDividerModule,
     AdvancedSearchModule,
     EditableChipListModule,
     BrowserAnimationsModule,

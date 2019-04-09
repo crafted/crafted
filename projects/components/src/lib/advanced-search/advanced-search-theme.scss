@@ -2,10 +2,7 @@
   $foreground: map-get($theme, foreground);
 
   advanced-search {
-    .top-bar {
-      border-color: mat-color($foreground, divider);
-    }
-    .input-bar input {
+    input.search {
       border-color: mat-color($foreground, divider);
     }
     .menu-title {
