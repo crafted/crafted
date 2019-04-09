@@ -18,11 +18,4 @@ export class DemoAdvancedSearch {
   filterer = new Filterer(DocsDataFiltererMetadata);
 
   exampleItems = this.dataSource.data.pipe(this.filterer.filter());
-
-  constructor() {
-    this.exampleItems.subscribe(items => {
-      console.log(items);
-      // debugger;
-    })
-  }
 }
