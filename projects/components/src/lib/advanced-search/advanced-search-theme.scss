@@ -1,0 +1,15 @@
+@mixin advanced-search-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  advanced-search {
+    .top-bar {
+      border-color: mat-color($foreground, divider);
+    }
+    .input-bar input {
+      border-color: mat-color($foreground, divider);
+    }
+    .menu-title {
+      color: mat-color($foreground, text);
+    }
+  }
+}

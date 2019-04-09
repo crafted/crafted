@@ -1,8 +1,7 @@
 <div class="top-bar-container">
-  <div class="top-bar theme-border">
+  <div class="top-bar">
     <div class="input-bar">
-      <input [formControl]="searchFormControl" class="theme-border"
-             placeholder="Search">
+      <input [formControl]="searchFormControl" placeholder="Search">
       <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu"
               type="button" matTooltip="Add filter" class="new-filter">
         <mat-icon> filter_list </mat-icon>
@@ -52,7 +51,7 @@
 
 <!-- Filter Types Menu -->
 <mat-menu #filterTypesMenu="matMenu" xPosition="before" class="filter-menu">
-  <div class="menu-title theme-text">Filter by:</div>
+  <div class="menu-title">Filter by:</div>
   <mat-divider></mat-divider>
   <button mat-menu-item *ngFor="let filterType of displayedFilterTypes"
           (click)="addFilter(filterType)">

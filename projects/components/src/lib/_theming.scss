@@ -1,5 +1,7 @@
 @import 'editable-chip-list/editable-chip-list-theme.scss';
+@import 'advanced-search/advanced-search-theme.scss';
 
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);
+  @include advanced-search-theme($theme);
 }
