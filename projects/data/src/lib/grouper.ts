@@ -1,4 +1,4 @@
-import {combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 
 export interface GrouperState<G = any> {
@@ -21,11 +21,15 @@ export interface GrouperMetadata<T, G, C> {
 export type GrouperContextProvider<C> = Observable<C>;
 
 export class Grouper<T = any, G = any, C = any> {
-  state = new ReplaySubject<GrouperState<G>>(1);
+  state = new BehaviorSubject<GrouperState<G>>({group: this.getGroups()[0].id});
 
   constructor(
       public metadata: Map<G, GrouperMetadata<T, G, C>>,
-      private contextProvider: GrouperContextProvider<C>) {}
+      private contextProvider?: GrouperContextProvider<C>, initialState?: GrouperState<G>) {
+    if (initialState) {
+      this.state.next(initialState);
+    }
+  }
 
   group(): (items: Observable<T[]>) => Observable<Group<T>[]> {
     let config: GrouperMetadata<T, G, C>|null;
@@ -50,7 +54,8 @@ export class Grouper<T = any, G = any, C = any> {
               mergeMap(itemGroups => {
                 const titleTransform = config!.titleTransform || ((title: string) => title);
 
-                return this.contextProvider.pipe(map(context => {
+                const contextProvider = this.contextProvider || of(null);
+                return contextProvider.pipe(map(context => {
                   itemGroups.forEach(itemGroup => {
                     itemGroup.title = titleTransform(itemGroup.title, context);
                   });

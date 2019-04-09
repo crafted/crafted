@@ -4,9 +4,8 @@ import {Item} from '../app-types/item';
 
 export function getSorterProvider() {
   return (initialState?: SorterState) => {
-    const sorter = new Sorter(GithubItemSortingMetadata, of(null));
-    sorter.setState(initialState || {sort: 'created', reverse: true});
-    return sorter;
+    return new Sorter(
+        GithubItemSortingMetadata, of(null), initialState || {sort: 'created', reverse: true});
   };
 }
 

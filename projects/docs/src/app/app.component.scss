@@ -1,18 +1,21 @@
-editable-chip-list {
-  display: block;
-  margin: 16px;
-}
+:host {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;}
 
-.items {
+.sidenav {
   display: flex;
   flex-direction: column;
+  margin: 16px;
+  overflow: auto;
 }
 
-item-summary {
-  display: inline-flex;
-  flex-direction: column;
-  padding: 16px;
-  border: 1px solid #CCC;
-  border-radius: 8px;
+.content {
   margin: 16px;
+  flex: 1;
+  overflow: auto;
 }

@@ -1,0 +1,13 @@
+.items {
+  display: flex;
+  flex-direction: column;
+}
+
+item-summary {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid #CCC;
+  border-radius: 8px;
+  margin: 16px;
+}

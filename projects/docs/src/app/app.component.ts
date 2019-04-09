@@ -20,4 +20,3 @@ export class AppComponent {
     this.viewer.setState({views: this.viewer.getViews().map(v => v.id)});
   }
 }
-3

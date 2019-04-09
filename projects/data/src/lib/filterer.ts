@@ -1,4 +1,4 @@
-import {combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Query} from './query';
 
@@ -8,7 +8,7 @@ export interface Filter {
   isImplicit?: boolean;
 }
 
-export interface FiltererMetadata<T, M> {
+export interface FiltererMetadata<T = any, M = any> {
   label?: string;
   queryType?: string;
   queryTypeData?: any;
@@ -24,7 +24,7 @@ export interface FiltererState {
 export type FiltererContextProvider<M> = Observable<M>;
 
 export class Filterer<T = any, M = any> {
-  state = new ReplaySubject<FiltererState>(1);
+  state = new BehaviorSubject<FiltererState>({filters: [], search: ''});
 
   /** Default and naive tokenize function that combines the item's property values into a string. */
   tokenizeItem =
@@ -38,17 +38,19 @@ export class Filterer<T = any, M = any> {
             .toLowerCase();
       }
 
-  // TODO: Needs to be noted somewhere that the context provider should not have a dependency that
-  // listens for the data given by the provider, else the context will fire simultaneously with the
-  // data provider and way too many events will emit
   constructor(
-      public metadata: Map<string, FiltererMetadata<T, M>>,
-      private contextProvider: Observable<M>) {}
+      public metadata: Map<string, FiltererMetadata<T, M>>, private contextProvider?: Observable<M>,
+      initialState?: FiltererState) {
+    if (initialState) {
+      this.state.next(initialState);
+    }
+  }
 
   /** Gets a stream that returns the items and updates whenever the filters or search changes. */
   filter(): (items: Observable<T[]>) => Observable<T[]> {
     return (items: Observable<T[]>) => {
-      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
+      const contextProvider = this.contextProvider || of(() => null);
+      return combineLatest(items, this.state, contextProvider).pipe(map(results => {
         const items = results[0];
         const filters = results[1].filters;
         const search = results[1].search;

@@ -13,10 +13,8 @@ export function getViewerProvider(
     labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):
     (initialState?: ViewerState) => Viewer<Item, ViewContext> {
   return (initialState?: ViewerState) => {
-    const contextProvider = createContextProvider(labels, recommendations);
-    const viewer = new Viewer(GithubItemViewerMetadata, contextProvider);
-    viewer.setState(initialState || {views: viewer.getViews().map(v => v.id)});
-    return viewer;
+    return new Viewer(
+        GithubItemViewerMetadata, createContextProvider(labels, recommendations), initialState);
   };
 }
 

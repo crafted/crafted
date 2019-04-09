@@ -11,7 +11,7 @@
 
     <div class="details">
       <div class="filter-container" [@expand]="expandState"
-           *ngFor="let filter of (filterer.state | async).filters; let index = index; trackBy: trackByIndex">
+           *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
         <ng-container *ngIf="!filter.isImplicit">
           <div class="filter-type">
             {{filterer.metadata.get(filter.type).label}}:

@@ -1,4 +1,4 @@
-import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 
 export interface ViewerState {
@@ -33,11 +33,15 @@ export type ViewerContextProvider<T, C> = Observable<(item: T) => C>;
 
 /** The viewer carries information to render the items to the view. */
 export class Viewer<T = any, C = any> {
-  state = new ReplaySubject<ViewerState>(1);
+  state = new BehaviorSubject<ViewerState>({views: this.getViews().map(v => v.id)});
 
   constructor(
       public metadata: Map<string, ViewerMetadata<C>>,
-      private contextProvider?: ViewerContextProvider<T, C>) {}
+      private contextProvider?: ViewerContextProvider<T, C>, initialState?: ViewerState) {
+    if (initialState) {
+      this.state.next(initialState);
+    }
+  }
 
   getViews(): ViewLabel[] {
     const views: ViewLabel[] = [];

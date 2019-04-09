@@ -30,8 +30,7 @@ export function getFiltererProvider(
   return (initialState?: FiltererState) => {
     const filterer = new Filterer(
         ItemsFilterMetadata,
-        createFiltererContextProvider(labels, recommendations, getRecommendations));
-    filterer.setState(initialState || {filters: [], search: ''});
+        createFiltererContextProvider(labels, recommendations, getRecommendations), initialState);
     filterer.tokenizeItem = tokenizeItem;
     return filterer;
   };
