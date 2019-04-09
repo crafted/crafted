@@ -8,7 +8,6 @@
 .search-bar {
   display: flex;
   align-items: center;
-  margin-left: 16px;
   flex: 1;
 
   button.new-filter {
@@ -25,7 +24,7 @@ input {
   width: 100%;
   color: inherit;
   background: transparent;
-  font-size: 18px;
+  font-size: 15px;
   padding-bottom: 4px;
   padding-left: 0;
   margin-top: 5px; // Balance the bottom padding and border
@@ -41,8 +40,8 @@ input {
 }
 
 .filter-type {
-  padding: 0 8px 0 16px;
-  font-size: 14px;
+  padding-right: 8px;
+  font-size: 15px;
   display: flex;
   line-height: 48px;
 }

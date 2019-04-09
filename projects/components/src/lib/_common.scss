@@ -23,3 +23,9 @@ $mobile-width: 700px;
     }
   }
 }
+
+@mixin slim-option {
+  font-size: 15px;
+  height: 40px;
+  line-height: 40px;
+}
