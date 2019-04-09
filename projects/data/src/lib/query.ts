@@ -1,7 +1,7 @@
-export type InputEquality = 'contains' | 'is' | 'notContains' | 'notIs';
-export type NumberEquality = 'greaterThan' | 'lessThan' | 'equalTo';
-export type DateEquality = 'before' | 'after' | 'on';
-export type StateEquality = 'is' | 'notIs';
+export type InputEquality = 'contains'|'is'|'notContains'|'notIs';
+export type NumberEquality = 'greaterThan'|'lessThan'|'equalTo';
+export type DateEquality = 'before'|'after'|'on';
+export type StateEquality = 'is'|'notIs';
 
 export interface InputQuery {
   input: string;
@@ -23,4 +23,6 @@ export interface StateQuery {
   equality: StateEquality;
 }
 
-export type Query = InputQuery | NumberQuery | DateQuery | StateQuery;
+export type Query = InputQuery|NumberQuery|DateQuery|StateQuery;
+
+export type QueryType = 'input'|'number'|'date'|'state';

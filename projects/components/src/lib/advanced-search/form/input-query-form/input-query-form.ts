@@ -28,7 +28,7 @@ export class InputQueryForm implements AfterViewInit, OnChanges {
     {id: 'notIs', label: 'is not'},
   ];
   form = new FormGroup({
-    equality: new FormControl('contains'),
+    equality: new FormControl(''),
     input: new FormControl(''),
   });
   destroyed = new Subject();
@@ -61,10 +61,6 @@ export class InputQueryForm implements AfterViewInit, OnChanges {
 
       return options.filter(o => o.toLowerCase().includes(input.toLowerCase())).sort();
     }));
-  }
-
-  ngOnInit() {
-    this.queryChange.next(this.form.value);
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {

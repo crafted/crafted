@@ -47,8 +47,8 @@
           class="advanced-search-filter-menu">
   <div class="menu-title">Filter by:</div>
   <mat-divider></mat-divider>
-  <button mat-menu-item *ngFor="let filterType of displayedFilterTypes"
-          (click)="addFilter(filterType)">
-    {{filterer.metadata.get(filterType).label}}
+  <button mat-menu-item *ngFor="let filterOption of displayedFilterOptions"
+          (click)="addFilter(filterOption.id)">
+    {{filterOption.label}}
   </button>
 </mat-menu>

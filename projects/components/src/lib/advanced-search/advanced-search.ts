@@ -8,7 +8,7 @@ import {
   OnInit
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataSource, Filter, Filterer, Query} from '@crafted/data';
+import {DataSource, Filter, Filterer, FilterOption, Query} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
 
@@ -49,7 +49,7 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
   expandState = false;
 
-  displayedFilterTypes: string[];
+  displayedFilterOptions: FilterOption[];
 
   trackByIndex = (i: number) => i;
 
@@ -81,13 +81,8 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
           });
         });
 
-    this.displayedFilterTypes = Array.from(metadata.keys())
-                                    .filter(key => metadata.get(key) && metadata.get(key)!.label)
-                                    .sort((a, b) => {
-                                      const nameA = metadata.get(a)!.label || '';
-                                      const nameB = metadata.get(b)!.label || '';
-                                      return nameA < nameB ? -1 : 1;
-                                    });
+    this.displayedFilterOptions =
+        this.filterer.getFilterOptions().sort((a, b) => a.label < b.label ? -1 : 1);
   }
 
   ngAfterViewInit() {
@@ -99,26 +94,13 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  addFilter(type: string) {
-    this.filterer.state.pipe(take(1)).subscribe(state => {
-      this.focusInput = true;
-      const filters = state.filters.slice();
-      filters.push({type});
-
-      this.filterer.setState({...state, filters});
-    });
+  addFilter(filterId: string) {
+    this.focusInput = true;
+    this.filterer.add(filterId);
   }
 
   removeFilter(filter: Filter) {
-    this.filterer.state.pipe(take(1)).subscribe(state => {
-      const filters = state.filters.slice();
-      const index = state.filters.indexOf(filter);
-
-      if (index !== -1) {
-        filters.splice(index, 1);
-        this.filterer.setState({...state, filters});
-      }
-    });
+    this.filterer.remove(filter);
   }
 
   queryChange(index: number, query: Query) {

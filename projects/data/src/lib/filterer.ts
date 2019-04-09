@@ -1,6 +1,6 @@
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Query} from './query';
+import {map, take} from 'rxjs/operators';
+import {Query, QueryType} from './query';
 
 export interface Filter {
   type: string;
@@ -10,7 +10,7 @@ export interface Filter {
 
 export interface FiltererMetadata<T = any, M = any> {
   label?: string;
-  queryType?: string;
+  queryType?: QueryType;
   queryTypeData?: any;
   matcher?: (item: T, q: Query, c: M) => boolean;
   autocomplete?: (items: T[], c: M) => string[];
@@ -21,10 +21,23 @@ export interface FiltererState {
   search: string;
 }
 
+export interface FilterOption {
+  id: string;
+  label: string;
+}
+
 export type FiltererContextProvider<M> = Observable<M>;
 
 export class Filterer<T = any, M = any> {
   state = new BehaviorSubject<FiltererState>({filters: [], search: ''});
+
+  /** Default query values to use when a new filter is added without an initial Query. */
+  defaultQueries: {[key in QueryType]: Query} = {
+    date: {date: '', equality: 'before'},
+    input: {input: '', equality: 'contains'},
+    number: {value: 0, equality: 'greaterThan'},
+    state: {state: '', equality: 'is'}
+  };
 
   /** Default and naive tokenize function that combines the item's property values into a string. */
   tokenizeItem =
@@ -90,6 +103,39 @@ export class Filterer<T = any, M = any> {
 
       return filtersEquivalent && searchEquivalent;
     }));
+  }
+
+  getFilterOptions(): FilterOption[] {
+    const filterOptions: FilterOption[] = [];
+    this.metadata.forEach((value, key) => {
+      if (value.label) {
+        filterOptions.push({id: key, label: value.label});
+      }
+    });
+    return filterOptions;
+  }
+
+  add(type: string) {
+    this.state.pipe(take(1)).subscribe(state => {
+      const queryType = this.metadata.get(type).queryType;
+      const query = this.defaultQueries[queryType];
+
+      const filters = state.filters.slice();
+      filters.push({type, query});
+      this.setState({...state, filters});
+    });
+  }
+
+  remove(filter: Filter) {
+    this.state.pipe(take(1)).subscribe(state => {
+      const filters = state.filters.slice();
+      const index = state.filters.indexOf(filter);
+
+      if (index !== -1) {
+        filters.splice(index, 1);
+        this.setState({...state, filters});
+      }
+    });
   }
 }
 
