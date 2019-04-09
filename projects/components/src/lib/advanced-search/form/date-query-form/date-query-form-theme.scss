@@ -1,0 +1,12 @@
+@mixin date-query-form-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  date-query-form {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+    input.date-query {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

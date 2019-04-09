@@ -1,7 +1,15 @@
-@import 'editable-chip-list/editable-chip-list-theme.scss';
-@import 'advanced-search/advanced-search-theme.scss';
+@import 'editable-chip-list/editable-chip-list-theme';
+@import 'advanced-search/advanced-search-theme';
+@import 'advanced-search/form/date-query-form/date-query-form-theme';
+@import 'advanced-search/form/input-query-form/input-query-form-theme';
+@import 'advanced-search/form/number-query-form/number-query-form-theme';
+@import 'advanced-search/form/state-query-form/state-query-form-theme';
 
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);
   @include advanced-search-theme($theme);
+  @include date-query-form-theme($theme);
+  @include input-query-form-theme($theme);
+  @include number-query-form-theme($theme);
+  @include state-query-form-theme($theme);
 }

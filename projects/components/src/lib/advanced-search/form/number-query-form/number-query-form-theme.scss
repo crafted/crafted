@@ -1,0 +1,12 @@
+@mixin number-query-form-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  number-query-form {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+    input.number-query {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

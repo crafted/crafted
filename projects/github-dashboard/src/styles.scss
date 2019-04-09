@@ -55,21 +55,6 @@ body {
 
 button.mat-menu-item {
   font-size: 14px;
-  height: 32px;
-  line-height: 32px;
-
-  @media (max-width: $mobile-width - 1) {
-    height: 40px;
-    line-height: 40px;
-  }
-
-  @media (min-width: $mobile-width) {
-    mat-icon {
-      font-size: 18px;
-      height: 18px;
-      width: 18px;
-    }
-  }
 }
 
 

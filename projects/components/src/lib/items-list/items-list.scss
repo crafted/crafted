@@ -33,8 +33,10 @@ mat-spinner {
 
 advanced-search {
   display: block;
-  margin: 16px 16px 0 16px;
   margin: 8px 8px 0 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 8px;
 }
 
 .item-group {

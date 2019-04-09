@@ -5,6 +5,9 @@
     input.search {
       border-color: mat-color($foreground, divider);
     }
+  }
+
+  .advanced-search-filter-menu {
     .menu-title {
       color: mat-color($foreground, text);
     }

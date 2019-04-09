@@ -1,3 +1,5 @@
+@import '../common';
+
 :host {
   width: 100%;
   max-width: 650px;
@@ -45,4 +47,8 @@ button.mat-menu-item {
       visibility: visible;
     }
   }
+}
+
+.mat-menu-item {
+  @include slim-menu-item();
 }

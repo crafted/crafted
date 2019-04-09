@@ -1,9 +1,9 @@
 <ng-container [formGroup]="form">
-  <mat-select formControlName="equality" class="theme-border">
+  <mat-select formControlName="equality">
     <mat-option *ngFor="let e of equalities" [value]="e.id">
       {{e.label}}
     </mat-option>
   </mat-select>
 
-  <input type="number" formControlName="value" class="theme-border">
+  <input type="number" formControlName="value" class="number-query">
 </ng-container>

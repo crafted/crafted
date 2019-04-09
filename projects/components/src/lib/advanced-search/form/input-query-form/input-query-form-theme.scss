@@ -1,0 +1,12 @@
+@mixin input-query-form-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  input-query-form {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+    input.input-query {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}
