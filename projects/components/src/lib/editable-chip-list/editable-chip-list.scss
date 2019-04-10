@@ -1,3 +1,5 @@
+@import '../common';
+
 .chip, .chip-add {
   display: inline-flex;
   align-items: center;
@@ -27,4 +29,8 @@ button.remove, button.add {
 
 ::ng-deep .option-menu {
   max-height: 500px;
+}
+
+.mat-menu-item {
+  @include slim-menu-item();
 }

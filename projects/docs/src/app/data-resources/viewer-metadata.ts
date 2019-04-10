@@ -8,7 +8,7 @@ export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>
     {
       label: 'Title',
       render: item => ({
-        styles: {fontWeight: 'bold'},
+        styles: {fontWeight: 'bold', display: 'block'},
         text: `${item.name} (#${item.id})`,
       }),
     },
@@ -18,6 +18,7 @@ export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>
     {
       label: 'Color',
       render: item => ({
+        styles: {display: 'block'},
         text: `Favorite color: ${item.color}`,
       }),
     },
@@ -27,6 +28,7 @@ export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>
     {
       label: 'Age',
       render: item => ({
+        styles: {display: 'block'},
         text: `${item.age} years old`,
       }),
     },
@@ -38,6 +40,7 @@ export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>
       render: item => {
         const datePipe = new DatePipe('en-us');
         return {
+          styles: {display: 'block'},
           text: `Aniversary ${datePipe.transform(item.anniversary)}`,
         };
       },

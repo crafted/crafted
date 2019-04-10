@@ -31,6 +31,7 @@ const GithubItemGroupingMetadata = new Map<string, GrouperMetadata<Item, Context
     'all', {
       label: 'All',
       groupingFunction: (items: Item[]) => [{id: 'all', title: 'All', items}],
+      titleTransform: () => ''
     }
   ],
   [

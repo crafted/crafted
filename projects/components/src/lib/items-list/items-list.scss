@@ -3,18 +3,11 @@
   flex: 1;
 }
 
-.issues-container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
 .selectable-item {
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 14px;
-  padding: 12px 16px;
+  padding: 12px 24px;
 
   item-summary {
     flex: 1
@@ -41,15 +34,11 @@ advanced-search {
 }
 
 .item-group {
-  width: 100%;
-  max-width: 650px;
-  font-size: 14px;
-  display: inline-block;
   margin-bottom: 32px;
 
   .title {
     font-size: 18px;
-    padding: 16px;
+    padding: 8px 24px;
   }
 }
 

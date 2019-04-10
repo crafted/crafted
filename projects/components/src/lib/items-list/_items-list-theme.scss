@@ -1,0 +1,18 @@
+@mixin items-list-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  items-list {
+    advanced-search {
+      border-color: mat-color($foreground, divider);
+    }
+
+    .item-count {
+      color: mat-color($foreground, secondary-text);
+    }
+
+    .selectable-item:hover, .selectable-item-active {
+      background: mat-color($background, hover);
+    }
+  }
+}
