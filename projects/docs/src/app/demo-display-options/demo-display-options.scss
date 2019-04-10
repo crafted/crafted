@@ -1,11 +1,8 @@
 item-summary {
-  display: inline-flex;
-  flex-direction: column;
-  padding: 16px;
-  margin: 16px 16px 0 0;
-  border: 1px solid #CCC;
-  border-radius: 8px;
+  display: block;
+  padding: 16px 0;
 }
+
 
 .item-group-title {
   font-size: 24px;
