@@ -4,12 +4,12 @@ import {take} from 'rxjs/operators';
 
 
 @Component({
-  selector: 'display-options-header',
-  templateUrl: 'display-options-header.html',
-  styleUrls: ['display-options-header.scss'],
+  selector: 'display-options',
+  templateUrl: 'display-options.html',
+  styleUrls: ['display-options.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DisplayOptionsHeader<G, S> {
+export class DisplayOptions<G, S> {
   groups: Map<G, GrouperMetadata<any, G, any>>;
   groupIds: G[] = [];
 

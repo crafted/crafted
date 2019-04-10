@@ -7,7 +7,7 @@ import {
   MatRippleModule
 } from '@angular/material';
 import {AdvancedSearchModule} from '../advanced-search/advanced-search.module';
-import {DisplayOptionsHeaderModule} from '../display-options-header/display-options-header.module';
+import {DisplayOptionsModule} from '../display-options/display-options.module';
 import {ItemSummaryModule} from '../item-summary/item-summary.module';
 import {ItemsList} from './items-list';
 
@@ -20,7 +20,7 @@ import {ItemsList} from './items-list';
     MatRippleModule,
     MatIconModule,
     ItemSummaryModule,
-    DisplayOptionsHeaderModule,
+    DisplayOptionsModule,
     AdvancedSearchModule,
   ],
   declarations: [ItemsList],
