@@ -1,9 +1,19 @@
 <advanced-search [filterer]="filterer" [dataSource]="dataSource"
                  class="theme-border">
 </advanced-search>
-<display-options-header [grouper]="grouper" [sorter]="sorter" [viewer]="viewer"
-                        [itemCount]="itemCount | async">
-</display-options-header>
+<div class="options">
+  <div class="item-count theme-secondary-text"
+       *ngIf="itemCount | async; let count">
+    <ng-container *ngIf="count !== undefined && count !== null">
+      {{count}} Results
+    </ng-container>
+  </div>
+  <div class="item-count">
+  </div>
+  <display-options-header [grouper]="grouper" [sorter]="sorter"
+                          [viewer]="viewer">
+  </display-options-header>
+</div>
 
 <div class="issues-container">
   <div class="item-group"

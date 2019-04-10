@@ -52,3 +52,14 @@ advanced-search {
     padding: 16px;
   }
 }
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+
+  .item-count {
+    padding-left: 8px;
+  }
+}

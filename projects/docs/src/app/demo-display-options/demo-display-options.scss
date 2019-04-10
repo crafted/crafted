@@ -1,0 +1,10 @@
+.items {
+  display: flex;
+  flex-direction: column;
+}
+
+item-summary {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 16px 0;
+}

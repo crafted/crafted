@@ -1,23 +1,5 @@
 @import '../common';
 
-:host {
-  width: 100%;
-  max-width: 650px;
-  display: block;
-  margin: auto;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 8px 16px;
-}
-
-.length {
-  padding-left: 8px;
-}
-
 button.mat-button {
   min-width: 0;
   display: block;

@@ -1,20 +1,18 @@
-<div class="buttons">
-  <div class="length theme-secondary-text">
-    <ng-container *ngIf="itemCount !== undefined && itemCount !== null">
-      {{itemCount}} results
-    </ng-container>
-  </div>
-  <button mat-button [mat-menu-trigger-for]="rootMenu">
-    <div class="options-menu-trigger"> Display Options </div>
-  </button>
-</div>
+<button mat-button [mat-menu-trigger-for]="rootMenu">
+  <div class="options-menu-trigger"> Display Options </div>
+</button>
 
 <mat-menu #rootMenu="matMenu">
   <button mat-menu-item *ngIf="!hideGrouping"
-          [matMenuTriggerFor]="groupingMenu">Group
-    By</button>
-  <button mat-menu-item [matMenuTriggerFor]="sortingMenu">Sort By</button>
-  <button mat-menu-item [matMenuTriggerFor]="viewingMenu">View</button>
+          [matMenuTriggerFor]="groupingMenu">
+    Group By
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="sortingMenu">
+    Sort By
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="viewingMenu">
+    View
+  </button>
 </mat-menu>
 
 <!-- Group Menu -->
