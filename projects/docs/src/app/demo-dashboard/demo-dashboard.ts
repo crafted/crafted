@@ -1,18 +1,16 @@
 import {Component} from '@angular/core';
-import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {
+  Dashboard,
   getCountWidgetConfig,
   getListWidgetConfig,
   getPieChartWidgetConfig,
   getTimeSeriesWidgetConfig,
   WidgetConfig
-} from 'dist/components/lib/widget';
-import {Item} from 'projects/github-dashboard/src/app/github/app-types/item';
-import {
-  ItemDetailDialog
-} from
-    'projects/github-dashboard/src/app/repository/shared/dialog/item-detail-dialog/item-detail-dialog';
+} from '@crafted/components';
+import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
+import {of} from 'rxjs';
 import {EXAMPLE_ITEMS} from '../data';
+import {ExampleDataSourceMetadata} from '../data-resources/data-source-metadata';
 import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
 import {ExampleGrouperMetadata} from '../data-resources/grouper-metadata';
 import {ExampleSorterMetadata} from '../data-resources/sorter-metadata';
@@ -20,36 +18,47 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
 
 
 @Component({
-  selector: 'demo-advanced-search',
-  templateUrl: 'demo-advanced-search.html',
-  styleUrls: ['demo-advanced-search.scss'],
+  selector: 'demo-dashboard',
+  templateUrl: 'demo-dashboard.html',
+  styleUrls: ['demo-dashboard.scss'],
 })
-export class DemoAdvancedSearch {
+export class DemoDashboard {
   edit = true;
+
+  dashboard: Dashboard = {
+    name: 'New Dashboard',
+    columnGroups: [{
+      columns: [
+        {widgets: []},
+        {widgets: []},
+        {widgets: []},
+      ]
+    }]
+  };
+
+  setDashboard(dashboard: Dashboard) {
+    this.dashboard = dashboard;
+    console.log(dashboard);
+  }
 
   dataResourcesMap = new Map<string, DataResources>([
     [
       'issue', {
         id: 'issue',
         label: 'Issues',
-        dataSource: () => new DataSource(EXAMPLE_ITEMS),
-        viewer: () => new Viewer(ExampleViewerMetadata),
-        filterer: () => new Filterer(ExampleFiltererMetadata),
-        grouper: () => new Grouper(ExampleGrouperMetadata),
-        sorter: () => new Sorter(ExampleSorterMetadata),
+        dataSource: () => new DataSource(EXAMPLE_ITEMS, ExampleDataSourceMetadata),
+        viewer: state => new Viewer(ExampleViewerMetadata, of(() => null), state),
+        filterer: state => new Filterer(ExampleFiltererMetadata, of(null), state),
+        grouper: state => new Grouper(ExampleGrouperMetadata, of(null), state),
+        sorter: state => new Sorter(ExampleSorterMetadata, of(null), state),
       }
     ],
   ]);
 
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
-    count: getCountWidgetConfig(this.dataResourcesMap, []),
-    list: getListWidgetConfig(
-        this.dataResourcesMap,
-        (item: Item) => {
-          this.dialog.open(ItemDetailDialog, {data: {itemId: item.id}, width: '80vw'});
-        },
-        []),
-    pie: getPieChartWidgetConfig(this.dataResourcesMap, []),
-    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, []),
+    count: getCountWidgetConfig(this.dataResourcesMap),
+    list: getListWidgetConfig(this.dataResourcesMap),
+    pie: getPieChartWidgetConfig(this.dataResourcesMap),
+    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap),
   };
 }

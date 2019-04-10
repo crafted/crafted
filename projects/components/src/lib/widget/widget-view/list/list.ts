@@ -8,7 +8,7 @@ import {
   Viewer,
   ViewerState
 } from '@crafted/data';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
@@ -32,8 +32,9 @@ export interface ListWidgetDataConfig {
 }
 
 export function getListWidgetConfig(
-    dataResourcesMap: ListDataResourcesMap, onSelect: (item: any) => void,
-    savedFiltererStates: Observable<SavedFiltererState[]>): WidgetConfig<ListWidgetDataConfig> {
+    dataResourcesMap: ListDataResourcesMap, onSelect: (item: any) => void = () => null,
+    savedFiltererStates: Observable<SavedFiltererState[]> =
+        of([])): WidgetConfig<ListWidgetDataConfig> {
   return {
     id: 'list',
     label: 'List',

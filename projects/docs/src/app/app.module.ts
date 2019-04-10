@@ -4,13 +4,19 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {
   AdvancedSearchModule,
+  CountModule,
+  DashboardViewModule,
   DisplayOptionsModule,
   EditableChipListModule,
-  ItemSummaryModule
+  ItemsListModule,
+  ItemSummaryModule,
+  ListModule,
+  PieChartModule,
+  TimeSeriesModule
 } from '@crafted/components';
-import {ItemsListModule} from 'projects/components/src/public-api';
 import {AppComponent} from './app.component';
 import {DemoAdvancedSearch} from './demo-advanced-search/demo-advanced-search';
+import {DemoDashboard} from './demo-dashboard/demo-dashboard';
 import {DemoDisplayOptions} from './demo-display-options/demo-display-options';
 import {DemoItemsList} from './demo-items-list/demo-items-list';
 import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
@@ -22,6 +28,7 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
     DemoAdvancedSearch,
     DemoDisplayOptions,
     DemoItemsList,
+    DemoDashboard,
   ],
   imports: [
     ItemSummaryModule,
@@ -29,13 +36,19 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
     MatDividerModule,
     AdvancedSearchModule,
     EditableChipListModule,
+    DashboardViewModule,
     DisplayOptionsModule,
     BrowserAnimationsModule,
+    PieChartModule,
+    ListModule,
+    CountModule,
+    TimeSeriesModule,
     RouterModule.forRoot([
       {path: 'demo-items-summary', component: DemoItemsSummary},
       {path: 'demo-advanced-search', component: DemoAdvancedSearch},
       {path: 'demo-display-options', component: DemoDisplayOptions},
       {path: 'demo-items-list', component: DemoItemsList},
+      {path: 'demo-dashboard', component: DemoDashboard},
     ]),
   ],
   providers: [],

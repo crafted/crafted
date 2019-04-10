@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer} from '@angular/forms';
-import {DataSourceMetadata} from '@crafted/data';
+import {DataSource} from '@crafted/data';
 import {ButtonToggleOption} from '../../../edit-widget/button-toggle-option/button-toggle-option';
 
 @Component({
@@ -19,7 +19,7 @@ export class ActionOption {
     {id: 'decrement', label: 'Decrement'},
   ];
 
-  @Input() dataSourceMetadata: Map<string, DataSourceMetadata<any>>;
+  @Input() dataSource: DataSource;
 
   @Input() canRemove: boolean;
 
@@ -28,12 +28,7 @@ export class ActionOption {
   constructor(public controlContainer: ControlContainer) {}
 
   ngOnInit() {
-    this.dataSourceMetadata.forEach(metadata => {
-      this.datePropertyIdOptions.push({
-        id: metadata.id,
-        label: metadata.label,
-      });
-    });
+    this.datePropertyIdOptions = this.dataSource.getDataLabelsWithType('date');
 
     const typeFormControl = this.controlContainer.control!.get('type')!;
     if (!typeFormControl.value) {

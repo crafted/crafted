@@ -1,10 +1,14 @@
 import {Observable, of} from 'rxjs';
 
 export interface DataSourceMetadata<T> {
-  id: string;
   label: string;
   type: string;
   accessor: (item: T) => any;
+}
+
+export interface DataLabel {
+  id: string;
+  label: string;
 }
 
 export class DataSource<T = any> {
@@ -20,21 +24,13 @@ export class DataSource<T = any> {
     }
   }
 
-  getMetadataListForType(type: string): DataSourceMetadata<T>[] {
-    const metadataListForType: DataSourceMetadata<T>[] = [];
-    this.metadata.forEach(metadata => {
-      if (metadata.type === type) {
-        metadataListForType.push(metadata);
+  getDataLabelsWithType(type: string): DataLabel[] {
+    const dataLabelsWithType: DataLabel[] = [];
+    this.metadata.forEach((value, key) => {
+      if (value.type === type) {
+        dataLabelsWithType.push({id: key, label: value.label});
       }
     });
-    return metadataListForType;
-  }
-
-  getMetadataMapForType(type: string): Map<string, DataSourceMetadata<T>> {
-    const metadataMapForType = new Map<string, DataSourceMetadata<T>>();
-    this.getMetadataListForType(type).forEach(metadata => {
-      metadataMapForType.set(metadata.id, metadata);
-    });
-    return metadataMapForType;
+    return dataLabelsWithType;
   }
 }

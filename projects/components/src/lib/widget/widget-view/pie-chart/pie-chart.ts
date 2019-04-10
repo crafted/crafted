@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {DataSource, Filterer, FiltererState, Group, Grouper, GrouperState} from '@crafted/data';
 import * as Chart from 'chart.js';
-import {Observable, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
@@ -26,7 +26,8 @@ export interface PieChartWidgetDataConfig {
 
 export function getPieChartWidgetConfig(
     dataResourcesMap: PieChartDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]>): WidgetConfig<PieChartWidgetDataConfig> {
+    savedFiltererStates: Observable<SavedFiltererState[]> =
+        of([])): WidgetConfig<PieChartWidgetDataConfig> {
   return {
     id: 'pie',
     label: 'Pie Chart',

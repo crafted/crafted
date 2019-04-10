@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {DataSource, Filterer, FiltererState} from '@crafted/data';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
@@ -24,7 +24,8 @@ export interface CountWidgetDataConfig {
 
 export function getCountWidgetConfig(
     dataResourcesMap: CountDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]>): WidgetConfig<CountWidgetDataConfig> {
+    savedFiltererStates: Observable<SavedFiltererState[]> =
+        of([])): WidgetConfig<CountWidgetDataConfig> {
   return {
     id: 'count',
     label: 'Count',

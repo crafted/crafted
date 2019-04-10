@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import * as Chart from 'chart.js';
-import {combineLatest, Observable, Subject} from 'rxjs';
+import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
@@ -25,8 +25,8 @@ export interface TimeSeriesWidgetDataConfig {
 
 export function getTimeSeriesWidgetConfig(
     dataResourcesMap: TimeSeriesDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]>):
-    WidgetConfig<TimeSeriesWidgetDataConfig> {
+    savedFiltererStates: Observable<SavedFiltererState[]> =
+        of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
   return {
     id: 'timeSeries',
     label: 'Time Series',
@@ -213,9 +213,8 @@ export class TimeSeries<T> {
       datasetConfig.actions.forEach(action => {
         const provider =
             this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType)!.dataSource();
-        const dates = provider.getMetadataMapForType('date');
         // TODO: Error handling if the property does not exist
-        const date = dates.get(action.datePropertyId)!.accessor(item);
+        const date = provider.metadata.get(action.datePropertyId)!.accessor(item);
         if (date) {
           dateActions.push({date: this.roundDate(date), actionType: action.type});
         }

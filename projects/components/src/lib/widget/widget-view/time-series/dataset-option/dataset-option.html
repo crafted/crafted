@@ -8,7 +8,6 @@
 
   <input-option formControlName="color" label="Color (optional)"></input-option>
 
-
   <filter-state-option formControlName="filtererState" [filterer]="filterer"
                        [dataSource]="dataSource"
                        [savedFiltererStates]="savedFiltererStates">
@@ -30,8 +29,8 @@
       <ng-container *ngFor="let action of actionsFormArray.controls; let index = index"
                     formArrayName="actions">
         <action-option [formGroupName]="index" [canRemove]="index > 0"
-                       [dataSourceMetadata]="dataSource.metadata"
-                       (remove)="removeAction(index)"></action-option>
+                       [dataSource]="dataSource" (remove)="removeAction(index)">
+        </action-option>
       </ng-container>
     </div>
   </div>
