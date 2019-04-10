@@ -30,7 +30,7 @@
       </date-query-form>
 
       <state-query-form *ngSwitchCase="'state'" [query]="filter.query"
-                        [states]="filterer.metadata.get(filter.type).queryTypeData.states"
+                        [states]="states.get(filter.type)"
                         (queryChange)="queryChange(index, $event)">
       </state-query-form>
     </ng-container>

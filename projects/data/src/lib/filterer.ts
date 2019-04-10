@@ -1,20 +1,41 @@
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {Query, QueryType} from './query';
+import {DateQuery, InputQuery, NumberQuery, Query, QueryType, StateQuery} from './query';
 
 export interface Filter {
   type: string;
-  query?: Query;
+  query?: InputQuery|NumberQuery|DateQuery|StateQuery;
   isImplicit?: boolean;
 }
 
-export interface FiltererMetadata<T = any, M = any> {
+export interface InputFiltererMetadata<T = any, C = any> {
   label?: string;
-  queryType?: QueryType;
-  queryTypeData?: any;
-  matcher?: (item: T, q: Query, c: M) => boolean;
-  autocomplete?: (items: T[], c: M) => string[];
+  queryType: 'input';
+  matcher: (item: T, q: InputQuery, c: C) => boolean;
+  autocomplete: (items: T[], c: C) => string[];
 }
+
+export interface NumberFiltererMetadata<T = any, C = any> {
+  label?: string;
+  queryType: 'number';
+  matcher: (item: T, q: NumberQuery, c: C) => boolean;
+}
+
+export interface DateFiltererMetadata<T = any, C = any> {
+  label?: string;
+  queryType: 'date';
+  matcher: (item: T, q: DateQuery, c: C) => boolean;
+}
+
+export interface StateFiltererMetadata<T = any, C = any> {
+  label?: string;
+  queryType: 'state';
+  matcher: (item: T, q: StateQuery, c: C) => boolean;
+  states: string[];
+}
+
+export type FiltererMetadata<T = any, C = any> = InputFiltererMetadata<T, C>|
+    NumberFiltererMetadata<T, C>|DateFiltererMetadata<T, C>|StateFiltererMetadata<T, C>;
 
 export interface FiltererState {
   filters: Filter[];
@@ -75,10 +96,11 @@ export class Filterer<T = any, M = any> {
     };
   }
 
-  autocomplete(filtererMetadata: FiltererMetadata<T, M>):
+  autocomplete(filtererMetadata: InputFiltererMetadata<T, M>):
       (items: Observable<T[]>) => Observable<string[]> {
     return (items: Observable<T[]>) => {
-      return combineLatest(items, this.contextProvider).pipe(map(results => {
+      const contextProvider = this.contextProvider || of(() => null);
+      return combineLatest(items, contextProvider).pipe(map(results => {
         if (!filtererMetadata.autocomplete) {
           return [];
         }
@@ -115,13 +137,13 @@ export class Filterer<T = any, M = any> {
     return filterOptions;
   }
 
-  add(type: string) {
+  add(filterType: string) {
     this.state.pipe(take(1)).subscribe(state => {
-      const queryType = this.metadata.get(type).queryType;
+      const queryType = this.metadata.get(filterType).queryType;
       const query = this.defaultQueries[queryType];
 
       const filters = state.filters.slice();
-      filters.push({type, query});
+      filters.push({type: filterType, query});
       this.setState({...state, filters});
     });
   }
@@ -152,7 +174,16 @@ export function filterItems<T, M>(
       const filterConfig = metadata.get(filter.type);
 
       if (filterConfig && filterConfig.matcher) {
-        return filterConfig.matcher(item, filter.query, context);
+        switch (filterConfig.queryType) {
+          case 'input':
+            return filterConfig.matcher(item, filter.query as InputQuery, context);
+          case 'date':
+            return filterConfig.matcher(item, filter.query as DateQuery, context);
+          case 'number':
+            return filterConfig.matcher(item, filter.query as NumberQuery, context);
+          case 'state':
+            return filterConfig.matcher(item, filter.query as StateQuery, context);
+        }
       } else {
         throw Error('Missing matcher for ' + filter.type);
       }
