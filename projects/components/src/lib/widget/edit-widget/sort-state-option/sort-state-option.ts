@@ -27,8 +27,8 @@ import {Sorter} from '@crafted/data';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: SortStateOption, multi: true}]
 })
-export class SortStateOption<S> implements ControlValueAccessor {
-  sortIds: S[] = [];
+export class SortStateOption implements ControlValueAccessor {
+  sortIds: string[] = [];
 
   onChange = (_: any) => {};
 
@@ -40,7 +40,7 @@ export class SortStateOption<S> implements ControlValueAccessor {
 
   @Input() label: string;
 
-  @Input() sorter: Sorter<any, S, any>;
+  @Input() sorter: Sorter;
 
   @Input() placeholder: string;
 

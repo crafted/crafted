@@ -2,7 +2,7 @@
 import {filterItems, searchItems} from '@crafted/data';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
-import {ItemsFilterMetadata} from '../../github/data-source/item-filter-metadata';
+import {ItemsFilterMetadata} from '../../github/data-source/item-filterer-metadata';
 import {tokenizeItem} from '../../github/utility/tokenize-item';
 import {Recommendation} from '../services/dao/config/recommendation';
 

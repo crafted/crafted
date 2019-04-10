@@ -2,24 +2,28 @@ import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Group} from './grouper';
 
-export interface SorterState<S = any> {
-  sort: S;
+export interface SorterState {
+  sort: string;
   reverse: boolean;
 }
 
-export type SortComparator<T, C> = (context: C) => ((a: T, b: T) => number);
+export type SortComparator<T, C> = (a: T, b: T, context: C) => number;
 
-export interface SortingMetadata<T = any, S = any, C = any> {
-  id: S;
+export interface SorterMetadata<T = any, C = any> {
   label: string;
   comparator: SortComparator<T, C>;
 }
 
 export type SorterContextProvider<C> = Observable<C>;
 
+export interface SortLabel {
+  id: string;
+  label: string;
+}
+
 function sortItems<T, C>(
     items: T[], comparator: SortComparator<T, C>, reverse: boolean, context: C) {
-  items.sort(comparator(context));
+  items.sort((a, b) => comparator(a, b, context));
 
   if (reverse) {
     items.reverse();
@@ -28,12 +32,12 @@ function sortItems<T, C>(
   return items;
 }
 
-export class Sorter<T = any, S = any, C = any> {
-  state = new BehaviorSubject<SorterState<S>>({sort: this.getSorts()[0].id, reverse: false});
+export class Sorter<T = any, C = any> {
+  state = new BehaviorSubject<SorterState>({sort: this.getSorts()[0].id, reverse: false});
 
   constructor(
-      public metadata: Map<S, SortingMetadata<T, S, C>>,
-      private contextProvider: SorterContextProvider<C>, initialState?: SorterState) {
+      public metadata: Map<string, SorterMetadata<T, C>>,
+      private contextProvider?: SorterContextProvider<C>, initialState?: SorterState) {
     if (initialState) {
       this.state.next(initialState);
     }
@@ -41,7 +45,8 @@ export class Sorter<T = any, S = any, C = any> {
 
   sort(): (items: Observable<T[]>) => Observable<T[]> {
     return (items: Observable<T[]>) => {
-      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
+      const contextProvider = this.contextProvider || of(() => null);
+      return combineLatest(items, this.state, contextProvider).pipe(map(results => {
         const sortMetadata = this.metadata.get(results[1].sort);
         if (!sortMetadata) {
           throw new Error(`No configuration set up for sort ${results[1].sort}`);
@@ -70,17 +75,17 @@ export class Sorter<T = any, S = any, C = any> {
     };
   }
 
-  getSorts(): SortingMetadata<T, S, C>[] {
-    const sorts: SortingMetadata<T, S, C>[] = [];
-    this.metadata.forEach(sort => sorts.push(sort));
+  getSorts(): SortLabel[] {
+    const sorts: SortLabel[] = [];
+    this.metadata.forEach((value, key) => sorts.push({id: key, label: value.label}));
     return sorts;
   }
 
-  setState(state: SorterState<S>) {
+  setState(state: SorterState) {
     this.state.next({...state});
   }
 
-  isEquivalent(otherState?: SorterState<any>): Observable<boolean> {
+  isEquivalent(otherState?: SorterState): Observable<boolean> {
     return this.state.pipe(map(state => {
       if (!otherState) {
         return false;

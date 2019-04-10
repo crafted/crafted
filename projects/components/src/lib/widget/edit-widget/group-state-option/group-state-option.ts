@@ -22,8 +22,8 @@ import {Grouper} from '@crafted/data';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: GroupStateOption, multi: true}]
 })
-export class GroupStateOption<G> implements ControlValueAccessor {
-  groupIds: G[] = [];
+export class GroupStateOption implements ControlValueAccessor {
+  groupIds: string[] = [];
 
   onChange = (_: any) => {};
 
@@ -33,7 +33,7 @@ export class GroupStateOption<G> implements ControlValueAccessor {
 
   @Input() label: string;
 
-  @Input() grouper: Grouper<any, G, any>;
+  @Input() grouper: Grouper<any, any>;
 
   @Input() placeholder: string;
 

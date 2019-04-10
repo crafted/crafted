@@ -1,8 +1,8 @@
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 
-export interface GrouperState<G = any> {
-  group: G;
+export interface GrouperState {
+  group: string;
 }
 
 export class Group<T> {
@@ -11,28 +11,30 @@ export class Group<T> {
   items: T[];
 }
 
-export interface GrouperMetadata<T, G, C> {
-  id: G;
+export interface GrouperMetadata<T, C = any> {
   label: string;
   groupingFunction: (items: T[]) => Group<T>[];
   titleTransform?: (title: string, c: C) => string;
 }
 
-export type GrouperContextProvider<C> = Observable<C>;
+export interface GroupLabel {
+  id: string;
+  label: string;
+}
 
-export class Grouper<T = any, G = any, C = any> {
-  state = new BehaviorSubject<GrouperState<G>>({group: this.getGroups()[0].id});
+export class Grouper<T = any, C = any> {
+  state = new BehaviorSubject<GrouperState>({group: this.getGroups()[0].id});
 
   constructor(
-      public metadata: Map<G, GrouperMetadata<T, G, C>>,
-      private contextProvider?: GrouperContextProvider<C>, initialState?: GrouperState<G>) {
+      public metadata: Map<string, GrouperMetadata<T, C>>, private contextProvider?: Observable<C>,
+      initialState?: GrouperState) {
     if (initialState) {
       this.state.next(initialState);
     }
   }
 
   group(): (items: Observable<T[]>) => Observable<Group<T>[]> {
-    let config: GrouperMetadata<T, G, C>|null;
+    let config: GrouperMetadata<T, C>|null;
     return (items: Observable<T[]>) => {
       return combineLatest(items, this.state)
           .pipe(
@@ -69,17 +71,17 @@ export class Grouper<T = any, G = any, C = any> {
     };
   }
 
-  getGroups(): GrouperMetadata<T, G, C>[] {
-    const groups: GrouperMetadata<T, G, C>[] = [];
-    this.metadata.forEach(group => groups.push(group));
+  getGroups(): GroupLabel[] {
+    const groups: GroupLabel[] = [];
+    this.metadata.forEach((value, key) => groups.push({id: key, label: value.label}));
     return groups;
   }
 
-  setState(state: GrouperState<G>) {
+  setState(state: GrouperState) {
     this.state.next({...state});
   }
 
-  isEquivalent(otherState?: GrouperState<G>): Observable<boolean> {
+  isEquivalent(otherState?: GrouperState): Observable<boolean> {
     return this.state.pipe(map(state => {
       if (!otherState) {
         return false;

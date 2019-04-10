@@ -1,7 +1,4 @@
-import {FiltererState} from 'projects/data/src/lib/filterer';
-import {GrouperState} from 'projects/data/src/lib/grouper';
-import {SorterState} from 'projects/data/src/lib/sorter';
-import {ViewerState} from 'projects/data/src/lib/viewer';
+import {FiltererState, GrouperState, SorterState, ViewerState} from '@crafted/data';
 
 export interface Query {
   id?: string;
@@ -11,7 +8,7 @@ export interface Query {
   group?: string;
   dataSourceType?: string;
   filtererState?: FiltererState;
-  grouperState?: GrouperState<any>;
-  sorterState?: SorterState<any>;
+  grouperState?: GrouperState;
+  sorterState?: SorterState;
   viewerState?: ViewerState;
 }

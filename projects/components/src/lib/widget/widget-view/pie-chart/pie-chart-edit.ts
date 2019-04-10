@@ -19,7 +19,7 @@ import {PieChartDisplayTypeOptions, PieChartWidgetDataConfig} from './pie-chart'
 export class PieChartEdit {
   dataOptions: ButtonToggleOption[] = [];
 
-  grouper: Grouper<any, any, any>;
+  grouper: Grouper<any, any>;
   filterer: Filterer<any, any>;
   dataSource: DataSource<any>;
 

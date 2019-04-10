@@ -1,21 +1,22 @@
 import {Component} from '@angular/core';
-import {DataSource, Filterer, Viewer} from '@crafted/data';
+import {DataSource, Grouper, Sorter, Viewer} from '@crafted/data';
 import {of} from 'rxjs';
-
-import {EXAMPLE_ITEMS, ExampleItem} from '../data';
-import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
+import {EXAMPLE_ITEMS} from '../data';
+import {ExampleGrouperMetadata} from '../data-resources/grouper-metadata';
+import {ExampleSorterMetadata} from '../data-resources/sorter-metadata';
 import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
 
 
 @Component({
-  selector: 'demo-advanced-search',
-  templateUrl: 'demo-advanced-search.html',
-  styleUrls: ['demo-advanced-search.scss'],
+  selector: 'demo-display-options',
+  templateUrl: 'demo-display-options.html',
+  styleUrls: ['demo-display-options.scss'],
 })
-export class DemoAdvancedSearch {
+export class DemoDisplayOptions {
   dataSource = new DataSource(new Map(), of(EXAMPLE_ITEMS));
-  viewer = new Viewer<ExampleItem>(ExampleViewerMetadata);
-  filterer = new Filterer(ExampleFiltererMetadata);
+  viewer = new Viewer(ExampleViewerMetadata);
+  grouper = new Grouper(ExampleGrouperMetadata);
+  sorter = new Sorter(ExampleSorterMetadata);
 
-  exampleItems = this.dataSource.data.pipe(this.filterer.filter());
+  exampleItemGroups = this.dataSource.data.pipe(this.sorter.sort(), this.grouper.group());
 }

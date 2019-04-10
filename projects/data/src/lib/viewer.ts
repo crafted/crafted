@@ -45,7 +45,7 @@ export class Viewer<T = any, C = any> {
 
   getViews(): ViewLabel[] {
     const views: ViewLabel[] = [];
-    this.metadata.forEach((value, view) => views.push({id: view, label: value.label}));
+    this.metadata.forEach((value, key) => views.push({id: key, label: value.label}));
     return views;
   }
 

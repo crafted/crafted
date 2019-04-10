@@ -19,10 +19,10 @@ import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
 export class ListEdit {
   dataOptions: ButtonToggleOption[] = [];
 
-  viewer: Viewer<any, any>;
-  sorter: Sorter<any, any, any>;
-  filterer: Filterer<any, any>;
-  dataSource: DataSource<any>;
+  viewer: Viewer;
+  sorter: Sorter;
+  filterer: Filterer;
+  dataSource: DataSource;
 
   form = new FormGroup({
     dataSourceType: new FormControl(null),
@@ -37,7 +37,7 @@ export class ListEdit {
   destroyed = new Subject();
 
   constructor(@Inject(EDIT_WIDGET_DATA) public data:
-                  EditWidgetData<ListDisplayTypeOptions<any>, ListWidgetDataConfig>) {
+                  EditWidgetData<ListDisplayTypeOptions, ListWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(

@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {Grouper, GrouperMetadata, Sorter, SortingMetadata, Viewer, ViewLabel} from '@crafted/data';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
+import {Grouper, GroupLabel, Sorter, SortLabel, Viewer, ViewLabel} from '@crafted/data';
 import {take} from 'rxjs/operators';
 
 
@@ -9,64 +9,36 @@ import {take} from 'rxjs/operators';
   styleUrls: ['display-options.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DisplayOptions<G, S> {
-  groups: Map<G, GrouperMetadata<any, G, any>>;
-  groupIds: G[] = [];
+export class DisplayOptions {
+  groups: GroupLabel[];
 
-  sorts: Map<S, SortingMetadata<any, S, null>>;
-  sortIds: S[] = [];
+  sorts: SortLabel[];
 
   views: ViewLabel[];
 
-  @Input() hideGrouping: boolean;
+  @Input() grouper: Grouper;
 
-  @Input() itemCount: number;
+  @Input() sorter: Sorter;
 
-  @Input()
-  set grouper(grouper: Grouper<any, G, any>) {
-    this._grouper = grouper;
-    if (this.grouper) {
-      this.groups = this.grouper.metadata;
-      this.groupIds = this.grouper.getGroups().map(value => value.id);
+  @Input() viewer: Viewer;
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges['grouper']) {
+      this.groups = this.grouper ? this.grouper.getGroups() : [];
+    }
+    if (simpleChanges['sorter']) {
+      this.sorts = this.sorter ? this.sorter.getSorts() : [];
+    }
+    if (simpleChanges['viewer']) {
+      this.views = this.viewer ? this.viewer.getViews() : [];
     }
   }
-  get grouper(): Grouper<any, G, any> {
-    return this._grouper;
-  }
-  _grouper: Grouper<any, G, any>;
 
-  @Input()
-  set sorter(sorter: Sorter<any, S, any>) {
-    this._sorter = sorter;
-    if (this.sorter) {
-      this.sorts = this.sorter.metadata;
-      this.sortIds = this.sorter.getSorts().map(value => value.id);
-    }
-  }
-  get sorter(): Sorter<any, S, any> {
-    return this._sorter;
-  }
-  _sorter: Sorter<any, S, any>;
-
-  @Input()
-  set viewer(viewer: Viewer<any, any>) {
-    this._viewer = viewer;
-    if (this.viewer) {
-      this.views = this.viewer.getViews();
-    }
-  }
-  get viewer(): Viewer<any, any> {
-    return this._viewer;
-  }
-  _viewer: Viewer<any, any>;
-
-  setGroup(group: G) {
-    this.grouper.state.pipe(take(1)).subscribe(state => {
-      this.grouper.setState({...state, group});
-    });
+  setGroup(group: string) {
+    this.grouper.setState({group});
   }
 
-  setSort(sort: S) {
+  setSort(sort: string) {
     this.sorter.state.pipe(take(1)).subscribe(state => {
       let reverse = state.reverse;
       if (state.sort === sort) {

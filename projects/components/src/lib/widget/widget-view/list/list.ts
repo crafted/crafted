@@ -43,10 +43,10 @@ export function getListWidgetConfig(
   };
 }
 
-export interface ListDisplayTypeOptions<S> {
+export interface ListDisplayTypeOptions {
   dataSourceType: string;
   listLength: number;
-  sorterState: SorterState<S>;
+  sorterState: SorterState;
   viewerState: ViewerState;
   filtererState: FiltererState;
 }
@@ -57,7 +57,7 @@ export interface ListDisplayTypeOptions<S> {
   styleUrls: ['list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class List<S, V> {
+export class List {
   trackByIndex = (index: number) => index;
 
   listLength = this.data.options.listLength;
@@ -67,7 +67,7 @@ export class List<S, V> {
   viewer: Viewer<any, any>;
 
   constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<ListDisplayTypeOptions<S>, ListWidgetDataConfig>) {
+                  WidgetData<ListDisplayTypeOptions, ListWidgetDataConfig>) {
     const dataSourceProvider =
         this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
     const sorter = dataSourceProvider.sorter(this.data.options.sorterState);

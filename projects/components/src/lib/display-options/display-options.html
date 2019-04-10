@@ -3,8 +3,7 @@
 </button>
 
 <mat-menu #rootMenu="matMenu">
-  <button mat-menu-item *ngIf="!hideGrouping"
-          [matMenuTriggerFor]="groupingMenu">
+  <button mat-menu-item [matMenuTriggerFor]="groupingMenu">
     Group By
   </button>
   <button mat-menu-item [matMenuTriggerFor]="sortingMenu">
@@ -17,26 +16,26 @@
 
 <!-- Group Menu -->
 <mat-menu #groupingMenu="matMenu">
-  <button mat-menu-item *ngFor="let groupId of groupIds"
-          [class.selected]="(grouper.state | async).group === groupId"
-          (click)="setGroup(groupId); $event.stopPropagation();">
+  <button mat-menu-item *ngFor="let group of groups"
+          [class.selected]="(grouper.state | async).group === group.id"
+          (click)="setGroup(group.id); $event.stopPropagation();">
     <div class="button-content">
       <mat-icon>check</mat-icon>
-      {{groups.get(groupId)?.label}}
+      {{group.label}}
     </div>
   </button>
 </mat-menu>
 
 <!-- Sort Menu -->
 <mat-menu #sortingMenu="matMenu">
-  <button mat-menu-item *ngFor="let sortId of sortIds"
-          [class.selected]="(sorter.state | async).sort === sortId"
-          (click)="setSort(sortId); $event.stopPropagation();">
+  <button mat-menu-item *ngFor="let sort of sorts"
+          [class.selected]="(sorter.state | async).sort === sort.id"
+          (click)="setSort(sort.id); $event.stopPropagation();">
     <div class="button-content">
       <mat-icon>
         {{(sorter.state | async).reverse ? 'arrow_downward' : 'arrow_upward'}}
       </mat-icon>
-      {{sorts.get(sortId)?.label}}
+      {{sort.label}}
     </div>
   </button>
 </mat-menu>

@@ -3,16 +3,8 @@ editable-chip-list {
   margin: 16px;
 }
 
-.items {
+item-summary {
   display: flex;
   flex-direction: column;
-}
-
-item-summary {
-  display: inline-flex;
-  flex-direction: column;
-  padding: 16px;
-  border: 1px solid #CCC;
-  border-radius: 8px;
-  margin: 16px;
+  padding: 16px 0;
 }

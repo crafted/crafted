@@ -38,7 +38,7 @@ export function getPieChartWidgetConfig(
 
 export interface PieChartDisplayTypeOptions<G> {
   dataSourceType: string;
-  grouperState: GrouperState<G>;
+  grouperState: GrouperState;
   filteredGroups: string;
   filtererState: FiltererState;
 }
