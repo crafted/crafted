@@ -1,6 +1,5 @@
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Group} from './grouper';
 
 export interface SorterState {
   sort: string;
@@ -53,24 +52,6 @@ export class Sorter<T = any, C = any> {
         }
 
         return sortItems(results[0], sortMetadata.comparator, results[1].reverse, results[2]);
-      }));
-    };
-  }
-
-  sortGroupedItems(): (items: Observable<Group<T>[]>) => Observable<Group<T>[]> {
-    return (itemGroups: Observable<Group<T>[]>) => {
-      const contextProvider = this.contextProvider || of(() => null);
-      return combineLatest(itemGroups, this.state, contextProvider).pipe(map(results => {
-        const sortMetadata = this.metadata.get(results[1].sort);
-        if (!sortMetadata) {
-          throw new Error(`No configuration set up for sort ${results[1].sort}`);
-        }
-
-        results[0].forEach(itemGroup => {
-          sortItems(itemGroup.items, sortMetadata.comparator, results[1].reverse, results[2]);
-        });
-
-        return results[0];
       }));
     };
   }

@@ -62,8 +62,8 @@ export class ItemsList<T> {
   constructor(public ngZone: NgZone, public elementRef: ElementRef) {}
 
   ngOnInit() {
-    this.itemGroups = this.dataSource.data.pipe(
-        this.filterer.filter(), this.grouper.group(), this.sorter.sortGroupedItems());
+    this.itemGroups =
+        this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort(), this.grouper.group());
 
     this.itemCount = this.itemGroups.pipe(map(
         itemGroups => itemGroups.map(g => g.items.length).reduce((prev, curr) => curr += prev)));
