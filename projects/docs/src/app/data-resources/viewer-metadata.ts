@@ -2,14 +2,14 @@ import {DatePipe} from '@angular/common';
 import {ViewerMetadata} from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const DocsDataViewerMetadata = new Map<string, ViewerMetadata>([
+export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>>([
   [
     'title',
     {
       label: 'Title',
-      render: (exampleData: ExampleItem) => ({
+      render: item => ({
         styles: {fontWeight: 'bold'},
-        text: `${exampleData.name} (#${exampleData.id})`,
+        text: `${item.name} (#${item.id})`,
       }),
     },
   ],
@@ -17,8 +17,8 @@ export const DocsDataViewerMetadata = new Map<string, ViewerMetadata>([
     'color',
     {
       label: 'Color',
-      render: (docData: ExampleItem) => ({
-        text: `Favorite color: ${docData.color}`,
+      render: item => ({
+        text: `Favorite color: ${item.color}`,
       }),
     },
   ],
@@ -26,8 +26,8 @@ export const DocsDataViewerMetadata = new Map<string, ViewerMetadata>([
     'age',
     {
       label: 'Age',
-      render: (docData: ExampleItem) => ({
-        text: `${docData.age} years old`,
+      render: item => ({
+        text: `${item.age} years old`,
       }),
     },
   ],
@@ -35,10 +35,10 @@ export const DocsDataViewerMetadata = new Map<string, ViewerMetadata>([
     'anniversary',
     {
       label: 'Anniversary',
-      render: (docData: ExampleItem) => {
+      render: item => {
         const datePipe = new DatePipe('en-us');
         return {
-          text: `Aniversary ${datePipe.transform(docData.anniversary)}`,
+          text: `Aniversary ${datePipe.transform(item.anniversary)}`,
         };
       },
     },

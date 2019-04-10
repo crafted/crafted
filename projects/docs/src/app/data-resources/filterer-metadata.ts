@@ -1,50 +1,47 @@
 import {
   dateMatchesEquality,
-  DateQuery,
   FiltererMetadata,
-  InputQuery,
   numberMatchesEquality,
-  NumberQuery,
   stringContainsQuery
 } from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const DocsDataFiltererMetadata = new Map<string, FiltererMetadata>([
+export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleItem>>([
   [
     'id', {
       label: 'ID',
       queryType: 'number',
-      matcher: (item: ExampleItem, q: NumberQuery) => numberMatchesEquality(item.id, q),
+      matcher: (item, query) => numberMatchesEquality(item.id, query),
     }
   ],
   [
     'name', {
       label: 'Name',
       queryType: 'input',
-      matcher: (item: ExampleItem, q: InputQuery) => stringContainsQuery(item.name, q),
-      autocomplete: (items: ExampleItem[]) => items.map(i => i.name)
+      matcher: (item, query) => stringContainsQuery(item.name, query),
+      autocomplete: items => items.map(i => i.name),
     }
   ],
   [
     'age', {
       label: 'Age',
       queryType: 'number',
-      matcher: (item: ExampleItem, q: NumberQuery) => numberMatchesEquality(item.age, q)
+      matcher: (item, query) => numberMatchesEquality(item.age, query),
     }
   ],
   [
     'color', {
       label: 'Color',
       queryType: 'input',
-      matcher: (item: ExampleItem, q: InputQuery) => stringContainsQuery(item.color, q),
-      autocomplete: (items: ExampleItem[]) => items.map(i => i.color),
+      matcher: (item, query) => stringContainsQuery(item.color, query),
+      autocomplete: items => items.map(i => i.color),
     }
   ],
   [
     'anniversary', {
       label: 'Anniversary',
       queryType: 'date',
-      matcher: (item: ExampleItem, q: DateQuery) => dateMatchesEquality(item.anniversary, q),
+      matcher: (item, query) => dateMatchesEquality(item.anniversary, query),
     }
   ],
 ]);

@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {Viewer} from '@crafted/data';
 
 import {EXAMPLE_ITEMS, ExampleItem} from '../data';
-import {DocsDataViewerMetadata as ExampleViewerMetadata} from '../data-resources/viewer-metadata';
+import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
 
 
 @Component({

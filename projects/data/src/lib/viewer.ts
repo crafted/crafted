@@ -19,9 +19,9 @@ interface RenderedViewWithChildren {
 
 export type RenderedView = RenderedViewWithText|RenderedViewWithChildren;
 
-export interface ViewerMetadata<C = any> {
+export interface ViewerMetadata<T = any, C = any> {
   label: string;
-  render: (item: any, context: C) => RenderedView | null;
+  render: (item: T, context: C) => RenderedView | null;
 }
 
 export interface ViewLabel {
@@ -36,7 +36,7 @@ export class Viewer<T = any, C = any> {
   state = new BehaviorSubject<ViewerState>({views: this.getViews().map(v => v.id)});
 
   constructor(
-      public metadata: Map<string, ViewerMetadata<C>>,
+      public metadata: Map<string, ViewerMetadata<T, C>>,
       private contextProvider?: ViewerContextProvider<T, C>, initialState?: ViewerState) {
     if (initialState) {
       this.state.next(initialState);
