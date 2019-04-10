@@ -13,7 +13,7 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
   styleUrls: ['demo-display-options.scss'],
 })
 export class DemoDisplayOptions {
-  dataSource = new DataSource(new Map(), of(EXAMPLE_ITEMS));
+  dataSource = new DataSource(of(EXAMPLE_ITEMS));
   viewer = new Viewer(ExampleViewerMetadata);
   grouper = new Grouper(ExampleGrouperMetadata);
   sorter = new Sorter(ExampleSorterMetadata);

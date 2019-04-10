@@ -12,7 +12,7 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
   styleUrls: ['demo-advanced-search.scss'],
 })
 export class DemoAdvancedSearch {
-  dataSource = new DataSource(new Map(), of(EXAMPLE_ITEMS));
+  dataSource = new DataSource(of(EXAMPLE_ITEMS));
   viewer = new Viewer(ExampleViewerMetadata);
   filterer = new Filterer(ExampleFiltererMetadata);
 
