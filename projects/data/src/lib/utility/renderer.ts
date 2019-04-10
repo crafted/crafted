@@ -68,7 +68,7 @@ function getRenderState<T>(itemGroups: Group<T>[], issuesToDisplay: number): Ren
     itemsToRender -= itemGroup.items.length;
     count += items.length;
     index++;
-  } while (itemsToRender > 0 && itemGroups.length !== itemGroups.length);
+  } while (itemsToRender > 0 && renderedItemGroups.length !== itemGroups.length);
 
   return {groups: renderedItemGroups, count, total};
 }
