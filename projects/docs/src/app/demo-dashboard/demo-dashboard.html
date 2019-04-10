@@ -1,0 +1,4 @@
+<button mat-button (click)="edit = !edit"> Toggle Edit Mode </button>
+
+<dashboard-view [edit]="edit | async" [dataResourcesMap]="dataResourcesMap"
+                [widgetConfigs]="widgetConfigs"></dashboard-view>
