@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 
 export interface DataSourceMetadata<T> {
   id: string;
@@ -8,9 +8,17 @@ export interface DataSourceMetadata<T> {
 }
 
 export class DataSource<T = any> {
+  data: Observable<T[]>;
+
   constructor(
-      public data: Observable<T[]>,
-      public metadata: Map<string, DataSourceMetadata<T>> = new Map()) {}
+      private _data: Observable<T[]>|T[],
+      public metadata: Map<string, DataSourceMetadata<T>> = new Map()) {
+    if (_data instanceof Observable) {
+      this.data = this._data as Observable<T[]>;
+    } else if (Array.isArray(_data)) {
+      this.data = of(_data);
+    }
+  }
 
   getMetadataListForType(type: string): DataSourceMetadata<T>[] {
     const metadataListForType: DataSourceMetadata<T>[] = [];
