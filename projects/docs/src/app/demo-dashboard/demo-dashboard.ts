@@ -15,8 +15,7 @@ import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
 import {ExampleGrouperMetadata} from '../data-resources/grouper-metadata';
 import {ExampleSorterMetadata} from '../data-resources/sorter-metadata';
 import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
-import {BarChart} from './bar-chart/bar-chart';
-import {EditBarChart} from './bar-chart/edit-bar-chart';
+import {getBarChartWidgetConfig} from './bar-chart/bar-chart';
 
 
 @Component({
@@ -57,12 +56,6 @@ export class DemoDashboard {
     list: getListWidgetConfig(this.dataResourcesMap),
     pie: getPieChartWidgetConfig(this.dataResourcesMap),
     timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap),
-    barChart: {
-      id: 'barChart',
-      label: 'Bar Chart',
-      component: BarChart,
-      editComponent: EditBarChart,
-      config: null,
-    }
+    bar: getBarChartWidgetConfig(this.dataResourcesMap)
   };
 }

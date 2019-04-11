@@ -16,8 +16,7 @@ import {
 } from '@crafted/components';
 import {AppComponent} from './app.component';
 import {DemoAdvancedSearch} from './demo-advanced-search/demo-advanced-search';
-import {BarChart} from './demo-dashboard/bar-chart/bar-chart';
-import {EditBarChart} from './demo-dashboard/bar-chart/edit-bar-chart';
+import {BarChartModule} from './demo-dashboard/bar-chart/bar-chart.module';
 import {DemoDashboard} from './demo-dashboard/demo-dashboard';
 import {DemoDisplayOptions} from './demo-display-options/demo-display-options';
 import {DemoItemsList} from './demo-items-list/demo-items-list';
@@ -31,10 +30,9 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
     DemoDisplayOptions,
     DemoItemsList,
     DemoDashboard,
-    BarChart,
-    EditBarChart,
   ],
   imports: [
+    BarChartModule,
     ItemSummaryModule,
     ItemsListModule,
     MatDividerModule,
@@ -57,10 +55,6 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [
-    BarChart,
-    EditBarChart,
-  ]
 })
 export class AppModule {
 }

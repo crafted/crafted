@@ -11,7 +11,6 @@ export function getDataSourceProvider(data: Observable<Item[]>) {
 const GithubItemDataMetadata = new Map<string, DataSourceMetadata<Item>>([
   [
     'opened', {
-      id: 'opened',
       label: 'Date Opened',
       type: 'date',
       accessor: (item: Item) => item.created,
@@ -19,7 +18,6 @@ const GithubItemDataMetadata = new Map<string, DataSourceMetadata<Item>>([
   ],
   [
     'closed', {
-      id: 'closed',
       label: 'Date Closed',
       type: 'date',
       accessor: (item: Item) => item.closed,
