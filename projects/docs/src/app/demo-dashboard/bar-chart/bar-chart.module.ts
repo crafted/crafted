@@ -9,7 +9,7 @@ import {
 } from '@crafted/components';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {BarChart} from './bar-chart';
-import {EditBarChart} from './edit-bar-chart';
+import {BarChartEdit} from './bar-chart-edit';
 
 @NgModule({
   imports: [
@@ -21,9 +21,9 @@ import {EditBarChart} from './edit-bar-chart';
     ButtonToggleGroupOptionModule,
     FilterStateOptionModule,
   ],
-  declarations: [BarChart, EditBarChart],
-  exports: [BarChart, EditBarChart],
-  entryComponents: [BarChart, EditBarChart]
+  declarations: [BarChart, BarChartEdit],
+  exports: [BarChart, BarChartEdit],
+  entryComponents: [BarChart, BarChartEdit]
 })
 export class BarChartModule {
 }

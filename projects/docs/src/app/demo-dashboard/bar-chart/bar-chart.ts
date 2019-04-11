@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MaterialColors, WIDGET_DATA, WidgetConfig, WidgetData} from '@crafted/components';
-import {DataSource, Filterer, FiltererState, Grouper, GrouperState} from '@crafted/data';
-import {Observable, Subject} from 'rxjs';
+import {DataSource, Filterer, FiltererState, Group, Grouper, GrouperState} from '@crafted/data';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {EditBarChart} from './edit-bar-chart';
+import {BarChartEdit} from './bar-chart-edit';
 
 
 export type BarChartDataResourcesMap = Map<string, {
@@ -32,7 +32,7 @@ export function getBarChartWidgetConfig(dataResourcesMap: BarChartDataResourcesM
     id: 'bar',
     label: 'Bar Chart',
     component: BarChart,
-    editComponent: EditBarChart,
+    editComponent: BarChartEdit,
     config: {dataResourcesMap}
   };
 }
@@ -43,22 +43,14 @@ export function getBarChartWidgetConfig(dataResourcesMap: BarChartDataResourcesM
     <ngx-charts-bar-vertical
       [scheme]="colorScheme"
       [results]="data | async"
-      [gradient]="gradient"
-      [xAxis]="showXAxis"
-      [yAxis]="showYAxis"
-      [legend]="showLegend"
-      [showXAxisLabel]="showXAxisLabel"
-      [showYAxisLabel]="showYAxisLabel"
-      [xAxisLabel]="xAxisLabel"
-      [yAxisLabel]="yAxisLabel"
-      (select)="onSelect($event)">
+      [xAxis]="true"
+      [yAxis]="true"
+      [legend]="true">
     </ngx-charts-bar-vertical>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChart {
-  private destroyed = new Subject();
-
   data: Observable<any[]>
 
   constructor(@Inject(WIDGET_DATA) public widgetData:
@@ -74,39 +66,23 @@ export class BarChart {
     const dataSource = dataSourceProvider.dataSource();
 
     this.data = dataSource.data.pipe(
-        filterer.filter(), grouper.group(), map(groups => {
-          let filteredGroupsSet: Set<string>;
-
-          if (this.widgetData.options.filteredGroups) {
-            filteredGroupsSet = new Set<string>(
-                this.widgetData.options.filteredGroups.split(',').map(v => v.trim()));
-          }
-          return groups.filter(g => filteredGroupsSet ? filteredGroupsSet.has(g.title) : true)
-              .map(group => ({name: group.title, value: group.items.length}));
-        }));
+        filterer.filter(), grouper.group(),
+        transformGroupsToBarChartData(this.widgetData.options.filteredGroups));
   }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
-  single: any[];
-  multi: any[];
-
-  // options
-  showXAxis = true;
-  showYAxis = true;
-  gradient = false;
-  showLegend = true;
-  showXAxisLabel = true;
-  xAxisLabel = 'Country';
-  showYAxisLabel = true;
-  yAxisLabel = 'Population';
 
   colorScheme = {domain: MaterialColors};
+}
 
-  onSelect(event) {
-    console.log(event);
+function transformGroupsToBarChartData(filteredGroups: string):
+    (itemGroups: Observable<Group<any>[]>) => Observable<{name: string, value: number}[]> {
+  return (itemGroups$: Observable<Group<any>[]>) => {
+    return itemGroups$.pipe(map(itemGroups => {
+      if (filteredGroups) {
+        const filteredGroupsSet = new Set<string>(filteredGroups.split(',').map(v => v.trim()));
+        itemGroups = itemGroups.filter(g => filteredGroupsSet.has(g.title));
+      }
+
+      return itemGroups.map(group => ({name: group.title, value: group.items.length}));
+    }));
   }
 }

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges, ViewChild} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatSelect} from '@angular/material';
-import {Grouper} from '@crafted/data';
+import {Grouper, GrouperState, GroupLabel} from '@crafted/data';
 
 @Component({
   selector: 'group-state-option',
@@ -11,8 +11,8 @@ import {Grouper} from '@crafted/data';
       <div class="option">
         <mat-select #groupSelect="matSelect"
                     (valueChange)="onChange({group: $event})">
-          <mat-option *ngFor="let groupId of groupIds" [value]="groupId">
-            {{grouper.metadata.get(groupId)?.label}}
+          <mat-option *ngFor="let group of groups" [value]="group.id">
+            {{group.label}}
           </mat-option>
         </mat-select>
       </div>
@@ -23,7 +23,7 @@ import {Grouper} from '@crafted/data';
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: GroupStateOption, multi: true}]
 })
 export class GroupStateOption implements ControlValueAccessor {
-  groupIds: string[] = [];
+  groups: GroupLabel[] = [];
 
   onChange = (_: any) => {};
 
@@ -40,15 +40,15 @@ export class GroupStateOption implements ControlValueAccessor {
   @Input() type: number;
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['grouper']) {
-      this.groupIds = this.grouper.getGroups().map(value => value.id);
-      this.groupSelect.value = this.groupIds[0];
+    if (simpleChanges['grouper'] && this.grouper) {
+      this.groups = this.grouper.getGroups();
+      this.groupSelect.value = this.groups[0].id;
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: GrouperState): void {
     if (value) {
-      this.groupSelect.value = value;
+      this.groupSelect.value = value.group;
     }
   }
 
