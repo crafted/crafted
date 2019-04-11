@@ -1,0 +1,9 @@
+@mixin date-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  date-option {
+    input[matInput] {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

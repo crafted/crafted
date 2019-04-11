@@ -8,7 +8,7 @@ import {MatDatepickerInput} from '@angular/material';
     <div class="config-option">
       <div class="label"> {{label}} </div>
       <div class="option">
-        <input class="theme-border" matInput
+        <input matInput
                (dateInput)="onChange($event.target.value)"
                (blur)="onTouched()" autocomplete="off"
                [placeholder]="placeholder"

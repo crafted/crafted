@@ -6,6 +6,17 @@
 @import 'advanced-search/form/state-query-form/state-query-form-theme';
 @import 'items-list/items-list-theme';
 @import 'dashboard/dashboard-view-theme';
+@import 'widget/edit-widget/date-option/date-option-theme';
+@import 'widget/edit-widget/group-state-option/group-state-option-theme';
+@import 'widget/edit-widget/sort-state-option/sort-state-option-theme';
+@import 'widget/edit-widget/group-state-option/group-state-option-theme';
+@import 'widget/edit-widget/input-option/input-option-theme';
+@import 'widget/edit-widget/edit-widget-theme';
+@import 'widget/widget-view/count/count-theme';
+@import 'widget/widget-view/time-series/action-option/action-option-theme';
+@import 'widget/widget-view/time-series/dataset-option/dataset-option-theme';
+@import 'widget/widget-view/time-series/time-series-edit-theme';
+@import 'widget/widget-view/widget-view-theme';
 
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);
@@ -16,4 +27,14 @@
   @include state-query-form-theme($theme);
   @include items-list-theme($theme);
   @include dashboard-view-theme($theme);
+  @include date-option-theme($theme);
+  @include edit-widget-theme($theme);
+  @include group-state-option-theme($theme);
+  @include sort-state-option-theme($theme);
+  @include input-option-theme($theme);
+  @include count-theme($theme);
+  @include action-option-theme($theme);
+  @include dataset-option-theme($theme);
+  @include time-series-edit-theme($theme);
+  @include widget-view-theme($theme);
 }

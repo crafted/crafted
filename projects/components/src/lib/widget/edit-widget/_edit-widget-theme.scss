@@ -1,0 +1,9 @@
+@mixin edit-widget-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  edit-widget {
+    input {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

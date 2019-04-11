@@ -9,7 +9,7 @@ import {Grouper} from '@crafted/data';
     <div class="config-option">
       <div class="label"> {{label}} </div>
       <div class="option">
-        <mat-select class="theme-border" #groupSelect="matSelect"
+        <mat-select #groupSelect="matSelect"
                     (valueChange)="onChange({group: $event})">
           <mat-option *ngFor="let groupId of groupIds" [value]="groupId">
             {{grouper.metadata.get(groupId)?.label}}

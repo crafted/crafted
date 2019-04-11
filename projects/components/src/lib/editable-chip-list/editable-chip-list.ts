@@ -18,7 +18,6 @@ export interface EditableChipListOption {
   styleUrls: ['editable-chip-list.scss'],
   templateUrl: 'editable-chip-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {'class': 'theme-border'}
 })
 export class EditableChipList {
   formControl = new FormControl();

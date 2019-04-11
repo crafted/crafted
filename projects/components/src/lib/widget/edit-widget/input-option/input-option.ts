@@ -7,7 +7,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
     <div class="config-option">
       <div class="label"> {{label}} </div>
       <div class="option">
-        <input class="theme-border" #input matInput
+        <input #input matInput
                (input)="onChange($event.target.value)"
                autocomplete="off"
                (blur)="onTouched()"

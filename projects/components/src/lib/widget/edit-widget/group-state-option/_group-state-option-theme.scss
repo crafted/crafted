@@ -1,0 +1,9 @@
+@mixin group-state-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  group-state-option {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

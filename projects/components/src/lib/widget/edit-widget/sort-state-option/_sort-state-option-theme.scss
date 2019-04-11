@@ -1,0 +1,9 @@
+@mixin sort-state-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  sort-state-option {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

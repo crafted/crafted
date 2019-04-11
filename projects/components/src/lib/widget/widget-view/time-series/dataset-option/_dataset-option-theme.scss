@@ -1,0 +1,9 @@
+@mixin dataset-option-theme($theme) {
+  $warn: map-get($theme, warn);
+
+  dataset-option {
+    .remove-dataset {
+      color: mat-color($warn);
+    }
+  }
+}

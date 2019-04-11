@@ -48,7 +48,6 @@ export function getCountWidgetConfig(
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.fontSize.px]': 'data.options.fontSize',
-    'class': 'theme-text',
   }
 })
 export class Count {

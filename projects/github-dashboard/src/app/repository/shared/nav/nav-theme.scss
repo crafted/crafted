@@ -2,7 +2,6 @@
 
 @mixin nav-theme($theme) {
   $foreground: map-get($theme, foreground);
-  $background: map-get($theme, background);
   $primary: map-get($theme, primary);
 
   nav-content {

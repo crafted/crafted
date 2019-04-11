@@ -9,13 +9,13 @@ import {Sorter} from '@crafted/data';
     <div class="config-option">
       <div class="label"> {{label}} </div>
       <div class="option">
-        <mat-select class="theme-border auto-width" #sortIdSelect="matSelect"
+        <mat-select class="auto-width" #sortIdSelect="matSelect"
                     (valueChange)="onChange({sort: $event, reverse: sortDirSelect.value})">
           <mat-option *ngFor="let sortId of sortIds" [value]="sortId">
             {{sorter.metadata.get(sortId)?.label}}
           </mat-option>
         </mat-select>
-        <mat-select class="theme-border auto-width" #sortDirSelect="matSelect"
+        <mat-select class="auto-width" #sortDirSelect="matSelect"
                     (valueChange)="onChange({sort: sortIdSelect.value, reverse: $event})">
           <mat-option [value]="false"> Ascending </mat-option>
           <mat-option [value]="true"> Descending </mat-option>

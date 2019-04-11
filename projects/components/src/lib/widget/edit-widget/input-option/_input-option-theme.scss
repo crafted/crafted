@@ -1,0 +1,9 @@
+@mixin input-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  input-option {
+    input[matInput] {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

@@ -1,4 +1,4 @@
-<div class="widget-header theme-text" *ngIf="editMode || widget.title">
+<div class="widget-header" *ngIf="editMode || widget.title">
   <div class="title" (click)="!editMode ? open.emit() : null">
     {{widget.title}}
   </div>

@@ -18,9 +18,6 @@ import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget';
   styleUrls: ['widget-view.scss'],
   templateUrl: 'widget-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    'class': 'theme-background-card theme-border',
-  },
 })
 export class WidgetView {
   @Input() widgetConfig: WidgetConfig<any>;

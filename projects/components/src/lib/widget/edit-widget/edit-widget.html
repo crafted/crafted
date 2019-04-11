@@ -1,8 +1,7 @@
 <form [formGroup]="form">
   <div mat-dialog-content>
-    <input class="theme-border title" matInput
-           placeholder="(Optional) Widget Title" autocomplete="off"
-           formControlName="title">
+    <input class="title" matInput placeholder="(Optional) Widget Title"
+           autocomplete="off" formControlName="title">
 
     <button-toggle-group-option formControlName="displayType" label="Type"
                                 [options]="widgetConfigs">

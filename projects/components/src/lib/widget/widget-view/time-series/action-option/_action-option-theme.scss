@@ -1,0 +1,13 @@
+@mixin action-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  action-option {
+    mat-select {
+      border-color: mat-color($foreground, divider);
+    }
+
+    .desc {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+}

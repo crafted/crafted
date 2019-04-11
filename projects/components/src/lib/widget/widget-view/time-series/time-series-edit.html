@@ -7,7 +7,7 @@
                               [options]="groupOptions">
   </button-toggle-group-option>
 
-  <div class="dataset theme-border theme-background-hover"
+  <div class="dataset"
        *ngFor="let dataset of datasetsFormArray.controls; let index = index"
        formArrayName="datasets">
 
@@ -20,8 +20,7 @@
     </dataset-option>
   </div>
 
-  <button mat-button class="add-dataset theme-background-hover theme-border"
-          type="button" (click)="addDataset()">
+  <button mat-button class="add-dataset" type="button" (click)="addDataset()">
     Add Series
   </button>
 
