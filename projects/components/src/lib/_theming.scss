@@ -5,6 +5,7 @@
 @import 'advanced-search/form/number-query-form/number-query-form-theme';
 @import 'advanced-search/form/state-query-form/state-query-form-theme';
 @import 'items-list/items-list-theme';
+@import 'dashboard/dashboard-view-theme';
 
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);
@@ -14,4 +15,5 @@
   @include number-query-form-theme($theme);
   @include state-query-form-theme($theme);
   @include items-list-theme($theme);
+  @include dashboard-view-theme($theme);
 }

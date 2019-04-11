@@ -1,0 +1,18 @@
+@mixin dashboard-view-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  dashboard-view {
+    .column-edit {
+      border-color: mat-color($foreground, divider);
+    }
+
+    .widgets {
+      background: mat-color($background, hover);
+    }
+
+    .add-widget {
+      border-color: mat-color($foreground, divider);
+    }
+  }
+}

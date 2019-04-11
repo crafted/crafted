@@ -13,7 +13,7 @@
 
         <!-- Column -->
         <div *ngFor="let column of columnGroup.columns; let columnIndex = index; let first = first; trackBy: trackByIndex"
-             class="column" [class.theme-border]="edit">
+             class="column" [class.column-edit]="edit">
           <button mat-button *ngIf="edit" class="remove-column"
                   [style.visibility]="first ? 'hidden' : ''"
                   (click)="removeColumn(columnGroup, columnIndex)">
@@ -22,8 +22,7 @@
 
           <div class="widgets-container">
 
-            <div class="widgets theme-background-hover" cdkDropList
-                 [cdkDropListData]="column.widgets"
+            <div class="widgets" cdkDropList [cdkDropListData]="column.widgets"
                  (cdkDropListDropped)="dropWidget($event)">
               <!-- Widget -->
               <widget-view *ngFor="let widget of column.widgets; let widgetIndex = index; trackBy: trackByIndex"
@@ -40,7 +39,7 @@
             </div>
 
             <button mat-raised-button *ngIf="edit" (click)="addWidget(column)"
-                    class="add-widget theme-border">
+                    class="add-widget">
               <mat-icon> add </mat-icon> Widget
             </button>
           </div>
