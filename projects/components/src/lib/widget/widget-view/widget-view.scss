@@ -1,3 +1,4 @@
+@import '../../common';
 
 :host {
   display: flex;
@@ -26,4 +27,8 @@
 
 loading {
   padding: 32px 0;
+}
+
+.mat-menu-item {
+  @include slim-menu-item();
 }

@@ -8,7 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-components": "ng build components; ./node_modules/scss-bundle/dist/bundle-cli.js -e projects/components/src/lib/_theming.scss -d ./dist/components/theming.scss"
+    "build-components-sass-common": "./node_modules/scss-bundle/dist/bundle-cli.js -c projects/components/sass-bundle-common.json",
+    "build-components-sass-theming": "./node_modules/scss-bundle/dist/bundle-cli.js -c projects/components/sass-bundle-theming.json",
+    "build-components": "ng build components; npm run build-components-sass-common; npm run build-components-sass-theming;"
   },
   "private": true,
   "dependencies": {

@@ -18,6 +18,8 @@
 @import 'widget/widget-view/time-series/time-series-edit-theme';
 @import 'widget/widget-view/widget-view-theme';
 
+@import './common';
+
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);
   @include advanced-search-theme($theme);
