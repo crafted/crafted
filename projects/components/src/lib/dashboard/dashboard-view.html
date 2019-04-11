@@ -28,7 +28,6 @@
               <widget-view *ngFor="let widget of column.widgets; let widgetIndex = index; trackBy: trackByIndex"
                            class="mat-elevation-z2" cdkDrag
                            [cdkDragDisabled]="!edit" [widget]="widget"
-                           [dataResourcesMap]="dataResourcesMap"
                            [widgetConfig]="widgetConfigs[widget.displayType]"
                            (duplicate)="duplicateWidget(column, widgetIndex, widget)"
                            (edit)="editWidget(column, widgetIndex, widget)"

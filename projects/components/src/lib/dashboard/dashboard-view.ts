@@ -1,7 +1,6 @@
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
-import {DataResources} from '@crafted/data';
 import {take} from 'rxjs/operators';
 import {
   EditWidget,
@@ -24,8 +23,6 @@ export class DashboardView {
   @Input() dashboard: Dashboard;
 
   @Input() edit: boolean;
-
-  @Input() dataResourcesMap: Map<string, DataResources>;
 
   @Input() widgetConfigs: {[key in string]: WidgetConfig<any>};
 

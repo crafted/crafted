@@ -8,7 +8,6 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import {DataResources} from '@crafted/data';
 
 import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget';
 
@@ -25,8 +24,6 @@ export class WidgetView {
   @Input() widget: Widget;
 
   @Input() editMode: boolean;
-
-  @Input() dataResourcesMap: Map<string, DataResources>;
 
   @Output() edit = new EventEmitter<void>();
 
