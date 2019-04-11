@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges, ViewChild} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {MatSelect} from '@angular/material';
-import {Sorter} from '@crafted/data';
+import {Sorter, SorterState, SortLabel} from '@crafted/data';
 
 @Component({
   selector: 'sort-state-option',
@@ -11,8 +11,8 @@ import {Sorter} from '@crafted/data';
       <div class="option">
         <mat-select class="auto-width" #sortIdSelect="matSelect"
                     (valueChange)="onChange({sort: $event, reverse: sortDirSelect.value})">
-          <mat-option *ngFor="let sortId of sortIds" [value]="sortId">
-            {{sorter.metadata.get(sortId)?.label}}
+          <mat-option *ngFor="let sort of sorts" [value]="sort.id">
+            {{sort.label}}
           </mat-option>
         </mat-select>
         <mat-select class="auto-width" #sortDirSelect="matSelect"
@@ -28,7 +28,7 @@ import {Sorter} from '@crafted/data';
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: SortStateOption, multi: true}]
 })
 export class SortStateOption implements ControlValueAccessor {
-  sortIds: string[] = [];
+  sorts: SortLabel[] = [];
 
   onChange = (_: any) => {};
 
@@ -48,13 +48,13 @@ export class SortStateOption implements ControlValueAccessor {
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges['sorter']) {
-      this.sortIds = this.sorter.getSorts().map(value => value.id);
-      this.sortId.value = this.sortIds[0];
+      this.sorts = this.sorter.getSorts();
+      this.sortId.value = this.sorts[0];
       this.sortDir.value = false;
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: SorterState): void {
     if (value) {
       this.sortId.value = value.sort;
       this.sortDir.value = value.reverse;
