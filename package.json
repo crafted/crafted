@@ -28,6 +28,7 @@
     "@angular/router": "~7.2.0",
     "@firebase/app-types": "^0.3.7",
     "@firebase/util": "^0.2.11",
+    "@swimlane/ngx-charts": "^10.1.0",
     "chart.js": "^2.7.3",
     "core-js": "^2.5.4",
     "firebase": "^5.8.6",
