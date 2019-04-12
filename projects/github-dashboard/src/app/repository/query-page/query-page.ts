@@ -154,10 +154,14 @@ export class QueryPage<T> {
     });
   }
 
-  saveState() {
+  saveAs(name: string, group: string) {
     combineLatest(this.filterer.state, this.grouper.state, this.sorter.state, this.viewer.state)
         .pipe(take(1))
         .subscribe(results => {
+          this.query = {...this.query, name, group};
+          const store = this.activeRepo.activeConfig;
+          const newQueryId = store.queries.add(this.query);
+
           const queryState = {
             filtererState: results[0],
             grouperState: results[1],
@@ -166,19 +170,11 @@ export class QueryPage<T> {
           };
 
           this.activeRepo.activeConfig.queries.update({...this.query, ...queryState});
+
+          this.router.navigate(
+              [`${this.activeRepo.activeData.name}/query/${newQueryId}`],
+              {replaceUrl: true, queryParamsHandling: 'merge'});
         });
-  }
-
-  saveAs(name: string, group: string) {
-    this.query = {...this.query, name, group};
-    const store = this.activeRepo.activeConfig;
-    const newQueryId = store.queries.add(this.query);
-
-    this.saveState();
-
-    this.router.navigate(
-        [`${this.activeRepo.activeData.name}/query/${newQueryId}`],
-        {replaceUrl: true, queryParamsHandling: 'merge'});
   }
 
   navigateToItem(itemId: number) {
