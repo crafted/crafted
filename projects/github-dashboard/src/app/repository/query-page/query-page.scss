@@ -10,15 +10,18 @@
   height: 100%;
 
   width: 500px;
-  border-right-width: 1px;
-  border-right-style: solid;
   overflow: auto;
-  max-width: 30%;
 
   :host.is-mobile & {
     width: 100%;
     max-width: 100%;
   }
+}
+
+.drag {
+  cursor: col-resize;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .title {

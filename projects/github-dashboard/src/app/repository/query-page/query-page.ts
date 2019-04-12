@@ -1,3 +1,4 @@
+import {CdkDrag, CdkDragRelease} from '@angular/cdk/drag-drop';
 import {CdkPortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
@@ -87,6 +88,10 @@ export class QueryPage<T> {
 
   public activeItem: Observable<T|null>;
 
+  public listWidth = 500;
+
+  @ViewChild(CdkDrag) draggable: CdkDrag;
+
   @ViewChild(CdkPortal) toolbarActions: CdkPortal;
 
   constructor(
@@ -134,6 +139,14 @@ export class QueryPage<T> {
 
   ngOnInit() {
     this.header.toolbarOutlet.next(this.toolbarActions);
+  }
+
+  ngAfterViewInit() {
+    this.draggable.released.subscribe((releasedEvent: CdkDragRelease) => {
+      const transformStyle = releasedEvent.source.element.nativeElement.style.transform;
+      this.listWidth += +transformStyle.match(/-*\d+px/g)[0].match(/-*\d+/g)[0];
+      this.draggable.reset();
+    })
   }
 
   ngOnDestroy() {

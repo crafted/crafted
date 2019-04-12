@@ -1,9 +1,12 @@
-<div class="master theme-border">
+<div class="master" [style.width.px]="listWidth">
   <items-list *ngIf="query" [viewer]="viewer" [grouper]="grouper"
               [sorter]="sorter" [filterer]="filterer" [dataSource]="dataSource"
               [activeItem]="activeItem | async"
               (itemSelected)="navigateToItem($event.number)">
   </items-list>
+</div>
+
+<div class="drag theme-border" *ngIf="!isMobile()" cdkDrag cdkDragLockAxis="x">
 </div>
 
 <div class="detail" *ngIf="!isMobile()">

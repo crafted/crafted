@@ -1,3 +1,4 @@
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
@@ -27,6 +28,7 @@ export class QueryPageRoutingModule {
     CommonModule,
     QueryPageRoutingModule,
     MatButtonModule,
+    DragDropModule,
     PortalModule,
     ItemDetailModule,
     ItemsListModule,
