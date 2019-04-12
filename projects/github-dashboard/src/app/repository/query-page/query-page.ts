@@ -147,8 +147,11 @@ export class QueryPage<T> {
     if (!queryType) {
       throw Error('Missing query type');
     }
-    this.queryDialog.saveAsQuery().pipe(take(1)).subscribe(
-        result => this.saveAs(result.name, result.group));
+    this.queryDialog.saveAsQuery().pipe(take(1)).subscribe(result => {
+      if (result) {
+        this.saveAs(result.name, result.group);
+      }
+    });
   }
 
   saveState() {
