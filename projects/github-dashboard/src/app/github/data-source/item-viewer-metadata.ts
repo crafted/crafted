@@ -46,7 +46,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
           fontSize: '15px',
           padding: '2px 0',
         },
-        text: `Title: ${item.title}`
+        text: `${item.title}`
       }),
     },
   ],
