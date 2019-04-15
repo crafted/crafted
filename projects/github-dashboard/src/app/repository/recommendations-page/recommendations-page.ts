@@ -2,16 +2,20 @@ import {CdkPortal} from '@angular/cdk/portal';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   QueryList,
   ViewChild,
   ViewChildren
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
+import {DataResources} from 'dist/data/public-api';
 import {combineLatest, Subject} from 'rxjs';
 import {map, mergeMap, startWith, takeUntil} from 'rxjs/operators';
+import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
+import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
 import {EditableRecommendation} from './editable-recommendation/editable-recommendation';
 
 @Component({
@@ -39,7 +43,10 @@ export class RecommendationsPage {
           }));
   trackById = (_i: number, r: Recommendation) => r.id;
 
-  constructor(private header: Header, private activeRepo: ActiveStore) {}
+  constructor(
+      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
+      private header: Header, private activeRepo: ActiveStore,
+      private recommendationDialog: RecommendationDialog) {}
 
   ngOnInit() {
     this.sortedRecommendations.pipe(takeUntil(this.destroyed)).subscribe(list => {
@@ -59,12 +66,8 @@ export class RecommendationsPage {
 
 
   add() {
-    this.activeRepo.activeConfig.recommendations.add({
-      message: 'New recommendation',
-      type: 'warning',
-      actionType: 'none',
-      action: {labels: []},
-    });
+    this.recommendationDialog.createRecommendation(
+        this.activeRepo.activeConfig, this.activeRepo.activeData, this.dataResourcesMap);
   }
 
   collapseAll() {

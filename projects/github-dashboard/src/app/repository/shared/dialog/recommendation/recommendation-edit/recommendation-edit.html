@@ -1,0 +1,44 @@
+<h1 mat-dialog-title>
+  {{data.recommendation.id ? 'Edit Recommendation' : 'New Recommendation'}}
+</h1>
+
+<div mat-dialog-content [formGroup]="formGroup">
+  <input-option formControlName="message" label="Message"></input-option>
+
+  <button-toggle-group-option formControlName="type" label="Type"
+                              [options]="typeOptions">
+  </button-toggle-group-option>
+
+  <button-toggle-group-option formControlName="data" label="Data"
+                              [options]="dataOptions">
+  </button-toggle-group-option>
+
+  <button-toggle-group-option formControlName="actionType" label="Action"
+                              [options]="actionOptions">
+  </button-toggle-group-option>
+
+  <div [ngSwitch]="formGroup.value.actionType" class="action-list">
+    <div *ngSwitchCase="'add-label'">
+      <editable-chip-list [values]="formGroup.value.action?.labels"
+                          [options]="(addLabelsOptions | async) || []"
+                          (valuesChange)="setAddLabelAction($event)">
+      </editable-chip-list>
+    </div>
+    <div *ngSwitchCase="'add-assignee'">
+      <editable-chip-list [values]="formGroup.value.action?.assignees"
+                          [options]="(addAssigneesOptions | async) || []"
+                          (valuesChange)="setAddAssigneeAction($event)">
+      </editable-chip-list>
+    </div>
+  </div>
+
+  <filter-state-option formControlName="filtererState" [filterer]="filterer"
+                       [dataSource]="dataSource">
+  </filter-state-option>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null"> Cancel </button>
+  <button mat-raised-button color="accent" [disabled]="!formGroup.valid"
+          (click)="save()"> Save </button>
+</div>

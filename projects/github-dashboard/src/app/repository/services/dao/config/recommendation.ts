@@ -17,6 +17,7 @@ export interface Recommendation {
   id?: string;
   message?: string;
   type?: RecommendationType;
+  data?: string;
   actionType?: ActionType;
   action?: Action;
   filtererState?: FiltererState;

@@ -52,9 +52,9 @@
 }
 
 .dark-theme {
-  $primary: mat-palette($mat-blue, 800);
-  $accent:  mat-palette($mat-blue, 500);
-  $warn:    mat-palette($mat-red);
+  $primary: mat-palette($mat-blue, 100);
+  $accent:  mat-palette($mat-blue, 800);
+  $warn:    mat-palette($mat-red, 200);
 
   $theme: mat-dark-theme($primary, $accent, $warn);
 

@@ -39,6 +39,8 @@ form {
 mat-button-toggle-group {
   ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
     line-height: 32px;
+    display: flex;
+    align-items: center;
   }
 }
 

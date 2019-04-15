@@ -72,6 +72,7 @@ export class QueryPage<T> {
 
     this.header.title.next(this.query.name || '');
     this.header.goBack = true;
+    this.cd.markForCheck();
   }
   get query(): Query {
     return this._query;
@@ -171,7 +172,8 @@ export class QueryPage<T> {
     combineLatest(this.filterer.state, this.grouper.state, this.sorter.state, this.viewer.state)
         .pipe(take(1))
         .subscribe(results => {
-          this.query = {...this.query, name, group};
+          this.query.name = name;
+          this.query.group = group;
           const store = this.activeRepo.activeConfig;
           const newQueryId = store.queries.add(this.query);
 

@@ -5,6 +5,7 @@ import {MatButtonToggleGroup} from '@angular/material';
 export interface ButtonToggleOption {
   id: string;
   label: string;
+  icon?: string;
 }
 
 @Component({
@@ -16,13 +17,14 @@ export interface ButtonToggleOption {
         <mat-button-toggle-group [multiple]="multiple" (change)="onChange($event.value)"
                                  #buttonToggleGroup="matButtonToggleGroup">
           <mat-button-toggle *ngFor="let option of options" [value]="option.id">
+            <mat-icon *ngIf="option.icon"> {{option.icon}} </mat-icon>
             {{option.label}}
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
     </div>
   `,
-  styleUrls: ['../../edit-form.scss'],
+  styleUrls: ['../../edit-form.scss', 'button-toggle-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: ButtonToggleGroupOption, multi: true}]
 })
