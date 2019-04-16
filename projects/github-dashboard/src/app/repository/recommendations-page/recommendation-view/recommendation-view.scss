@@ -12,6 +12,11 @@ mat-icon.type {
 .message {
   flex: 1;
   margin: 0 8px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .details {

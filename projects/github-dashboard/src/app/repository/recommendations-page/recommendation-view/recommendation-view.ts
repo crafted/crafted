@@ -1,6 +1,7 @@
 
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   DataResources,
   DateQuery,
@@ -47,6 +48,7 @@ export class RecommendationView {
 
   constructor(
       private recommendationDialog: RecommendationDialog, private activeRepo: ActiveStore,
+      private router: Router, private activatedRoute: ActivatedRoute,
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
@@ -59,20 +61,27 @@ export class RecommendationView {
     }
   }
 
-  edit(recommendation: Recommendation) {
+  edit() {
     this.recommendationDialog.edit(
-        recommendation, this.activeRepo.activeConfig, this.activeRepo.activeData,
+        this.recommendation, this.activeRepo.activeConfig, this.activeRepo.activeData,
         this.dataResourcesMap);
   }
 
-  duplicate(recommendation: Recommendation) {
-    const newRecommendation = {...recommendation};
+  duplicate() {
+    const newRecommendation = {...this.recommendation};
     delete newRecommendation.id;
     this.activeRepo.activeConfig.recommendations.add(newRecommendation);
   }
 
-  remove(recommendation: Recommendation) {
-    this.recommendationDialog.remove(recommendation, this.activeRepo.activeConfig);
+  remove() {
+    this.recommendationDialog.remove(this.recommendation, this.activeRepo.activeConfig);
+  }
+
+  open() {
+    this.router.navigate([`../../../${this.activeRepo.activeName}/query/new`], {
+      relativeTo: this.activatedRoute.parent,
+      queryParams: {recommendationId: this.recommendation.id},
+    });
   }
 }
 

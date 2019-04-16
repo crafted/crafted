@@ -4,7 +4,7 @@
     {{typeMeta.icon}}
   </mat-icon>
 
-  <div class="message">
+  <div class="message" (click)="open()">
     {{recommendation.message}}
 
     ({{(resultsCount | async) || '..'}})
