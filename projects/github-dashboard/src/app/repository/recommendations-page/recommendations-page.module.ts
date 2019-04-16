@@ -2,15 +2,12 @@ import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule, MatIconModule} from '@angular/material';
+import {MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {
   RecommendationDialogModule
 } from '../shared/dialog/recommendation/recommendation-dialog.module';
 import {LoadingModule} from '../shared/loading/loading.module';
-import {
-  EditableRecommendationModule
-} from './editable-recommendation/editable-recommendation.module';
 import {RecommendationsPage} from './recommendations-page';
 
 const routes: Routes = [{path: '', component: RecommendationsPage}];
@@ -23,11 +20,12 @@ export class RecommendationsPageRoutingModule {
   imports: [
     CommonModule,
     MatButtonModule,
+    MatDividerModule,
     MatIconModule,
+    MatMenuModule,
     PortalModule,
     LoadingModule,
     ReactiveFormsModule,
-    EditableRecommendationModule,
     RecommendationsPageRoutingModule,
     RecommendationDialogModule,
   ],

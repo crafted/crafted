@@ -13,6 +13,18 @@ export type RecommendationType = 'warning'|'suggestion';
 
 export type ActionType = 'none'|'add-label'|'add-assignee';
 
+export const RecommendationTypes:
+    {[key in RecommendationType]: {icon: string, label: string, warn?: boolean}} = {
+      'warning': {icon: 'warning', label: 'Warning', warn: true},
+      'suggestion': {icon: 'label_important', label: 'Suggestion'},
+    }
+
+export const ActionTypes: {[key in ActionType]: {label: string}} = {
+  'none': {label: 'None'},
+  'add-label': {label: 'Add Label'},
+  'add-assignee': {label: 'Add Assignee'},
+}
+
 export interface Recommendation {
   id?: string;
   message?: string;

@@ -6,7 +6,11 @@ import {ButtonToggleOption} from 'dist/components/lib/widget';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
-import {Recommendation} from '../../../../services/dao/config/recommendation';
+import {
+  ActionTypes,
+  Recommendation,
+  RecommendationTypes
+} from '../../../../services/dao/config/recommendation';
 import {DataStore} from '../../../../services/dao/data-dao';
 
 
@@ -28,7 +32,7 @@ export interface RecommendationEditResult {
 })
 export class RecommendationEdit {
   formGroup = new FormGroup({
-    message: new FormControl(''),
+    message: new FormControl('', Validators.required),
     type: new FormControl('', Validators.required),
     data: new FormControl('', Validators.required),
     action: new FormControl(null),
@@ -38,16 +42,13 @@ export class RecommendationEdit {
 
   dataOptions: ButtonToggleOption[] = [];
 
-  typeOptions: ButtonToggleOption[] = [
-    {id: 'warning', icon: 'warning', label: 'Warning'},
-    {id: 'suggestion', icon: 'label_important', label: 'Suggestion'},
-  ];
+  typeOptions: ButtonToggleOption[] = Object.keys(RecommendationTypes).map(key => {
+    return {id: key, icon: RecommendationTypes[key].icon, label: RecommendationTypes[key].label};
+  });
 
-  actionOptions: ButtonToggleOption[] = [
-    {id: 'add-label', label: 'Add Label'},
-    {id: 'add-assignee', label: 'Add Assignee'},
-    {id: 'none', label: 'None'},
-  ];
+  actionOptions: ButtonToggleOption[] = Object.keys(ActionTypes).map(key => {
+    return {id: key, label: ActionTypes[key].label};
+  });
 
   addLabelsOptions = this.data.dataStore.labels.list.pipe(map(labels => {
     const labelNames = labels.map(l => l.name);
