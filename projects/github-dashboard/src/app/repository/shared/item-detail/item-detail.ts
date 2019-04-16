@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input, SimpleChanges} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {filter, map, mergeMap} from 'rxjs/operators';
+import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
 import {Github, TimelineEvent, UserComment} from '../../../service/github';
 import {ActiveStore} from '../../services/active-store';
@@ -33,6 +33,21 @@ export class ItemDetail {
   @Input() itemId: string;
 
   item: Observable<Item|null>;
+
+  addLabelOptions = this.activeRepo.activeData.labels.list.pipe(map(labels => {
+    const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
+    labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+    return labelOptions;
+  }));
+
+  addAssigneeOptions = this.activeRepo.activeData.items.list.pipe(map(items => {
+    const assigneesSet = new Set<string>();
+    items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
+    const assigneesList: string[] = [];
+    assigneesSet.forEach(a => assigneesList.push(a));
+    return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
+        .map(a => ({id: a, label: a}));
+  }));
 
   private destroyed = new Subject();
 
@@ -92,5 +107,25 @@ export class ItemDetail {
   ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  addLabel(id: string, label: string) {
+    this.github.addLabel(this.activeRepo.activeName, this.itemId, label).pipe(take(1)).subscribe();
+
+    this.item.pipe(take(1)).subscribe(item => {
+      item.labels.push(+id);
+      this.activeRepo.activeData.items.update(item);
+    });
+  }
+
+  addAssignee(id: string, label: string) {
+    this.github.addAssignee(this.activeRepo.activeName, this.itemId, label)
+        .pipe(take(1))
+        .subscribe();
+
+    this.item.pipe(take(1)).subscribe(item => {
+      item.labels.push(+id);
+      this.activeRepo.activeData.items.update(item);
+    });
   }
 }

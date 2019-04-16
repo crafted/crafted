@@ -1,3 +1,5 @@
+@import '../../../../../../../dist/components/common.scss';
+
 :host {
   font-size: 14px;
   display: block;
@@ -13,9 +15,14 @@
   font-size: 22px;
 }
 
-.detail, .item-labels {
+.detail {
   display: block;
   padding-bottom: 16px;
+}
+
+.assignees, label-list {
+  display: inline-block;
+  margin-right: 8px;
 }
 
 .body {
@@ -49,4 +56,18 @@
 
 .activities mat-divider {
   margin-bottom: 16px;
+}
+
+button.add-assignee, button.add-label {
+  height: 32px;
+  border-radius: 8px;
+  line-height: 32px;
+}
+
+::ng-deep .option-menu {
+  max-height: 500px;
+}
+
+.mat-menu-item {
+  @include slim-menu-item();
 }

@@ -19,13 +19,22 @@
             [class.theme-background-positive]="item.state === 'open'">
         {{item.state}} </span>
     </div>
-    <div class="detail" *ngIf="item.assignees.length > 0">
-      Assigned to {{item.assignees}}
+
+    <div class="detail">
+      <span *ngIf="item.assignees.length > 0" class="assignees">
+        Assigned to {{item.assignees.join(', ')}}
+      </span>
+      <button mat-stroked-button class="add-assignee"
+              [matMenuTriggerFor]="addAssigneeMenu"> + Add assignee </button>
+    </div>
+
+    <div class="detail">
+      <label-list *ngIf="item.labels.length" [labelIds]="item.labels">
+      </label-list>
+      <button mat-stroked-button class="add-label"
+              [matMenuTriggerFor]="addLabelMenu"> + Add label </button>
     </div>
   </div>
-
-  <label-list *ngIf="item.labels.length" [labelIds]="item.labels"
-              class="item-labels"></label-list>
 
   <ng-container
                 *ngFor="let recommendation of recommendations | async; let last = last">
@@ -50,7 +59,20 @@
                            [timelineEvent]="a.context">
       </timeline-event-view>
     </ng-container>
-
   </div>
-
 </ng-container>
+
+
+<mat-menu #addAssigneeMenu="matMenu" class="option-menu">
+  <button mat-menu-item *ngFor="let option of addAssigneeOptions | async"
+          (click)="addAssignee(option.id, option.assignee)">
+    {{option.label}}
+  </button>
+</mat-menu>
+
+<mat-menu #addLabelMenu="matMenu" class="option-menu">
+  <button mat-menu-item *ngFor="let option of addLabelOptions | async"
+          (click)="addLabel(option.id, option.label)">
+    {{option.label}}
+  </button>
+</mat-menu>
