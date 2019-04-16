@@ -68,6 +68,21 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
   ],
 
   [
+    'state',
+    {
+      label: 'State',
+
+      render: item => {
+        return {
+          classList: 'theme-secondary-text',
+              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+              text: `State: ${item.state}`,
+        }
+      },
+    },
+  ],
+
+  [
     'creationDate',
     {
       label: 'Date Created',
