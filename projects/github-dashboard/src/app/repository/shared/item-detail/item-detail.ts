@@ -118,13 +118,13 @@ export class ItemDetail {
     });
   }
 
-  addAssignee(id: string, label: string) {
-    this.github.addAssignee(this.activeRepo.activeName, this.itemId, label)
+  addAssignee(assignee: string) {
+    this.github.addAssignee(this.activeRepo.activeName, this.itemId, assignee)
         .pipe(take(1))
         .subscribe();
 
     this.item.pipe(take(1)).subscribe(item => {
-      item.labels.push(+id);
+      item.assignees.push(assignee);
       this.activeRepo.activeData.items.update(item);
     });
   }
