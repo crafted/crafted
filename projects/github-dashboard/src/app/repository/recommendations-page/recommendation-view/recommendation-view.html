@@ -6,6 +6,8 @@
 
   <div class="message">
     {{recommendation.message}}
+
+    ({{(resultsCount | async) || '..'}})
   </div>
 
   <button mat-icon-button [matMenuTriggerFor]="recommendationMenu">
@@ -15,7 +17,7 @@
 
 <div class="details theme-secondary-text">
   <div class="filterer">
-    {{filtererString}}
+    {{filtererString | async}}
   </div>
 
   <div *ngIf="recommendation.actionType !== 'none'">

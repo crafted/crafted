@@ -11,7 +11,7 @@
     <advanced-search [filterer]="filterer" [dataSource]="dataSource">
     </advanced-search>
     <div class="results-count" *ngIf="resultsCount">
-      Results: {{resultsCount | async}}
+      {{resultsCount | async}} results
     </div>
   </div>
 </div>
