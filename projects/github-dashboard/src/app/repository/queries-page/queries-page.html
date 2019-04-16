@@ -40,14 +40,14 @@
 
 <ng-template cdkPortal #newButton>
   <ng-container *ngIf="dataResourcesIds.length === 1; else createMenu">
-    <button mat-raised-button color="primary" class="create"
+    <button mat-raised-button color="accent" class="create"
             (click)="createQuery(queryTypes[0])">
       Create New Query
     </button>
   </ng-container>
 
   <ng-template #createMenu>
-    <button mat-raised-button color="primary" class="create"
+    <button mat-raised-button color="accent" class="create"
             [matMenuTriggerFor]="createQueryMenu">
       <div class="button-text">
         Create New Query

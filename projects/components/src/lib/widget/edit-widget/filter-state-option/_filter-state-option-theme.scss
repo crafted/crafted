@@ -1,0 +1,9 @@
+@mixin filter-state-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+
+  filter-state-option {
+    .results-count {
+      color: mat-color($foreground, secondary-text);;
+    }
+  }
+}

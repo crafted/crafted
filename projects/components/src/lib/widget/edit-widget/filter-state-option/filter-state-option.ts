@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
-import {Subject, Subscription} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Observable, Subject, Subscription} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
 import {SavedFiltererState} from '../edit-widget';
 
 interface SavedFiltererStateGroup {
@@ -13,7 +13,7 @@ interface SavedFiltererStateGroup {
 @Component({
   selector: 'filter-state-option',
   templateUrl: 'filter-state-option.html',
-  styleUrls: ['../../edit-form.scss'],
+  styleUrls: ['../../edit-form.scss', 'filter-state-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: FilterStateOption, multi: true}]
 })
@@ -30,6 +30,8 @@ export class FilterStateOption implements ControlValueAccessor {
 
   savedFiltererStateGroups: SavedFiltererStateGroup[] = [];
 
+  resultsCount: Observable<number>;
+
   private destroyed = new Subject();
 
   private filtererStateSubscription: Subscription;
@@ -43,6 +45,9 @@ export class FilterStateOption implements ControlValueAccessor {
       if (this.filtererStateSubscription) {
         this.filtererStateSubscription.unsubscribe();
       }
+
+      this.resultsCount =
+          this.dataSource.data.pipe(this.filterer.filter(), map(items => items.length));
 
       this.filtererStateSubscription =
           this.filterer.state.pipe(takeUntil(this.destroyed)).subscribe(state => {

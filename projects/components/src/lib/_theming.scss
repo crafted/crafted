@@ -7,6 +7,7 @@
 @import 'items-list/items-list-theme';
 @import 'dashboard/dashboard-view-theme';
 @import 'widget/edit-widget/date-option/date-option-theme';
+@import 'widget/edit-widget/filter-state-option/filter-state-option-theme';
 @import 'widget/edit-widget/group-state-option/group-state-option-theme';
 @import 'widget/edit-widget/sort-state-option/sort-state-option-theme';
 @import 'widget/edit-widget/group-state-option/group-state-option-theme';
@@ -38,5 +39,6 @@
   @include action-option-theme($theme);
   @include dataset-option-theme($theme);
   @include time-series-edit-theme($theme);
+  @include filter-state-option-theme($theme);
   @include widget-view-theme($theme);
 }

@@ -15,12 +15,12 @@
 
 <ng-template cdkPortal>
   <ng-container *ngIf="query">
-    <button mat-raised-button color="primary" *ngIf="!query.id" class="save-as"
+    <button mat-raised-button color="accent" *ngIf="!query.id" class="save-as"
             (click)="openSaveAsDialog()">
       Save As
     </button>
 
-    <button mat-raised-button color="primary" *ngIf="query.id"
+    <button mat-raised-button color="accent" *ngIf="query.id"
             (click)="saveState()" [disabled]="!(canSave | async)">
       {{canSave ? 'Save' : 'Saved'}}
     </button>
