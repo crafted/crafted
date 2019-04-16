@@ -1,4 +1,4 @@
-<div class="recommendations" *ngIf="sortedRecommendations | async; let list">
+<div class="recommendations" *ngIf="dataSource.data | async; let list">
 
   <div *ngIf="!list.length" class="empty-state theme-secondary-text">
     <mat-icon class="page-icon"> label </mat-icon>
@@ -11,16 +11,21 @@
     </div>
   </div>
 
-  <div class="heading" *ngIf="(recommendations | async)?.length > 3">
-    <input [formControl]="filter" class="theme-border"
-           placeholder="Filter recommendations">
+  <div class="heading" *ngIf="list.length > 3">
+    <advanced-search [filterer]="filterer"></advanced-search>
   </div>
 
-  <div *ngFor="let recommendation of list; trackBy: trackById"
-       class="recommendation">
-    <recommendation-view [recommendation]="recommendation">
-    </recommendation-view>
-    <mat-divider></mat-divider>
+  <div
+       *ngFor="let group of recommendationGroups | async; trackBy: trackByGroupId">
+    <div class="group-title" *ngIf="group.title">
+      {{group.title}}
+    </div>
+    <ng-container *ngFor="let recommendation of group.items">
+      <recommendation-view [recommendation]="recommendation">
+      </recommendation-view>
+      <mat-divider></mat-divider>
+    </ng-container>
+
   </div>
 </div>
 

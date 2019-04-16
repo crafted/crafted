@@ -1,14 +1,16 @@
 import {CdkPortal} from '@angular/cdk/portal';
 import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataResources} from '@crafted/data';
-import {combineLatest, Subject} from 'rxjs';
-import {map, mergeMap, startWith, takeUntil} from 'rxjs/operators';
+import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
+import {Subject} from 'rxjs';
+import {mergeMap, takeUntil} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
+import {RecommendationGrouperMetadata} from './metadata/grouper-metadata';
+import {RecommendationSorterMetadata} from './metadata/sorter-metadata';
 
 @Component({
   selector: 'recommendations-page',
@@ -23,23 +25,31 @@ export class RecommendationsPage {
 
   private destroyed = new Subject();
 
-  recommendations = this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list));
+  dataSource =
+      new DataSource(this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list)));
 
-  sortedRecommendations =
-      combineLatest(this.recommendations, this.filter.valueChanges.pipe(startWith('')))
-          .pipe(map(result => {
-            const filtered = result[0].filter(r => this.matchesFilter(r));
-            return filtered.sort((a, b) => (a.dbAdded! > b.dbAdded!) ? -1 : 1);
-          }));
+  filterer = new Filterer(new Map());
+
+  grouper = new Grouper(RecommendationGrouperMetadata);
+
+  sorter = new Sorter(RecommendationSorterMetadata);
+
+  recommendationGroups =
+      this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort(), this.grouper.group());
+
   trackById = (_i: number, r: Recommendation) => r.id;
+
+  trackByGroupId = (_i: number, g: Group<Recommendation>) => g.id;
 
   constructor(
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
       private header: Header, private activeRepo: ActiveStore,
-      private recommendationDialog: RecommendationDialog) {}
+      private recommendationDialog: RecommendationDialog) {
+    this.filterer.tokenizeItem = tokenizeRecommendation;
+  }
 
   ngOnInit() {
-    this.sortedRecommendations.pipe(takeUntil(this.destroyed)).subscribe(list => {
+    this.dataSource.data.pipe(takeUntil(this.destroyed)).subscribe(list => {
       if (list.length) {
         this.header.toolbarOutlet.next(this.toolbarActions);
       } else {
@@ -66,4 +76,9 @@ export class RecommendationsPage {
         .forEach(key => values.push(JSON.stringify((recommendation as any)[key] as any)));
     return values.join(';').toLowerCase().indexOf(this.filter.value.toLowerCase()) != -1;
   }
+}
+
+function tokenizeRecommendation(recommendation: Recommendation) {
+  // TODO: Fill out more of the tokenization
+  return recommendation.message;
 }

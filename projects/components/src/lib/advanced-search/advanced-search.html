@@ -1,7 +1,8 @@
 <div class="search-bar">
   <input [formControl]="searchFormControl" placeholder="Search" class="search">
   <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu" type="button"
-          matTooltip="Add filter" class="new-filter">
+          *ngIf="filterer.metadata.size > 0" matTooltip="Add filter"
+          class="new-filter">
     <mat-icon> filter_list </mat-icon>
   </button>
 </div>

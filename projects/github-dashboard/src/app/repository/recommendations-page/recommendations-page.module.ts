@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
+import {AdvancedSearchModule} from '@crafted/components';
 import {
   RecommendationDialogModule
 } from '../shared/dialog/recommendation/recommendation-dialog.module';
@@ -30,6 +31,7 @@ export class RecommendationsPageRoutingModule {
     RecommendationsPageRoutingModule,
     RecommendationDialogModule,
     RecommendationViewModule,
+    AdvancedSearchModule,
   ],
   declarations: [RecommendationsPage],
   exports: [RecommendationsPage],
