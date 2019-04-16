@@ -1,18 +1,12 @@
 import {CdkPortal} from '@angular/cdk/portal';
-import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataResources, FiltererState, NumberQuery} from '@crafted/data';
-import {DateQuery, InputQuery, StateQuery} from 'projects/data/src/lib/query';
+import {DataResources} from '@crafted/data';
 import {combineLatest, Subject} from 'rxjs';
 import {map, mergeMap, startWith, takeUntil} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
-import {
-  ActionTypes,
-  Recommendation,
-  RecommendationTypes
-} from '../services/dao/config/recommendation';
+import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
 
@@ -23,10 +17,6 @@ import {RecommendationDialog} from '../shared/dialog/recommendation/recommendati
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecommendationsPage {
-  actionTypes = ActionTypes;
-
-  recommendationTypes = RecommendationTypes;
-
   filter = new FormControl('');
 
   @ViewChild(CdkPortal) toolbarActions: CdkPortal;
@@ -75,67 +65,5 @@ export class RecommendationsPage {
     Object.keys(recommendation)
         .forEach(key => values.push(JSON.stringify((recommendation as any)[key] as any)));
     return values.join(';').toLowerCase().indexOf(this.filter.value.toLowerCase()) != -1;
-  }
-
-  filtererStateToString(filtererState: FiltererState, dataType: string) {
-    let str = '';
-
-    if (filtererState.search) {
-      str += `Search: "${filtererState.search}"`;
-    }
-
-    const equalityToString = {
-      'notContains': `does not contain`,
-      'notIs': 'is not',
-      'greaterThan': 'is greater than',
-      'lessThan': 'is less than',
-      'equalTo': 'is equal to',
-    };
-
-    filtererState.filters.forEach(filter => {
-      if (str) {
-        str += ', ';
-      }
-
-      const filterer = this.dataResourcesMap.get(dataType).filterer();
-      const equality = equalityToString[filter.query.equality] || filter.query.equality;
-      switch (filterer.metadata.get(filter.type).queryType) {
-        case 'input':
-          const inputQuery = filter.query as InputQuery;
-          str += `${filter.type} ${equality} "${inputQuery.input}"`;
-          break;
-        case 'number':
-          const numberQuery = filter.query as NumberQuery;
-          str += `${filter.type} ${equality} ${numberQuery.value}`;
-          break;
-        case 'date':
-          const datePipe = new DatePipe('en-us');
-          const dateQuery = filter.query as DateQuery;
-          str += `${filter.type} ${equality} ${datePipe.transform(dateQuery.date)}`;
-          break;
-        case 'state':
-          const stateQuery = filter.query as StateQuery;
-          str += `${filter.type} ${equality} ${stateQuery.state}`;
-          break;
-      }
-    });
-
-    return str;
-  }
-
-  edit(recommendation: Recommendation) {
-    this.recommendationDialog.edit(
-        recommendation, this.activeRepo.activeConfig, this.activeRepo.activeData,
-        this.dataResourcesMap);
-  }
-
-  duplicate(recommendation: Recommendation) {
-    const newRecommendation = {...recommendation};
-    delete newRecommendation.id;
-    this.activeRepo.activeConfig.recommendations.add(newRecommendation);
-  }
-
-  remove(recommendation: Recommendation) {
-    this.recommendationDialog.remove(recommendation, this.activeRepo.activeConfig);
   }
 }

@@ -8,6 +8,7 @@ import {
   RecommendationDialogModule
 } from '../shared/dialog/recommendation/recommendation-dialog.module';
 import {LoadingModule} from '../shared/loading/loading.module';
+import {RecommendationViewModule} from './recommendation-view/recommendation-view.module';
 import {RecommendationsPage} from './recommendations-page';
 
 const routes: Routes = [{path: '', component: RecommendationsPage}];
@@ -28,6 +29,7 @@ export class RecommendationsPageRoutingModule {
     ReactiveFormsModule,
     RecommendationsPageRoutingModule,
     RecommendationDialogModule,
+    RecommendationViewModule,
   ],
   declarations: [RecommendationsPage],
   exports: [RecommendationsPage],

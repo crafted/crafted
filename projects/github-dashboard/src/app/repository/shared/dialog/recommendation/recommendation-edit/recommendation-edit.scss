@@ -3,6 +3,11 @@ mat-form-field {
 }
 
 editable-chip-list {
-  display: block;
+  margin-left: 8px;
+}
+
+.action-list {
+  font-size: 14px;
   margin-left: 140px;
+  line-height: 48px;
 }

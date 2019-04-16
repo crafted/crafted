@@ -1,0 +1,24 @@
+mat-icon.type {
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.message {
+  flex: 1;
+  margin: 0 8px;
+}
+
+.details {
+  margin-left: 30px;
+  font-size: 14px;
+}
+
+.filterer {
+  padding-bottom: 4px;
+}

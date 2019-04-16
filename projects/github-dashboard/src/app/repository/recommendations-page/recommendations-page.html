@@ -11,7 +11,6 @@
     </div>
   </div>
 
-
   <div class="heading" *ngIf="(recommendations | async)?.length > 3">
     <input [formControl]="filter" class="theme-border"
            placeholder="Filter recommendations">
@@ -19,56 +18,9 @@
 
   <div *ngFor="let recommendation of list; trackBy: trackById"
        class="recommendation">
-    <div class="title"
-         *ngIf="recommendationTypes[recommendation.type]; let typeMeta">
-      <mat-icon [class.theme-warn]="typeMeta.warn" class="type">
-        {{typeMeta.icon}}
-      </mat-icon>
-
-      <div class="message">
-        {{recommendation.message}}
-      </div>
-
-      <button mat-icon-button [matMenuTriggerFor]="recommendationMenu">
-        <mat-icon> more_vert </mat-icon>
-      </button>
-    </div>
-
-    <div class="details theme-secondary-text">
-      <div class="filterer">
-        {{filtererStateToString(recommendation.filtererState, recommendation.data)}}
-      </div>
-
-      <div *ngIf="recommendation.actionType !== 'none'">
-        {{actionTypes[recommendation.actionType].label}}:
-
-        <ng-container [ngSwitch]="recommendation.actionType">
-          <ng-container *ngSwitchCase="'add-label'">
-            {{recommendation.action.labels.join(', ')}}
-          </ng-container>
-
-          <ng-container *ngSwitchCase="'add-assignee'">
-            {{recommendation.action.assignees.join(', ')}}
-          </ng-container>
-        </ng-container>
-      </div>
-    </div>
+    <recommendation-view [recommendation]="recommendation">
+    </recommendation-view>
     <mat-divider></mat-divider>
-
-    <mat-menu #recommendationMenu="matMenu" xPosition="before">
-      <button mat-menu-item (click)="edit(recommendation)">
-        <mat-icon> edit </mat-icon>
-        Edit
-      </button>
-      <button mat-menu-item (click)="duplicate(recommendation)">
-        <mat-icon> file_copy </mat-icon>
-        Duplicate
-      </button>
-      <button mat-menu-item (click)="remove(recommendation)">
-        <mat-icon> delete </mat-icon>
-        Remove
-      </button>
-    </mat-menu>
   </div>
 </div>
 

@@ -19,12 +19,14 @@
 
   <div [ngSwitch]="formGroup.value.actionType" class="action-list">
     <div *ngSwitchCase="'add-label'">
+      Labels:
       <editable-chip-list [values]="formGroup.value.action?.labels"
                           [options]="(addLabelsOptions | async) || []"
                           (valuesChange)="setAddLabelAction($event)">
       </editable-chip-list>
     </div>
     <div *ngSwitchCase="'add-assignee'">
+      Assignees:
       <editable-chip-list [values]="formGroup.value.action?.assignees"
                           [options]="(addAssigneesOptions | async) || []"
                           (valuesChange)="setAddAssigneeAction($event)">
