@@ -15,6 +15,7 @@ import {
   TimeSeriesModule
 } from '@crafted/components';
 import {AppComponent} from './app.component';
+import {DemoAdvancedSearchOr} from './demo-advanced-search-or/demo-advanced-search-or';
 import {DemoAdvancedSearch} from './demo-advanced-search/demo-advanced-search';
 import {BarChartModule} from './demo-dashboard/bar-chart/bar-chart.module';
 import {DemoDashboard} from './demo-dashboard/demo-dashboard';
@@ -27,6 +28,7 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
     AppComponent,
     DemoItemsSummary,
     DemoAdvancedSearch,
+    DemoAdvancedSearchOr,
     DemoDisplayOptions,
     DemoItemsList,
     DemoDashboard,
@@ -48,6 +50,7 @@ import {DemoItemsSummary} from './demo-items-summary/demo-items-summary';
     RouterModule.forRoot([
       {path: 'demo-items-summary', component: DemoItemsSummary},
       {path: 'demo-advanced-search', component: DemoAdvancedSearch},
+      {path: 'demo-advanced-search-or', component: DemoAdvancedSearchOr},
       {path: 'demo-display-options', component: DemoDisplayOptions},
       {path: 'demo-items-list', component: DemoItemsList},
       {path: 'demo-dashboard', component: DemoDashboard},
