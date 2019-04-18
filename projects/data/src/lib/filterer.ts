@@ -1,4 +1,4 @@
-import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {combineLatest, EMPTY, Observable, ReplaySubject} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 import {DateQuery, InputQuery, NumberQuery, Query, QueryType, StateQuery} from './query';
 
@@ -100,8 +100,7 @@ export class Filterer<T = any, C = any> {
   /** Gets a stream that returns the items and updates whenever the filters or search changes. */
   filter(): (items: Observable<T[]>) => Observable<T[]> {
     return (items: Observable<T[]>) => {
-      const contextProvider = this.contextProvider || of(() => null);
-      return combineLatest(items, this.state, contextProvider).pipe(map(results => {
+      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
         const items = results[0];
         const filters = results[1].filters;
         const search = results[1].search;
@@ -116,8 +115,7 @@ export class Filterer<T = any, C = any> {
   autocomplete(filtererMetadata: InputFiltererMetadata<T, C>):
       (items: Observable<T[]>) => Observable<string[]> {
     return (items: Observable<T[]>) => {
-      const contextProvider = this.contextProvider || of(() => null);
-      return combineLatest(items, contextProvider).pipe(map(results => {
+      return combineLatest(items, this.contextProvider).pipe(map(results => {
         if (!filtererMetadata.autocomplete) {
           return [];
         }

@@ -1,4 +1,4 @@
-import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {combineLatest, EMPTY, Observable, ReplaySubject} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
 export interface SorterState {
@@ -52,8 +52,7 @@ export class Sorter<T = any, C = any> {
 
   sort(): (items: Observable<T[]>) => Observable<T[]> {
     return (items: Observable<T[]>) => {
-      const contextProvider = this.contextProvider || of(() => null);
-      return combineLatest(items, this.state, contextProvider).pipe(map(results => {
+      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
         const sortMetadata = this.metadata.get(results[1].sort);
         if (!sortMetadata) {
           throw new Error(`No configuration set up for sort ${results[1].sort}`);

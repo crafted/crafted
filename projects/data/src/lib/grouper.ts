@@ -1,4 +1,4 @@
-import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {combineLatest, EMPTY, Observable, ReplaySubject} from 'rxjs';
 import {map, mergeMap, startWith} from 'rxjs/operators';
 
 export interface GrouperState {
@@ -37,8 +37,13 @@ export class Grouper<T = any, C = any> {
 
   constructor(options: GrouperOptions<T, C> = {}) {
     this.metadata = options.metadata || new Map();
-    this.state.next(options.initialState || {group: this.getGroups()[0].id});
     this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
+
+    if (options.initialState) {
+      this.state.next(options.initialState);
+    } else if (this.metadata.size > 0) {
+      this.state.next({group: this.getGroups()[0].id});
+    }
   }
 
   group(): (items: Observable<T[]>) => Observable<Group<T>[]> {
@@ -63,9 +68,7 @@ export class Grouper<T = any, C = any> {
               }),
               mergeMap(itemGroups => {
                 const titleTransform = config!.titleTransform || ((title: string) => title);
-
-                const contextProvider = this.contextProvider || of(null);
-                return contextProvider.pipe(map(context => {
+                return this.contextProvider.pipe(map(context => {
                   itemGroups.forEach(itemGroup => {
                     itemGroup.title = titleTransform(itemGroup.title, context);
                   });
@@ -73,7 +76,6 @@ export class Grouper<T = any, C = any> {
                 }));
               }),
               map(itemGroups => {
-                // TODO: Move sort function to the metadata
                 return itemGroups.sort((a, b) => a.title < b.title ? -1 : 1);
               }));
     };
