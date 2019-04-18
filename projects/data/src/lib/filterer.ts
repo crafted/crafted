@@ -1,5 +1,5 @@
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {map, startWith, take} from 'rxjs/operators';
 import {DateQuery, InputQuery, NumberQuery, Query, QueryType, StateQuery} from './query';
 
 export interface Filter {
@@ -49,35 +49,52 @@ export interface FilterOption {
 
 export type FiltererContextProvider<M> = Observable<M>;
 
-export class Filterer<T = any, M = any> {
-  state = new BehaviorSubject<FiltererState>({filters: [], search: ''});
+export interface FiltererOptions<T, C> {
+  metadata?: Map<string, FiltererMetadata<T, C>>;
+  contextProvider?: FiltererContextProvider<C>;
+  initialState?: FiltererState;
+  initialQueries?: {[key in QueryType]: Query};
+  tokenizeItem?: (item: T) => string;
+}
 
-  /** Default query values to use when a new filter is added without an initial Query. */
-  defaultQueries: {[key in QueryType]: Query} = {
-    date: {date: '', equality: 'before'},
-    input: {input: '', equality: 'contains'},
-    number: {value: 0, equality: 'greaterThan'},
-    state: {state: '', equality: 'is'}
-  };
+/** Default query values to use when a new filter is added without an initial Query. */
+const DEFAULT_QUERIES: {[key in QueryType]: Query} = {
+  date: {date: '', equality: 'before'},
+  input: {input: '', equality: 'contains'},
+  number: {value: 0, equality: 'greaterThan'},
+  state: {state: '', equality: 'is'}
+};
 
-  /** Default and naive tokenize function that combines the item's property values into a string. */
-  tokenizeItem =
-      (data: T) => {
-        return Object.keys(data)
-            .reduce(
-                (currentTerm: string, key: string) => {
-                  return currentTerm + (data as {[key: string]: any})[key] + '☺';
-                },
-                '')
-            .toLowerCase();
-      }
-
-  constructor(
-      public metadata: Map<string, FiltererMetadata<T, M>>, private contextProvider?: Observable<M>,
-      initialState?: FiltererState) {
-    if (initialState) {
-      this.state.next(initialState);
+/** Default and naive tokenize function that combines the item's property values into a string. */
+const DEFAULT_TOKENIZE_ITEM =
+    (data: any) => {
+      return Object.keys(data)
+          .reduce(
+              (currentTerm: string, key: string) => {
+                return currentTerm + (data as {[key: string]: any})[key] + '☺';
+              },
+              '')
+          .toLowerCase();
     }
+
+export class Filterer<T = any, C = any> {
+  // Can this be made private?
+  public metadata: Map<string, FiltererMetadata<T, C>>;
+
+  private contextProvider: Observable<C>;
+
+  private defaultQueries: {[key in QueryType]: Query};
+
+  state = new ReplaySubject<FiltererState>(1);
+
+  private tokenizeItem: (item: T) => string;
+
+  constructor(options: FiltererOptions<T, C> = {}) {
+    this.metadata = options.metadata || new Map();
+    this.state.next(options.initialState || {filters: [], search: ''});
+    this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
+    this.defaultQueries = options.initialQueries || DEFAULT_QUERIES;
+    this.tokenizeItem = options.tokenizeItem || DEFAULT_TOKENIZE_ITEM;
   }
 
   /** Gets a stream that returns the items and updates whenever the filters or search changes. */
@@ -96,7 +113,7 @@ export class Filterer<T = any, M = any> {
     };
   }
 
-  autocomplete(filtererMetadata: InputFiltererMetadata<T, M>):
+  autocomplete(filtererMetadata: InputFiltererMetadata<T, C>):
       (items: Observable<T[]>) => Observable<string[]> {
     return (items: Observable<T[]>) => {
       const contextProvider = this.contextProvider || of(() => null);
@@ -160,7 +177,6 @@ export class Filterer<T = any, M = any> {
     });
   }
 }
-
 
 /** Utility function to filter the items. May be used to synchronously filter items. */
 export function filterItems<T, M>(

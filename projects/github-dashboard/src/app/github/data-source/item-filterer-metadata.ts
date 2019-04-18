@@ -27,10 +27,10 @@ export function getFiltererProvider(
         (item: Item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
             Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
   return (initialState?: FiltererState) => {
-    const filterer = new Filterer(
-        ItemsFilterMetadata,
-        createFiltererContextProvider(labels, recommendations, getRecommendations), initialState);
-    filterer.tokenizeItem = tokenizeItem;
+    const contextProvider =
+        createFiltererContextProvider(labels, recommendations, getRecommendations);
+    const filterer =
+        new Filterer({metadata: ItemsFilterMetadata, contextProvider, initialState, tokenizeItem});
     return filterer;
   };
 }

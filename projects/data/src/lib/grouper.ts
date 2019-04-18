@@ -1,5 +1,5 @@
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
+import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {map, mergeMap, startWith} from 'rxjs/operators';
 
 export interface GrouperState {
   group: string;
@@ -11,7 +11,7 @@ export class Group<T> {
   items: T[];
 }
 
-export interface GrouperMetadata<T, C = any> {
+export interface GrouperMetadata<T = any, C = any> {
   label: string;
   groupingFunction: (items: T[]) => Group<T>[];
   titleTransform?: (title: string, c: C) => string;
@@ -22,15 +22,23 @@ export interface GroupLabel {
   label: string;
 }
 
-export class Grouper<T = any, C = any> {
-  state = new BehaviorSubject<GrouperState>({group: this.getGroups()[0].id});
+export interface GrouperOptions<T, C> {
+  metadata?: Map<string, GrouperMetadata<T, C>>;
+  contextProvider?: Observable<C>;
+  initialState?: GrouperState;
+}
 
-  constructor(
-      public metadata: Map<string, GrouperMetadata<T, C>>, private contextProvider?: Observable<C>,
-      initialState?: GrouperState) {
-    if (initialState) {
-      this.state.next(initialState);
-    }
+export class Grouper<T = any, C = any> {
+  private metadata: Map<string, GrouperMetadata<T, C>>;
+
+  private contextProvider: Observable<C>;
+
+  state = new ReplaySubject<GrouperState>(1);
+
+  constructor(options: GrouperOptions<T, C> = {}) {
+    this.metadata = options.metadata || new Map();
+    this.state.next(options.initialState || {group: this.getGroups()[0].id});
+    this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
   }
 
   group(): (items: Observable<T[]>) => Observable<Group<T>[]> {

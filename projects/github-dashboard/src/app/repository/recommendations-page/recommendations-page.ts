@@ -25,14 +25,14 @@ export class RecommendationsPage {
 
   private destroyed = new Subject();
 
-  dataSource =
-      new DataSource(this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list)));
+  dataSource = new DataSource(
+      {data: this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list))});
 
-  filterer = new Filterer(new Map());
+  filterer = new Filterer({tokenizeItem: tokenizeRecommendation});
 
-  grouper = new Grouper(RecommendationGrouperMetadata);
+  grouper = new Grouper({metadata: RecommendationGrouperMetadata});
 
-  sorter = new Sorter(RecommendationSorterMetadata);
+  sorter = new Sorter({metadata: RecommendationSorterMetadata});
 
   recommendationGroups =
       this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort(), this.grouper.group());
@@ -44,9 +44,7 @@ export class RecommendationsPage {
   constructor(
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
       private header: Header, private activeRepo: ActiveStore,
-      private recommendationDialog: RecommendationDialog) {
-    this.filterer.tokenizeItem = tokenizeRecommendation;
-  }
+      private recommendationDialog: RecommendationDialog) {}
 
   ngOnInit() {
     this.dataSource.data.pipe(takeUntil(this.destroyed)).subscribe(list => {

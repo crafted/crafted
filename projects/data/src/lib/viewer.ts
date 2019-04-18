@@ -1,5 +1,5 @@
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {combineLatest, EMPTY, Observable, ReplaySubject} from 'rxjs';
+import {map, startWith, take} from 'rxjs/operators';
 
 export interface ViewerState {
   views: string[];
@@ -31,16 +31,24 @@ export interface ViewLabel {
 
 export type ViewerContextProvider<T, C> = Observable<(item: T) => C>;
 
+export interface ViewerOptions<T, C> {
+  metadata?: Map<string, ViewerMetadata<T, C>>;
+  contextProvider?: ViewerContextProvider<T, C>;
+  initialState?: ViewerState;
+}
+
 /** The viewer carries information to render the items to the view. */
 export class Viewer<T = any, C = any> {
-  state = new BehaviorSubject<ViewerState>({views: this.getViews().map(v => v.id)});
+  private metadata: Map<string, ViewerMetadata<T, C>>;
 
-  constructor(
-      public metadata: Map<string, ViewerMetadata<T, C>>,
-      private contextProvider?: ViewerContextProvider<T, C>, initialState?: ViewerState) {
-    if (initialState) {
-      this.state.next(initialState);
-    }
+  private contextProvider: ViewerContextProvider<T, C>;
+
+  state = new ReplaySubject<ViewerState>(1);
+
+  constructor(options: ViewerOptions<T, C> = {}) {
+    this.metadata = options.metadata || new Map();
+    this.state.next(options.initialState || {views: this.getViews().map(v => v.id)});
+    this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(() => null));
   }
 
   getViews(): ViewLabel[] {
@@ -83,8 +91,7 @@ export class Viewer<T = any, C = any> {
   }
 
   getRenderedViews(item: T): Observable<RenderedView[]> {
-    const contextProvider = this.contextProvider || of(() => null);
-    return combineLatest(this.state, contextProvider).pipe(map(results => {
+    return combineLatest(this.state, this.contextProvider).pipe(map(results => {
       const views = results[0].views.map(v => this.metadata.get(v)!);
       const context = results[1](item);
       return views.map(view => view.render(item, context));

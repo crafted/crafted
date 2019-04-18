@@ -14,9 +14,9 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
   styleUrls: ['demo-items-list.scss'],
 })
 export class DemoItemsList {
-  dataSource = new DataSource(EXAMPLE_ITEMS);
-  viewer = new Viewer(ExampleViewerMetadata);
-  grouper = new Grouper(ExampleGrouperMetadata);
-  filterer = new Filterer(ExampleFiltererMetadata);
-  sorter = new Sorter(ExampleSorterMetadata);
+  dataSource = new DataSource({data: EXAMPLE_ITEMS});
+  viewer = new Viewer({metadata: ExampleViewerMetadata});
+  grouper = new Grouper({metadata: ExampleGrouperMetadata});
+  filterer = new Filterer({metadata: ExampleFiltererMetadata});
+  sorter = new Sorter({metadata: ExampleSorterMetadata});
 }

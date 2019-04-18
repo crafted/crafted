@@ -1,11 +1,12 @@
 import {Sorter, SorterMetadata, SorterState} from '@crafted/data';
-import {of} from 'rxjs';
 import {Item} from '../app-types/item';
 
 export function getSorterProvider() {
   return (initialState?: SorterState) => {
-    return new Sorter(
-        GithubItemSortingMetadata, of(null), initialState || {sort: 'created', reverse: true});
+    return new Sorter({
+      metadata: GithubItemSortingMetadata,
+      initialState: initialState || {sort: 'created', reverse: true},
+    });
   };
 }
 

@@ -13,8 +13,8 @@ import {createLabelsMap} from '../utility/create-labels-map';
 
 export function getGrouperProvider(labels: Observable<Label[]>) {
   return (initialState?: GrouperState) => {
-    return new Grouper(
-        GithubItemGroupingMetadata, createGrouperContextProvider(labels), initialState);
+    const contextProvider = createGrouperContextProvider(labels)
+    return new Grouper({metadata: GithubItemGroupingMetadata, contextProvider, initialState});
   };
 }
 

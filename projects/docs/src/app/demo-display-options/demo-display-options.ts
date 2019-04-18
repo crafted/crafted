@@ -12,10 +12,10 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
   styleUrls: ['demo-display-options.scss'],
 })
 export class DemoDisplayOptions {
-  dataSource = new DataSource(EXAMPLE_ITEMS);
-  viewer = new Viewer(ExampleViewerMetadata);
-  grouper = new Grouper(ExampleGrouperMetadata);
-  sorter = new Sorter(ExampleSorterMetadata);
+  dataSource = new DataSource({data: EXAMPLE_ITEMS});
+  viewer = new Viewer({metadata: ExampleViewerMetadata});
+  grouper = new Grouper({metadata: ExampleGrouperMetadata});
+  sorter = new Sorter({metadata: ExampleSorterMetadata});
 
   exampleItemGroups = this.dataSource.data.pipe(this.sorter.sort(), this.grouper.group());
 }

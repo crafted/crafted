@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {ButtonToggleOption} from '@crafted/components';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
-import {ButtonToggleOption} from 'dist/components/lib/widget';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 

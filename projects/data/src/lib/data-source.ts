@@ -11,16 +11,24 @@ export interface DataLabel {
   label: string;
 }
 
+export interface DataSourceOptions<T> {
+  data?: Observable<T[]>|T[];
+  metadata?: Map<string, DataSourceMetadata<T>>;
+}
+
 export class DataSource<T = any> {
+  // TODO: Make this private
+  public metadata: Map<string, DataSourceMetadata<T>>;
+
   data: Observable<T[]>;
 
-  constructor(
-      private _data: Observable<T[]>|T[],
-      public metadata: Map<string, DataSourceMetadata<T>> = new Map()) {
-    if (_data instanceof Observable) {
-      this.data = this._data as Observable<T[]>;
-    } else if (Array.isArray(_data)) {
-      this.data = of(_data);
+  constructor(options: DataSourceOptions<T> = {}) {
+    if (options.data instanceof Observable) {
+      this.data = options.data as Observable<T[]>;
+    } else if (Array.isArray(options.data)) {
+      this.data = of(options.data);
+    } else {
+      this.data = of([]);
     }
   }
 

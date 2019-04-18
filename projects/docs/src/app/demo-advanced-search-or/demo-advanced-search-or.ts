@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {DataSource, Filterer, Viewer} from '@crafted/data';
-import {combineLatest, Observable, of} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EXAMPLE_ITEMS} from '../data';
 import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
@@ -13,10 +13,10 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
   styleUrls: ['demo-advanced-search-or.scss'],
 })
 export class DemoAdvancedSearchOr {
-  dataSource = new DataSource(of(EXAMPLE_ITEMS));
-  viewer = new Viewer(ExampleViewerMetadata);
-  filterer1 = new Filterer(ExampleFiltererMetadata);
-  filterer2 = new Filterer(ExampleFiltererMetadata);
+  dataSource = new DataSource({data: EXAMPLE_ITEMS});
+  viewer = new Viewer({metadata: ExampleViewerMetadata});
+  filterer1 = new Filterer({metadata: ExampleFiltererMetadata});
+  filterer2 = new Filterer({metadata: ExampleFiltererMetadata});
 
   exampleItems = this.dataSource.data.pipe(orFilter(this.filterer1, this.filterer2));
 }

@@ -1,5 +1,5 @@
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {combineLatest, EMPTY, Observable, of, ReplaySubject} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 export interface SorterState {
   sort: string;
@@ -31,15 +31,23 @@ function sortItems<T, C>(
   return items;
 }
 
-export class Sorter<T = any, C = any> {
-  state = new BehaviorSubject<SorterState>({sort: this.getSorts()[0].id, reverse: false});
+export interface SorterOptions<T, C> {
+  metadata?: Map<string, SorterMetadata<T, C>>;
+  contextProvider?: SorterContextProvider<C>;
+  initialState?: SorterState;
+}
 
-  constructor(
-      public metadata: Map<string, SorterMetadata<T, C>>,
-      private contextProvider?: SorterContextProvider<C>, initialState?: SorterState) {
-    if (initialState) {
-      this.state.next(initialState);
-    }
+export class Sorter<T = any, C = any> {
+  private metadata: Map<string, SorterMetadata<T, C>>;
+
+  private contextProvider: SorterContextProvider<C>;
+
+  state = new ReplaySubject<SorterState>(1);
+
+  constructor(options: SorterOptions<T, C> = {}) {
+    this.metadata = options.metadata || new Map();
+    this.state.next(options.initialState || {sort: this.getSorts()[0].id, reverse: false});
+    this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
   }
 
   sort(): (items: Observable<T[]>) => Observable<T[]> {

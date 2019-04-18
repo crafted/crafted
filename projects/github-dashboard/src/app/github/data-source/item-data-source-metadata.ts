@@ -4,7 +4,7 @@ import {Item} from '../app-types/item';
 
 export function getDataSourceProvider(data: Observable<Item[]>) {
   return () => {
-    return new DataSource(data, GithubItemDataMetadata);
+    return new DataSource({data, metadata: GithubItemDataMetadata});
   };
 }
 

@@ -8,7 +8,6 @@ import {
   WidgetConfig
 } from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
-import {of} from 'rxjs';
 import {EXAMPLE_ITEMS} from '../data';
 import {ExampleDataSourceMetadata} from '../data-resources/data-source-metadata';
 import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
@@ -42,11 +41,12 @@ export class DemoDashboard {
       'issue', {
         id: 'issue',
         label: 'Issues',
-        dataSource: () => new DataSource(EXAMPLE_ITEMS, ExampleDataSourceMetadata),
-        viewer: state => new Viewer(ExampleViewerMetadata, of(() => null), state),
-        filterer: state => new Filterer(ExampleFiltererMetadata, of(null), state),
-        grouper: state => new Grouper(ExampleGrouperMetadata, of(null), state),
-        sorter: state => new Sorter(ExampleSorterMetadata, of(null), state),
+        dataSource: () =>
+            new DataSource({data: EXAMPLE_ITEMS, metadata: ExampleDataSourceMetadata}),
+        viewer: initialState => new Viewer({metadata: ExampleViewerMetadata, initialState}),
+        filterer: initialState => new Filterer({metadata: ExampleFiltererMetadata, initialState}),
+        grouper: initialState => new Grouper({metadata: ExampleGrouperMetadata, initialState}),
+        sorter: initialState => new Sorter({metadata: ExampleSorterMetadata, initialState}),
       }
     ],
   ]);
