@@ -85,19 +85,16 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
   hasDisplayedFilters: boolean;
 
+  getTextFilterAutocomplete(id: string) {
+    if (!this.autocomplete.has(id)) {
+      this.autocomplete.set(
+          id, this.dataSource.data.pipe(this.filterer.transformTextFilterOptions(id)));
+    }
+
+    return this.autocomplete.get(id);
+  }
+
   ngOnInit() {
-    const metadata = this.filterer.metadata;
-
-    metadata.forEach((value, key) => {
-      if (value.type === 'text' && value.autocomplete) {
-        this.autocomplete.set(key, this.dataSource.data.pipe(this.filterer.autocomplete(value)));
-      }
-
-      if (value.type === 'state') {
-        this.states.set(key, value.states);
-      }
-    });
-
     this.filterer.state.pipe(takeUntil(this.destroyed)).subscribe(state => {
       this.hasDisplayedFilters = !!state.filters.length;
       this.searchFormControl.setValue(state.search, {emitEvent: false});

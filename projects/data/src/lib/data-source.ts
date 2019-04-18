@@ -17,8 +17,7 @@ export interface DataSourceOptions<T> {
 }
 
 export class DataSource<T = any> {
-  // TODO: Make this private
-  public metadata: Map<string, DataSourceMetadata<T>>;
+  private metadata: Map<string, DataSourceMetadata<T>>;
 
   data: Observable<T[]>;
 
@@ -30,6 +29,8 @@ export class DataSource<T = any> {
     } else {
       this.data = of([]);
     }
+
+    this.metadata = options.metadata || new Map();
   }
 
   getDataLabelsWithType(type: string): DataLabel[] {
@@ -40,5 +41,9 @@ export class DataSource<T = any> {
       }
     });
     return dataLabelsWithType;
+  }
+
+  getDataProperty<V = any>(id: string, item: T): V {
+    return this.metadata.get(id).accessor(item);
   }
 }

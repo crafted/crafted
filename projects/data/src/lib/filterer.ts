@@ -9,11 +9,13 @@ import {
   TextFilter
 } from './filterer-types';
 
+export type TextFilterAutocomplete<T = any, C = any> = (items: T[], c: C) => string[];
+
 export interface TextFiltererMetadata<T = any, C = any> {
   label: string;
   type: 'text';
   matcher: (item: T, q: TextFilter, c: C) => boolean;
-  autocomplete: (items: T[], c: C) => string[];
+  autocomplete?: TextFilterAutocomplete<T, C>;
 }
 
 export interface NumberFiltererMetadata<T = any, C = any> {
@@ -71,16 +73,13 @@ const DEFAULT_TOKENIZE_ITEM =
     }
 
 export class Filterer<T = any, C = any> {
-  // Can this be made private?
-  public metadata: Map<string, FiltererMetadata<T, C>>;
+  private metadata: Map<string, FiltererMetadata<T, C>>;
 
   private contextProvider: Observable<C>;
 
-  private defaultFilters: {[key in FilterType]: (id: string) => Filter};
+  private tokenizeItem: (item: T) => string;
 
   state = new ReplaySubject<FiltererState>(1);
-
-  private tokenizeItem: (item: T) => string;
 
   constructor(options: FiltererOptions<T, C> = {}) {
     this.metadata = options.metadata || new Map();
@@ -100,18 +99,6 @@ export class Filterer<T = any, C = any> {
 
         const filteredItems = filterItems(items, filters, contextProvider, this.metadata);
         return searchItems(filteredItems, search, this.tokenizeItem);
-      }));
-    };
-  }
-
-  autocomplete(filtererMetadata: TextFiltererMetadata<T, C>):
-      (items: Observable<T[]>) => Observable<string[]> {
-    return (items: Observable<T[]>) => {
-      return combineLatest(items, this.contextProvider).pipe(map(results => {
-        if (!filtererMetadata.autocomplete) {
-          return [];
-        }
-        return filtererMetadata.autocomplete(results[0], results[1]);
       }));
     };
   }
@@ -140,6 +127,33 @@ export class Filterer<T = any, C = any> {
       filterOptions.push({id: key, label: value.label, type: value.type});
     });
     return filterOptions;
+  }
+
+  getStateFilterOptions(id: string): string[] {
+    const filtererMetadata = this.metadata.get(id);
+
+    if (filtererMetadata.type !== 'state') {
+      throw Error(`Cannot get state options for filters with type ${filtererMetadata.type}`);
+    }
+
+    return filtererMetadata.states;
+  }
+
+  transformTextFilterOptions(id: string): (items: Observable<T[]>) => Observable<string[]> {
+    const filtererMetadata = this.metadata.get(id);
+
+    if (filtererMetadata.type !== 'text') {
+      throw Error(`Cannot get text options for filters with type ${filtererMetadata.type}`);
+    }
+
+    return (items: Observable<T[]>) => {
+      return combineLatest(items, this.contextProvider).pipe(map(results => {
+        if (!filtererMetadata.autocomplete) {
+          return [];
+        }
+        return filtererMetadata.autocomplete(results[0], results[1]);
+      }));
+    };
   }
 
   add(filter: Filter) {

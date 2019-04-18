@@ -16,7 +16,7 @@
   <ng-container [ngSwitch]="filter.type">
     <text-filter *ngSwitchCase="'text'" [value]="filter.value"
                  [equality]="filter.equality"
-                 [options]="autocomplete.get(filter.type) | async"
+                 [options]="getTextFilterAutocomplete(filter.id) | async"
                  [focusInput]="focusInput"
                  (changed)="textFilterChanged(index, $event.value, $event.equality)">
     </text-filter>
@@ -33,7 +33,7 @@
 
     <state-filter *ngSwitchCase="'state'" [state]="filter.state"
                   [equality]="filter.equality"
-                  [states]="states.get(filter.type)"
+                  [states]="filterer.getStateFilterOptions(filter.id)"
                   (changed)="stateFilterChanged(index, $event.state, $event.equality)">
     </state-filter>
 

@@ -1,6 +1,5 @@
 <dashboard-view *ngIf="dashboard" [dashboard]="dashboard" [edit]="edit | async"
-                [dataResourcesMap]="dataResourcesMap" (openWidget)="openQuery($event)"
-                [widgetConfigs]="widgetConfigs"
+                (openWidget)="openQuery($event)" [widgetConfigs]="widgetConfigs"
                 [savedFiltererStates]="savedFiltererStates | async"
                 (dashboardChange)="saveDashboard($event)"></dashboard-view>
 

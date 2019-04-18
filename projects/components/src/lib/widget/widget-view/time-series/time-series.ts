@@ -211,10 +211,10 @@ export class TimeSeries<T> {
     const dateActions: DateActionPair[] = [];
     items.forEach(item => {
       datasetConfig.actions.forEach(action => {
-        const provider =
+        const dataSource =
             this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType)!.dataSource();
         // TODO: Error handling if the property does not exist
-        const date = provider.metadata.get(action.datePropertyId)!.accessor(item);
+        const date = dataSource.getDataProperty(action.datePropertyId, item);
         if (date) {
           dateActions.push({date: this.roundDate(date), actionType: action.type});
         }
