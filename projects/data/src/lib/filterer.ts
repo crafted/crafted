@@ -3,33 +3,34 @@ import {map, startWith, take} from 'rxjs/operators';
 import {DateQuery, InputQuery, NumberQuery, Query, QueryType, StateQuery} from './query';
 
 export interface Filter {
-  type: string;
+  id: string;
+  type: 'input'|'number'|'date'|'state';
   query?: InputQuery|NumberQuery|DateQuery|StateQuery;
   isImplicit?: boolean;
 }
 
 export interface InputFiltererMetadata<T = any, C = any> {
   label?: string;
-  queryType: 'input';
+  type: 'input';
   matcher: (item: T, q: InputQuery, c: C) => boolean;
   autocomplete: (items: T[], c: C) => string[];
 }
 
 export interface NumberFiltererMetadata<T = any, C = any> {
   label?: string;
-  queryType: 'number';
+  type: 'number';
   matcher: (item: T, q: NumberQuery, c: C) => boolean;
 }
 
 export interface DateFiltererMetadata<T = any, C = any> {
   label?: string;
-  queryType: 'date';
+  type: 'date';
   matcher: (item: T, q: DateQuery, c: C) => boolean;
 }
 
 export interface StateFiltererMetadata<T = any, C = any> {
   label?: string;
-  queryType: 'state';
+  type: 'state';
   matcher: (item: T, q: StateQuery, c: C) => boolean;
   states: string[];
 }
@@ -152,13 +153,13 @@ export class Filterer<T = any, C = any> {
     return filterOptions;
   }
 
-  add(filterType: string) {
+  add(id: string) {
     this.state.pipe(take(1)).subscribe(state => {
-      const queryType = this.metadata.get(filterType).queryType;
-      const query = this.defaultQueries[queryType];
+      const type = this.metadata.get(id).type;
+      const query = this.defaultQueries[type];
 
       const filters = state.filters.slice();
-      filters.push({type: filterType, query});
+      filters.push({id, type, query});
       this.setState({...state, filters});
     });
   }
@@ -185,10 +186,10 @@ export function filterItems<T, M>(
         return true;
       }
 
-      const filterConfig = metadata.get(filter.type);
+      const filterConfig = metadata.get(filter.id);
 
       if (filterConfig && filterConfig.matcher) {
-        switch (filterConfig.queryType) {
+        switch (filterConfig.type) {
           case 'input':
             return filterConfig.matcher(item, filter.query as InputQuery, context);
           case 'date':
@@ -199,7 +200,7 @@ export function filterItems<T, M>(
             return filterConfig.matcher(item, filter.query as StateQuery, context);
         }
       } else {
-        throw Error('Missing matcher for ' + filter.type);
+        throw Error('Missing matcher for ' + filter.id);
       }
     });
   });

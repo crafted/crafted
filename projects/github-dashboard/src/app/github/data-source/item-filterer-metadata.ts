@@ -61,7 +61,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'title', {
       label: 'Title',
-      queryType: 'input',
+      type: 'input',
       matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
         return stringContainsQuery(item.title, q as InputQuery);
       },
@@ -74,7 +74,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'assignees', {
       label: 'Assignee',
-      queryType: 'input',
+      type: 'input',
       matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
         return arrayContainsQuery(item.assignees, q);
       },
@@ -93,7 +93,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'body', {
       label: 'Body',
-      queryType: 'input',
+      type: 'input',
       matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
         return stringContainsQuery(item.body, q);
       },
@@ -104,7 +104,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'labels', {
       label: 'Labels',
-      queryType: 'input',
+      type: 'input',
       matcher: (item: Item, q: InputQuery, c: MatcherContext) => {
         const labelIds = item.labels.map(labelId => `${labelId}`);
         return arrayContainsQuery(
@@ -133,7 +133,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'commentCount', {
       label: 'Comment Count',
-      queryType: 'number',
+      type: 'number',
       matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
         return numberMatchesEquality(item.comments, q as NumberQuery);
       }
@@ -142,7 +142,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'reactionCount', {
       label: 'Reaction Count',
-      queryType: 'number',
+      type: 'number',
       matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
         return numberMatchesEquality(item.reactions['+1'], q);
       }
@@ -152,7 +152,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'days-since-created', {
       label: 'Days Since Created',
-      queryType: 'number',
+      type: 'number',
       matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
         const dayInMs = 1000 * 60 * 60 * 24;
         const nowMs = new Date().getTime();
@@ -167,7 +167,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'days-since-updated', {
       label: 'Days Since Updated',
-      queryType: 'number',
+      type: 'number',
       matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
         const dayInMs = 1000 * 60 * 60 * 24;
         const nowMs = new Date().getTime();
@@ -182,7 +182,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'days-open', {
       label: 'Days Open',
-      queryType: 'number',
+      type: 'number',
       matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
         const dayInMs = 1000 * 60 * 60 * 24;
 
@@ -201,7 +201,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'created', {
       label: 'Date Created',
-      queryType: 'date',
+      type: 'date',
       matcher: (item: Item, q: DateQuery, _c: MatcherContext) => {
         return dateMatchesEquality(item.created, q);
       }
@@ -213,7 +213,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'state', {
       label: 'State',
-      queryType: 'state',
+      type: 'state',
       states: ['open', 'closed'],
       matcher: (item: Item, q: StateQuery, _c: MatcherContext) => {
         const values = new Map<string, boolean>([
@@ -228,7 +228,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'recommendation', {
       label: 'Recommendation',
-      queryType: 'state',
+      type: 'state',
       states: ['empty', 'at least one warning', 'at least one suggestion'],
       matcher: (item: Item, q: StateQuery, c: MatcherContext) => {
         const recommendations = c.getRecommendations(item);

@@ -10,11 +10,11 @@
 <div class="filter-container" [@expand]="expandState"
      *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
   <ng-container *ngIf="!filter.isImplicit">
-    <div class="filter-type">
-      {{filterer.metadata.get(filter.type).label}}:
+    <div class="filter-label">
+      {{filterer.metadata.get(filter.id).label}}:
     </div>
 
-    <ng-container [ngSwitch]="filterer.metadata.get(filter.type).queryType">
+    <ng-container [ngSwitch]="filter.type">
       <input-query-form *ngSwitchCase="'input'" [query]="filter.query"
                         [options]="autocomplete.get(filter.type) | async"
                         [focusInput]="focusInput"

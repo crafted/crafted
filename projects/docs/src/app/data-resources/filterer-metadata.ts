@@ -10,14 +10,14 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
   [
     'id', {
       label: 'ID',
-      queryType: 'number',
+      type: 'number',
       matcher: (item, query) => numberMatchesEquality(item.id, query),
     }
   ],
   [
     'name', {
       label: 'Name',
-      queryType: 'input',
+      type: 'input',
       matcher: (item, query) => stringContainsQuery(item.name, query),
       autocomplete: items => items.map(i => i.name),
     }
@@ -25,14 +25,14 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
   [
     'age', {
       label: 'Age',
-      queryType: 'number',
+      type: 'number',
       matcher: (item, query) => numberMatchesEquality(item.age, query),
     }
   ],
   [
     'color', {
       label: 'Color',
-      queryType: 'input',
+      type: 'input',
       matcher: (item, query) => stringContainsQuery(item.color, query),
       autocomplete: items => items.map(i => i.color),
     }
@@ -40,7 +40,7 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
   [
     'anniversary', {
       label: 'Anniversary',
-      queryType: 'date',
+      type: 'date',
       matcher: (item, query) => dateMatchesEquality(item.anniversary, query),
     }
   ],

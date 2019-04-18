@@ -65,11 +65,11 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     const metadata = this.filterer.metadata;
 
     metadata.forEach((value, key) => {
-      if (value.queryType === 'input' && value.autocomplete) {
+      if (value.type === 'input' && value.autocomplete) {
         this.autocomplete.set(key, this.dataSource.data.pipe(this.filterer.autocomplete(value)));
       }
 
-      if (value.queryType === 'state') {
+      if (value.type === 'state') {
         this.states.set(key, value.states);
       }
     });
