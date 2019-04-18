@@ -1,4 +1,9 @@
 :host {
+  display: flex;
+  height: 100%;
+}
+
+.list-container {
   overflow: auto;
   flex: 1;
 }

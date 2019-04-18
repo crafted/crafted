@@ -1,3 +1,4 @@
+import {CdkScrollable} from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,7 +6,8 @@ import {
   EventEmitter,
   Input,
   NgZone,
-  Output
+  Output,
+  ViewChild
 } from '@angular/core';
 import {
   DataSource,
@@ -17,7 +19,7 @@ import {
   Sorter,
   Viewer
 } from '@crafted/data';
-import {fromEvent, Observable, Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 @Component({
@@ -27,14 +29,6 @@ import {map, takeUntil} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemsList<T> {
-  destroyed = new Subject();
-
-  private elementScrolled: Observable<Event> = new Observable(
-      (observer: any) => this.ngZone.runOutsideAngular(
-          () => fromEvent(this.elementRef.nativeElement, 'scroll')
-                    .pipe(takeUntil(this.destroyed))
-                    .subscribe(observer)));
-
   @Input() activeItem: T;
 
   @Input() sorter: Sorter<T>;
@@ -55,9 +49,15 @@ export class ItemsList<T> {
 
   trackByIndex = (i: number) => i;
 
+  trackByGroupId = (_i: number, itemGroup: Group<T>) => itemGroup.id;
+
   renderState = new Subject<RendererState<T>>();
 
   hasMore = this.renderState.pipe(map(state => state.count < state.total));
+
+  @ViewChild(CdkScrollable) scrollableContainer: CdkScrollable;
+
+  private destroyed = new Subject();
 
   constructor(public ngZone: NgZone, public elementRef: ElementRef) {}
 
@@ -68,18 +68,14 @@ export class ItemsList<T> {
     this.itemCount = this.itemGroups.pipe(map(
         itemGroups => itemGroups.map(g => g.items.length).reduce((prev, curr) => curr += prev)));
 
-    this.itemGroups.pipe(renderItemGroups(this.elementScrolled), takeUntil(this.destroyed))
-        .subscribe(result => {
-          this.ngZone.run(() => this.renderState.next(result));
-        });
+    this.itemGroups
+        .pipe(
+            renderItemGroups(this.scrollableContainer.elementScrolled()), takeUntil(this.destroyed))
+        .subscribe(result => this.ngZone.run(() => this.renderState.next(result)));
   }
 
   ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  getItemGroupKey(_i: number, itemGroup: Group<T>) {
-    return itemGroup.id;
   }
 }

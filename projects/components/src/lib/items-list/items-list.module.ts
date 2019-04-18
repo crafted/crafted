@@ -1,3 +1,4 @@
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {
@@ -15,6 +16,7 @@ import {ItemsList} from './items-list';
 @NgModule({
   imports: [
     CommonModule,
+    ScrollingModule,
     MatDividerModule,
     MatProgressSpinnerModule,
     MatRippleModule,
