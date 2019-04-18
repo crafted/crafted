@@ -8,7 +8,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {InputEquality, StateQuery} from '@crafted/data';
+import {InputEquality, StateEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -29,26 +29,26 @@ export class StateQueryForm implements OnChanges {
   });
   destroyed = new Subject();
 
-  @Input() query: StateQuery;
+  @Input() state: string;
+
+  @Input() equality: StateEquality;
 
   @Input() states: string[];
 
-  @Output() queryChange = new EventEmitter<StateQuery>();
+  @Output() changed = new EventEmitter<{state: string, equality: StateEquality}>();
 
   constructor() {
     this.form.valueChanges.pipe(takeUntil(this.destroyed))
-        .subscribe(value => this.queryChange.next(value));
+        .subscribe(value => this.changed.next(value));
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges.query) {
-      if (this.query && this.query.equality) {
-        this.form.get('equality')!.setValue(this.query.equality || '', {emitEvent: false});
-      }
+    if (simpleChanges['equality']) {
+      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    }
 
-      if (this.query && this.query.state) {
-        this.form.get('state')!.setValue(this.query.state || '', {emitEvent: false});
-      }
+    if (simpleChanges['state']) {
+      this.form.get('state')!.setValue(this.state, {emitEvent: false});
     }
   }
 

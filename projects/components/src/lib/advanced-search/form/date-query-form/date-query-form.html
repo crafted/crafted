@@ -1,12 +1,12 @@
 <ng-container [formGroup]="form">
   <mat-select formControlName="equality">
-    <mat-option *ngFor="let e of equalities" [value]="e.id">
-      {{e.label}}
+    <mat-option *ngFor="let equality of equalities" [value]="equality.id">
+      {{equality.label}}
     </mat-option>
   </mat-select>
 
   <input [matDatepicker]="picker" (click)="picker.open()" (blur)="emit()"
-         placeholder="MM/DD/YYYY" class="date-query" formControlName="date">
+         placeholder="MM/DD/YYYY" formControlName="date">
 
   <mat-datepicker #picker [touchUi]="isMobile()"></mat-datepicker>
 </ng-container>

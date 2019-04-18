@@ -8,7 +8,20 @@ import {
   OnInit
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataSource, Filter, Filterer, FilterOption, Query} from '@crafted/data';
+import {
+  DataSource,
+  DateEquality,
+  DateFilter,
+  Filter,
+  Filterer,
+  FilterOption,
+  InputEquality,
+  InputFilter,
+  NumberEquality,
+  NumberFilter,
+  StateEquality,
+  StateFilter
+} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
 
@@ -75,7 +88,7 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.filterer.state.pipe(takeUntil(this.destroyed)).subscribe(state => {
-      this.hasDisplayedFilters = state.filters.some(filter => !filter.isImplicit);
+      this.hasDisplayedFilters = !!state.filters.length;
       this.searchFormControl.setValue(state.search, {emitEvent: false});
     });
 
@@ -109,12 +122,36 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     this.filterer.remove(filter);
   }
 
-  queryChange(index: number, query: Query) {
+  filterChange(index: number, filter: Filter) {
     this.filterer.state.pipe(take(1)).subscribe(state => {
       const filters = state.filters.slice();
-      filters[index] = {...filters[index], query};
+      filters[index] = filter;
 
       this.filterer.setState({...state, filters});
+    });
+  }
+
+  inputFilterChanged(index: number, input: string, equality: InputEquality) {
+    this.transformFilter(index, filter => ({...filter, input, equality} as InputFilter));
+  }
+
+  numberFilterChanged(index: number, value: number, equality: NumberEquality) {
+    this.transformFilter(index, filter => ({...filter, value, equality} as NumberFilter));
+  }
+
+  dateFilterChanged(index: number, date: string, equality: DateEquality) {
+    this.transformFilter(index, filter => ({...filter, date, equality} as DateFilter));
+  }
+
+  stateFilterChanged(index: number, state: string, equality: StateEquality) {
+    this.transformFilter(index, filter => ({...filter, state, equality} as StateFilter));
+  }
+
+  private transformFilter(index: number, transform: (filter: Filter) => Filter) {
+    this.filterer.state.pipe(take(1)).subscribe(filtererState => {
+      const filters = filtererState.filters.slice();
+      filters[index] = transform(filters[index]);
+      this.filterer.setState({...filtererState, filters});
     });
   }
 }

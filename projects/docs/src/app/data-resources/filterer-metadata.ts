@@ -11,14 +11,14 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
     'id', {
       label: 'ID',
       type: 'number',
-      matcher: (item, query) => numberMatchesEquality(item.id, query),
+      matcher: (item, filter) => numberMatchesEquality(item.id, filter.value, filter.equality),
     }
   ],
   [
     'name', {
       label: 'Name',
       type: 'input',
-      matcher: (item, query) => stringContainsQuery(item.name, query),
+      matcher: (item, filter) => stringContainsQuery(item.name, filter.input, filter.equality),
       autocomplete: items => items.map(i => i.name),
     }
   ],
@@ -26,14 +26,14 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
     'age', {
       label: 'Age',
       type: 'number',
-      matcher: (item, query) => numberMatchesEquality(item.age, query),
+      matcher: (item, filter) => numberMatchesEquality(item.age, filter.value, filter.equality),
     }
   ],
   [
     'color', {
       label: 'Color',
       type: 'input',
-      matcher: (item, query) => stringContainsQuery(item.color, query),
+      matcher: (item, filter) => stringContainsQuery(item.color, filter.input, filter.equality),
       autocomplete: items => items.map(i => i.color),
     }
   ],
@@ -41,7 +41,8 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
     'anniversary', {
       label: 'Anniversary',
       type: 'date',
-      matcher: (item, query) => dateMatchesEquality(item.anniversary, query),
+      matcher: (item, filter) =>
+          dateMatchesEquality(item.anniversary, filter.date, filter.equality),
     }
   ],
 ]);

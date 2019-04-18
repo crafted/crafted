@@ -3,26 +3,34 @@ export type NumberEquality = 'greaterThan'|'lessThan'|'equalTo';
 export type DateEquality = 'before'|'after'|'on';
 export type StateEquality = 'is'|'notIs';
 
-export interface InputQuery {
+export interface InputFilter {
+  id: string;
+  type: 'input';
   input: string;
   equality: InputEquality;
 }
 
-export interface NumberQuery {
+export interface NumberFilter {
+  id: string;
+  type: 'number';
   value: number;
   equality: NumberEquality;
 }
 
-export interface DateQuery {
+export interface DateFilter {
+  id: string;
+  type: 'date';
   date: string;
   equality: DateEquality;
 }
 
-export interface StateQuery {
+export interface StateFilter {
+  id: string;
+  type: 'state';
   state: string;
   equality: StateEquality;
 }
 
-export type Query = InputQuery|NumberQuery|DateQuery|StateQuery;
+export type Filter = InputFilter|NumberFilter|DateFilter|StateFilter;
 
-export type QueryType = 'input'|'number'|'date'|'state';
+export type FilterType = 'input'|'number'|'date'|'state';

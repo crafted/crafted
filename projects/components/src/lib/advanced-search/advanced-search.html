@@ -9,32 +9,33 @@
 
 <div class="filter-container" [@expand]="expandState"
      *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
-  <ng-container *ngIf="!filter.isImplicit">
-    <div class="filter-label">
-      {{filterer.metadata.get(filter.id).label}}:
-    </div>
+  <div class="filter-label">
+    {{filterer.metadata.get(filter.id).label}}:
+  </div>
 
-    <ng-container [ngSwitch]="filter.type">
-      <input-query-form *ngSwitchCase="'input'" [query]="filter.query"
-                        [options]="autocomplete.get(filter.type) | async"
-                        [focusInput]="focusInput"
-                        (queryChange)="queryChange(index, $event)">
-      </input-query-form>
+  <ng-container [ngSwitch]="filter.type">
+    <input-query-form *ngSwitchCase="'input'" [input]="filter.input"
+                      [equality]="filter.equality"
+                      [options]="autocomplete.get(filter.type) | async"
+                      [focusInput]="focusInput"
+                      (changed)="inputFilterChanged(index, $event.input, $event.equality)">
+    </input-query-form>
 
-      <number-query-form *ngSwitchCase="'number'" [query]="filter.query"
-                         [focusInput]="focusInput"
-                         (queryChange)="queryChange(index, $event)">
-      </number-query-form>
+    <number-query-form *ngSwitchCase="'number'" [value]="filter.value"
+                       [equality]="filter.equality" [focusInput]="focusInput"
+                       (changed)="numberFilterChanged(index, $event.value, $event.equality)">
+    </number-query-form>
 
-      <date-query-form *ngSwitchCase="'date'" [query]="filter.query"
-                       (queryChange)="queryChange(index, $event)">
-      </date-query-form>
+    <date-query-form *ngSwitchCase="'date'" [date]="filter.date"
+                     [equality]="filter.equality"
+                     (changed)="dateFilterChanged(index, $event.date, $event.equality)">
+    </date-query-form>
 
-      <state-query-form *ngSwitchCase="'state'" [query]="filter.query"
-                        [states]="states.get(filter.type)"
-                        (queryChange)="queryChange(index, $event)">
-      </state-query-form>
-    </ng-container>
+    <state-query-form *ngSwitchCase="'state'" [state]="filter.state"
+                      [equality]="filter.equality"
+                      [states]="states.get(filter.type)"
+                      (changed)="stateFilterChanged(index, $event.state, $event.equality)">
+    </state-query-form>
 
     <button mat-icon-button class="remove-filter" type="button"
             (click)="removeFilter(filter)">

@@ -2,14 +2,7 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {
-  DataResources,
-  DateQuery,
-  Filterer,
-  InputQuery,
-  NumberQuery,
-  StateQuery
-} from '@crafted/data';
+import {DataResources, Filterer} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../../repository';
@@ -98,24 +91,20 @@ function getFiltererString(filterer: Filterer): Observable<string> {
         str += ', ';
       }
 
-      const equality = equalityToString[filter.query.equality] || filter.query.equality;
-      switch (filterer.metadata.get(filter.type).queryType) {
+      const equality = equalityToString[filter.equality] || filter.equality;
+      switch (filter.type) {
         case 'input':
-          const inputQuery = filter.query as InputQuery;
-          str += `${filter.type} ${equality} "${inputQuery.input}"`;
+          str += `${filter.id} ${equality} "${filter.input}"`;
           break;
         case 'number':
-          const numberQuery = filter.query as NumberQuery;
-          str += `${filter.type} ${equality} ${numberQuery.value}`;
+          str += `${filter.id} ${equality} ${filter.value}`;
           break;
         case 'date':
           const datePipe = new DatePipe('en-us');
-          const dateQuery = filter.query as DateQuery;
-          str += `${filter.type} ${equality} ${datePipe.transform(dateQuery.date)}`;
+          str += `${filter.id} ${equality} ${datePipe.transform(filter.date)}`;
           break;
         case 'state':
-          const stateQuery = filter.query as StateQuery;
-          str += `${filter.type} ${equality} ${stateQuery.state}`;
+          str += `${filter.id} ${equality} ${filter.state}`;
           break;
       }
     });

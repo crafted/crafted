@@ -1,16 +1,12 @@
 import {
   arrayContainsQuery,
   dateMatchesEquality,
-  DateQuery,
   Filterer,
   FiltererContextProvider,
   FiltererMetadata,
   FiltererState,
-  InputQuery,
   numberMatchesEquality,
-  NumberQuery,
   stateMatchesEquality,
-  StateQuery,
   stringContainsQuery
 } from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
@@ -23,9 +19,8 @@ import {tokenizeItem} from '../utility/tokenize-item';
 
 export function getFiltererProvider(
     labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
-    getRecommendations:
-        (item: Item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
-            Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
+    getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
+        Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
   return (initialState?: FiltererState) => {
     const contextProvider =
         createFiltererContextProvider(labels, recommendations, getRecommendations);
@@ -37,19 +32,18 @@ export function getFiltererProvider(
 
 interface MatcherContext {
   labelsMap: Map<string, Label>;
-  getRecommendations: (item: Item) => Recommendation[];
+  getRecommendations: (item) => Recommendation[];
 }
 
 function createFiltererContextProvider(
     labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
-    getRecommendations:
-        (item: Item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
-            Recommendation[]): FiltererContextProvider<MatcherContext> {
+    getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
+        Recommendation[]): FiltererContextProvider<MatcherContext> {
   return combineLatest(recommendations, labels).pipe(map(results => {
     const labelsMap = createLabelsMap(results[1]);
     return {
       labelsMap,
-      getRecommendations: (item: Item) => getRecommendations(item, results[0], labelsMap)
+      getRecommendations: (item) => getRecommendations(item, results[0], labelsMap)
     };
   }));
 }
@@ -62,12 +56,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'title', {
       label: 'Title',
       type: 'input',
-      matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
-        return stringContainsQuery(item.title, q as InputQuery);
-      },
-      autocomplete: (items: Item[]) => {
-        return items.map(issue => issue.title);
-      }
+      matcher: (item, filter) => stringContainsQuery(item.title, filter.input, filter.equality),
+      autocomplete: items => items.map(issue => issue.title)
     }
   ],
 
@@ -75,10 +65,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'assignees', {
       label: 'Assignee',
       type: 'input',
-      matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
-        return arrayContainsQuery(item.assignees, q);
-      },
-      autocomplete: (items: Item[]) => {
+      matcher: (item, filter) => arrayContainsQuery(item.assignees, filter.input, filter.equality),
+      autocomplete: items => {
         const assigneesSet = new Set<string>();
         items.forEach(item => item.assignees.forEach(a => assigneesSet.add(a)));
 
@@ -94,10 +82,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'body', {
       label: 'Body',
       type: 'input',
-      matcher: (item: Item, q: InputQuery, _c: MatcherContext) => {
-        return stringContainsQuery(item.body, q);
-      },
-      autocomplete: (_items: Item[]) => [],
+      matcher: (item, filter) => stringContainsQuery(item.body, filter.input, filter.equality),
+      autocomplete: () => [],
     }
   ],
 
@@ -105,19 +91,18 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'labels', {
       label: 'Labels',
       type: 'input',
-      matcher: (item: Item, q: InputQuery, c: MatcherContext) => {
+      matcher: (item, filter, context) => {
         const labelIds = item.labels.map(labelId => `${labelId}`);
-        return arrayContainsQuery(
-            labelIds.map(l => {
-              const label = c.labelsMap.get(l);
+        const labelNames = labelIds.map(l => {
+          const label = context.labelsMap.get(l);
 
-              if (!label) {
-                return '';
-              }
+          if (!label) {
+            return '';
+          }
 
-              return label.name;
-            }),
-            q);
+          return label.name;
+        });
+        return arrayContainsQuery(labelNames, filter.input, filter.equality);
       },
       autocomplete: (_items: Item[], c: MatcherContext) => {
         const labelNames: string[] = [];
@@ -134,18 +119,15 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'commentCount', {
       label: 'Comment Count',
       type: 'number',
-      matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
-        return numberMatchesEquality(item.comments, q as NumberQuery);
-      }
+      matcher: (item, filter) => numberMatchesEquality(item.comments, filter.value, filter.equality)
     }
   ],
   [
     'reactionCount', {
       label: 'Reaction Count',
       type: 'number',
-      matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
-        return numberMatchesEquality(item.reactions['+1'], q);
-      }
+      matcher: (item, filter) =>
+          numberMatchesEquality(item.reactions['+1'], filter.value, filter.equality)
     }
   ],
 
@@ -153,13 +135,13 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'days-since-created', {
       label: 'Days Since Created',
       type: 'number',
-      matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
+      matcher: (item, filter) => {
         const dayInMs = 1000 * 60 * 60 * 24;
         const nowMs = new Date().getTime();
         const createdDateMs = new Date(item.created).getTime();
         const days = Math.round(Math.abs(nowMs - createdDateMs) / dayInMs);
 
-        return numberMatchesEquality(days, q);
+        return numberMatchesEquality(days, filter.value, filter.equality);
       }
     }
   ],
@@ -168,13 +150,13 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'days-since-updated', {
       label: 'Days Since Updated',
       type: 'number',
-      matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
+      matcher: (item, filter) => {
         const dayInMs = 1000 * 60 * 60 * 24;
         const nowMs = new Date().getTime();
         const createdDateMs = new Date(item.updated).getTime();
         const days = Math.round(Math.abs(nowMs - createdDateMs) / dayInMs);
 
-        return numberMatchesEquality(days, q);
+        return numberMatchesEquality(days, filter.value, filter.equality);
       }
     }
   ],
@@ -183,7 +165,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'days-open', {
       label: 'Days Open',
       type: 'number',
-      matcher: (item: Item, q: NumberQuery, _c: MatcherContext) => {
+      matcher: (item, filter) => {
         const dayInMs = 1000 * 60 * 60 * 24;
 
         // If item has not yet been closed, use current time
@@ -191,7 +173,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
         const createdDateMs = new Date(item.created).getTime();
         const days = Math.round(Math.abs(closedDateMs - createdDateMs) / dayInMs);
 
-        return numberMatchesEquality(days, q);
+        return numberMatchesEquality(days, filter.value, filter.equality);
       }
     }
   ],
@@ -202,8 +184,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
     'created', {
       label: 'Date Created',
       type: 'date',
-      matcher: (item: Item, q: DateQuery, _c: MatcherContext) => {
-        return dateMatchesEquality(item.created, q);
+      matcher: (item, filter) => {
+        return dateMatchesEquality(item.created, filter.date, filter.equality);
       }
     }
   ],
@@ -215,12 +197,12 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
       label: 'State',
       type: 'state',
       states: ['open', 'closed'],
-      matcher: (item: Item, q: StateQuery, _c: MatcherContext) => {
+      matcher: (item, filter) => {
         const values = new Map<string, boolean>([
           ['open', item.state === 'open'],
           ['closed', item.state === 'closed'],
         ]);
-        return stateMatchesEquality(values.get(q.state)!, q);
+        return stateMatchesEquality(values.get(filter.state)!, filter.state, filter.equality);
       },
     }
   ],
@@ -230,14 +212,14 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
       label: 'Recommendation',
       type: 'state',
       states: ['empty', 'at least one warning', 'at least one suggestion'],
-      matcher: (item: Item, q: StateQuery, c: MatcherContext) => {
-        const recommendations = c.getRecommendations(item);
+      matcher: (item, filter, context) => {
+        const recommendations = context.getRecommendations(item);
         const values = new Map<string, boolean>([
           ['empty', !recommendations.length],
           ['at least one warning', recommendations.some(r => r.type === 'warning')],
           ['at least one suggestion', recommendations.some(r => r.type === 'suggestion')],
         ]);
-        return stateMatchesEquality(values.get(q.state)!, q);
+        return stateMatchesEquality(values.get(filter.state)!, filter.state, filter.equality);
       },
     }
   ],

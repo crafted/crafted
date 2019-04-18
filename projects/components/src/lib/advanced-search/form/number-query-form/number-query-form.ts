@@ -6,12 +6,19 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  Output
+  Output,
+  SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {NumberEquality, NumberQuery} from '@crafted/data';
+import {NumberEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+
+const Equalities: {id: NumberEquality, label: string}[] = [
+  {id: 'greaterThan', label: 'greater than'},
+  {id: 'equalTo', label: 'equal to'},
+  {id: 'lessThan', label: 'less than'},
+];
 
 @Component({
   selector: 'number-query-form',
@@ -20,49 +27,36 @@ import {takeUntil} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NumberQueryForm implements AfterViewInit {
-  equalities: {id: NumberEquality, label: string}[] = [
-    {id: 'greaterThan', label: 'greater than'},
-    {id: 'equalTo', label: 'equal to'},
-    {id: 'lessThan', label: 'less than'},
-  ];
+  equalities = Equalities;
+
   form = new FormGroup({
     equality: new FormControl('greaterThan'),
     value: new FormControl(''),
   });
-  destroyed = new Subject();
 
   @Input() focusInput: boolean;
 
-  @Input()
-  set query(query: NumberQuery) {
-    this._query = query;
+  @Input() value: string;
 
-    if (!query) {
-      return;
-    }
+  @Input() equality: NumberEquality;
 
-    if (query.equality) {
-      this.form.get('equality')!.setValue(query.equality, {emitEvent: false});
-    }
+  @Output() changed = new EventEmitter<{input: string, equality: NumberEquality}>();
 
-    if (query.value) {
-      this.form.get('value')!.setValue(query.value, {emitEvent: false});
-    }
-  }
-  get query(): NumberQuery {
-    return this._query;
-  }
-  _query: NumberQuery;
-
-  @Output() queryChange = new EventEmitter<NumberQuery>();
+  private destroyed = new Subject();
 
   constructor(private elementRef: ElementRef, public cd: ChangeDetectorRef) {
-    this.form.valueChanges.pipe(takeUntil(this.destroyed)).subscribe(value => {
-      this.queryChange.next({
-        equality: value.equality,
-        value: value.value,
-      });
-    });
+    this.form.valueChanges.pipe(takeUntil(this.destroyed))
+        .subscribe(value => this.changed.next(value));
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges['value']) {
+      this.form.get('value')!.setValue(this.value, {emitEvent: false});
+    }
+
+    if (simpleChanges['equality']) {
+      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    }
   }
 
   ngAfterViewInit() {

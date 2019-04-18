@@ -4,12 +4,19 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  Output
+  Output,
+  SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {DateEquality, DateQuery} from '@crafted/data';
+import {DateEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+
+const Equalities: {id: DateEquality, label: string}[] = [
+  {id: 'before', label: 'before'},
+  {id: 'on', label: 'on'},
+  {id: 'after', label: 'after'},
+];
 
 @Component({
   selector: 'date-query-form',
@@ -18,41 +25,35 @@ import {takeUntil} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateQueryForm {
-  equalities: {id: DateEquality, label: string}[] = [
-    {id: 'before', label: 'before'},
-    {id: 'on', label: 'on'},
-    {id: 'after', label: 'after'},
-  ];
-  form = new FormGroup({equality: new FormControl('on'), date: new FormControl('')});
-  destroyed = new Subject();
+  equalities = Equalities;
 
-  @Input()
-  set query(query: DateQuery) {
-    this._query = query;
+  form = new FormGroup({
+    equality: new FormControl('on'),
+    date: new FormControl(null),
+  });
 
-    if (!query) {
-      return;
-    }
+  @Input() date: string;
 
-    if (query.equality) {
-      this.form.get('equality')!.setValue(query.equality, {emitEvent: false});
-    }
-
-    if (query.date) {
-      this.form.get('date')!.setValue(new Date(query.date), {emitEvent: false});
-    }
-  }
-  get query(): DateQuery {
-    return this._query;
-  }
-  _query: DateQuery;
+  @Input() equality: DateEquality;
 
   @Input() focusInput: boolean;
 
-  @Output() queryChange = new EventEmitter<DateQuery>();
+  @Output() changed = new EventEmitter<{date: string, equality: DateEquality}>();
+
+  private destroyed = new Subject();
 
   constructor(private elementRef: ElementRef) {
     this.form.valueChanges.pipe(takeUntil(this.destroyed)).subscribe(() => this.emit());
+  }
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges['date']) {
+      this.form.get('date')!.setValue(new Date(this.date), {emitEvent: false});
+    }
+
+    if (simpleChanges['equality']) {
+      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    }
   }
 
   isMobile(): boolean {
@@ -66,10 +67,10 @@ export class DateQueryForm {
       return;
     }
 
-    const value = this.form.value;
-    this.queryChange.next({
-      equality: value.equality,
-      date: value.date ? value.date.toISOString() : '',
+    const formValue = this.form.value;
+    this.changed.next({
+      equality: formValue.equality,
+      date: formValue.date ? formValue.date.toISOString() : '',
     });
   }
 

@@ -1,37 +1,37 @@
 import {combineLatest, EMPTY, Observable, ReplaySubject} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
-import {DateQuery, InputQuery, NumberQuery, Query, QueryType, StateQuery} from './query';
-
-export interface Filter {
-  id: string;
-  type: 'input'|'number'|'date'|'state';
-  query?: InputQuery|NumberQuery|DateQuery|StateQuery;
-  isImplicit?: boolean;
-}
+import {
+  DateFilter,
+  Filter,
+  FilterType,
+  InputFilter,
+  NumberFilter,
+  StateFilter
+} from './filterer-types';
 
 export interface InputFiltererMetadata<T = any, C = any> {
-  label?: string;
+  label: string;
   type: 'input';
-  matcher: (item: T, q: InputQuery, c: C) => boolean;
+  matcher: (item: T, q: InputFilter, c: C) => boolean;
   autocomplete: (items: T[], c: C) => string[];
 }
 
 export interface NumberFiltererMetadata<T = any, C = any> {
-  label?: string;
+  label: string;
   type: 'number';
-  matcher: (item: T, q: NumberQuery, c: C) => boolean;
+  matcher: (item: T, q: NumberFilter, c: C) => boolean;
 }
 
 export interface DateFiltererMetadata<T = any, C = any> {
-  label?: string;
+  label: string;
   type: 'date';
-  matcher: (item: T, q: DateQuery, c: C) => boolean;
+  matcher: (item: T, q: DateFilter, c: C) => boolean;
 }
 
 export interface StateFiltererMetadata<T = any, C = any> {
-  label?: string;
+  label: string;
   type: 'state';
-  matcher: (item: T, q: StateQuery, c: C) => boolean;
+  matcher: (item: T, q: StateFilter, c: C) => boolean;
   states: string[];
 }
 
@@ -54,16 +54,16 @@ export interface FiltererOptions<T, C> {
   metadata?: Map<string, FiltererMetadata<T, C>>;
   contextProvider?: FiltererContextProvider<C>;
   initialState?: FiltererState;
-  initialQueries?: {[key in QueryType]: Query};
+  initialFilters?: {[key in FilterType]: (id: string) => Filter};
   tokenizeItem?: (item: T) => string;
 }
 
-/** Default query values to use when a new filter is added without an initial Query. */
-const DEFAULT_QUERIES: {[key in QueryType]: Query} = {
-  date: {date: '', equality: 'before'},
-  input: {input: '', equality: 'contains'},
-  number: {value: 0, equality: 'greaterThan'},
-  state: {state: '', equality: 'is'}
+/** Default values to use when a new filter is added. */
+const DEFAULT_FILTERS: {[key in FilterType]: (id: string) => Filter} = {
+  date: id => ({id, type: 'date', date: '', equality: 'before'}),
+  input: id => ({id, type: 'input', input: '', equality: 'contains'}),
+  number: id => ({id, type: 'number', value: 0, equality: 'greaterThan'}),
+  state: id => ({id, type: 'state', state: '', equality: 'is'})
 };
 
 /** Default and naive tokenize function that combines the item's property values into a string. */
@@ -84,7 +84,7 @@ export class Filterer<T = any, C = any> {
 
   private contextProvider: Observable<C>;
 
-  private defaultQueries: {[key in QueryType]: Query};
+  private defaultFilters: {[key in FilterType]: (id: string) => Filter};
 
   state = new ReplaySubject<FiltererState>(1);
 
@@ -94,7 +94,7 @@ export class Filterer<T = any, C = any> {
     this.metadata = options.metadata || new Map();
     this.state.next(options.initialState || {filters: [], search: ''});
     this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
-    this.defaultQueries = options.initialQueries || DEFAULT_QUERIES;
+    this.defaultFilters = options.initialFilters || DEFAULT_FILTERS;
     this.tokenizeItem = options.tokenizeItem || DEFAULT_TOKENIZE_ITEM;
   }
 
@@ -156,10 +156,8 @@ export class Filterer<T = any, C = any> {
   add(id: string) {
     this.state.pipe(take(1)).subscribe(state => {
       const type = this.metadata.get(id).type;
-      const query = this.defaultQueries[type];
-
       const filters = state.filters.slice();
-      filters.push({id, type, query});
+      filters.push(this.defaultFilters[type](id));
       this.setState({...state, filters});
     });
   }
@@ -182,25 +180,20 @@ export function filterItems<T, M>(
     items: T[], filters: Filter[] = [], context: M, metadata: Map<string, FiltererMetadata<T, M>>) {
   return items.filter(item => {
     return filters.every(filter => {
-      if (!filter.query) {
-        return true;
+      const filterMetadata = metadata.get(filter.id);
+      if (!filterMetadata || !filterMetadata.matcher) {
+        throw Error('Missing matcher for ' + filter.id);
       }
 
-      const filterConfig = metadata.get(filter.id);
-
-      if (filterConfig && filterConfig.matcher) {
-        switch (filterConfig.type) {
-          case 'input':
-            return filterConfig.matcher(item, filter.query as InputQuery, context);
-          case 'date':
-            return filterConfig.matcher(item, filter.query as DateQuery, context);
-          case 'number':
-            return filterConfig.matcher(item, filter.query as NumberQuery, context);
-          case 'state':
-            return filterConfig.matcher(item, filter.query as StateQuery, context);
-        }
-      } else {
-        throw Error('Missing matcher for ' + filter.id);
+      switch (filterMetadata.type) {
+        case 'input':
+          return filterMetadata.matcher(item, filter as InputFilter, context);
+        case 'date':
+          return filterMetadata.matcher(item, filter as DateFilter, context);
+        case 'number':
+          return filterMetadata.matcher(item, filter as NumberFilter, context);
+        case 'state':
+          return filterMetadata.matcher(item, filter as StateFilter, context);
       }
     });
   });
