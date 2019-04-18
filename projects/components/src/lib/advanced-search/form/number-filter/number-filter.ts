@@ -21,12 +21,12 @@ const Equalities: {id: NumberEquality, label: string}[] = [
 ];
 
 @Component({
-  selector: 'number-query-form',
-  templateUrl: 'number-query-form.html',
-  styleUrls: ['number-query-form.scss'],
+  selector: 'number-filter',
+  templateUrl: 'number-filter.html',
+  styleUrls: ['number-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NumberQueryForm implements AfterViewInit {
+export class NumberFilter implements AfterViewInit {
   equalities = Equalities;
 
   form = new FormGroup({

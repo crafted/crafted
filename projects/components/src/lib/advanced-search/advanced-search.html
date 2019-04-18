@@ -14,28 +14,28 @@
   </div>
 
   <ng-container [ngSwitch]="filter.type">
-    <input-query-form *ngSwitchCase="'input'" [input]="filter.input"
-                      [equality]="filter.equality"
-                      [options]="autocomplete.get(filter.type) | async"
-                      [focusInput]="focusInput"
-                      (changed)="inputFilterChanged(index, $event.input, $event.equality)">
-    </input-query-form>
+    <input-filter *ngSwitchCase="'input'" [input]="filter.input"
+                  [equality]="filter.equality"
+                  [options]="autocomplete.get(filter.type) | async"
+                  [focusInput]="focusInput"
+                  (changed)="inputFilterChanged(index, $event.input, $event.equality)">
+    </input-filter>
 
-    <number-query-form *ngSwitchCase="'number'" [value]="filter.value"
-                       [equality]="filter.equality" [focusInput]="focusInput"
-                       (changed)="numberFilterChanged(index, $event.value, $event.equality)">
-    </number-query-form>
+    <number-filter *ngSwitchCase="'number'" [value]="filter.value"
+                   [equality]="filter.equality" [focusInput]="focusInput"
+                   (changed)="numberFilterChanged(index, $event.value, $event.equality)">
+    </number-filter>
 
-    <date-query-form *ngSwitchCase="'date'" [date]="filter.date"
-                     [equality]="filter.equality"
-                     (changed)="dateFilterChanged(index, $event.date, $event.equality)">
-    </date-query-form>
+    <date-filter *ngSwitchCase="'date'" [date]="filter.date"
+                 [equality]="filter.equality"
+                 (changed)="dateFilterChanged(index, $event.date, $event.equality)">
+    </date-filter>
 
-    <state-query-form *ngSwitchCase="'state'" [state]="filter.state"
-                      [equality]="filter.equality"
-                      [states]="states.get(filter.type)"
-                      (changed)="stateFilterChanged(index, $event.state, $event.equality)">
-    </state-query-form>
+    <state-filter *ngSwitchCase="'state'" [state]="filter.state"
+                  [equality]="filter.equality"
+                  [states]="states.get(filter.type)"
+                  (changed)="stateFilterChanged(index, $event.state, $event.equality)">
+    </state-filter>
 
     <button mat-icon-button class="remove-filter" type="button"
             (click)="removeFilter(filter)">

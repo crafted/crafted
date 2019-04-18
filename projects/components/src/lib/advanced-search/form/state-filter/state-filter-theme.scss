@@ -1,7 +1,7 @@
-@mixin state-query-form-theme($theme) {
+@mixin state-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
 
-  state-query-form {
+  state-filter {
     mat-select {
       border-color: mat-color($foreground, divider);
     }

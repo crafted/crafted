@@ -1,7 +1,7 @@
-@mixin number-query-form-theme($theme) {
+@mixin number-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
 
-  number-query-form {
+  number-filter {
     mat-select {
       border-color: mat-color($foreground, divider);
     }

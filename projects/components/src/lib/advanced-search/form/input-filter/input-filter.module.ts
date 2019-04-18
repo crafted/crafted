@@ -2,12 +2,12 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule, MatSelectModule} from '@angular/material';
-import {InputQueryForm} from './input-query-form';
+import {InputFilter} from './input-filter';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatAutocompleteModule],
-  declarations: [InputQueryForm],
-  exports: [InputQueryForm]
+  declarations: [InputFilter],
+  exports: [InputFilter]
 })
-export class InputQueryFormModule {
+export class InputFilterModule {
 }

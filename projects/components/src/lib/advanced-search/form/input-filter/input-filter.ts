@@ -22,12 +22,12 @@ const Equalities: {id: InputEquality, label: string}[] = [
 ];
 
 @Component({
-  selector: 'input-query-form',
-  templateUrl: 'input-query-form.html',
-  styleUrls: ['input-query-form.scss'],
+  selector: 'input-filter',
+  templateUrl: 'input-filter.html',
+  styleUrls: ['input-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputQueryForm implements AfterViewInit, OnChanges {
+export class InputFilter implements AfterViewInit, OnChanges {
   equalities = Equalities;
 
   form = new FormGroup({

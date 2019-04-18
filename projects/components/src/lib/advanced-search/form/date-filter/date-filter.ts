@@ -19,12 +19,12 @@ const Equalities: {id: DateEquality, label: string}[] = [
 ];
 
 @Component({
-  selector: 'date-query-form',
-  templateUrl: 'date-query-form.html',
-  styleUrls: ['date-query-form.scss'],
+  selector: 'date-filter',
+  templateUrl: 'date-filter.html',
+  styleUrls: ['date-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DateQueryForm {
+export class DateFilter {
   equalities = Equalities;
 
   form = new FormGroup({

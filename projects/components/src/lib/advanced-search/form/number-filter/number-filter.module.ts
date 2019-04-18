@@ -2,12 +2,12 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatSelectModule} from '@angular/material';
-import {StateQueryForm} from './state-query-form';
+import {NumberFilter} from './number-filter';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, MatSelectModule],
-  declarations: [StateQueryForm],
-  exports: [StateQueryForm]
+  declarations: [NumberFilter],
+  exports: [NumberFilter]
 })
-export class StateQueryFormModule {
+export class NumberFilterModule {
 }

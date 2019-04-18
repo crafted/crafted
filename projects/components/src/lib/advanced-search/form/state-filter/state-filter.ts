@@ -13,12 +13,12 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 @Component({
-  selector: 'state-query-form',
-  templateUrl: 'state-query-form.html',
-  styleUrls: ['state-query-form.scss'],
+  selector: 'state-filter',
+  templateUrl: 'state-filter.html',
+  styleUrls: ['state-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StateQueryForm implements OnChanges {
+export class StateFilter implements OnChanges {
   equalities: {id: InputEquality, label: string}[] = [
     {id: 'is', label: 'is'},
     {id: 'notIs', label: 'is not'},

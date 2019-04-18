@@ -1,7 +1,7 @@
-@mixin input-query-form-theme($theme) {
+@mixin date-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
 
-  input-query-form {
+  date-filter {
     mat-select {
       border-color: mat-color($foreground, divider);
     }
