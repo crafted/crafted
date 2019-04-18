@@ -47,37 +47,11 @@ export class Grouper<T = any, C = any> {
   }
 
   group(): (items: Observable<T[]>) => Observable<Group<T>[]> {
-    let config: GrouperMetadata<T, C>|null;
     return (items: Observable<T[]>) => {
       return combineLatest(items, this.state)
           .pipe(
-              map(results => {
-                const items = results[0];
-                const state = results[1];
-                const group = state.group!;
-
-                if (this.metadata.has(group)) {
-                  config = this.metadata.get(group) || null;
-                }
-
-                if (!config) {
-                  throw Error(`Missing config for group ${group}`);
-                }
-
-                return config.groupingFunction(items);
-              }),
-              mergeMap(itemGroups => {
-                const titleTransform = config!.titleTransform || ((title: string) => title);
-                return this.contextProvider.pipe(map(context => {
-                  itemGroups.forEach(itemGroup => {
-                    itemGroup.title = titleTransform(itemGroup.title, context);
-                  });
-                  return itemGroups;
-                }));
-              }),
-              map(itemGroups => {
-                return itemGroups.sort((a, b) => a.title < b.title ? -1 : 1);
-              }));
+              mergeMap(results => this.performGrouping(results[0], results[1].group)),
+              map(itemGroups => itemGroups.sort((a, b) => a.title < b.title ? -1 : 1)));
     };
   }
 
@@ -99,6 +73,29 @@ export class Grouper<T = any, C = any> {
 
       return state.group === otherState.group;
     }));
+  }
+
+  private performGrouping(items: T[], group: string): Observable<Group<T>[]> {
+    const groupMetadata = this.getGroupMetadata(group);
+    const groups = groupMetadata.groupingFunction(items);
+
+    const titleTransform = groupMetadata!.titleTransform || ((title: string) => title);
+    return this.contextProvider.pipe(map(context => {
+      groups.forEach(group => {
+        group.title = titleTransform(group.title, context);
+      });
+      return groups;
+    }));
+  }
+
+  private getGroupMetadata(group: string): GrouperMetadata<T, C> {
+    const config = this.metadata.get(group);
+
+    if (!config) {
+      throw Error(`Missing metadata for group ${group}`);
+    }
+
+    return config;
   }
 }
 
