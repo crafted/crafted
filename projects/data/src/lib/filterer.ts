@@ -46,6 +46,7 @@ export interface FiltererState {
 export interface FilterOption {
   id: string;
   label: string;
+  type: FilterType;
 }
 
 export type FiltererContextProvider<M> = Observable<M>;
@@ -54,17 +55,8 @@ export interface FiltererOptions<T, C> {
   metadata?: Map<string, FiltererMetadata<T, C>>;
   contextProvider?: FiltererContextProvider<C>;
   initialState?: FiltererState;
-  initialFilters?: {[key in FilterType]: (id: string) => Filter};
   tokenizeItem?: (item: T) => string;
 }
-
-/** Default values to use when a new filter is added. */
-const DEFAULT_FILTERS: {[key in FilterType]: (id: string) => Filter} = {
-  date: id => ({id, type: 'date', date: '', equality: 'before'}),
-  text: id => ({id, type: 'text', value: '', equality: 'contains'}),
-  number: id => ({id, type: 'number', value: 0, equality: 'greaterThan'}),
-  state: id => ({id, type: 'state', state: '', equality: 'is'})
-};
 
 /** Default and naive tokenize function that combines the item's property values into a string. */
 const DEFAULT_TOKENIZE_ITEM =
@@ -94,7 +86,6 @@ export class Filterer<T = any, C = any> {
     this.metadata = options.metadata || new Map();
     this.state.next(options.initialState || {filters: [], search: ''});
     this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
-    this.defaultFilters = options.initialFilters || DEFAULT_FILTERS;
     this.tokenizeItem = options.tokenizeItem || DEFAULT_TOKENIZE_ITEM;
   }
 
@@ -146,18 +137,15 @@ export class Filterer<T = any, C = any> {
   getFilterOptions(): FilterOption[] {
     const filterOptions: FilterOption[] = [];
     this.metadata.forEach((value, key) => {
-      if (value.label) {
-        filterOptions.push({id: key, label: value.label});
-      }
+      filterOptions.push({id: key, label: value.label, type: value.type});
     });
     return filterOptions;
   }
 
-  add(id: string) {
+  add(filter: Filter) {
     this.state.pipe(take(1)).subscribe(state => {
-      const type = this.metadata.get(id).type;
       const filters = state.filters.slice();
-      filters.push(this.defaultFilters[type](id));
+      filters.push(filter);
       this.setState({...state, filters});
     });
   }

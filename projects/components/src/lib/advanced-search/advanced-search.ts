@@ -15,6 +15,7 @@ import {
   Filter,
   Filterer,
   FilterOption,
+  FilterType,
   NumberEquality,
   NumberFilter,
   StateEquality,
@@ -26,6 +27,14 @@ import {Observable, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
 
 export const ANIMATION_DURATION = '250ms cubic-bezier(0.35, 0, 0.25, 1)';
+
+/** Default values to use when a new filter is added. */
+const DEFAULT_FILTERS: {[key in FilterType]: (id: string) => Filter} = {
+  date: id => ({id, type: 'date', date: '', equality: 'before'}),
+  text: id => ({id, type: 'text', value: '', equality: 'contains'}),
+  number: id => ({id, type: 'number', value: 0, equality: 'greaterThan'}),
+  state: id => ({id, type: 'state', state: '', equality: 'is'})
+};
 
 @Component({
   selector: 'advanced-search',
@@ -64,7 +73,7 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
   expandState = false;
 
-  displayedFilterOptions: FilterOption[];
+  filterOptions: FilterOption[];
 
   trackByIndex = (i: number) => i;
 
@@ -100,7 +109,7 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
           });
         });
 
-    this.displayedFilterOptions =
+    this.filterOptions =
         this.filterer.getFilterOptions().sort((a, b) => a.label < b.label ? -1 : 1);
   }
 
@@ -113,9 +122,9 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  addFilter(filterId: string) {
+  addFilter(id: string, type: FilterType) {
     this.focusInput = true;
-    this.filterer.add(filterId);
+    this.filterer.add(DEFAULT_FILTERS[type](id));
   }
 
   removeFilter(filter: Filter) {
