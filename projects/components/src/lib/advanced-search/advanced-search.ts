@@ -15,12 +15,12 @@ import {
   Filter,
   Filterer,
   FilterOption,
-  InputEquality,
-  InputFilter,
   NumberEquality,
   NumberFilter,
   StateEquality,
-  StateFilter
+  StateFilter,
+  TextEquality,
+  TextFilter
 } from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, take, takeUntil} from 'rxjs/operators';
@@ -78,7 +78,7 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     const metadata = this.filterer.metadata;
 
     metadata.forEach((value, key) => {
-      if (value.type === 'input' && value.autocomplete) {
+      if (value.type === 'text' && value.autocomplete) {
         this.autocomplete.set(key, this.dataSource.data.pipe(this.filterer.autocomplete(value)));
       }
 
@@ -131,8 +131,8 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  inputFilterChanged(index: number, input: string, equality: InputEquality) {
-    this.transformFilter(index, filter => ({...filter, input, equality} as InputFilter));
+  textFilterChanged(index: number, value: string, equality: TextEquality) {
+    this.transformFilter(index, filter => ({...filter, value, equality} as TextFilter));
   }
 
   numberFilterChanged(index: number, value: number, equality: NumberEquality) {

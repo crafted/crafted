@@ -10,11 +10,11 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {InputEquality} from '@crafted/data';
+import {TextEquality} from '@crafted/data';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {debounceTime, map, startWith, takeUntil} from 'rxjs/operators';
 
-const Equalities: {id: InputEquality, label: string}[] = [
+const Equalities: {id: TextEquality, label: string}[] = [
   {id: 'contains', label: 'contains'},
   {id: 'is', label: 'is'},
   {id: 'notContains', label: `doesn't contain`},
@@ -22,17 +22,17 @@ const Equalities: {id: InputEquality, label: string}[] = [
 ];
 
 @Component({
-  selector: 'input-filter',
-  templateUrl: 'input-filter.html',
-  styleUrls: ['input-filter.scss'],
+  selector: 'text-filter',
+  templateUrl: 'text-filter.html',
+  styleUrls: ['text-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputFilter implements AfterViewInit, OnChanges {
+export class TextFilter implements AfterViewInit, OnChanges {
   equalities = Equalities;
 
   form = new FormGroup({
     equality: new FormControl(''),
-    input: new FormControl(''),
+    value: new FormControl(''),
   });
 
   filteredOptions: Observable<string[]>;
@@ -48,11 +48,11 @@ export class InputFilter implements AfterViewInit, OnChanges {
 
   @Input() focusInput: boolean;
 
-  @Input() input: string;
+  @Input() value: string;
 
-  @Input() equality: InputEquality;
+  @Input() equality: TextEquality;
 
-  @Output() changed = new EventEmitter<{input: string, equality: InputEquality}>();
+  @Output() changed = new EventEmitter<{value: string, equality: TextEquality}>();
 
   private destroyed = new Subject();
 
@@ -63,15 +63,15 @@ export class InputFilter implements AfterViewInit, OnChanges {
     const inputChanges = this.form.valueChanges.pipe(startWith(null), debounceTime(100));
     this.filteredOptions = combineLatest(this._options, inputChanges).pipe(map(result => {
       const options = result[0];
-      const input = this.form.value.input as string;
+      const value = this.form.value.value as string;
 
-      return options.filter(o => o.toLowerCase().includes(input.toLowerCase())).sort();
+      return options.filter(o => o.toLowerCase().includes(value.toLowerCase())).sort();
     }));
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['input']) {
-      this.form.get('input')!.setValue(this.input, {emitEvent: false});
+    if (simpleChanges['value']) {
+      this.form.get('value')!.setValue(this.value, {emitEvent: false});
     }
 
     if (simpleChanges['equality']) {

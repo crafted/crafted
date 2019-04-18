@@ -1,7 +1,7 @@
-@mixin input-filter-theme($theme) {
+@mixin text-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
 
-  input-filter {
+  text-filter {
     mat-select {
       border-color: mat-color($foreground, divider);
     }

@@ -1,5 +1,4 @@
 import {
-  arrayContainsQuery,
   dateMatchesEquality,
   Filterer,
   FiltererContextProvider,
@@ -7,7 +6,8 @@ import {
   FiltererState,
   numberMatchesEquality,
   stateMatchesEquality,
-  stringContainsQuery
+  textArrayMatchesEquality,
+  textMatchesEquality
 } from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -55,8 +55,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'title', {
       label: 'Title',
-      type: 'input',
-      matcher: (item, filter) => stringContainsQuery(item.title, filter.input, filter.equality),
+      type: 'text',
+      matcher: (item, filter) => textMatchesEquality(item.title, filter.value, filter.equality),
       autocomplete: items => items.map(issue => issue.title)
     }
   ],
@@ -64,8 +64,9 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'assignees', {
       label: 'Assignee',
-      type: 'input',
-      matcher: (item, filter) => arrayContainsQuery(item.assignees, filter.input, filter.equality),
+      type: 'text',
+      matcher: (item, filter) =>
+          textArrayMatchesEquality(item.assignees, filter.value, filter.equality),
       autocomplete: items => {
         const assigneesSet = new Set<string>();
         items.forEach(item => item.assignees.forEach(a => assigneesSet.add(a)));
@@ -81,8 +82,8 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'body', {
       label: 'Body',
-      type: 'input',
-      matcher: (item, filter) => stringContainsQuery(item.body, filter.input, filter.equality),
+      type: 'text',
+      matcher: (item, filter) => textMatchesEquality(item.body, filter.value, filter.equality),
       autocomplete: () => [],
     }
   ],
@@ -90,7 +91,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
   [
     'labels', {
       label: 'Labels',
-      type: 'input',
+      type: 'text',
       matcher: (item, filter, context) => {
         const labelIds = item.labels.map(labelId => `${labelId}`);
         const labelNames = labelIds.map(l => {
@@ -102,7 +103,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
 
           return label.name;
         });
-        return arrayContainsQuery(labelNames, filter.input, filter.equality);
+        return textArrayMatchesEquality(labelNames, filter.value, filter.equality);
       },
       autocomplete: (_items: Item[], c: MatcherContext) => {
         const labelNames: string[] = [];

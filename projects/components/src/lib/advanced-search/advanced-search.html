@@ -14,12 +14,12 @@
   </div>
 
   <ng-container [ngSwitch]="filter.type">
-    <input-filter *ngSwitchCase="'input'" [input]="filter.input"
-                  [equality]="filter.equality"
-                  [options]="autocomplete.get(filter.type) | async"
-                  [focusInput]="focusInput"
-                  (changed)="inputFilterChanged(index, $event.input, $event.equality)">
-    </input-filter>
+    <text-filter *ngSwitchCase="'text'" [value]="filter.value"
+                 [equality]="filter.equality"
+                 [options]="autocomplete.get(filter.type) | async"
+                 [focusInput]="focusInput"
+                 (changed)="textFilterChanged(index, $event.value, $event.equality)">
+    </text-filter>
 
     <number-filter *ngSwitchCase="'number'" [value]="filter.value"
                    [equality]="filter.equality" [focusInput]="focusInput"

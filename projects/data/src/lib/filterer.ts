@@ -4,15 +4,15 @@ import {
   DateFilter,
   Filter,
   FilterType,
-  InputFilter,
   NumberFilter,
-  StateFilter
+  StateFilter,
+  TextFilter
 } from './filterer-types';
 
-export interface InputFiltererMetadata<T = any, C = any> {
+export interface TextFiltererMetadata<T = any, C = any> {
   label: string;
-  type: 'input';
-  matcher: (item: T, q: InputFilter, c: C) => boolean;
+  type: 'text';
+  matcher: (item: T, q: TextFilter, c: C) => boolean;
   autocomplete: (items: T[], c: C) => string[];
 }
 
@@ -35,7 +35,7 @@ export interface StateFiltererMetadata<T = any, C = any> {
   states: string[];
 }
 
-export type FiltererMetadata<T = any, C = any> = InputFiltererMetadata<T, C>|
+export type FiltererMetadata<T = any, C = any> = TextFiltererMetadata<T, C>|
     NumberFiltererMetadata<T, C>|DateFiltererMetadata<T, C>|StateFiltererMetadata<T, C>;
 
 export interface FiltererState {
@@ -61,7 +61,7 @@ export interface FiltererOptions<T, C> {
 /** Default values to use when a new filter is added. */
 const DEFAULT_FILTERS: {[key in FilterType]: (id: string) => Filter} = {
   date: id => ({id, type: 'date', date: '', equality: 'before'}),
-  input: id => ({id, type: 'input', input: '', equality: 'contains'}),
+  text: id => ({id, type: 'text', value: '', equality: 'contains'}),
   number: id => ({id, type: 'number', value: 0, equality: 'greaterThan'}),
   state: id => ({id, type: 'state', state: '', equality: 'is'})
 };
@@ -113,7 +113,7 @@ export class Filterer<T = any, C = any> {
     };
   }
 
-  autocomplete(filtererMetadata: InputFiltererMetadata<T, C>):
+  autocomplete(filtererMetadata: TextFiltererMetadata<T, C>):
       (items: Observable<T[]>) => Observable<string[]> {
     return (items: Observable<T[]>) => {
       return combineLatest(items, this.contextProvider).pipe(map(results => {
@@ -186,8 +186,8 @@ export function filterItems<T, M>(
       }
 
       switch (filterMetadata.type) {
-        case 'input':
-          return filterMetadata.matcher(item, filter as InputFilter, context);
+        case 'text':
+          return filterMetadata.matcher(item, filter as TextFilter, context);
         case 'date':
           return filterMetadata.matcher(item, filter as DateFilter, context);
         case 'number':

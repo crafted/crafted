@@ -2,12 +2,12 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule, MatSelectModule} from '@angular/material';
-import {InputFilter} from './input-filter';
+import {TextFilter} from './text-filter';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatAutocompleteModule],
-  declarations: [InputFilter],
-  exports: [InputFilter]
+  declarations: [TextFilter],
+  exports: [TextFilter]
 })
-export class InputFilterModule {
+export class TextFilterModule {
 }

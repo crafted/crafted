@@ -2,7 +2,7 @@ import {
   dateMatchesEquality,
   FiltererMetadata,
   numberMatchesEquality,
-  stringContainsQuery
+  textMatchesEquality
 } from '@crafted/data';
 import {ExampleItem} from '../data';
 
@@ -17,8 +17,8 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
   [
     'name', {
       label: 'Name',
-      type: 'input',
-      matcher: (item, filter) => stringContainsQuery(item.name, filter.input, filter.equality),
+      type: 'text',
+      matcher: (item, filter) => textMatchesEquality(item.name, filter.value, filter.equality),
       autocomplete: items => items.map(i => i.name),
     }
   ],
@@ -32,8 +32,8 @@ export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleI
   [
     'color', {
       label: 'Color',
-      type: 'input',
-      matcher: (item, filter) => stringContainsQuery(item.color, filter.input, filter.equality),
+      type: 'text',
+      matcher: (item, filter) => textMatchesEquality(item.color, filter.value, filter.equality),
       autocomplete: items => items.map(i => i.color),
     }
   ],

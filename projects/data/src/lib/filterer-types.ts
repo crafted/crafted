@@ -1,13 +1,13 @@
-export type InputEquality = 'contains'|'is'|'notContains'|'notIs';
+export type TextEquality = 'contains'|'is'|'notContains'|'notIs';
 export type NumberEquality = 'greaterThan'|'lessThan'|'equalTo';
 export type DateEquality = 'before'|'after'|'on';
 export type StateEquality = 'is'|'notIs';
 
-export interface InputFilter {
+export interface TextFilter {
   id: string;
-  type: 'input';
-  input: string;
-  equality: InputEquality;
+  type: 'text';
+  value: string;
+  equality: TextEquality;
 }
 
 export interface NumberFilter {
@@ -31,6 +31,6 @@ export interface StateFilter {
   equality: StateEquality;
 }
 
-export type Filter = InputFilter|NumberFilter|DateFilter|StateFilter;
+export type Filter = TextFilter|NumberFilter|DateFilter|StateFilter;
 
-export type FilterType = 'input'|'number'|'date'|'state';
+export type FilterType = 'text'|'number'|'date'|'state';

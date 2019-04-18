@@ -93,8 +93,8 @@ function getFiltererString(filterer: Filterer): Observable<string> {
 
       const equality = equalityToString[filter.equality] || filter.equality;
       switch (filter.type) {
-        case 'input':
-          str += `${filter.id} ${equality} "${filter.input}"`;
+        case 'text':
+          str += `${filter.id} ${equality} "${filter.value}"`;
           break;
         case 'number':
           str += `${filter.id} ${equality} ${filter.value}`;

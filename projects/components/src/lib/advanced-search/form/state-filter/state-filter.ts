@@ -8,7 +8,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {InputEquality, StateEquality} from '@crafted/data';
+import {StateEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -19,7 +19,7 @@ import {takeUntil} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StateFilter implements OnChanges {
-  equalities: {id: InputEquality, label: string}[] = [
+  equalities: {id: StateEquality, label: string}[] = [
     {id: 'is', label: 'is'},
     {id: 'notIs', label: 'is not'},
   ];

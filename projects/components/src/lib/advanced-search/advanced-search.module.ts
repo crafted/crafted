@@ -10,9 +10,9 @@ import {
 } from '@angular/material';
 import {AdvancedSearch} from './advanced-search';
 import {DateFilterModule} from './form/date-filter/date-filter.module';
-import {InputFilterModule} from './form/input-filter/input-filter.module';
 import {NumberFilterModule} from './form/number-filter/number-filter.module';
 import {StateFilterModule} from './form/state-filter/state-filter.module';
+import {TextFilterModule} from './form/text-filter/text-filter.module';
 
 
 @NgModule({
@@ -25,7 +25,7 @@ import {StateFilterModule} from './form/state-filter/state-filter.module';
     MatDividerModule,
     ReactiveFormsModule,
     DateFilterModule,
-    InputFilterModule,
+    TextFilterModule,
     NumberFilterModule,
     StateFilterModule,
   ],

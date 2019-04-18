@@ -1,10 +1,10 @@
-import {DateEquality, InputEquality, NumberEquality, StateEquality} from '../filterer-types';
+import {DateEquality, NumberEquality, StateEquality, TextEquality} from '../filterer-types';
 
 const OR = ' OR ';
 const AND = ' AND ';
 
-export function stringContainsQuery(
-    inputValue: string, filterValue: string, equality: InputEquality): boolean {
+export function textMatchesEquality(
+    inputValue: string, filterValue: string, equality: TextEquality): boolean {
   if (!inputValue) {
     return false;
   }
@@ -20,14 +20,14 @@ export function stringContainsQuery(
   // If it contains OR, split it up and try again for each piece (one has to be true)
   if (filterValue.indexOf(OR) !== -1) {
     return filterValue.split(OR).some(inputToken => {
-      return stringContainsQuery(inputValue, inputToken, equality);
+      return textMatchesEquality(inputValue, inputToken, equality);
     });
   }
 
   // If it contains AND, split it up and try again for each piece (every one has to be true)
   if (filterValue.indexOf(AND) !== -1) {
     return filterValue.split(AND).every(inputToken => {
-      return stringContainsQuery(inputValue, inputToken, equality);
+      return textMatchesEquality(inputValue, inputToken, equality);
     });
   }
 
@@ -106,19 +106,19 @@ export function stateMatchesEquality(
   }
 }
 
-export function arrayContainsQuery(
-    input: string[], filterValue: string, equality: InputEquality): boolean {
+export function textArrayMatchesEquality(
+    input: string[], filterValue: string, equality: TextEquality): boolean {
   // If it contains OR, split it up and try again for each piece (one has to be true)
   if (filterValue.indexOf(OR) !== -1) {
     return filterValue.split(OR).some(inputToken => {
-      return arrayContainsQuery(input, inputToken, equality);
+      return textArrayMatchesEquality(input, inputToken, equality);
     });
   }
 
   // If it contains AND, split it up and try again for each piece (every one has to be true)
   if (filterValue.indexOf(AND) !== -1) {
     return filterValue.split(AND).every(inputToken => {
-      return arrayContainsQuery(input, inputToken, equality);
+      return textArrayMatchesEquality(input, inputToken, equality);
     });
   }
 
@@ -126,5 +126,5 @@ export function arrayContainsQuery(
   const transformedFilterValue =
       filterValue ? filterValue.split(',').map(v => `"${v}"`).sort().toString() : '[]';
 
-  return stringContainsQuery(transformedInput, transformedFilterValue, equality);
+  return textMatchesEquality(transformedInput, transformedFilterValue, equality);
 }
