@@ -1,7 +1,7 @@
 <div class="search-bar">
   <input [formControl]="searchFormControl" placeholder="Search" class="search">
   <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu" type="button"
-          *ngIf="filterer.metadata.size > 0" matTooltip="Add filter"
+          *ngIf="filterOptions.length" matTooltip="Add filter"
           class="new-filter">
     <mat-icon> filter_list </mat-icon>
   </button>
@@ -10,7 +10,7 @@
 <div class="filter-container" [@expand]="expandState"
      *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
   <div class="filter-label">
-    {{filterer.metadata.get(filter.id).label}}:
+    {{filterLabels.get(filter.id)}}:
   </div>
 
   <ng-container [ngSwitch]="filter.type">

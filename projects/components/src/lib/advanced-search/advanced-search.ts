@@ -75,6 +75,8 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
   filterOptions: FilterOption[];
 
+  filterLabels: Map<string, string>;
+
   trackByIndex = (i: number) => i;
 
   @Input() dataSource: DataSource<any>;
@@ -111,6 +113,9 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
     this.filterOptions =
         this.filterer.getFilterOptions().sort((a, b) => a.label < b.label ? -1 : 1);
+
+    this.filterLabels = new Map<string, string>();
+    this.filterOptions.forEach(o => this.filterLabels.set(o.id, o.label));
   }
 
   ngAfterViewInit() {
