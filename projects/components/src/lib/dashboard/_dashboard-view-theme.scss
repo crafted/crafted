@@ -1,10 +1,11 @@
 @mixin dashboard-view-theme($theme) {
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
+  $divider: mat-color($foreground, divider);
 
   dashboard-view {
     .column-edit {
-      border-color: mat-color($foreground, divider);
+      border-color: $divider;
     }
 
     .widgets {
@@ -12,7 +13,7 @@
     }
 
     .add-widget {
-      border-color: mat-color($foreground, divider);
+      border-color: $divider;
     }
   }
 }

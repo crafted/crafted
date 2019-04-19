@@ -1,4 +1,4 @@
-@import '../common';
+@import "../common";
 
 :host {
   display: flex;
@@ -33,6 +33,13 @@ input {
 .filter-container {
   overflow: hidden;
   display: flex;
+}
+
+.filter {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  height: 48px;
 }
 
 ::ng-deep .advanced-search-filter-menu {

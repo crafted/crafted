@@ -1,12 +1,13 @@
 @mixin date-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   date-filter {
     mat-select {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
     input {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 }

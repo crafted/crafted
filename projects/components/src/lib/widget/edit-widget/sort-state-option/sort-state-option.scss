@@ -1,7 +1,7 @@
 @import "../../../common";
 
 mat-select {
-  @include widget-select();
+  @include auto-width-select();
 }
 
 mat-select + mat-select {

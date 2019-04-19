@@ -1,10 +1,12 @@
 @mixin editable-chip-list-theme($theme) {
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
+  $divider: mat-color($foreground, divider);
 
   editable-chip-list {
-    .chip, .chip-add {
-      border-color: mat-color($foreground, divider);
+    .chip,
+    .chip-add {
+      border-color: $divider;
     }
 
     .chip-add {

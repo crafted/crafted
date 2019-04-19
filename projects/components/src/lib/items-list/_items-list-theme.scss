@@ -1,17 +1,19 @@
 @mixin items-list-theme($theme) {
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
+  $divider: mat-color($foreground, divider);
 
   items-list {
     advanced-search {
-      border-color: mat-color($foreground, divider);
+      border-color: $divider;
     }
 
     .item-count {
       color: mat-color($foreground, secondary-text);
     }
 
-    .selectable-item:hover, .selectable-item-active {
+    .selectable-item:hover,
+    .selectable-item-active {
       background: mat-color($background, hover);
     }
   }

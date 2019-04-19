@@ -21,6 +21,7 @@ export interface EditWidgetDialogData {
   widgetConfigs: {[key in string]: WidgetConfig<any>};
 }
 @Component({
+  selector: 'edit-widget',
   templateUrl: 'edit-widget.html',
   styleUrls: ['edit-widget.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,6 +3,7 @@
 :host {
   flex: 1;
   display: flex;
+  align-items: center;
 }
 
 mat-option.mat-option {
@@ -10,7 +11,7 @@ mat-option.mat-option {
 }
 
 input {
-  @include as-input();
+  @include unstyled-input();
 }
 
 mat-select + input {
@@ -18,5 +19,5 @@ mat-select + input {
 }
 
 mat-select {
-  @include as-select();
+  @include auto-width-select();
 }

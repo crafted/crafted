@@ -1,9 +1,12 @@
+@import "../common";
+
 @mixin advanced-search-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   advanced-search {
     input.search {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 

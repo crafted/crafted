@@ -1,9 +1,12 @@
+@import "../../../common";
+
 @mixin state-filter-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   state-filter {
     mat-select {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 }

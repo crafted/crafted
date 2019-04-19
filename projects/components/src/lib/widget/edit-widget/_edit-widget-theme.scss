@@ -1,9 +1,12 @@
+@import "../../common";
+
 @mixin edit-widget-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   edit-widget {
     input {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 }

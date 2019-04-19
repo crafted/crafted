@@ -1,9 +1,12 @@
+@import "../../../common";
+
 @mixin input-option-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   input-option {
     input[matInput] {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 }

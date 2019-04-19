@@ -8,7 +8,7 @@
   height: 32px;
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
   min-width: 140px;
   width: 140px;
@@ -16,6 +16,7 @@
 
 .option {
   display: flex;
+  align-items: center;
   flex: 1;
   min-height: 32px;
 }

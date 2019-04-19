@@ -1,9 +1,10 @@
 @mixin widget-view-theme($theme) {
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
+  $divider: mat-color($foreground, divider);
 
   widget-view {
-    border-color: mat-color($foreground, divider);
+    border-color: $divider;
     background: mat-color($background, card);
 
     .widget-header {

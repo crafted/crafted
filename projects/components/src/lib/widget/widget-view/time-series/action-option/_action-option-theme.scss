@@ -1,9 +1,12 @@
+@import "../../../../common";
+
 @mixin action-option-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   action-option {
     mat-select {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
 
     .desc {

@@ -1,11 +1,11 @@
 <form-field [label]="label">
-  <mat-select class="auto-width" #sortIdSelect="matSelect"
+  <mat-select #sortIdSelect="matSelect"
               (valueChange)="onChange({sort: $event, reverse: sortDirSelect.value})">
     <mat-option *ngFor="let sort of sorts" [value]="sort.id">
       {{sort.label}}
     </mat-option>
   </mat-select>
-  <mat-select class="auto-width" #sortDirSelect="matSelect"
+  <mat-select #sortDirSelect="matSelect"
               (valueChange)="onChange({sort: sortIdSelect.value, reverse: $event})">
     <mat-option [value]="false"> Ascending </mat-option>
     <mat-option [value]="true"> Descending </mat-option>

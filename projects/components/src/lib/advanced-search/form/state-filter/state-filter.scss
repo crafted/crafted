@@ -3,14 +3,7 @@
 :host {
   flex: 1;
   display: flex;
-}
-
-mat-select.state {
-  flex: 1;
-}
-
-mat-select.state ::ng-deep .mat-select-value {
-  width: 100%;
+  align-items: center;
 }
 
 mat-option.mat-option {
@@ -18,13 +11,13 @@ mat-option.mat-option {
 }
 
 input {
-  @include as-input();
+  @include unstyled-input();
 }
 
 mat-select + mat-select {
   margin-left: 4px;
 }
 
-mat-select {
-  @include as-select();
+mat-select.equality {
+  @include auto-width-select();
 }

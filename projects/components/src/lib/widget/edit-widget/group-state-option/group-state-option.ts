@@ -6,7 +6,6 @@ import {Grouper, GrouperState, GroupLabel} from '@crafted/data';
 @Component({
   selector: 'group-state-option',
   templateUrl: 'group-state-option.html',
-  styleUrls: ['group-state-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: GroupStateOption, multi: true}]
 })

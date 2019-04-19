@@ -1,7 +1,8 @@
 @mixin count-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   count {
-    border-color: mat-color($foreground, divider);
+    border-color: $divider;
   }
 }

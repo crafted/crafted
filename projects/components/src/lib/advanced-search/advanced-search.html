@@ -9,39 +9,41 @@
 
 <div class="filter-container" [@expand]="expandState"
      *ngFor="let filter of (filterer.state | async)?.filters; let index = index; trackBy: trackByIndex">
-  <div class="filter-label">
-    {{filterLabels.get(filter.id)}}:
+  <div class="filter">
+    <div class="filter-label">
+      {{filterLabels.get(filter.id)}}:
+    </div>
+
+    <ng-container [ngSwitch]="filter.type">
+      <text-filter *ngSwitchCase="'text'" [value]="filter.value"
+                   [equality]="filter.equality"
+                   [options]="getTextFilterAutocomplete(filter.id) | async"
+                   [focusInput]="focusInput"
+                   (changed)="textFilterChanged(index, $event.value, $event.equality)">
+      </text-filter>
+
+      <number-filter *ngSwitchCase="'number'" [value]="filter.value"
+                     [equality]="filter.equality" [focusInput]="focusInput"
+                     (changed)="numberFilterChanged(index, $event.value, $event.equality)">
+      </number-filter>
+
+      <date-filter *ngSwitchCase="'date'" [date]="filter.date"
+                   [equality]="filter.equality"
+                   (changed)="dateFilterChanged(index, $event.date, $event.equality)">
+      </date-filter>
+
+      <state-filter *ngSwitchCase="'state'" [state]="filter.state"
+                    [equality]="filter.equality"
+                    [states]="filterer.getStateFilterOptions(filter.id)"
+                    (changed)="stateFilterChanged(index, $event.state, $event.equality)">
+      </state-filter>
+
+      <button mat-icon-button class="remove-filter" type="button"
+              (click)="removeFilter(filter)">
+        <mat-icon> close </mat-icon>
+      </button>
+    </ng-container>
   </div>
-
-  <ng-container [ngSwitch]="filter.type">
-    <text-filter *ngSwitchCase="'text'" [value]="filter.value"
-                 [equality]="filter.equality"
-                 [options]="getTextFilterAutocomplete(filter.id) | async"
-                 [focusInput]="focusInput"
-                 (changed)="textFilterChanged(index, $event.value, $event.equality)">
-    </text-filter>
-
-    <number-filter *ngSwitchCase="'number'" [value]="filter.value"
-                   [equality]="filter.equality" [focusInput]="focusInput"
-                   (changed)="numberFilterChanged(index, $event.value, $event.equality)">
-    </number-filter>
-
-    <date-filter *ngSwitchCase="'date'" [date]="filter.date"
-                 [equality]="filter.equality"
-                 (changed)="dateFilterChanged(index, $event.date, $event.equality)">
-    </date-filter>
-
-    <state-filter *ngSwitchCase="'state'" [state]="filter.state"
-                  [equality]="filter.equality"
-                  [states]="filterer.getStateFilterOptions(filter.id)"
-                  (changed)="stateFilterChanged(index, $event.state, $event.equality)">
-    </state-filter>
-
-    <button mat-icon-button class="remove-filter" type="button"
-            (click)="removeFilter(filter)">
-      <mat-icon> close </mat-icon>
-    </button>
-  </ng-container>
 </div>
 
 <!-- Filter Types Menu -->

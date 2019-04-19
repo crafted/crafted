@@ -1,9 +1,12 @@
+@import "../../../common";
+
 @mixin sort-state-option-theme($theme) {
   $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
 
   sort-state-option {
     mat-select {
-      border-color: mat-color($foreground, divider);
+      @include bottom-border($divider);
     }
   }
 }
