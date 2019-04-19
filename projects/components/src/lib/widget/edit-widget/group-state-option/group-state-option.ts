@@ -5,19 +5,7 @@ import {Grouper, GrouperState, GroupLabel} from '@crafted/data';
 
 @Component({
   selector: 'group-state-option',
-  template: `
-    <div class="config-option">
-      <div class="label"> {{label}} </div>
-      <div class="option">
-        <mat-select #groupSelect="matSelect"
-                    (valueChange)="onChange({group: $event})">
-          <mat-option *ngFor="let group of groups" [value]="group.id">
-            {{group.label}}
-          </mat-option>
-        </mat-select>
-      </div>
-    </div>
-  `,
+  templateUrl: 'group-state-option.html',
   styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: GroupStateOption, multi: true}]

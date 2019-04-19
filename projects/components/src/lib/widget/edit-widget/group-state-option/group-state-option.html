@@ -1,0 +1,8 @@
+<form-field [label]="label">
+  <mat-select #groupSelect="matSelect"
+              (valueChange)="onChange({group: $event})">
+    <mat-option *ngFor="let group of groups" [value]="group.id">
+      {{group.label}}
+    </mat-option>
+  </mat-select>
+</form-field>

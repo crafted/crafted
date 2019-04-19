@@ -10,20 +10,7 @@ export interface ButtonToggleOption {
 
 @Component({
   selector: 'button-toggle-group-option',
-  template: `
-    <div class="config-option">
-      <div class="label"> {{label}} </div>
-      <div class="option">
-        <mat-button-toggle-group [multiple]="multiple" (change)="onChange($event.value)"
-                                 #buttonToggleGroup="matButtonToggleGroup">
-          <mat-button-toggle *ngFor="let option of options" [value]="option.id">
-            <mat-icon *ngIf="option.icon"> {{option.icon}} </mat-icon>
-            {{option.label}}
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-    </div>
-  `,
+  templateUrl: 'button-toggle-option.html',
   styleUrls: ['../../edit-form.scss', 'button-toggle-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: ButtonToggleGroupOption, multi: true}]

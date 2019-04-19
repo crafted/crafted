@@ -3,18 +3,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
   selector: 'input-option',
-  template: `
-    <div class="config-option">
-      <div class="label"> {{label}} </div>
-      <div class="option">
-        <input #input matInput
-               (input)="onChange($event.target.value)"
-               autocomplete="off"
-               (blur)="onTouched()"
-               [placeholder]="placeholder" [type]="type">
-      </div>
-    </div>
-  `,
+  templateUrl: 'input-option.html',
   styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: InputOption, multi: true}]

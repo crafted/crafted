@@ -1,20 +1,23 @@
-<div class="config-option">
-  <div class="label query">
-    Query
-    <button mat-icon-button *ngIf="savedFiltererStateGroups.length"
-            [matMenuTriggerFor]="loadFiltererStates" type="button"
-            matTooltip="Load from saved searches">
-      <mat-icon> save_alt </mat-icon>
-    </button>
-  </div>
-  <div class="option">
+<form-field>
+  <ng-template formFieldLabel>
+    <div class="filter-state-label">
+      Query
+      <button mat-icon-button *ngIf="savedFiltererStateGroups.length"
+              [matMenuTriggerFor]="loadFiltererStates" type="button"
+              matTooltip="Load from saved searches">
+        <mat-icon> save_alt </mat-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="container">
     <advanced-search [filterer]="filterer" [dataSource]="dataSource">
     </advanced-search>
     <div class="results-count" *ngIf="resultsCount">
       {{resultsCount | async}} results
     </div>
   </div>
-</div>
+</form-field>
 
 <mat-menu #loadFiltererStates="matMenu">
   <ng-container *ngFor="let group of savedFiltererStateGroups">

@@ -1,0 +1,5 @@
+<form-field [label]="label">
+  <input #input matInput (input)="onChange($event.target.value)"
+         autocomplete="off" (blur)="onTouched()" [placeholder]="placeholder"
+         [type]="type">
+</form-field>

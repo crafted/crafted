@@ -5,24 +5,7 @@ import {Sorter, SorterState, SortLabel} from '@crafted/data';
 
 @Component({
   selector: 'sort-state-option',
-  template: `
-    <div class="config-option">
-      <div class="label"> {{label}} </div>
-      <div class="option">
-        <mat-select class="auto-width" #sortIdSelect="matSelect"
-                    (valueChange)="onChange({sort: $event, reverse: sortDirSelect.value})">
-          <mat-option *ngFor="let sort of sorts" [value]="sort.id">
-            {{sort.label}}
-          </mat-option>
-        </mat-select>
-        <mat-select class="auto-width" #sortDirSelect="matSelect"
-                    (valueChange)="onChange({sort: sortIdSelect.value, reverse: $event})">
-          <mat-option [value]="false"> Ascending </mat-option>
-          <mat-option [value]="true"> Descending </mat-option>
-        </mat-select>
-      </div>
-    </div>
-  `,
+  templateUrl: 'sort-state-option.html',
   styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: SortStateOption, multi: true}]

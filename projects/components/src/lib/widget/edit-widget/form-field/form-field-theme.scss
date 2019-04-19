@@ -1,0 +1,18 @@
+@mixin form-field-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  form-field {
+    .chip, .chip-add {
+      border-color: mat-color($foreground, divider);
+    }
+
+    .chip-add {
+      background: mat-color($background, hover);
+    }
+
+    .remove:hover {
+      background: mat-color($background, hover);
+    }
+  }
+}

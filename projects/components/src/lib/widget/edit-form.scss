@@ -4,34 +4,6 @@ form {
   padding: 0 16px;
 }
 
-.config-option {
-  display: flex;
-  margin-bottom: 16px;
-  font-size: 14px;
-
-  .label {
-    height: 32px;
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    font-weight: bold;
-    min-width: 140px;
-    width: 140px;
-
-    &.query {
-      margin-top: 8px;
-      display: flex;
-
-      mat-icon {
-        font-size: 20px;
-        height: 20px;
-        width: 20px;
-        line-height: 20px;
-      }
-    }
-  }
-}
-
 .mat-dialog-title {
   margin-left: 16px;
 }

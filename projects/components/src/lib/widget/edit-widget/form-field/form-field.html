@@ -1,0 +1,14 @@
+<div class="config-option">
+  <div class="label">
+    <ng-container *ngIf="templateLabel; else textLabel">
+      <ng-template [cdkPortalOutlet]="templateLabel"></ng-template>
+    </ng-container>
+
+    <ng-template #textLabel>
+      {{label}}
+    </ng-template>
+  </div>
+  <div class="option">
+    <ng-content></ng-content>
+  </div>
+</div>

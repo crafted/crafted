@@ -1,3 +1,22 @@
 .results-count {
   margin-top: 8px;
 }
+
+.filter-state-label {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+:host mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
