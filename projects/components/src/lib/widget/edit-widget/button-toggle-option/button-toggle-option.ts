@@ -11,7 +11,7 @@ export interface ButtonToggleOption {
 @Component({
   selector: 'button-toggle-group-option',
   templateUrl: 'button-toggle-option.html',
-  styleUrls: ['../../edit-form.scss', 'button-toggle-option.scss'],
+  styleUrls: ['button-toggle-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: ButtonToggleGroupOption, multi: true}]
 })

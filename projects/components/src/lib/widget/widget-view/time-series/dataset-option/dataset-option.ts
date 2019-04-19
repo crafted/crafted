@@ -10,7 +10,7 @@ import {TimeSeriesDataResourcesMap} from '../time-series';
 @Component({
   selector: 'dataset-option',
   templateUrl: 'dataset-option.html',
-  styleUrls: ['dataset-option.scss', '../../../edit-form.scss'],
+  styleUrls: ['dataset-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatasetOption {

@@ -17,13 +17,13 @@
                               [options]="seriesTypeOptions">
   </button-toggle-group-option>
 
-  <div class="config-option">
-    <div class="label date-values">
+  <form-field>
+    <ng-template formFieldLabel>
       Date Values
       <button mat-icon-button (click)="addAction.emit()" type="button">
         <mat-icon> add </mat-icon>
       </button>
-    </div>
+    </ng-template>
 
     <div class="actions">
       <ng-container *ngFor="let action of actionsFormArray.controls; let index = index"
@@ -33,7 +33,7 @@
         </action-option>
       </ng-container>
     </div>
-  </div>
+  </form-field>
 
   <div class="buttons">
     <button mat-button class="duplicate-dataset" (click)="duplicate.emit()"

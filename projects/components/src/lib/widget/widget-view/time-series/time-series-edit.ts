@@ -12,7 +12,7 @@ import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-s
 @Component({
   selector: 'time-series-edit',
   templateUrl: 'time-series-edit.html',
-  styleUrls: ['time-series-edit.scss', '../../edit-form.scss'],
+  styleUrls: ['time-series-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeSeriesEdit {

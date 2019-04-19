@@ -6,7 +6,7 @@ import {ButtonToggleOption} from '../../../edit-widget/button-toggle-option/butt
 @Component({
   selector: 'action-option',
   templateUrl: 'action-option.html',
-  styleUrls: ['action-option.scss', '../../../edit-form.scss'],
+  styleUrls: ['action-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionOption {

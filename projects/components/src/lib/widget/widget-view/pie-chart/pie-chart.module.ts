@@ -6,7 +6,7 @@ import {
 } from '../../edit-widget/button-toggle-option/button-toggle-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/filter-state-option/filter-state-option.module';
+} from '../../edit-widget/group-state-option/filter-state-option.module';
 import {
   GroupStateOptionModule
 } from '../../edit-widget/group-state-option/group-state-option.module';

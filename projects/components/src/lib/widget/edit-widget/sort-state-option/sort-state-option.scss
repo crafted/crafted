@@ -1,0 +1,9 @@
+@import "../../../common";
+
+mat-select {
+  @include widget-select();
+}
+
+mat-select + mat-select {
+  margin-left: 16px;
+}

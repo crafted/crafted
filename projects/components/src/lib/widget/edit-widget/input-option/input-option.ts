@@ -4,7 +4,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 @Component({
   selector: 'input-option',
   templateUrl: 'input-option.html',
-  styleUrls: ['../../edit-form.scss'],
+  styleUrls: ['input-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: InputOption, multi: true}]
 })

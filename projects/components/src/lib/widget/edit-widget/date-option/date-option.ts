@@ -5,7 +5,7 @@ import {MatDatepickerInput} from '@angular/material';
 @Component({
   selector: 'date-option',
   templateUrl: 'date-option.html',
-  styleUrls: ['../../edit-form.scss'],
+  styleUrls: ['date-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: DateOption, multi: true}]
 })

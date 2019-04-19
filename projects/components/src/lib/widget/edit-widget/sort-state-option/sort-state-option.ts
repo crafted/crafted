@@ -6,7 +6,7 @@ import {Sorter, SorterState, SortLabel} from '@crafted/data';
 @Component({
   selector: 'sort-state-option',
   templateUrl: 'sort-state-option.html',
-  styleUrls: ['../../edit-form.scss'],
+  styleUrls: ['sort-state-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: SortStateOption, multi: true}]
 })

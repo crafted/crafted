@@ -13,7 +13,6 @@ import {PieChartDisplayTypeOptions, PieChartWidgetDataConfig} from './pie-chart'
 
 @Component({
   templateUrl: 'pie-chart-edit.html',
-  styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieChartEdit {

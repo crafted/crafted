@@ -8,7 +8,7 @@ import {
 import {DateOptionModule} from '../../edit-widget/date-option/date-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/filter-state-option/filter-state-option.module';
+} from '../../edit-widget/group-state-option/filter-state-option.module';
 import {InputOptionModule} from '../../edit-widget/input-option/input-option.module';
 import {DatasetOptionModule} from './dataset-option/dataset-option.module';
 import {TimeSeries} from './time-series';

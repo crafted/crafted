@@ -14,7 +14,6 @@ import {CountDisplayTypeOptions} from './count.module';
 
 @Component({
   templateUrl: 'count-edit.html',
-  styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCount {

@@ -1,0 +1,5 @@
+@import "../../../common";
+
+mat-select {
+  @include widget-select();
+}

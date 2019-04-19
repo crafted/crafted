@@ -8,7 +8,7 @@ import {
 } from '../../edit-widget/button-toggle-option/button-toggle-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/filter-state-option/filter-state-option.module';
+} from '../../edit-widget/group-state-option/filter-state-option.module';
 import {InputOptionModule} from '../../edit-widget/input-option/input-option.module';
 import {SortStateOptionModule} from '../../edit-widget/sort-state-option/sort-state-option.module';
 import {ViewStateOptionModule} from '../../edit-widget/view-state-option/view-state-option.module';

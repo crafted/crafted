@@ -29,3 +29,33 @@ $mobile-width: 700px;
   height: 40px;
   line-height: 40px;
 }
+
+@mixin widget-input {
+  background: inherit;
+  color: inherit;
+  border: none;
+  outline: none;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  padding: 4px 0;
+  width: 100%;
+  font-size: 15px;
+}
+
+@mixin widget-select {
+  height: 16px;
+  display: block;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  padding: 6px 0 8px 0;
+
+  &.auto-width {
+    flex: 0;
+
+    ::ng-deep .mat-select-value {
+      max-width: 100%;
+      width: auto;
+      padding-right: 8px;
+    }
+  }
+}

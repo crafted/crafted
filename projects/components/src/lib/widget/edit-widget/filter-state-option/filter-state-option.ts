@@ -13,7 +13,7 @@ interface SavedFiltererStateGroup {
 @Component({
   selector: 'filter-state-option',
   templateUrl: 'filter-state-option.html',
-  styleUrls: ['../../edit-form.scss', 'filter-state-option.scss'],
+  styleUrls: ['filter-state-option.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: FilterStateOption, multi: true}]
 })

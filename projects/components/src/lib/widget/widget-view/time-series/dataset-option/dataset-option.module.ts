@@ -5,9 +5,10 @@ import {MatButtonModule, MatIconModule} from '@angular/material';
 import {
   ButtonToggleGroupOptionModule
 } from '../../../edit-widget/button-toggle-option/button-toggle-option.module';
+import {FormFieldModule} from '../../../edit-widget/form-field/form-field.module';
 import {
   FilterStateOptionModule
-} from '../../../edit-widget/filter-state-option/filter-state-option.module';
+} from '../../../edit-widget/group-state-option/filter-state-option.module';
 import {InputOptionModule} from '../../../edit-widget/input-option/input-option.module';
 import {ActionOptionModule} from '../action-option/action-option.module';
 import {DatasetOption} from './dataset-option';
@@ -22,6 +23,7 @@ import {DatasetOption} from './dataset-option';
     ButtonToggleGroupOptionModule,
     FilterStateOptionModule,
     ActionOptionModule,
+    FormFieldModule,
   ],
   declarations: [DatasetOption],
   exports: [DatasetOption],

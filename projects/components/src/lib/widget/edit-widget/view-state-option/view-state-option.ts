@@ -6,7 +6,6 @@ import {EditableChipListOption} from '../../../editable-chip-list/editable-chip-
 @Component({
   selector: 'view-state-option',
   templateUrl: 'view-state-option.html',
-  styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: ViewStateOption, multi: true}]
 })

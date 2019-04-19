@@ -13,7 +13,6 @@ import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
 
 @Component({
   templateUrl: 'list-edit.html',
-  styleUrls: ['../../edit-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEdit {
