@@ -1,1 +1,22 @@
-@import '../form';
+@import "../../../common";
+
+:host {
+  flex: 1;
+  display: flex;
+}
+
+mat-option.mat-option {
+  @include slim-option();
+}
+
+input {
+  @include as-input();
+}
+
+mat-select + input {
+  margin-left: 4px;
+}
+
+mat-select {
+  @include as-select();
+}

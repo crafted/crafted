@@ -1,4 +1,9 @@
-@import '../form';
+@import "../../../common";
+
+:host {
+  flex: 1;
+  display: flex;
+}
 
 mat-select.state {
   flex: 1;
@@ -6,4 +11,20 @@ mat-select.state {
 
 mat-select.state ::ng-deep .mat-select-value {
   width: 100%;
+}
+
+mat-option.mat-option {
+  @include slim-option();
+}
+
+input {
+  @include as-input();
+}
+
+mat-select + mat-select {
+  margin-left: 4px;
+}
+
+mat-select {
+  @include as-select();
 }
