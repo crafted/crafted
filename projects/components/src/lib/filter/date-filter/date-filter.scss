@@ -20,4 +20,5 @@ mat-select + input {
 
 mat-select {
   @include auto-width-select();
+  height: 18px;
 }

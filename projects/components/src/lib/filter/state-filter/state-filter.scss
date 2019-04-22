@@ -21,3 +21,7 @@ mat-select + mat-select {
 mat-select.equality {
   @include auto-width-select();
 }
+
+mat-select {
+  height: 18px;
+}
