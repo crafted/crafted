@@ -1,7 +1,15 @@
 <ng-container [formGroup]="form">
-  <date-option formControlName="start" label="Start date"></date-option>
+  <form-field label="Start date">
+    <input matInput formControlName="start" [matDatepicker]="startPicker"
+           (click)="startPicker.open()">
+    <mat-datepicker #startPicker></mat-datepicker>
+  </form-field>
 
-  <date-option formControlName="end" label="End date"></date-option>
+  <form-field label="End date">
+    <input matInput formControlName="end" [matDatepicker]="endPicker"
+           (click)="endPicker.open()">
+    <mat-datepicker #endPicker></mat-datepicker>
+  </form-field>
 
   <button-toggle-group-option formControlName="group" label="Group"
                               [options]="groupOptions">

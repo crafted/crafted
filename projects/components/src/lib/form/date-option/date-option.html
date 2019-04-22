@@ -1,6 +1,0 @@
-<form-field [label]="label">
-  <input matInput (dateInput)="onChange($event.target.value)"
-         (blur)="onTouched()" autocomplete="off" [placeholder]="placeholder"
-         [matDatepicker]="picker" (click)="picker.open()">
-  <mat-datepicker #picker></mat-datepicker>
-</form-field>

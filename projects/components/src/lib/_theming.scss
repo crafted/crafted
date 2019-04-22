@@ -6,7 +6,6 @@
 @import "filter/state-filter/state-filter-theme";
 @import "items-list/items-list-theme";
 @import "dashboard/dashboard-view-theme";
-@import "form/date-option/date-option-theme";
 @import "form/filter-state-option/filter-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
 @import "form/sort-state-option/sort-state-option-theme";
@@ -30,7 +29,6 @@
   @include state-filter-theme($theme);
   @include items-list-theme($theme);
   @include dashboard-view-theme($theme);
-  @include date-option-theme($theme);
   @include widget-edit-theme($theme);
   @include group-state-option-theme($theme);
   @include sort-state-option-theme($theme);
