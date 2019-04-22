@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer} from '@angular/forms';
 import {DataSource} from '@crafted/data';
-import {ButtonToggleOption} from '../../../edit-widget/button-toggle-option/button-toggle-option';
+import {ButtonToggleOption} from '../../../../form/button-toggle-option/button-toggle-option';
 
 @Component({
   selector: 'action-option',

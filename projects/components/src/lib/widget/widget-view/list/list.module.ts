@@ -2,16 +2,16 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatDividerModule, MatRippleModule} from '@angular/material';
-import {ItemSummaryModule} from '../../../item-summary/item-summary.module';
 import {
   ButtonToggleGroupOptionModule
-} from '../../edit-widget/button-toggle-option/button-toggle-option.module';
+} from '../../../form/button-toggle-option/button-toggle-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/group-state-option/filter-state-option.module';
-import {InputOptionModule} from '../../edit-widget/input-option/input-option.module';
-import {SortStateOptionModule} from '../../edit-widget/sort-state-option/sort-state-option.module';
-import {ViewStateOptionModule} from '../../edit-widget/view-state-option/view-state-option.module';
+} from '../../../form/filter-state-option/filter-state-option.module';
+import {InputOptionModule} from '../../../form/input-option/input-option.module';
+import {SortStateOptionModule} from '../../../form/sort-state-option/sort-state-option.module';
+import {ViewStateOptionModule} from '../../../form/view-state-option/view-state-option.module';
+import {ItemSummaryModule} from '../../../item-summary/item-summary.module';
 import {List} from './list';
 import {ListEdit} from './list-edit';
 

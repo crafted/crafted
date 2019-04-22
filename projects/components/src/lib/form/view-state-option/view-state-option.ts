@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Viewer, ViewerState} from '@crafted/data';
-import {EditableChipListOption} from '../../../editable-chip-list/editable-chip-list';
+import {EditableChipListOption} from '../../editable-chip-list/editable-chip-list';
 
 @Component({
   selector: 'view-state-option',

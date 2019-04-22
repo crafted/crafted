@@ -1,10 +1,10 @@
-@import "../../../common";
+@import "../../common";
 
-@mixin input-option-theme($theme) {
+@mixin date-option-theme($theme) {
   $foreground: map-get($theme, foreground);
   $divider: mat-color($foreground, divider);
 
-  input-option {
+  date-option {
     input[matInput] {
       @include bottom-border($divider);
     }

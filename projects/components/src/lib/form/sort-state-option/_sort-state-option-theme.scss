@@ -1,11 +1,11 @@
-@import "../../../common";
+@import "../../common";
 
-@mixin date-option-theme($theme) {
+@mixin sort-state-option-theme($theme) {
   $foreground: map-get($theme, foreground);
   $divider: mat-color($foreground, divider);
 
-  date-option {
-    input[matInput] {
+  sort-state-option {
+    mat-select {
       @include bottom-border($divider);
     }
   }

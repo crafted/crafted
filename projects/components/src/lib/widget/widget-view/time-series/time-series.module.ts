@@ -4,12 +4,12 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material';
 import {
   ButtonToggleGroupOptionModule
-} from '../../edit-widget/button-toggle-option/button-toggle-option.module';
-import {DateOptionModule} from '../../edit-widget/date-option/date-option.module';
+} from '../../../form/button-toggle-option/button-toggle-option.module';
+import {DateOptionModule} from '../../../form/date-option/date-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/group-state-option/filter-state-option.module';
-import {InputOptionModule} from '../../edit-widget/input-option/input-option.module';
+} from '../../../form/filter-state-option/filter-state-option.module';
+import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {DatasetOptionModule} from './dataset-option/dataset-option.module';
 import {TimeSeries} from './time-series';
 import {TimeSeriesEdit} from './time-series-edit';

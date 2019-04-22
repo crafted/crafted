@@ -4,11 +4,11 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {FiltererState} from '@crafted/data';
 import {
   ButtonToggleGroupOptionModule
-} from '../../edit-widget/button-toggle-option/button-toggle-option.module';
+} from '../../../form/button-toggle-option/button-toggle-option.module';
 import {
   FilterStateOptionModule
-} from '../../edit-widget/group-state-option/filter-state-option.module';
-import {InputOptionModule} from '../../edit-widget/input-option/input-option.module';
+} from '../../../form/filter-state-option/filter-state-option.module';
+import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {Count} from './count';
 import {EditCount} from './count-edit';
 

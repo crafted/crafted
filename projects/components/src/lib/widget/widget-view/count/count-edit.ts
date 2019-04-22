@@ -4,7 +4,7 @@ import {DataSource, Filterer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {ButtonToggleOption} from '../../edit-widget/button-toggle-option/button-toggle-option';
+import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
 import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
 

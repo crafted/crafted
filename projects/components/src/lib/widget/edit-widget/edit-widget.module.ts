@@ -3,7 +3,9 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatDialogModule} from '@angular/material';
-import {ButtonToggleGroupOptionModule} from './button-toggle-option/button-toggle-option.module';
+import {
+  ButtonToggleGroupOptionModule
+} from '../../form/button-toggle-option/button-toggle-option.module';
 import {EditWidget} from './edit-widget';
 
 @NgModule({
