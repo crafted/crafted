@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ButtonToggleOption, EDIT_WIDGET_DATA, EditWidgetData} from '@crafted/components';
+import {ButtonToggleOption, WIDGET_EDIT_DATA, WidgetEditData} from '@crafted/components';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
@@ -47,8 +47,8 @@ export class BarChartEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(EDIT_WIDGET_DATA) public data:
-                  EditWidgetData<BarChartDisplayTypeOptions, BarChartWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_EDIT_DATA) public data:
+                  WidgetEditData<BarChartDisplayTypeOptions, BarChartWidgetDataConfig>) {
     this.data.config.dataResourcesMap.forEach(
         dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;

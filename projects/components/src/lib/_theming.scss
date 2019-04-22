@@ -12,7 +12,7 @@
 @import "form/sort-state-option/sort-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
 @import "form/input-option/input-option-theme";
-@import "widget/edit-widget/edit-widget-theme";
+@import "widget/widget-edit/widget-edit-theme";
 @import "widget/widget-view/count/count-theme";
 @import "widget/widget-view/time-series/action-option/action-option-theme";
 @import "widget/widget-view/time-series/dataset-option/dataset-option-theme";
@@ -31,7 +31,7 @@
   @include items-list-theme($theme);
   @include dashboard-view-theme($theme);
   @include date-option-theme($theme);
-  @include edit-widget-theme($theme);
+  @include widget-edit-theme($theme);
   @include group-state-option-theme($theme);
   @include sort-state-option-theme($theme);
   @include input-option-theme($theme);

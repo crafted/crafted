@@ -4,7 +4,7 @@ import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
-import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
 
 import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-series';
 
@@ -34,8 +34,8 @@ export class TimeSeriesEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(EDIT_WIDGET_DATA) public data:
-                  EditWidgetData<TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_EDIT_DATA) public data:
+                  WidgetEditData<TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig>) {
     data.options.pipe(take(1)).subscribe(value => {
       if (value) {
         this.initializeForm(value);

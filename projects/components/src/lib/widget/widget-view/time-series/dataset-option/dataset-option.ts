@@ -4,7 +4,7 @@ import {DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, takeUntil} from 'rxjs/operators';
 import {ButtonToggleOption} from '../../../../form/button-toggle-option/button-toggle-option';
-import {SavedFiltererState} from '../../../edit-widget/edit-widget';
+import {SavedFiltererState} from '../../../widget-edit/widget-edit';
 import {TimeSeriesDataResourcesMap} from '../time-series';
 
 @Component({

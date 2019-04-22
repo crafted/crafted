@@ -6,7 +6,7 @@ import {FiltererState} from '@crafted/data';
 import {ReplaySubject} from 'rxjs';
 import {startWith, take} from 'rxjs/operators';
 
-import {EDIT_WIDGET_DATA, EditWidgetData, Widget, WidgetConfig} from '../widget';
+import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../widget';
 
 
 export interface SavedFiltererState {
@@ -16,17 +16,17 @@ export interface SavedFiltererState {
   dataSourceType: string;
 }
 
-export interface EditWidgetDialogData {
+export interface WidgetEditDialogData {
   widget?: Widget;
   widgetConfigs: {[key in string]: WidgetConfig<any>};
 }
 @Component({
-  selector: 'edit-widget',
-  templateUrl: 'edit-widget.html',
-  styleUrls: ['edit-widget.scss'],
+  selector: 'widget-edit',
+  templateUrl: 'widget-edit.html',
+  styleUrls: ['widget-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditWidget<S, V, G> {
+export class WidgetEdit<S, V, G> {
   form = new FormGroup({
     title: new FormControl(''),
     displayType: new FormControl(''),
@@ -39,8 +39,8 @@ export class EditWidget<S, V, G> {
   options = new ReplaySubject(1);
 
   constructor(
-      private dialogRef: MatDialogRef<EditWidget<S, V, G>, Widget>,
-      @Inject(MAT_DIALOG_DATA) public data: EditWidgetDialogData) {
+      private dialogRef: MatDialogRef<WidgetEdit<S, V, G>, Widget>,
+      @Inject(MAT_DIALOG_DATA) public data: WidgetEditDialogData) {
     for (let id of Object.keys(data.widgetConfigs)) {
       this.widgetConfigs.push(data.widgetConfigs[id]);
     }
@@ -56,7 +56,7 @@ export class EditWidget<S, V, G> {
 
     this.form.get('displayType')!.valueChanges.pipe(startWith(this.form.value.displayType))
         .subscribe(value => {
-          return this.createEditWidget(value);
+          return this.showWidgetEdit(value);
         });
   }
 
@@ -72,14 +72,14 @@ export class EditWidget<S, V, G> {
     });
   }
 
-  private createEditWidget(type: string) {
+  private showWidgetEdit(type: string) {
     this.options.next(this.data.widget ? this.data.widget.displayTypeOptions : null);
-    const widgetData: EditWidgetData<any, any> = {
+    const widgetData: WidgetEditData<any, any> = {
       options: this.options,
       config: this.data.widgetConfigs[type].config,
     };
 
-    const injectionTokens = new WeakMap<any, any>([[EDIT_WIDGET_DATA, widgetData]]);
+    const injectionTokens = new WeakMap<any, any>([[WIDGET_EDIT_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(Injector.NULL, injectionTokens);
     this.optionsPortal =
         new ComponentPortal(this.data.widgetConfigs[type].editComponent, null, widgetInjector);

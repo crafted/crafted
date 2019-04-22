@@ -1,10 +1,10 @@
 @import "../../common";
 
-@mixin edit-widget-theme($theme) {
+@mixin widget-edit-theme($theme) {
   $foreground: map-get($theme, foreground);
   $divider: mat-color($foreground, divider);
 
-  edit-widget {
+  widget-edit {
     input {
       @include bottom-border($divider);
     }

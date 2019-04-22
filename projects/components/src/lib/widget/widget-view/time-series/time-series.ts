@@ -4,8 +4,8 @@ import * as Chart from 'chart.js';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {SavedFiltererState} from '../../edit-widget/edit-widget';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
+import {SavedFiltererState} from '../../widget-edit/widget-edit';
 import {MaterialColors} from '../widget-view';
 
 import {TimeSeriesEdit} from './time-series-edit';

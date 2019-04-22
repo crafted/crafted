@@ -6,7 +6,7 @@
     mat-select {
       @include bottom-border($divider);
     }
-    input {
+    input.value-input {
       @include bottom-border($divider);
     }
   }

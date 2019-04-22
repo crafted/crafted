@@ -5,8 +5,8 @@ import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
-import {SavedFiltererState} from '../../edit-widget/edit-widget';
-import {EDIT_WIDGET_DATA, EditWidgetData} from '../../widget';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
+import {SavedFiltererState} from '../../widget-edit/widget-edit';
 
 import {CountWidgetDataConfig} from './count';
 import {CountDisplayTypeOptions} from './count.module';
@@ -33,8 +33,8 @@ export class EditCount {
 
   destroyed = new Subject();
 
-  constructor(@Inject(EDIT_WIDGET_DATA) public data:
-                  EditWidgetData<CountDisplayTypeOptions, CountWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_EDIT_DATA) public data:
+                  WidgetEditData<CountDisplayTypeOptions, CountWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(

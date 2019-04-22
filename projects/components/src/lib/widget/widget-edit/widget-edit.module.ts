@@ -6,7 +6,7 @@ import {MatButtonModule, MatDialogModule} from '@angular/material';
 import {
   ButtonToggleGroupOptionModule
 } from '../../form/button-toggle-option/button-toggle-option.module';
-import {EditWidget} from './edit-widget';
+import {WidgetEdit} from './widget-edit';
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import {EditWidget} from './edit-widget';
     ReactiveFormsModule,
     ButtonToggleGroupOptionModule,
   ],
-  declarations: [EditWidget],
-  exports: [EditWidget],
-  entryComponents: [EditWidget]
+  declarations: [WidgetEdit],
+  exports: [WidgetEdit],
+  entryComponents: [WidgetEdit]
 })
-export class EditWidgetModule {
+export class WidgetEditModule {
 }

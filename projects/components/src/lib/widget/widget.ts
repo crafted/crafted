@@ -9,9 +9,9 @@ export interface WidgetData<T, C> {
   config: C;
 }
 
-export const EDIT_WIDGET_DATA = new InjectionToken<any>('EditWidgetData');
+export const WIDGET_EDIT_DATA = new InjectionToken<any>('WidgetEditData');
 
-export interface EditWidgetData<T, C> {
+export interface WidgetEditData<T, C> {
   options: Subject<T>;
   config: C;
 }

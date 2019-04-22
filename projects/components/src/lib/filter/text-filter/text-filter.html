@@ -5,7 +5,7 @@
     </mat-option>
   </mat-select>
 
-  <input formControlName="value" [matAutocomplete]="auto">
+  <input class="value-input" formControlName="value" [matAutocomplete]="auto">
 
   <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
     <mat-option *ngFor="let option of (filteredOptions | async)?.slice(0, 100)"
