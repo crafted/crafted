@@ -1,4 +1,4 @@
-@import "../../../common";
+@import "../../common";
 
 @mixin state-filter-theme($theme) {
   $foreground: map-get($theme, foreground);

@@ -1,25 +1,25 @@
-@import 'editable-chip-list/editable-chip-list-theme';
-@import 'advanced-search/advanced-search-theme';
-@import 'advanced-search/form/date-filter/date-filter-theme';
-@import 'advanced-search/form/text-filter/text-filter-theme';
-@import 'advanced-search/form/number-filter/number-filter-theme';
-@import 'advanced-search/form/state-filter/state-filter-theme';
-@import 'items-list/items-list-theme';
-@import 'dashboard/dashboard-view-theme';
-@import 'widget/edit-widget/date-option/date-option-theme';
-@import 'widget/edit-widget/filter-state-option/filter-state-option-theme';
-@import 'widget/edit-widget/group-state-option/group-state-option-theme';
-@import 'widget/edit-widget/sort-state-option/sort-state-option-theme';
-@import 'widget/edit-widget/group-state-option/group-state-option-theme';
-@import 'widget/edit-widget/input-option/input-option-theme';
-@import 'widget/edit-widget/edit-widget-theme';
-@import 'widget/widget-view/count/count-theme';
-@import 'widget/widget-view/time-series/action-option/action-option-theme';
-@import 'widget/widget-view/time-series/dataset-option/dataset-option-theme';
-@import 'widget/widget-view/time-series/time-series-edit-theme';
-@import 'widget/widget-view/widget-view-theme';
+@import "editable-chip-list/editable-chip-list-theme";
+@import "advanced-search/advanced-search-theme";
+@import "filter/date-filter/date-filter-theme";
+@import "filter/text-filter/text-filter-theme";
+@import "filter/number-filter/number-filter-theme";
+@import "filter/state-filter/state-filter-theme";
+@import "items-list/items-list-theme";
+@import "dashboard/dashboard-view-theme";
+@import "widget/edit-widget/date-option/date-option-theme";
+@import "widget/edit-widget/filter-state-option/filter-state-option-theme";
+@import "widget/edit-widget/group-state-option/group-state-option-theme";
+@import "widget/edit-widget/sort-state-option/sort-state-option-theme";
+@import "widget/edit-widget/group-state-option/group-state-option-theme";
+@import "widget/edit-widget/input-option/input-option-theme";
+@import "widget/edit-widget/edit-widget-theme";
+@import "widget/widget-view/count/count-theme";
+@import "widget/widget-view/time-series/action-option/action-option-theme";
+@import "widget/widget-view/time-series/dataset-option/dataset-option-theme";
+@import "widget/widget-view/time-series/time-series-edit-theme";
+@import "widget/widget-view/widget-view-theme";
 
-@import './common';
+@import "./common";
 
 @mixin crafted-components-theme($theme) {
   @include editable-chip-list-theme($theme);

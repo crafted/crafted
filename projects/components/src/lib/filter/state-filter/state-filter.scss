@@ -1,4 +1,4 @@
-@import "../../../common";
+@import "../../common";
 
 :host {
   flex: 1;
@@ -14,10 +14,10 @@ input {
   @include unstyled-input();
 }
 
-mat-select + input {
+mat-select + mat-select {
   margin-left: 4px;
 }
 
-mat-select {
+mat-select.equality {
   @include auto-width-select();
 }

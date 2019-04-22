@@ -8,11 +8,11 @@ import {
   MatMenuModule,
   MatTooltipModule
 } from '@angular/material';
+import {DateFilterModule} from '../filter/date-filter/date-filter.module';
+import {NumberFilterModule} from '../filter/number-filter/number-filter.module';
+import {StateFilterModule} from '../filter/state-filter/state-filter.module';
+import {TextFilterModule} from '../filter/text-filter/text-filter.module';
 import {AdvancedSearch} from './advanced-search';
-import {DateFilterModule} from './form/date-filter/date-filter.module';
-import {NumberFilterModule} from './form/number-filter/number-filter.module';
-import {StateFilterModule} from './form/state-filter/state-filter.module';
-import {TextFilterModule} from './form/text-filter/text-filter.module';
 
 
 @NgModule({
