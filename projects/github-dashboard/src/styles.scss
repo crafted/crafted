@@ -1,7 +1,7 @@
-@import 'app/constants';
+@import "app/constants";
 
 body {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
 }
 
@@ -14,7 +14,7 @@ body {
 }
 
 // iOS wants to zoom on input unless it is at least 16px font size
-@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width : $mobile-width)  {
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (max-device-width: $mobile-width) {
   select,
   textarea,
   input {
@@ -35,17 +35,37 @@ body {
     overflow: auto;
     padding: 16px;
     white-space: pre-wrap;
+    word-break: break-word;
   }
 }
 
-
 /* Material Styles */
 /* Rules for sizing the icon. */
-.material-icons.md-14 { font-size: 14px; height: 14px; width: 14px; }
-.material-icons.md-18 { font-size: 18px; height: 18px; width: 18px; }
-.material-icons.md-24 { font-size: 24px; height: 18px; width: 18px; }
-.material-icons.md-36 { font-size: 36px; height: 18px; width: 18px; }
-.material-icons.md-48 { font-size: 48px; height: 18px; width: 18px; }
+.material-icons.md-14 {
+  font-size: 14px;
+  height: 14px;
+  width: 14px;
+}
+.material-icons.md-18 {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+  height: 18px;
+  width: 18px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+  height: 18px;
+  width: 18px;
+}
+.material-icons.md-48 {
+  font-size: 48px;
+  height: 18px;
+  width: 18px;
+}
 
 .menu-title {
   padding: 6px 16px 12px 16px;
@@ -56,7 +76,6 @@ body {
 button.mat-menu-item {
   font-size: 14px;
 }
-
 
 // Empty state styles
 .empty-state {
@@ -74,9 +93,9 @@ button.mat-menu-item {
   & > mat-icon {
     height: 196px;
     width: 196px;
-    line-height:196px;
+    line-height: 196px;
     font-size: 196px;
-    opacity: .2;
+    opacity: 0.2;
     margin-bottom: 32px;
   }
 
