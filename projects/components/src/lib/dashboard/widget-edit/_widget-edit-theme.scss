@@ -1,4 +1,4 @@
-@import "../../common";
+@import '../../common';
 
 @mixin widget-edit-theme($theme) {
   $foreground: map-get($theme, foreground);

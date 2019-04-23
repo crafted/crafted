@@ -6,17 +6,17 @@
 @import "filter/state-filter/state-filter-theme";
 @import "items-list/items-list-theme";
 @import "dashboard/dashboard-view-theme";
+@import "dashboard/widget-edit/widget-edit-theme";
+@import "dashboard/widget-view/widget-view-theme";
 @import "form/filter-state-option/filter-state-option-theme";
 @import "form/form-field/form-field-theme.scss";
 @import "form/group-state-option/group-state-option-theme";
 @import "form/sort-state-option/sort-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
-@import "widget/widget-edit/widget-edit-theme";
 @import "widget/count/count-theme";
 @import "widget/time-series/action-option/action-option-theme";
 @import "widget/time-series/dataset-option/dataset-option-theme";
 @import "widget/time-series/time-series-edit-theme";
-@import "widget/widget-view/widget-view-theme";
 
 @import "./common";
 

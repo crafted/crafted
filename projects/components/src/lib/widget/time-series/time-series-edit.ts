@@ -3,7 +3,7 @@ import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../widget-types';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/widget-types';
 
 import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-series';
 

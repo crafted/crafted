@@ -10,8 +10,8 @@ import {
 } from '@crafted/data';
 import {Observable, of} from 'rxjs';
 
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../widget-types';
 
 import {ListEdit} from './list-edit';
 

@@ -3,8 +3,8 @@ import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../widget-types';
 
 import {EditCount} from './count-edit';
 import {CountDisplayTypeOptions} from './count.module';

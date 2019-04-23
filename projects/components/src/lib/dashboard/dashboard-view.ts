@@ -3,9 +3,9 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {take} from 'rxjs/operators';
 import {SavedFiltererState} from '../form/filter-state-option/filter-state-option';
-import {WidgetEdit, WidgetEditDialogData} from '../widget/widget-edit/widget-edit';
-import {Widget, WidgetConfig} from '../widget/widget-types';
 import {Column, ColumnGroup, Dashboard} from './dashboard';
+import {WidgetEdit, WidgetEditDialogData} from './widget-edit/widget-edit';
+import {Widget, WidgetConfig} from './widget-types';
 
 @Component({
   selector: 'dashboard-view',
