@@ -11,7 +11,6 @@ import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
 
 @Component({
   templateUrl: 'pie-chart-editor.html',
-  styleUrls: ['pie-chart-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieChartEditor implements WidgetEditor {

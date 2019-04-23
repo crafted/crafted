@@ -27,7 +27,3 @@ button.add-action {
 input {
   @include unstyled-input();
 }
-
-mat-button-toggle-group {
-  @include slim-button-toggle-option();
-}

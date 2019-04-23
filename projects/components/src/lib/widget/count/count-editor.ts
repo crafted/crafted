@@ -12,7 +12,6 @@ import {CountOptions} from './count.module';
 
 @Component({
   templateUrl: 'count-editor.html',
-  styleUrls: ['count-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CountEditor implements WidgetEditor {

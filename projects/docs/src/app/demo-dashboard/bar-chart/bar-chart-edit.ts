@@ -10,7 +10,6 @@ import {BarChartOptions, BarChartWidgetDataConfig} from './bar-chart';
 
 @Component({
   templateUrl: 'bar-chart-edit.html',
-  styleUrls: ['bar-chart-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartEdit {

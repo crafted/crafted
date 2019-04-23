@@ -15,8 +15,6 @@ editable-chip-list {
 }
 
 mat-button-toggle-group {
-  @include slim-button-toggle-option();
-
   ::ng-deep .mat-button-toggle-label-content {
     display: flex;
     align-items: center;

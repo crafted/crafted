@@ -27,7 +27,3 @@ action-option + action-option {
   margin-top: 32px;
   justify-content: flex-end;
 }
-
-mat-button-toggle-group {
-  @include slim-button-toggle-option();
-}

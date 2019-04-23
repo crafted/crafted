@@ -27,4 +27,8 @@
   ::ng-deep input {
     @include unstyled-input();
   }
+
+  ::ng-deep mat-button-toggle-group {
+    @include slim-button-toggle-option();
+  }
 }

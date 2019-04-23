@@ -11,7 +11,6 @@ import {ListOptions, ListWidgetDataConfig} from './list';
 
 @Component({
   templateUrl: 'list-editor.html',
-  styleUrls: ['list-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEditor implements WidgetEditor {
