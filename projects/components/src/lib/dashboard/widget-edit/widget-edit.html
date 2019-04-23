@@ -5,14 +5,14 @@
 
     <form-field label="Type">
       <mat-button-toggle-group formControlName="type">
-        <mat-button-toggle *ngFor="let option of widgetConfigs"
+        <mat-button-toggle *ngFor="let option of typeOptions"
                            [value]="option.id">
           {{option.label}}
         </mat-button-toggle>
       </mat-button-toggle-group>
     </form-field>
 
-    <div [cdkPortalOutlet]="optionsPortal"></div>
+    <ng-template cdkPortalOutlet></ng-template>
   </div>
 
   <div mat-dialog-actions align="end">

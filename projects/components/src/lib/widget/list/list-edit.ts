@@ -2,9 +2,8 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
-import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {ListOptions, ListWidgetDataConfig} from './list';
@@ -15,7 +14,7 @@ import {ListOptions, ListWidgetDataConfig} from './list';
   styleUrls: ['list-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListEdit {
+export class ListEdit implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   viewer: Viewer;
@@ -35,8 +34,11 @@ export class ListEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<ListOptions, ListWidgetDataConfig>) {
+  get options(): ListOptions {
+    return this.form.value;
+  }
+
+  constructor(@Inject(WIDGET_DATA) public data: WidgetData<ListOptions, ListWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
@@ -51,29 +53,24 @@ export class ListEdit {
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
 
-    data.options.pipe(take(1)).subscribe(value => {
-      if (value) {
-        if (value.dataSourceType) {
-          this.form.get('dataSourceType')!.setValue(value.dataSourceType);
-        }
-        if (value.listLength) {
-          this.form.get('listLength')!.setValue(value.listLength);
-        }
-        if (value.sorterState) {
-          this.form.get('sorterState')!.setValue(value.sorterState);
-        }
-        if (value.viewerState) {
-          this.form.get('viewerState')!.setValue(value.sorterState);
-        }
-        if (value.filtererState) {
-          this.form.get('filtererState')!.setValue(value.filtererState);
-        }
+    const value = data.options;
+    if (value) {
+      if (value.dataSourceType) {
+        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
       }
-    });
-    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
-        .subscribe(value => {
-          data.options.next(value);
-        });
+      if (value.listLength) {
+        this.form.get('listLength')!.setValue(value.listLength);
+      }
+      if (value.sorterState) {
+        this.form.get('sorterState')!.setValue(value.sorterState);
+      }
+      if (value.viewerState) {
+        this.form.get('viewerState')!.setValue(value.sorterState);
+      }
+      if (value.filtererState) {
+        this.form.get('filtererState')!.setValue(value.filtererState);
+      }
+    }
   }
 
   ngOnDestroy() {

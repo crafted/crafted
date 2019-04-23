@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 
 import {TimeSeriesOptions, TimeSeriesWidgetDataConfig} from './time-series';
 
@@ -14,7 +13,7 @@ import {TimeSeriesOptions, TimeSeriesWidgetDataConfig} from './time-series';
   styleUrls: ['time-series-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeSeriesEdit {
+export class TimeSeriesEdit implements WidgetEditor {
   groupOptions: {id: string, label: string}[] = [
     {id: 'day', label: 'Day'},
     {id: 'week', label: 'Week'},
@@ -33,18 +32,18 @@ export class TimeSeriesEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<TimeSeriesOptions, TimeSeriesWidgetDataConfig>) {
-    data.options.pipe(take(1)).subscribe(value => {
-      if (value) {
-        this.initializeForm(value);
-      } else {
-        this.addDataset();
-      }
-    });
+  get options(): TimeSeriesOptions {
+    return this.form.value;
+  }
 
-    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
-        .subscribe(value => data.options.next(value));
+  constructor(@Inject(WIDGET_DATA) public data:
+                  WidgetData<TimeSeriesOptions, TimeSeriesWidgetDataConfig>) {
+    const value = data.options;
+    if (value) {
+      this.initializeForm(value);
+    } else {
+      this.addDataset();
+    }
   }
 
   removeDataset(index: number) {

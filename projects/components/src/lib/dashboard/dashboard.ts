@@ -1,18 +1,14 @@
 import {ComponentType} from '@angular/cdk/overlay/index';
 import {InjectionToken} from '@angular/core';
-import {Subject} from 'rxjs';
+
+export interface WidgetEditor<T = any> {
+  options: T;
+}
 
 export const WIDGET_DATA = new InjectionToken<any>('WidgetData');
 
 export interface WidgetData<T, C> {
   options: T;
-  config: C;
-}
-
-export const WIDGET_EDIT_DATA = new InjectionToken<any>('WidgetEditData');
-
-export interface WidgetEditData<T, C> {
-  options: Subject<T>;
   config: C;
 }
 
@@ -26,7 +22,7 @@ export interface WidgetConfig<C> {
   id: string;
   label: string;
   component: ComponentType<any>;
-  editComponent: ComponentType<any>;
+  editComponent: ComponentType<WidgetEditor>;
   config: C;
 }
 

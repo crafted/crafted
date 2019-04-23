@@ -2,9 +2,8 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
-import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
@@ -15,7 +14,7 @@ import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
   styleUrls: ['pie-chart-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PieChartEdit {
+export class PieChartEdit implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   grouper: Grouper<any, any>;
@@ -33,8 +32,12 @@ export class PieChartEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<PieChartOptions<any>, PieChartWidgetDataConfig>) {
+  get options(): PieChartOptions {
+    return this.form.value;
+  }
+
+  constructor(@Inject(WIDGET_DATA) public data:
+                  WidgetData<PieChartOptions, PieChartWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
@@ -48,26 +51,20 @@ export class PieChartEdit {
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
 
-    data.options.pipe(take(1)).subscribe(value => {
-      if (value) {
-        if (value.dataSourceType) {
-          this.form.get('dataSourceType')!.setValue(value.dataSourceType);
-        }
-        if (value.grouperState) {
-          this.form.get('grouperState')!.setValue(value.grouperState);
-        }
-        if (value.filteredGroups) {
-          this.form.get('filteredGroups')!.setValue(value.filteredGroups);
-        }
-        if (value.filtererState) {
-          this.form.get('filtererState')!.setValue(value.filtererState);
-        }
+    const value = data.options;
+    if (value) {
+      if (value.dataSourceType) {
+        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
       }
-    });
-
-    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
-        .subscribe(value => {
-          data.options.next(value);
-        });
+      if (value.grouperState) {
+        this.form.get('grouperState')!.setValue(value.grouperState);
+      }
+      if (value.filteredGroups) {
+        this.form.get('filteredGroups')!.setValue(value.filteredGroups);
+      }
+      if (value.filtererState) {
+        this.form.get('filtererState')!.setValue(value.filtererState);
+      }
+    }
   }
 }

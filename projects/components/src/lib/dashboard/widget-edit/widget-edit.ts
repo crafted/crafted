@@ -1,40 +1,47 @@
-import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
-import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
+import {CdkPortalOutlet, ComponentPortal, PortalInjector} from '@angular/cdk/portal';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ComponentRef,
+  Inject,
+  Injector,
+  ViewChild
+} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {ReplaySubject} from 'rxjs';
-import {startWith, take} from 'rxjs/operators';
+import {startWith} from 'rxjs/operators';
 
-import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../dashboard';
+import {Widget, WIDGET_DATA, WidgetConfig, WidgetData, WidgetEditor} from '../dashboard';
 
 
 export interface WidgetEditDialogData {
   widget?: Widget;
-  widgetConfigs: {[key in string]: WidgetConfig<any>};
+  configs: {[key in string]: WidgetConfig<any>};
 }
+
 @Component({
   selector: 'widget-edit',
   templateUrl: 'widget-edit.html',
   styleUrls: ['widget-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetEdit<S, V, G> {
+export class WidgetEdit {
+  @ViewChild(CdkPortalOutlet) _portalOutlet: CdkPortalOutlet;
+
   form = new FormGroup({
     title: new FormControl(''),
     type: new FormControl(''),
   });
 
-  widgetConfigs: WidgetConfig<any>[] = [];
+  typeOptions: {id: string, label: string}[] = [];
 
-  optionsPortal: ComponentPortal<any>;
-
-  options = new ReplaySubject(1);
+  editor: ComponentRef<WidgetEditor>;
 
   constructor(
-      private dialogRef: MatDialogRef<WidgetEdit<S, V, G>, Widget>,
+      private dialogRef: MatDialogRef<WidgetEdit, Widget>,
       @Inject(MAT_DIALOG_DATA) public data: WidgetEditDialogData) {
-    for (let id of Object.keys(data.widgetConfigs)) {
-      this.widgetConfigs.push(data.widgetConfigs[id]);
+    for (let id of Object.keys(data.configs)) {
+      this.typeOptions.push({id, label: data.configs[id].label});
     }
 
     if (data.widget) {
@@ -43,33 +50,31 @@ export class WidgetEdit<S, V, G> {
         type: data.widget.type,
       });
     } else {
-      this.form.get('type')!.setValue(this.widgetConfigs[0].id);
+      this.form.get('type')!.setValue(this.typeOptions[0].id);
     }
 
-    this.form.get('type')!.valueChanges.pipe(startWith(this.form.value.type)).subscribe(value => {
-      return this.showWidgetEdit(value);
+    this.form.get('type')!.valueChanges.pipe(startWith(this.form.value.type)).subscribe(type => {
+      this.editor = this.attachEditor(type);
     });
   }
 
   save() {
-    this.options.pipe(take(1)).subscribe(options => {
-      const widget:
-          Widget = {title: this.form.value.title, type: this.form.value.type, options: options};
-
-      this.dialogRef.close(widget);
+    this.dialogRef.close({
+      title: this.form.value.title,
+      type: this.form.value.type,
+      options: this.editor.instance.options,
     });
   }
 
-  private showWidgetEdit(type: string) {
-    this.options.next(this.data.widget ? this.data.widget.options : null);
-    const widgetData: WidgetEditData<any, any> = {
-      options: this.options,
-      config: this.data.widgetConfigs[type].config,
+  private attachEditor(type: string): ComponentRef<WidgetEditor> {
+    const widgetData: WidgetData<any, any> = {
+      options: this.data.widget ? this.data.widget.options : null,
+      config: this.data.configs[type].config,
     };
 
-    const injectionTokens = new WeakMap<any, any>([[WIDGET_EDIT_DATA, widgetData]]);
+    const injectionTokens = new WeakMap<any, any>([[WIDGET_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(Injector.NULL, injectionTokens);
-    this.optionsPortal =
-        new ComponentPortal(this.data.widgetConfigs[type].editComponent, null, widgetInjector);
+    const portal = new ComponentPortal(this.data.configs[type].editComponent, null, widgetInjector);
+    return this._portalOutlet.attachComponentPortal(portal);
   }
 }

@@ -56,7 +56,7 @@ export class DashboardView {
   editWidget(column: Column, index: number, widget?: Widget) {
     const data: WidgetEditDialogData = {
       widget: widget,
-      widgetConfigs: this.widgetConfigs,
+      configs: this.widgetConfigs,
     };
 
     const config: MatDialogConfig<WidgetEditDialogData> = {data, width: '650px'};

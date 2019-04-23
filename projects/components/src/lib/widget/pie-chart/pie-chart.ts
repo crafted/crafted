@@ -37,7 +37,7 @@ export function getPieChartWidgetConfig(
   };
 }
 
-export interface PieChartOptions<G> {
+export interface PieChartOptions {
   dataSourceType: string;
   grouperState: GrouperState;
   filteredGroups: string;
@@ -58,7 +58,7 @@ export class PieChart<T, G> {
   private destroyed = new Subject();
 
   constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<PieChartOptions<G>, PieChartWidgetDataConfig>) {}
+                  WidgetData<PieChartOptions, PieChartWidgetDataConfig>) {}
 
   ngOnInit() {
     const dataSourceProvider =

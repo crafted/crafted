@@ -2,10 +2,9 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
-import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
-import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
+import {SavedFiltererState} from '../../form';
 
 import {CountWidgetDataConfig} from './count';
 import {CountOptions} from './count.module';
@@ -16,7 +15,7 @@ import {CountOptions} from './count.module';
   styleUrls: ['count-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditCount {
+export class EditCount implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   filterer: Filterer<any, any>;
@@ -33,9 +32,11 @@ export class EditCount {
 
   destroyed = new Subject();
 
-  constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<CountOptions, CountWidgetDataConfig>) {
-    // TODO: Filter based on datasource type
+  get options(): CountOptions {
+    return this.form.value;
+  }
+
+  constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
         (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
@@ -46,26 +47,18 @@ export class EditCount {
     this.filterer = dataResource.filterer();
     this.dataSource = dataResource.dataSource();
 
-    data.options.pipe(take(1)).subscribe(value => {
-      if (value) {
-        if (value.dataSourceType) {
-          this.form.get('dataSourceType')!.setValue(value.dataSourceType);
-        }
-        if (value.fontSize) {
-          this.form.get('fontSize')!.setValue(value.fontSize);
-        }
-        if (value.filtererState) {
-          this.form.get('filtererState')!.setValue(value.filtererState);
-        }
+    const value = data.options;
+    if (value) {
+      if (value.dataSourceType) {
+        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
       }
-    });
-
-    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
-        .subscribe(value => {
-          if (value) {
-            data.options.next(value);
-          }
-        });
+      if (value.fontSize) {
+        this.form.get('fontSize')!.setValue(value.fontSize);
+      }
+      if (value.filtererState) {
+        this.form.get('filtererState')!.setValue(value.filtererState);
+      }
+    }
   }
 
   ngOnDestroy() {
