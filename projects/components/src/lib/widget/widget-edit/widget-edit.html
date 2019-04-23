@@ -3,9 +3,14 @@
     <input class="title" matInput placeholder="(Optional) Widget Title"
            autocomplete="off" formControlName="title">
 
-    <button-toggle-group-option formControlName="displayType" label="Type"
-                                [options]="widgetConfigs">
-    </button-toggle-group-option>
+    <form-field label="Type">
+      <mat-button-toggle-group formControlName="displayType">
+        <mat-button-toggle *ngFor="let option of widgetConfigs"
+                           [value]="option.id">
+          {{option.label}}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </form-field>
 
     <div [cdkPortalOutlet]="optionsPortal"></div>
   </div>

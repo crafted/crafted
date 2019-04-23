@@ -11,9 +11,14 @@
     <mat-datepicker #endPicker></mat-datepicker>
   </form-field>
 
-  <button-toggle-group-option formControlName="group" label="Group"
-                              [options]="groupOptions">
-  </button-toggle-group-option>
+  <form-field label="Group">
+    <mat-button-toggle-group formControlName="group">
+      <mat-button-toggle *ngFor="let option of groupOptions"
+                         [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
   <div class="dataset"
        *ngFor="let dataset of datasetsFormArray.controls; let index = index"

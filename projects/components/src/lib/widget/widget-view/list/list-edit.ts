@@ -4,7 +4,6 @@ import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
 import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
 import {SavedFiltererState} from '../../widget-edit/widget-edit';
 
@@ -13,10 +12,11 @@ import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
 
 @Component({
   templateUrl: 'list-edit.html',
+  styleUrls: ['list-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEdit {
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
   viewer: Viewer;
   sorter: Sorter;

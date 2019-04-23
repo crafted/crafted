@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer} from '@angular/forms';
 import {DataSource} from '@crafted/data';
-import {ButtonToggleOption} from '../../../../form/button-toggle-option/button-toggle-option';
 
 @Component({
   selector: 'action-option',
@@ -10,11 +9,11 @@ import {ButtonToggleOption} from '../../../../form/button-toggle-option/button-t
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionOption {
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
-  datePropertyIdOptions: ButtonToggleOption[] = [];
+  datePropertyIdOptions: {id: string, label: string}[] = [];
 
-  actionTypeOptions: ButtonToggleOption[] = [
+  actionTypeOptions: {id: string, label: string}[] = [
     {id: 'increment', label: 'Increment'},
     {id: 'decrement', label: 'Decrement'},
   ];

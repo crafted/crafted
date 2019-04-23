@@ -3,7 +3,6 @@ import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
 import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
 
 import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-series';
@@ -16,7 +15,7 @@ import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeSeriesEdit {
-  groupOptions: ButtonToggleOption[] = [
+  groupOptions: {id: string, label: string}[] = [
     {id: 'day', label: 'Day'},
     {id: 'week', label: 'Week'},
     {id: 'month', label: 'Month'},

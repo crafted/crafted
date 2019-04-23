@@ -4,7 +4,6 @@ import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
 import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
 import {SavedFiltererState} from '../../widget-edit/widget-edit';
 
@@ -13,10 +12,11 @@ import {PieChartDisplayTypeOptions, PieChartWidgetDataConfig} from './pie-chart'
 
 @Component({
   templateUrl: 'pie-chart-edit.html',
+  styleUrls: ['pie-chart-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieChartEdit {
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
   grouper: Grouper<any, any>;
   filterer: Filterer<any, any>;

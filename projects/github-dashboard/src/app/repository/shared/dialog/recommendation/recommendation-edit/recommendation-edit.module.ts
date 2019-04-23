@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {
   MatButtonModule,
+  MatButtonToggleModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
@@ -10,9 +11,9 @@ import {
   MatSelectModule
 } from '@angular/material';
 import {
-  ButtonToggleGroupOptionModule,
   EditableChipListModule,
   FilterStateOptionModule,
+  FormFieldModule,
   InputOptionModule
 } from '@crafted/components';
 import {RecommendationEdit} from './recommendation-edit';
@@ -29,7 +30,8 @@ import {RecommendationEdit} from './recommendation-edit';
     MatInputModule,
     ReactiveFormsModule,
     InputOptionModule,
-    ButtonToggleGroupOptionModule,
+    FormFieldModule,
+    MatButtonToggleModule,
     FilterStateOptionModule,
   ],
   declarations: [RecommendationEdit],

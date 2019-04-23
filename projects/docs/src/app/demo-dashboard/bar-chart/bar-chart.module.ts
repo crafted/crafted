@@ -1,9 +1,10 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatButtonToggleModule} from '@angular/material';
 import {
-  ButtonToggleGroupOptionModule,
   FilterStateOptionModule,
+  FormFieldModule,
   GroupStateOptionModule,
   InputOptionModule
 } from '@crafted/components';
@@ -18,7 +19,8 @@ import {BarChartEdit} from './bar-chart-edit';
     GroupStateOptionModule,
     InputOptionModule,
     ReactiveFormsModule,
-    ButtonToggleGroupOptionModule,
+    MatButtonToggleModule,
+    FormFieldModule,
     FilterStateOptionModule,
   ],
   declarations: [BarChart, BarChartEdit],

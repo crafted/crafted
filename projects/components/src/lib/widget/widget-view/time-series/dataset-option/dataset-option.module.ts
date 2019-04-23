@@ -1,10 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule, MatIconModule} from '@angular/material';
-import {
-  ButtonToggleGroupOptionModule
-} from '../../../../form/button-toggle-option/button-toggle-option.module';
+import {MatButtonModule, MatButtonToggleModule, MatIconModule} from '@angular/material';
 import {
   FilterStateOptionModule
 } from '../../../../form/filter-state-option/filter-state-option.module';
@@ -20,7 +17,7 @@ import {DatasetOption} from './dataset-option';
     MatIconModule,
     ReactiveFormsModule,
     InputOptionModule,
-    ButtonToggleGroupOptionModule,
+    MatButtonToggleModule,
     FilterStateOptionModule,
     ActionOptionModule,
     FormFieldModule,

@@ -3,7 +3,6 @@ import {ControlContainer, FormArray} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, takeUntil} from 'rxjs/operators';
-import {ButtonToggleOption} from '../../../../form/button-toggle-option/button-toggle-option';
 import {SavedFiltererState} from '../../../widget-edit/widget-edit';
 import {TimeSeriesDataResourcesMap} from '../time-series';
 
@@ -14,20 +13,20 @@ import {TimeSeriesDataResourcesMap} from '../time-series';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatasetOption {
-  dataSourceTypeOptions: ButtonToggleOption[] = [];
+  dataSourceTypeOptions: {id: string, label: string}[] = [];
 
   // TODO: Should be determined by data source
-  datePropertyIdOptions: ButtonToggleOption[] = [
+  datePropertyIdOptions: {id: string, label: string}[] = [
     {id: 'opened', label: 'Opened'},
     {id: 'closed', label: 'Closed'},
   ];
 
-  seriesTypeOptions: ButtonToggleOption[] = [
+  seriesTypeOptions: {id: string, label: string}[] = [
     {id: 'count', label: 'Count'},
     {id: 'accumulate', label: 'Accumulate'},
   ];
 
-  actionTypeOptions: ButtonToggleOption[] = [
+  actionTypeOptions: {id: string, label: string}[] = [
     {id: 'increment', label: 'Increment'},
     {id: 'decrement', label: 'Decrement'},
   ];

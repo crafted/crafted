@@ -1,3 +1,5 @@
+@import "../../../../../../../../../dist/components/common.scss";
+
 mat-form-field {
   width: 100%;
 }
@@ -10,4 +12,20 @@ editable-chip-list {
   font-size: 14px;
   margin-left: 140px;
   line-height: 48px;
+}
+
+mat-button-toggle-group {
+  @include slim-button-toggle-option();
+
+  ::ng-deep .mat-button-toggle-label-content {
+    display: flex;
+    align-items: center;
+  }
+
+  mat-icon {
+    height: 16px;
+    width: 16px;
+    font-size: 16px;
+    margin-right: 4px;
+  }
 }

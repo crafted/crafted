@@ -5,17 +5,31 @@
 <div mat-dialog-content [formGroup]="formGroup">
   <input-option formControlName="message" label="Message"></input-option>
 
-  <button-toggle-group-option formControlName="type" label="Type"
-                              [options]="typeOptions">
-  </button-toggle-group-option>
+  <form-field label="Type">
+    <mat-button-toggle-group formControlName="type">
+      <mat-button-toggle *ngFor="let option of typeOptions" [value]="option.id">
+        <mat-icon *ngIf="option.icon"> {{option.icon}} </mat-icon>
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
-  <button-toggle-group-option formControlName="data" label="Data"
-                              [options]="dataOptions">
-  </button-toggle-group-option>
+  <form-field label="Data">
+    <mat-button-toggle-group formControlName="data">
+      <mat-button-toggle *ngFor="let option of dataOptions" [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
-  <button-toggle-group-option formControlName="actionType" label="Action"
-                              [options]="actionOptions">
-  </button-toggle-group-option>
+  <form-field label="Action">
+    <mat-button-toggle-group formControlName="actionType">
+      <mat-button-toggle *ngFor="let option of actionOptions"
+                         [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
   <div [ngSwitch]="formGroup.value.actionType" class="action-list">
     <div *ngSwitchCase="'add-label'">

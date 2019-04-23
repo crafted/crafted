@@ -1,5 +1,12 @@
 $mobile-width: 700px;
 
+// Button toggle
+@mixin slim-button-toggle-option {
+  ::ng-deep .mat-button-toggle-label-content {
+    line-height: 32px;
+  }
+}
+
 // Menu
 @mixin menu-title {
   padding: 6px 16px 12px 16px;

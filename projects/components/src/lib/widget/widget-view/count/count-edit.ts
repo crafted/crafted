@@ -4,7 +4,6 @@ import {DataSource, Filterer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {ButtonToggleOption} from '../../../form/button-toggle-option/button-toggle-option';
 import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
 import {SavedFiltererState} from '../../widget-edit/widget-edit';
 
@@ -14,10 +13,11 @@ import {CountDisplayTypeOptions} from './count.module';
 
 @Component({
   templateUrl: 'count-edit.html',
+  styleUrls: ['count-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCount {
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
   filterer: Filterer<any, any>;
 

@@ -1,7 +1,11 @@
 <ng-container [formGroup]="form">
-  <button-toggle-group-option formControlName="dataSourceType" label="Data"
-                              [options]="dataOptions">
-  </button-toggle-group-option>
+  <form-field label="Data">
+    <mat-button-toggle-group formControlName="dataSourceType">
+      <mat-button-toggle *ngFor="let option of dataOptions" [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
   <input-option formControlName="filteredGroups" label="Filter"
                 placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">

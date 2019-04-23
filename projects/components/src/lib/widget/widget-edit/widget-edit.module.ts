@@ -2,10 +2,8 @@ import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule, MatDialogModule} from '@angular/material';
-import {
-  ButtonToggleGroupOptionModule
-} from '../../form/button-toggle-option/button-toggle-option.module';
+import {MatButtonModule, MatButtonToggleModule, MatDialogModule} from '@angular/material';
+import {FormFieldModule} from '../../form/form-field/form-field.module';
 import {WidgetEdit} from './widget-edit';
 
 @NgModule({
@@ -15,7 +13,8 @@ import {WidgetEdit} from './widget-edit';
     MatButtonModule,
     PortalModule,
     ReactiveFormsModule,
-    ButtonToggleGroupOptionModule,
+    FormFieldModule,
+    MatButtonToggleModule,
   ],
   declarations: [WidgetEdit],
   exports: [WidgetEdit],

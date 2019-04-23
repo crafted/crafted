@@ -2,9 +2,14 @@
 
   <input-option formControlName="label" label="Series Name"></input-option>
 
-  <button-toggle-group-option formControlName="dataSourceType" label="Data"
-                              [options]="dataSourceTypeOptions">
-  </button-toggle-group-option>
+  <form-field label="Data">
+    <mat-button-toggle-group formControlName="dataSourceType">
+      <mat-button-toggle *ngFor="let option of dataSourceTypeOptions"
+                         [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
   <input-option formControlName="color" label="Color (optional)"></input-option>
 
@@ -13,9 +18,14 @@
                        [savedFiltererStates]="savedFiltererStates">
   </filter-state-option>
 
-  <button-toggle-group-option formControlName="seriesType" label="Type"
-                              [options]="seriesTypeOptions">
-  </button-toggle-group-option>
+  <form-field label="Type">
+    <mat-button-toggle-group formControlName="seriesType">
+      <mat-button-toggle *ngFor="let option of seriesTypeOptions"
+                         [value]="option.id">
+        {{option.label}}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </form-field>
 
   <form-field>
     <ng-template formFieldLabel>

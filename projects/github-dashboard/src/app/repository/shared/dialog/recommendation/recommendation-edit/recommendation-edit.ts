@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {ButtonToggleOption} from '@crafted/components';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
@@ -40,13 +39,15 @@ export class RecommendationEdit {
     filtererState: new FormControl(null),
   });
 
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
-  typeOptions: ButtonToggleOption[] = Object.keys(RecommendationTypes).map(key => {
+  typeOptions: {id: string,
+                icon: string,
+                label: string}[] = Object.keys(RecommendationTypes).map(key => {
     return {id: key, icon: RecommendationTypes[key].icon, label: RecommendationTypes[key].label};
   });
 
-  actionOptions: ButtonToggleOption[] = Object.keys(ActionTypes).map(key => {
+  actionOptions: {id: string, label: string}[] = Object.keys(ActionTypes).map(key => {
     return {id: key, label: ActionTypes[key].label};
   });
 

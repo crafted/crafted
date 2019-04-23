@@ -1,13 +1,12 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatButtonToggleModule} from '@angular/material';
 import {FiltererState} from '@crafted/data';
-import {
-  ButtonToggleGroupOptionModule
-} from '../../../form/button-toggle-option/button-toggle-option.module';
 import {
   FilterStateOptionModule
 } from '../../../form/filter-state-option/filter-state-option.module';
+import {FormFieldModule} from '../../../form/form-field/form-field.module';
 import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {Count} from './count';
 import {EditCount} from './count-edit';
@@ -23,7 +22,8 @@ export interface CountDisplayTypeOptions {
     CommonModule,
     ReactiveFormsModule,
     InputOptionModule,
-    ButtonToggleGroupOptionModule,
+    FormFieldModule,
+    MatButtonToggleModule,
     FilterStateOptionModule,
   ],
   declarations: [EditCount, Count],

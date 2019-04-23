@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ButtonToggleOption, WIDGET_EDIT_DATA, WidgetEditData} from '@crafted/components';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '@crafted/components';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
@@ -11,10 +11,13 @@ import {BarChartDisplayTypeOptions, BarChartWidgetDataConfig} from './bar-chart'
 @Component({
   template: `
   <ng-container [formGroup]="form">
-    <button-toggle-group-option formControlName="dataSourceType" label="Data"
-                                *ngIf="dataOptions.length > 1"
-                                [options]="dataOptions">
-    </button-toggle-group-option>
+    <form-field label="Data" *ngIf="dataOptions.length > 1">
+      <mat-button-toggle-group formControlName="dataSourceType">
+        <mat-button-toggle *ngFor="let option of dataOptions" [value]="option.id">
+          {{option.label}}
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </form-field>
 
     <input-option formControlName="filteredGroups" label="Filter"
                   placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">
@@ -29,10 +32,11 @@ import {BarChartDisplayTypeOptions, BarChartWidgetDataConfig} from './bar-chart'
     </filter-state-option>
   </ng-container>
   `,
+  styleUrls: ['bar-chart-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChartEdit {
-  dataOptions: ButtonToggleOption[] = [];
+  dataOptions: {id: string, label: string}[] = [];
 
   grouper: Grouper<any, any>;
   filterer: Filterer<any, any>;
