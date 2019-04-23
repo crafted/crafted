@@ -4,7 +4,7 @@ import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {SavedFiltererState} from '../widget-edit/widget-edit';
+import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 import {WIDGET_EDIT_DATA, WidgetEditData} from '../widget-types';
 
 import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';

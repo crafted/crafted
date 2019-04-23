@@ -2,19 +2,11 @@ import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
 import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {FiltererState} from '@crafted/data';
 import {ReplaySubject} from 'rxjs';
 import {startWith, take} from 'rxjs/operators';
 
 import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../widget-types';
 
-
-export interface SavedFiltererState {
-  state: FiltererState;
-  group: string;
-  label: string;
-  dataSourceType: string;
-}
 
 export interface WidgetEditDialogData {
   widget?: Widget;
