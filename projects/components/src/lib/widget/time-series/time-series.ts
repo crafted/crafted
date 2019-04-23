@@ -4,7 +4,7 @@ import * as Chart from 'chart.js';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {MaterialColors} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
@@ -67,7 +67,7 @@ export interface DatasetConfig {
   filtererState: FiltererState;
 }
 
-export interface TimeSeriesDisplayTypeOptions {
+export interface TimeSeriesOptions {
   start: string;
   end: string;
   group: 'day'|'week'|'month';
@@ -88,7 +88,7 @@ export class TimeSeries<T> {
   private destroyed = new Subject();
 
   constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig>) {}
+                  WidgetData<TimeSeriesOptions, TimeSeriesWidgetDataConfig>) {}
 
   ngOnInit() {
     const datasetData = this.data.options.datasets.map(datasetConfig => {

@@ -3,11 +3,11 @@ import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {EditCount} from './count-edit';
-import {CountDisplayTypeOptions} from './count.module';
+import {CountOptions} from './count.module';
 
 
 export type CountDataResourcesMap = Map<string, {
@@ -53,8 +53,7 @@ export function getCountWidgetConfig(
 export class Count {
   count: Observable<number>;
 
-  constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<CountDisplayTypeOptions, CountWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     const dataSourceProvider =
         this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);

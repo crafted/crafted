@@ -8,7 +8,7 @@ import {FormFieldModule} from '../../form/form-field/form-field.module';
 import {Count} from './count';
 import {EditCount} from './count-edit';
 
-export interface CountDisplayTypeOptions {
+export interface CountOptions {
   dataSourceType: string;
   fontSize: 'small'|'normal'|'large';
   filtererState: FiltererState;

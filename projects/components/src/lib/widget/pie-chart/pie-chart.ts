@@ -4,7 +4,7 @@ import * as Chart from 'chart.js';
 import {Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {MaterialColors} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
@@ -37,7 +37,7 @@ export function getPieChartWidgetConfig(
   };
 }
 
-export interface PieChartDisplayTypeOptions<G> {
+export interface PieChartOptions<G> {
   dataSourceType: string;
   grouperState: GrouperState;
   filteredGroups: string;
@@ -58,7 +58,7 @@ export class PieChart<T, G> {
   private destroyed = new Subject();
 
   constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<PieChartDisplayTypeOptions<G>, PieChartWidgetDataConfig>) {}
+                  WidgetData<PieChartOptions<G>, PieChartWidgetDataConfig>) {}
 
   ngOnInit() {
     const dataSourceProvider =

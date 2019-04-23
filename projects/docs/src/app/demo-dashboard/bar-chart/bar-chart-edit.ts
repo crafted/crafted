@@ -5,7 +5,7 @@ import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {BarChartDisplayTypeOptions, BarChartWidgetDataConfig} from './bar-chart';
+import {BarChartOptions, BarChartWidgetDataConfig} from './bar-chart';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class BarChartEdit {
   destroyed = new Subject();
 
   constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<BarChartDisplayTypeOptions, BarChartWidgetDataConfig>) {
+                  WidgetEditData<BarChartOptions, BarChartWidgetDataConfig>) {
     this.data.config.dataResourcesMap.forEach(
         dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;

@@ -7,8 +7,7 @@
   </button>
 </div>
 
-<div [ngSwitch]="widget.displayType"
-     [style.pointer-events]="editMode ? 'none' : ''">
+<div [style.pointer-events]="editMode ? 'none' : ''">
   <ng-template [cdkPortalOutlet]="widgetComponentPortal"></ng-template>
 </div>
 

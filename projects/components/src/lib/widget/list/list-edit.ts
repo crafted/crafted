@@ -4,10 +4,10 @@ import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/widget-types';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
+import {ListOptions, ListWidgetDataConfig} from './list';
 
 
 @Component({
@@ -36,7 +36,7 @@ export class ListEdit {
   destroyed = new Subject();
 
   constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<ListDisplayTypeOptions, ListWidgetDataConfig>) {
+                  WidgetEditData<ListOptions, ListWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(

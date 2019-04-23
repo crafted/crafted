@@ -4,10 +4,10 @@ import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/widget-types';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {PieChartDisplayTypeOptions, PieChartWidgetDataConfig} from './pie-chart';
+import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class PieChartEdit {
   destroyed = new Subject();
 
   constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<PieChartDisplayTypeOptions<any>, PieChartWidgetDataConfig>) {
+                  WidgetEditData<PieChartOptions<any>, PieChartWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(

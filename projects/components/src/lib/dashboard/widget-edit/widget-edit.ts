@@ -5,7 +5,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {ReplaySubject} from 'rxjs';
 import {startWith, take} from 'rxjs/operators';
 
-import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../widget-types';
+import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../dashboard';
 
 
 export interface WidgetEditDialogData {
@@ -21,7 +21,7 @@ export interface WidgetEditDialogData {
 export class WidgetEdit<S, V, G> {
   form = new FormGroup({
     title: new FormControl(''),
-    displayType: new FormControl(''),
+    type: new FormControl(''),
   });
 
   widgetConfigs: WidgetConfig<any>[] = [];
@@ -40,32 +40,28 @@ export class WidgetEdit<S, V, G> {
     if (data.widget) {
       this.form.setValue({
         title: data.widget.title || '',
-        displayType: data.widget.displayType,
+        type: data.widget.type,
       });
     } else {
-      this.form.get('displayType')!.setValue(this.widgetConfigs[0].id);
+      this.form.get('type')!.setValue(this.widgetConfigs[0].id);
     }
 
-    this.form.get('displayType')!.valueChanges.pipe(startWith(this.form.value.displayType))
-        .subscribe(value => {
-          return this.showWidgetEdit(value);
-        });
+    this.form.get('type')!.valueChanges.pipe(startWith(this.form.value.type)).subscribe(value => {
+      return this.showWidgetEdit(value);
+    });
   }
 
   save() {
     this.options.pipe(take(1)).subscribe(options => {
-      const widget: Widget = {
-        title: this.form.value.title,
-        displayType: this.form.value.displayType,
-        displayTypeOptions: options
-      };
+      const widget:
+          Widget = {title: this.form.value.title, type: this.form.value.type, options: options};
 
       this.dialogRef.close(widget);
     });
   }
 
   private showWidgetEdit(type: string) {
-    this.options.next(this.data.widget ? this.data.widget.displayTypeOptions : null);
+    this.options.next(this.data.widget ? this.data.widget.options : null);
     const widgetData: WidgetEditData<any, any> = {
       options: this.options,
       config: this.data.widgetConfigs[type].config,

@@ -9,7 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget-types';
+import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../dashboard';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class WidgetView {
 
   private createWidget() {
     const widgetData: WidgetData<any, any> = {
-      options: this.widget.displayTypeOptions,
+      options: this.widget.options,
       config: this.widgetConfig.config,
     };
 

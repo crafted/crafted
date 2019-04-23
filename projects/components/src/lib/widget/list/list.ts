@@ -10,7 +10,7 @@ import {
 } from '@crafted/data';
 import {Observable, of} from 'rxjs';
 
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/widget-types';
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {ListEdit} from './list-edit';
@@ -44,7 +44,7 @@ export function getListWidgetConfig(
   };
 }
 
-export interface ListDisplayTypeOptions {
+export interface ListOptions {
   dataSourceType: string;
   listLength: number;
   sorterState: SorterState;
@@ -67,8 +67,7 @@ export class List {
 
   viewer: Viewer<any, any>;
 
-  constructor(@Inject(WIDGET_DATA) public data:
-                  WidgetData<ListDisplayTypeOptions, ListWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_DATA) public data: WidgetData<ListOptions, ListWidgetDataConfig>) {
     const dataSourceProvider =
         this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
     const sorter = dataSourceProvider.sorter(this.data.options.sorterState);

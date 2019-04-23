@@ -19,7 +19,7 @@ export interface BarChartWidgetDataConfig {
   dataResourcesMap: BarChartDataResourcesMap;
 }
 
-export interface BarChartDisplayTypeOptions {
+export interface BarChartOptions {
   dataSourceType: string;
   grouperState: GrouperState;
   filteredGroups: string;
@@ -54,7 +54,7 @@ export class BarChart {
   data: Observable<any[]>
 
   constructor(@Inject(WIDGET_DATA) public widgetData:
-                  WidgetData<BarChartDisplayTypeOptions, BarChartWidgetDataConfig>) {}
+                  WidgetData<BarChartOptions, BarChartWidgetDataConfig>) {}
 
   ngOnInit() {
     const config = this.widgetData.config;

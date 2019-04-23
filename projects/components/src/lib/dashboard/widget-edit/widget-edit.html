@@ -4,7 +4,7 @@
            autocomplete="off" formControlName="title">
 
     <form-field label="Type">
-      <mat-button-toggle-group formControlName="displayType">
+      <mat-button-toggle-group formControlName="type">
         <mat-button-toggle *ngFor="let option of widgetConfigs"
                            [value]="option.id">
           {{option.label}}

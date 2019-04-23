@@ -3,9 +3,9 @@ import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms
 import {Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/widget-types';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../../dashboard/dashboard';
 
-import {TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig} from './time-series';
+import {TimeSeriesOptions, TimeSeriesWidgetDataConfig} from './time-series';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class TimeSeriesEdit {
   destroyed = new Subject();
 
   constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<TimeSeriesDisplayTypeOptions, TimeSeriesWidgetDataConfig>) {
+                  WidgetEditData<TimeSeriesOptions, TimeSeriesWidgetDataConfig>) {
     data.options.pipe(take(1)).subscribe(value => {
       if (value) {
         this.initializeForm(value);
@@ -72,7 +72,7 @@ export class TimeSeriesEdit {
     }));
   }
 
-  private initializeForm(value: TimeSeriesDisplayTypeOptions) {
+  private initializeForm(value: TimeSeriesOptions) {
     const datasetsFormArray = this.form.get('datasets') as FormArray;
     value.datasets.forEach(dataset => {
       const datasetFormGroup = this.createDataset();
