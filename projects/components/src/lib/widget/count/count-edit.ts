@@ -1,33 +1,31 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
+import {DataSource, Filterer} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
-import {SavedFiltererState} from '../../widget-edit/widget-edit';
+import {SavedFiltererState} from '../widget-edit/widget-edit';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../widget-types';
 
-import {ListDisplayTypeOptions, ListWidgetDataConfig} from './list';
+import {CountWidgetDataConfig} from './count';
+import {CountDisplayTypeOptions} from './count.module';
 
 
 @Component({
-  templateUrl: 'list-edit.html',
-  styleUrls: ['list-edit.scss'],
+  templateUrl: 'count-edit.html',
+  styleUrls: ['count-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListEdit {
+export class EditCount {
   dataOptions: {id: string, label: string}[] = [];
 
-  viewer: Viewer;
-  sorter: Sorter;
-  filterer: Filterer;
-  dataSource: DataSource;
+  filterer: Filterer<any, any>;
+
+  dataSource: DataSource<any>;
 
   form = new FormGroup({
     dataSourceType: new FormControl(null),
-    listLength: new FormControl(5),
-    sorterState: new FormControl(null),
-    viewerState: new FormControl(null),
+    fontSize: new FormControl(48),
     filtererState: new FormControl(null),
   });
 
@@ -36,43 +34,37 @@ export class ListEdit {
   destroyed = new Subject();
 
   constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<ListDisplayTypeOptions, ListWidgetDataConfig>) {
+                  WidgetEditData<CountDisplayTypeOptions, CountWidgetDataConfig>) {
     // TODO: Filter based on datasource type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-        dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
+        (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;
-
     this.form.get('dataSourceType')!.setValue(initialDataSourceType);
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType)!;
 
-    this.sorter = dataSourceProvider.sorter();
-    this.viewer = dataSourceProvider.viewer();
-    this.filterer = dataSourceProvider.filterer();
-    this.dataSource = dataSourceProvider.dataSource();
+    const dataResource = data.config.dataResourcesMap.get(initialDataSourceType)!;
+    this.filterer = dataResource.filterer();
+    this.dataSource = dataResource.dataSource();
 
     data.options.pipe(take(1)).subscribe(value => {
       if (value) {
         if (value.dataSourceType) {
           this.form.get('dataSourceType')!.setValue(value.dataSourceType);
         }
-        if (value.listLength) {
-          this.form.get('listLength')!.setValue(value.listLength);
-        }
-        if (value.sorterState) {
-          this.form.get('sorterState')!.setValue(value.sorterState);
-        }
-        if (value.viewerState) {
-          this.form.get('viewerState')!.setValue(value.sorterState);
+        if (value.fontSize) {
+          this.form.get('fontSize')!.setValue(value.fontSize);
         }
         if (value.filtererState) {
           this.form.get('filtererState')!.setValue(value.filtererState);
         }
       }
     });
+
     this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
         .subscribe(value => {
-          data.options.next(value);
+          if (value) {
+            data.options.next(value);
+          }
         });
   }
 

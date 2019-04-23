@@ -1,4 +1,4 @@
-@import "../../../../common";
+@import "../../../common";
 
 @mixin action-option-theme($theme) {
   $foreground: map-get($theme, foreground);

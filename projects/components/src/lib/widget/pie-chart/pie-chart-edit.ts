@@ -4,8 +4,8 @@ import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable, Subject} from 'rxjs';
 import {startWith, take, takeUntil} from 'rxjs/operators';
 
-import {WIDGET_EDIT_DATA, WidgetEditData} from '../../widget';
-import {SavedFiltererState} from '../../widget-edit/widget-edit';
+import {SavedFiltererState} from '../widget-edit/widget-edit';
+import {WIDGET_EDIT_DATA, WidgetEditData} from '../widget-types';
 
 import {PieChartDisplayTypeOptions, PieChartWidgetDataConfig} from './pie-chart';
 

@@ -3,12 +3,11 @@ import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../widget';
-import {SavedFiltererState} from '../../widget-edit/widget-edit';
+import {SavedFiltererState} from '../widget-edit/widget-edit';
+import {WIDGET_DATA, WidgetConfig, WidgetData} from '../widget-types';
 
 import {EditCount} from './count-edit';
 import {CountDisplayTypeOptions} from './count.module';
-
 
 export type CountDataResourcesMap = Map<string, {
   id: string,

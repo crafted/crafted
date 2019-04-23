@@ -12,10 +12,10 @@
 @import "form/sort-state-option/sort-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
 @import "widget/widget-edit/widget-edit-theme";
-@import "widget/widget-view/count/count-theme";
-@import "widget/widget-view/time-series/action-option/action-option-theme";
-@import "widget/widget-view/time-series/dataset-option/dataset-option-theme";
-@import "widget/widget-view/time-series/time-series-edit-theme";
+@import "widget/count/count-theme";
+@import "widget/time-series/action-option/action-option-theme";
+@import "widget/time-series/dataset-option/dataset-option-theme";
+@import "widget/time-series/time-series-edit-theme";
 @import "widget/widget-view/widget-view-theme";
 
 @import "./common";

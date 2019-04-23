@@ -1,4 +1,4 @@
-import {Widget} from '../widget/widget';
+import {Widget} from '../widget/widget-types';
 
 export interface Column {
   widgets: Widget[];

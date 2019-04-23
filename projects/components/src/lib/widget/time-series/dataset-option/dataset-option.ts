@@ -3,7 +3,7 @@ import {ControlContainer, FormArray} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, takeUntil} from 'rxjs/operators';
-import {SavedFiltererState} from '../../../widget-edit/widget-edit';
+import {SavedFiltererState} from '../../widget-edit/widget-edit';
 import {TimeSeriesDataResourcesMap} from '../time-series';
 
 @Component({

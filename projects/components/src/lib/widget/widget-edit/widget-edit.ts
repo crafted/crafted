@@ -6,7 +6,7 @@ import {FiltererState} from '@crafted/data';
 import {ReplaySubject} from 'rxjs';
 import {startWith, take} from 'rxjs/operators';
 
-import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../widget';
+import {Widget, WIDGET_EDIT_DATA, WidgetConfig, WidgetEditData} from '../widget-types';
 
 
 export interface SavedFiltererState {

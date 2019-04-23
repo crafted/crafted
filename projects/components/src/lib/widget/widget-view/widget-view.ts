@@ -9,7 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget';
+import {Widget, WIDGET_DATA, WidgetConfig, WidgetData} from '../widget-types';
 
 
 @Component({
