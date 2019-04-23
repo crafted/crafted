@@ -7,8 +7,9 @@
     </mat-button-toggle-group>
   </form-field>
 
-  <input-option formControlName="listLength" label="List length" type="number">
-  </input-option>
+  <form-field label="List length">
+    <input formControlName="listLength" type="number">
+  </form-field>
 
   <sort-state-option formControlName="sorterState" label="Sort state"
                      [sorter]="sorter"></sort-state-option>

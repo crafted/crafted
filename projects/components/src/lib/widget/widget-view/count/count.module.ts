@@ -7,7 +7,6 @@ import {
   FilterStateOptionModule
 } from '../../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../../form/form-field/form-field.module';
-import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {Count} from './count';
 import {EditCount} from './count-edit';
 
@@ -21,7 +20,6 @@ export interface CountDisplayTypeOptions {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InputOptionModule,
     FormFieldModule,
     MatButtonToggleModule,
     FilterStateOptionModule,

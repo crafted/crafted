@@ -1,6 +1,7 @@
 <ng-container [formGroup]="controlContainer.control">
-
-  <input-option formControlName="label" label="Series Name"></input-option>
+  <form-field label="Series name">
+    <input formControlName="label">
+  </form-field>
 
   <form-field label="Data">
     <mat-button-toggle-group formControlName="dataSourceType">
@@ -11,7 +12,9 @@
     </mat-button-toggle-group>
   </form-field>
 
-  <input-option formControlName="color" label="Color (optional)"></input-option>
+  <form-field label="Color (optional)">
+    <input formControlName="color">
+  </form-field>
 
   <filter-state-option formControlName="filtererState" [filterer]="filterer"
                        [dataSource]="dataSource"

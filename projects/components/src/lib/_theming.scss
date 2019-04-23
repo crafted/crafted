@@ -7,10 +7,10 @@
 @import "items-list/items-list-theme";
 @import "dashboard/dashboard-view-theme";
 @import "form/filter-state-option/filter-state-option-theme";
+@import "form/form-field/form-field-theme.scss";
 @import "form/group-state-option/group-state-option-theme";
 @import "form/sort-state-option/sort-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
-@import "form/input-option/input-option-theme";
 @import "widget/widget-edit/widget-edit-theme";
 @import "widget/widget-view/count/count-theme";
 @import "widget/widget-view/time-series/action-option/action-option-theme";
@@ -30,9 +30,9 @@
   @include items-list-theme($theme);
   @include dashboard-view-theme($theme);
   @include widget-edit-theme($theme);
+  @include form-field-theme($theme);
   @include group-state-option-theme($theme);
   @include sort-state-option-theme($theme);
-  @include input-option-theme($theme);
   @include count-theme($theme);
   @include action-option-theme($theme);
   @include dataset-option-theme($theme);

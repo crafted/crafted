@@ -6,10 +6,6 @@ form {
   padding: 0 16px;
 }
 
-mat-button-toggle-group {
-  @include slim-button-toggle-option();
-}
-
 input.title {
   font-size: 20px;
   margin-bottom: 24px;

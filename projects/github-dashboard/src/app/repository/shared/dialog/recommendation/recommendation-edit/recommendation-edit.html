@@ -3,7 +3,9 @@
 </h1>
 
 <div mat-dialog-content [formGroup]="formGroup">
-  <input-option formControlName="message" label="Message"></input-option>
+  <form-field label="Message">
+    <input formControlName="message">
+  </form-field>
 
   <form-field label="Type">
     <mat-button-toggle-group formControlName="type">

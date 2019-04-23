@@ -7,9 +7,10 @@
     </mat-button-toggle-group>
   </form-field>
 
-  <input-option formControlName="filteredGroups" label="Filter"
-                placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">
-  </input-option>
+  <form-field label="Groups filter">
+    <input formControlName="filteredGroups"
+           placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">
+  </form-field>
 
   <group-state-option formControlName="grouperState" label="Grouping"
                       [grouper]="grouper"></group-state-option>

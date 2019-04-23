@@ -9,29 +9,7 @@ import {BarChartDisplayTypeOptions, BarChartWidgetDataConfig} from './bar-chart'
 
 
 @Component({
-  template: `
-  <ng-container [formGroup]="form">
-    <form-field label="Data" *ngIf="dataOptions.length > 1">
-      <mat-button-toggle-group formControlName="dataSourceType">
-        <mat-button-toggle *ngFor="let option of dataOptions" [value]="option.id">
-          {{option.label}}
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-    </form-field>
-
-    <input-option formControlName="filteredGroups" label="Filter"
-                  placeholder="(Optional) Filter by group title, e.g. 'Group A, Group B'">
-    </input-option>
-
-    <group-state-option formControlName="grouperState" label="Grouping"
-                        [grouper]="grouper">
-    </group-state-option>
-
-    <filter-state-option formControlName="filtererState" [filterer]="filterer"
-                        [dataSource]="dataSource">
-    </filter-state-option>
-  </ng-container>
-  `,
+  templateUrl: 'bar-chart-edit.html',
   styleUrls: ['bar-chart-edit.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

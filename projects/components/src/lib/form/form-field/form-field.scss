@@ -1,3 +1,5 @@
+@import "../../common";
+
 .config-option {
   display: flex;
   margin-bottom: 16px;
@@ -19,4 +21,10 @@
   align-items: center;
   flex: 1;
   min-height: 32px;
+}
+
+:host {
+  ::ng-deep input {
+    @include unstyled-input();
+  }
 }

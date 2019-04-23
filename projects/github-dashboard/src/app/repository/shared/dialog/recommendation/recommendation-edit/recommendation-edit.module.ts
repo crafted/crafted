@@ -13,8 +13,7 @@ import {
 import {
   EditableChipListModule,
   FilterStateOptionModule,
-  FormFieldModule,
-  InputOptionModule
+  FormFieldModule
 } from '@crafted/components';
 import {RecommendationEdit} from './recommendation-edit';
 
@@ -29,7 +28,6 @@ import {RecommendationEdit} from './recommendation-edit';
     MatSelectModule,
     MatInputModule,
     ReactiveFormsModule,
-    InputOptionModule,
     FormFieldModule,
     MatButtonToggleModule,
     FilterStateOptionModule,

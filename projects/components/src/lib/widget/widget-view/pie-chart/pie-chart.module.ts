@@ -7,7 +7,6 @@ import {
 } from '../../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../../form/form-field/form-field.module';
 import {GroupStateOptionModule} from '../../../form/group-state-option/group-state-option.module';
-import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {PieChart} from './pie-chart';
 import {PieChartEdit} from './pie-chart-edit';
 
@@ -15,7 +14,6 @@ import {PieChartEdit} from './pie-chart-edit';
   imports: [
     CommonModule,
     GroupStateOptionModule,
-    InputOptionModule,
     ReactiveFormsModule,
     FormFieldModule,
     MatButtonToggleModule,

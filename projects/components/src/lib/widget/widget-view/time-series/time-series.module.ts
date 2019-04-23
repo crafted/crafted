@@ -6,7 +6,6 @@ import {
   FilterStateOptionModule
 } from '../../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../../form/form-field/form-field.module';
-import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {DatasetOptionModule} from './dataset-option/dataset-option.module';
 import {TimeSeries} from './time-series';
 import {TimeSeriesEdit} from './time-series-edit';
@@ -20,7 +19,6 @@ import {TimeSeriesEdit} from './time-series-edit';
     MatButtonToggleModule,
     FormFieldModule,
     FilterStateOptionModule,
-    InputOptionModule,
     DatasetOptionModule,
   ],
   declarations: [TimeSeries, TimeSeriesEdit],

@@ -4,17 +4,8 @@
   $divider: mat-color($foreground, divider);
 
   form-field {
-    .chip,
-    .chip-add {
-      border-color: $divider;
-    }
-
-    .chip-add {
-      background: mat-color($background, hover);
-    }
-
-    .remove:hover {
-      background: mat-color($background, hover);
+    input {
+      @include bottom-border($divider);
     }
   }
 }

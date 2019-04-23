@@ -6,7 +6,6 @@ import {
   FilterStateOptionModule
 } from '../../../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../../../form/form-field/form-field.module';
-import {InputOptionModule} from '../../../../form/input-option/input-option.module';
 import {ActionOptionModule} from '../action-option/action-option.module';
 import {DatasetOption} from './dataset-option';
 
@@ -16,7 +15,6 @@ import {DatasetOption} from './dataset-option';
     MatButtonModule,
     MatIconModule,
     ReactiveFormsModule,
-    InputOptionModule,
     MatButtonToggleModule,
     FilterStateOptionModule,
     ActionOptionModule,

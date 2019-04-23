@@ -6,7 +6,6 @@ import {
   FilterStateOptionModule
 } from '../../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../../form/form-field/form-field.module';
-import {InputOptionModule} from '../../../form/input-option/input-option.module';
 import {SortStateOptionModule} from '../../../form/sort-state-option/sort-state-option.module';
 import {ViewStateOptionModule} from '../../../form/view-state-option/view-state-option.module';
 import {ItemSummaryModule} from '../../../item-summary/item-summary.module';
@@ -21,7 +20,6 @@ import {ListEdit} from './list-edit';
     ReactiveFormsModule,
     ItemSummaryModule,
     SortStateOptionModule,
-    InputOptionModule,
     ViewStateOptionModule,
     FormFieldModule,
     MatButtonToggleModule,

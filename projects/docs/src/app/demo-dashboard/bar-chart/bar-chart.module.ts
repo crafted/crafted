@@ -5,8 +5,7 @@ import {MatButtonToggleModule} from '@angular/material';
 import {
   FilterStateOptionModule,
   FormFieldModule,
-  GroupStateOptionModule,
-  InputOptionModule
+  GroupStateOptionModule
 } from '@crafted/components';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {BarChart} from './bar-chart';
@@ -17,7 +16,6 @@ import {BarChartEdit} from './bar-chart-edit';
     NgxChartsModule,
     CommonModule,
     GroupStateOptionModule,
-    InputOptionModule,
     ReactiveFormsModule,
     MatButtonToggleModule,
     FormFieldModule,
