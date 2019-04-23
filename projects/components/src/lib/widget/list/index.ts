@@ -1,3 +1,3 @@
 export * from './list';
-export * from './list-edit';
+export * from './list-editor';
 export * from './list.module';

@@ -8,7 +8,7 @@ import {SortStateOptionModule} from '../../form/sort-state-option/sort-state-opt
 import {ViewStateOptionModule} from '../../form/view-state-option/view-state-option.module';
 import {ItemSummaryModule} from '../../item-summary/item-summary.module';
 import {List} from './list';
-import {ListEdit} from './list-edit';
+import {ListEditor} from './list-editor';
 
 @NgModule({
   imports: [
@@ -23,9 +23,9 @@ import {ListEdit} from './list-edit';
     MatButtonToggleModule,
     FilterStateOptionModule,
   ],
-  declarations: [List, ListEdit],
-  exports: [List, ListEdit],
-  entryComponents: [List, ListEdit]
+  declarations: [List, ListEditor],
+  exports: [List, ListEditor],
+  entryComponents: [List, ListEditor]
 })
 export class ListModule {
 }

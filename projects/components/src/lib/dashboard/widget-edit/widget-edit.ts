@@ -78,7 +78,7 @@ export class WidgetEdit {
 
     const injectionTokens = new WeakMap<any, any>([[WIDGET_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(Injector.NULL, injectionTokens);
-    const portal = new ComponentPortal(this.data.configs[type].editComponent, null, widgetInjector);
+    const portal = new ComponentPortal(this.data.configs[type].editor, null, widgetInjector);
     return this.portalOutlet.attachComponentPortal(portal);
   }
 }

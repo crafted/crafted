@@ -8,7 +8,7 @@ import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {MaterialColors} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {PieChartEdit} from './pie-chart-edit';
+import {PieChartEditor} from './pie-chart-editor';
 
 
 export type PieChartDataResourcesMap = Map<string, {
@@ -31,8 +31,8 @@ export function getPieChartWidgetConfig(
   return {
     id: 'pie',
     label: 'Pie Chart',
-    component: PieChart,
-    editComponent: PieChartEdit,
+    viewer: PieChart,
+    editor: PieChartEditor,
     config: {dataResourcesMap, savedFiltererStates}
   };
 }

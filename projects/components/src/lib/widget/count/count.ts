@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {EditCount} from './count-edit';
+import {CountEditor} from './count-editor';
 import {CountOptions} from './count.module';
 
 
@@ -29,8 +29,8 @@ export function getCountWidgetConfig(
   return {
     id: 'count',
     label: 'Count',
-    component: Count,
-    editComponent: EditCount,
+    viewer: Count,
+    editor: CountEditor,
     config: {dataResourcesMap, savedFiltererStates}
   };
 }

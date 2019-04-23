@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
@@ -10,11 +10,11 @@ import {ListOptions, ListWidgetDataConfig} from './list';
 
 
 @Component({
-  templateUrl: 'list-edit.html',
-  styleUrls: ['list-edit.scss'],
+  templateUrl: 'list-editor.html',
+  styleUrls: ['list-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListEdit implements WidgetEditor {
+export class ListEditor implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   viewer: Viewer;
@@ -31,8 +31,6 @@ export class ListEdit implements WidgetEditor {
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
-
-  destroyed = new Subject();
 
   get options(): ListOptions {
     return this.form.value;
@@ -71,10 +69,5 @@ export class ListEdit implements WidgetEditor {
         this.form.get('filtererState')!.setValue(value.filtererState);
       }
     }
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
   }
 }

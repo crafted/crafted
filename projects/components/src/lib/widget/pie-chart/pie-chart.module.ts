@@ -6,7 +6,7 @@ import {FilterStateOptionModule} from '../../form/filter-state-option/filter-sta
 import {FormFieldModule} from '../../form/form-field/form-field.module';
 import {GroupStateOptionModule} from '../../form/group-state-option/group-state-option.module';
 import {PieChart} from './pie-chart';
-import {PieChartEdit} from './pie-chart-edit';
+import {PieChartEditor} from './pie-chart-editor';
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import {PieChartEdit} from './pie-chart-edit';
     MatButtonToggleModule,
     FilterStateOptionModule,
   ],
-  declarations: [PieChart, PieChartEdit],
-  exports: [PieChart, PieChartEdit],
-  entryComponents: [PieChart, PieChartEdit]
+  declarations: [PieChart, PieChartEditor],
+  exports: [PieChart, PieChartEditor],
+  entryComponents: [PieChart, PieChartEditor]
 })
 export class PieChartModule {
 }

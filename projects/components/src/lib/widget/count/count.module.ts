@@ -6,7 +6,7 @@ import {FiltererState} from '@crafted/data';
 import {FilterStateOptionModule} from '../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../form/form-field/form-field.module';
 import {Count} from './count';
-import {EditCount} from './count-edit';
+import {CountEditor} from './count-editor';
 
 export interface CountOptions {
   dataSourceType: string;
@@ -22,9 +22,9 @@ export interface CountOptions {
     MatButtonToggleModule,
     FilterStateOptionModule,
   ],
-  declarations: [EditCount, Count],
-  exports: [EditCount, Count],
-  entryComponents: [EditCount, Count]
+  declarations: [CountEditor, Count],
+  exports: [CountEditor, Count],
+  entryComponents: [CountEditor, Count]
 })
 export class CountModule {
 }

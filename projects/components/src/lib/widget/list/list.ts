@@ -13,7 +13,7 @@ import {Observable, of} from 'rxjs';
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {ListEdit} from './list-edit';
+import {ListEditor} from './list-editor';
 
 
 export type ListDataResourcesMap = Map<string, {
@@ -38,8 +38,8 @@ export function getListWidgetConfig(
   return {
     id: 'list',
     label: 'List',
-    component: List,
-    editComponent: ListEdit,
+    viewer: List,
+    editor: ListEditor,
     config: {dataResourcesMap, onSelect, savedFiltererStates}
   };
 }

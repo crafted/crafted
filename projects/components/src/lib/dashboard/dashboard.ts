@@ -5,10 +5,18 @@ export interface WidgetEditor<T = any> {
   options: T;
 }
 
-export const WIDGET_DATA = new InjectionToken<any>('WidgetData');
+export const WIDGET_DATA = new InjectionToken<WidgetData<any, any>>('WidgetData');
 
 export interface WidgetData<T, C> {
   options: T;
+  config: C;
+}
+
+export interface WidgetConfig<C> {
+  id: string;
+  label: string;
+  viewer: ComponentType<any>;
+  editor: ComponentType<WidgetEditor>;
   config: C;
 }
 
@@ -16,14 +24,6 @@ export interface Widget {
   title: string;
   type: string;
   options?: any;
-}
-
-export interface WidgetConfig<C> {
-  id: string;
-  label: string;
-  component: ComponentType<any>;
-  editComponent: ComponentType<WidgetEditor>;
-  config: C;
 }
 
 export interface Column {

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
@@ -10,11 +10,11 @@ import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
 
 
 @Component({
-  templateUrl: 'pie-chart-edit.html',
-  styleUrls: ['pie-chart-edit.scss'],
+  templateUrl: 'pie-chart-editor.html',
+  styleUrls: ['pie-chart-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PieChartEdit implements WidgetEditor {
+export class PieChartEditor implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   grouper: Grouper<any, any>;
@@ -29,8 +29,6 @@ export class PieChartEdit implements WidgetEditor {
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
-
-  destroyed = new Subject();
 
   get options(): PieChartOptions {
     return this.form.value;

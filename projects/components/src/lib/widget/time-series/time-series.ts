@@ -8,7 +8,7 @@ import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
 import {MaterialColors} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
-import {TimeSeriesEdit} from './time-series-edit';
+import {TimeSeriesEditor} from './time-series-editor';
 
 
 export type TimeSeriesDataResourcesMap = Map<string, {
@@ -30,8 +30,8 @@ export function getTimeSeriesWidgetConfig(
   return {
     id: 'timeSeries',
     label: 'Time Series',
-    component: TimeSeries,
-    editComponent: TimeSeriesEdit,
+    viewer: TimeSeries,
+    editor: TimeSeriesEditor,
     config: {dataResourcesMap, savedFiltererStates}
   };
 }

@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
-import {Subject} from 'rxjs';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 
@@ -8,12 +7,12 @@ import {TimeSeriesOptions, TimeSeriesWidgetDataConfig} from './time-series';
 
 
 @Component({
-  selector: 'time-series-edit',
-  templateUrl: 'time-series-edit.html',
-  styleUrls: ['time-series-edit.scss'],
+  selector: 'time-series-editor',
+  templateUrl: 'time-series-editor.html',
+  styleUrls: ['time-series-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimeSeriesEdit implements WidgetEditor {
+export class TimeSeriesEditor implements WidgetEditor {
   groupOptions: {id: string, label: string}[] = [
     {id: 'day', label: 'Day'},
     {id: 'week', label: 'Week'},
@@ -29,8 +28,6 @@ export class TimeSeriesEdit implements WidgetEditor {
   });
 
   datasetsFormArray = this.form.get('datasets') as FormArray;
-
-  destroyed = new Subject();
 
   get options(): TimeSeriesOptions {
     return this.form.value;

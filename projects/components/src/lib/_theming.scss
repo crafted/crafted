@@ -16,7 +16,7 @@
 @import "widget/count/count-theme";
 @import "widget/time-series/action-option/action-option-theme";
 @import "widget/time-series/dataset-option/dataset-option-theme";
-@import "widget/time-series/time-series-edit-theme";
+@import "widget/time-series/time-series-editor-theme";
 
 @import "./common";
 
@@ -36,7 +36,7 @@
   @include count-theme($theme);
   @include action-option-theme($theme);
   @include dataset-option-theme($theme);
-  @include time-series-edit-theme($theme);
+  @include time-series-editor-theme($theme);
   @include filter-state-option-theme($theme);
   @include widget-view-theme($theme);
 }

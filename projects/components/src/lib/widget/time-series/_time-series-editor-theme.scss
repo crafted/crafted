@@ -1,11 +1,11 @@
 @import "../../common";
 
-@mixin time-series-edit-theme($theme) {
+@mixin time-series-editor-theme($theme) {
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
   $divider: mat-color($foreground, divider);
 
-  time-series-edit {
+  time-series-editor {
     .dataset {
       border-color: $divider;
       background: mat-color($background, hover);

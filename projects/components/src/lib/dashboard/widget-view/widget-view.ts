@@ -52,7 +52,7 @@ export class WidgetView {
     const injectionTokens = new WeakMap<any, any>([[WIDGET_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(this.injector, injectionTokens);
     this.widgetComponentPortal =
-        new ComponentPortal(this.widgetConfig.component, null, widgetInjector);
+        new ComponentPortal(this.widgetConfig.viewer, null, widgetInjector);
   }
 }
 

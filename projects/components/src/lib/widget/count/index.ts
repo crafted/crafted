@@ -1,3 +1,3 @@
 export * from './count';
-export * from './count-edit';
+export * from './count-editor';
 export * from './count.module';

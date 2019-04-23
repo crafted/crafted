@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form';
@@ -11,11 +11,11 @@ import {CountOptions} from './count.module';
 
 
 @Component({
-  templateUrl: 'count-edit.html',
-  styleUrls: ['count-edit.scss'],
+  templateUrl: 'count-editor.html',
+  styleUrls: ['count-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditCount implements WidgetEditor {
+export class CountEditor implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   filterer: Filterer<any, any>;
@@ -29,8 +29,6 @@ export class EditCount implements WidgetEditor {
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
-
-  destroyed = new Subject();
 
   get options(): CountOptions {
     return this.form.value;
@@ -59,10 +57,5 @@ export class EditCount implements WidgetEditor {
         this.form.get('filtererState')!.setValue(value.filtererState);
       }
     }
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
   }
 }
