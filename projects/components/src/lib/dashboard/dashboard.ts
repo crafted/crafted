@@ -13,8 +13,8 @@ export interface WidgetData<T, C> {
 }
 
 export interface Widget {
-  title?: string;
-  type?: string;
+  title: string;
+  type: string;
   options?: any;
 }
 

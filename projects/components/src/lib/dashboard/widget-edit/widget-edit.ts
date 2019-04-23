@@ -26,7 +26,7 @@ export interface WidgetEditDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetEdit {
-  @ViewChild(CdkPortalOutlet) _portalOutlet: CdkPortalOutlet;
+  @ViewChild(CdkPortalOutlet) portalOutlet: CdkPortalOutlet;
 
   form = new FormGroup({
     title: new FormControl(''),
@@ -52,7 +52,9 @@ export class WidgetEdit {
     } else {
       this.form.get('type')!.setValue(this.typeOptions[0].id);
     }
+  }
 
+  ngOnInit() {
     this.form.get('type')!.valueChanges.pipe(startWith(this.form.value.type)).subscribe(type => {
       this.editor = this.attachEditor(type);
     });
@@ -67,6 +69,8 @@ export class WidgetEdit {
   }
 
   private attachEditor(type: string): ComponentRef<WidgetEditor> {
+    this.portalOutlet.detach();
+
     const widgetData: WidgetData<any, any> = {
       options: this.data.widget ? this.data.widget.options : null,
       config: this.data.configs[type].config,
@@ -75,6 +79,6 @@ export class WidgetEdit {
     const injectionTokens = new WeakMap<any, any>([[WIDGET_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(Injector.NULL, injectionTokens);
     const portal = new ComponentPortal(this.data.configs[type].editComponent, null, widgetInjector);
-    return this._portalOutlet.attachComponentPortal(portal);
+    return this.portalOutlet.attachComponentPortal(portal);
   }
 }
