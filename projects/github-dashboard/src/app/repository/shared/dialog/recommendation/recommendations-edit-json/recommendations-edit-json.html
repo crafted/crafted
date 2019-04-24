@@ -4,8 +4,21 @@
 
 <div mat-dialog-content>
   <textarea [formControl]="jsonForm"
-            class="theme-background-hover mat-elevation-z1"
-            cdkTextareaAutosize></textarea>
+            class="theme-background-hover mat-elevation-z1"></textarea>
+
+  <mat-expansion-panel *ngIf="jsonForm.invalid">
+    <mat-expansion-panel-header>
+      <mat-panel-title class="theme-warn">
+        <mat-icon> warning </mat-icon> Errors ({{errorCount()}})
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ng-container *ngFor="let error of errors">
+      <li class="error theme-warn" *ngIf="jsonForm.errors[error.id]; let e">
+        {{error.message(e.recommendation)}}
+      </li>
+    </ng-container>
+  </mat-expansion-panel>
 </div>
 
 <div mat-dialog-actions align="end">
