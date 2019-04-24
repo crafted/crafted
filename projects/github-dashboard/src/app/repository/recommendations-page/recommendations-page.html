@@ -33,4 +33,15 @@
   <button mat-raised-button color="accent" class="create" (click)="add()">
     Create New Recommendation
   </button>
+
+  <button mat-icon-button class="settings" [matMenuTriggerFor]="settings"
+          *ngIf="(dataSource.data | async)?.length">
+    <mat-icon>settings</mat-icon>
+  </button>
 </ng-template>
+
+<mat-menu #settings="matMenu">
+  <button mat-menu-item (click)="editJson()">
+    Edit JSON
+  </button>
+</mat-menu>

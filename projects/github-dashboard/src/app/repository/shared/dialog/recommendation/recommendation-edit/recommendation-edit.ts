@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {
+  ActionType,
   ActionTypes,
   Recommendation,
   RecommendationTypes
@@ -78,6 +79,9 @@ export class RecommendationEdit {
       throw Error('Recommendation required to show recommendation dialog');
     }
 
+    const actionForm = this.formGroup.get('action') as FormControl;
+    actionForm.validator = actionValidator(this.formGroup);
+
     this.data.dataResourcesMap.forEach(
         (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
 
@@ -132,4 +136,18 @@ export class RecommendationEdit {
       this.dialogRef.close(recommendation);
     }
   }
+}
+
+export function actionValidator(formGroup: FormGroup): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any}|null => {
+    const actionType = formGroup.get('actionType')!.value as ActionType;
+
+    switch (actionType) {
+      case 'add-assignee':
+      case 'add-label':
+        return control.value ? null : {'invalid': control.value};
+      default:
+        return null;
+    }
+  };
 }

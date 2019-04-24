@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>
+  Edit Recommendations JSON
+</h1>
+
+<div mat-dialog-content>
+  <textarea [formControl]="jsonForm"
+            class="theme-background-hover mat-elevation-z1"
+            cdkTextareaAutosize></textarea>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null"> Cancel </button>
+  <button mat-raised-button color="accent" (click)="save()"
+          [disabled]="jsonForm.invalid"> Save </button>
+</div>

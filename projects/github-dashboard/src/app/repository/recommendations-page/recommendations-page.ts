@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/co
 import {FormControl} from '@angular/forms';
 import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
 import {Subject} from 'rxjs';
-import {mergeMap, takeUntil} from 'rxjs/operators';
+import {mergeMap, take, takeUntil} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Recommendation} from '../services/dao/config/recommendation';
@@ -73,6 +73,12 @@ export class RecommendationsPage {
     Object.keys(recommendation)
         .forEach(key => values.push(JSON.stringify((recommendation as any)[key] as any)));
     return values.join(';').toLowerCase().indexOf(this.filter.value.toLowerCase()) != -1;
+  }
+
+  editJson() {
+    this.activeRepo.activeConfig.recommendations.list.pipe(take(1)).subscribe(list => {
+      this.recommendationDialog.jsonEditor(list, this.activeRepo.activeConfig);
+    });
   }
 }
 

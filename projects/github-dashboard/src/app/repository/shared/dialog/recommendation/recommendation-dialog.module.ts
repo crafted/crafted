@@ -3,6 +3,9 @@ import {MatDialogModule, MatSnackBarModule} from '@angular/material';
 import {DeleteConfirmationModule} from '../delete-confirmation/delete-confirmation.module';
 import {RecommendationDialog} from './recommendation-dialog';
 import {RecommendationEditModule} from './recommendation-edit/recommendation-edit.module';
+import {
+  RecommendationsEditJsonModule
+} from './recommendations-edit-json/recommendations-edit-json.module';
 
 @NgModule({
   imports: [
@@ -10,6 +13,7 @@ import {RecommendationEditModule} from './recommendation-edit/recommendation-edi
     MatDialogModule,
     DeleteConfirmationModule,
     RecommendationEditModule,
+    RecommendationsEditJsonModule,
   ],
   providers: [RecommendationDialog]
 })
