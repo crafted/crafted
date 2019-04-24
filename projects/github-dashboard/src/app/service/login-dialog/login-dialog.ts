@@ -44,8 +44,8 @@ export class LoginDialog {
 
           this.ngZone.run(() => {
             this.dialogRef.close({
-              user: result.additionalUserInfo!.username as string,
-              token: (result!.credential! as any).accessToken as string
+              user: result.additionalUserInfo.username as string,
+              token: (result.credential as any).accessToken as string
             });
           });
         })

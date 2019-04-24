@@ -5,7 +5,7 @@ import {Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
-import {MaterialColors} from '../../dashboard/widget-view';
+import {MATERIAL_COLORS} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {PieChartEditor} from './pie-chart-editor';
@@ -22,19 +22,6 @@ export type PieChartDataResourcesMap = Map<string, {
 export interface PieChartWidgetDataConfig {
   dataResourcesMap: PieChartDataResourcesMap;
   savedFiltererStates: Observable<SavedFiltererState[]>;
-}
-
-export function getPieChartWidgetConfig(
-    dataResourcesMap: PieChartDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]> =
-        of([])): WidgetConfig<PieChartWidgetDataConfig> {
-  return {
-    id: 'pie',
-    label: 'Pie Chart',
-    viewer: PieChart,
-    editor: PieChartEditor,
-    config: {dataResourcesMap, savedFiltererStates}
-  };
 }
 
 export interface PieChartOptions {
@@ -62,7 +49,7 @@ export class PieChart<T, G> {
 
   ngOnInit() {
     const dataSourceProvider =
-        this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
+      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const grouper = dataSourceProvider.grouper(this.data.options.grouperState);
     const dataSource = dataSourceProvider.dataSource();
@@ -103,12 +90,12 @@ export class PieChart<T, G> {
     const info = this.getInfo(groups);
 
     if (this.chart) {
-      this.chart.data.datasets![0].data = info.data;
+      this.chart.data.datasets[0].data = info.data;
       this.chart.data.labels = info.labels;
       this.chart.update();
     } else {
       const chartData: Chart.ChartData = {
-        datasets: [{data: info.data, backgroundColor: MaterialColors, borderColor: 'transparent'}],
+        datasets: [{data: info.data, backgroundColor: MATERIAL_COLORS, borderColor: 'transparent'}],
         labels: info.labels
       };
       const options: Chart.ChartOptions = {cutoutPercentage: 50, legend: {position: 'bottom'}};
@@ -117,4 +104,17 @@ export class PieChart<T, G> {
       this.chart.render();
     }
   }
+}
+
+export function getPieChartWidgetConfig(
+  dataResourcesMap: PieChartDataResourcesMap,
+  savedFiltererStates: Observable<SavedFiltererState[]> =
+    of([])): WidgetConfig<PieChartWidgetDataConfig> {
+  return {
+    id: 'pie',
+    label: 'Pie Chart',
+    viewer: PieChart,
+    editor: PieChartEditor,
+    config: {dataResourcesMap, savedFiltererStates}
+  };
 }

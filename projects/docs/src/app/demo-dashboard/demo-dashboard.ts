@@ -9,11 +9,11 @@ import {
 } from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {EXAMPLE_ITEMS} from '../data';
-import {ExampleDataSourceMetadata} from '../data-resources/data-source-metadata';
-import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
-import {ExampleGrouperMetadata} from '../data-resources/grouper-metadata';
-import {ExampleSorterMetadata} from '../data-resources/sorter-metadata';
-import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
+import {EXAMPLE_DATA_SOURCE_METADATA} from '../data-resources/data-source-metadata';
+import {EXAMPLE_FILTERER_METADATA} from '../data-resources/filterer-metadata';
+import {EXAMPLE_GROUPER_METADATA} from '../data-resources/grouper-metadata';
+import {EXAMPLE_SORTER_METADATA} from '../data-resources/sorter-metadata';
+import {EXAMPLE_VIEWER_METADATA} from '../data-resources/viewer-metadata';
 import {getBarChartWidgetConfig} from './bar-chart/bar-chart';
 
 
@@ -42,11 +42,11 @@ export class DemoDashboard {
         id: 'issue',
         label: 'Issues',
         dataSource: () =>
-            new DataSource({data: EXAMPLE_ITEMS, metadata: ExampleDataSourceMetadata}),
-        viewer: initialState => new Viewer({metadata: ExampleViewerMetadata, initialState}),
-        filterer: initialState => new Filterer({metadata: ExampleFiltererMetadata, initialState}),
-        grouper: initialState => new Grouper({metadata: ExampleGrouperMetadata, initialState}),
-        sorter: initialState => new Sorter({metadata: ExampleSorterMetadata, initialState}),
+          new DataSource({data: EXAMPLE_ITEMS, metadata: EXAMPLE_DATA_SOURCE_METADATA}),
+      viewer: initialState => new Viewer({metadata: EXAMPLE_VIEWER_METADATA, initialState}),
+      filterer: initialState => new Filterer({metadata: EXAMPLE_FILTERER_METADATA, initialState}),
+      grouper: initialState => new Grouper({metadata: EXAMPLE_GROUPER_METADATA, initialState}),
+      sorter: initialState => new Sorter({metadata: EXAMPLE_SORTER_METADATA, initialState}),
       }
     ],
   ]);

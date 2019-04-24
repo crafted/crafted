@@ -39,31 +39,28 @@ import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-  dashboard: Dashboard;
-
-  edit = new BehaviorSubject<boolean>(false);
-
-  trackByIndex = (i: number) => i;
 
   savedFiltererStates = this.activeRepo.config.pipe(
       mergeMap(config => combineLatest(config.queries.list, config.recommendations.list)),
       map(result => {
         const savedFiltererStates: SavedFiltererState[] = [];
         result[0].forEach(query => savedFiltererStates.push({
-          state: query.filtererState!,
-          label: query.name!,
+          state: query.filtererState,
+          label: query.name,
           group: 'Queries',
-          dataSourceType: query.dataSourceType!,
+          dataSourceType: query.dataSourceType,
         }));
         result[1].forEach(recommendation => savedFiltererStates.push({
-          state: recommendation.filtererState!,
-          label: recommendation.message!,
+          state: recommendation.filtererState,
+          label: recommendation.message,
           group: 'Recommendations',
           dataSourceType: ''  // TODO: Needs to be provided by the recommendation
         }));
         return savedFiltererStates;
       }));
+  dashboard: Dashboard;
 
+  edit = new BehaviorSubject<boolean>(false);
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
     count: getCountWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
     list: getListWidgetConfig(
@@ -75,23 +72,21 @@ export class DashboardPage {
     pie: getPieChartWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
     timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
   };
-
+  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
   private destroyed = new Subject();
 
   private getSubscription: Subscription;
 
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
-
   constructor(
-      private dialog: MatDialog, private elementRef: ElementRef,
-      @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-      private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
-      private activeRepo: ActiveStore, private header: Header, private cd: ChangeDetectorRef) {
+    private dialog: MatDialog, private elementRef: ElementRef,
+    @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
+    private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
+    private activeRepo: ActiveStore, private header: Header, private cd: ChangeDetectorRef) {
     // TODO: Needs to listen for theme changes to know when this should change
     Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
 
     this.activatedRoute.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
-      const id = params['id'];
+      const id = params.id;
 
       if (this.getSubscription) {
         this.getSubscription.unsubscribe();
@@ -104,16 +99,18 @@ export class DashboardPage {
 
       // Delay added to improve page responsiveness on first load
       this.getSubscription =
-          this.activeRepo.activeConfig.dashboards.map.pipe(delay(0), takeUntil(this.destroyed))
-              .subscribe(map => {
-                const dashboard = map.get(id);
-                if (dashboard) {
-                  this.setDashboard(dashboard);
-                }
-                this.cd.markForCheck();
-              });
+        this.activeRepo.activeConfig.dashboards.map.pipe(delay(0), takeUntil(this.destroyed))
+          .subscribe(dashboardsMap => {
+            const dashboard = dashboardsMap.get(id);
+            if (dashboard) {
+              this.setDashboard(dashboard);
+            }
+            this.cd.markForCheck();
+          });
     });
   }
+
+  trackByIndex = (i: number) => i;
 
   private createNewDashboard() {
     const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
@@ -153,7 +150,7 @@ export class DashboardPage {
   openQuery(widget: Widget) {
     this.router.navigate(
         [`../../query/new`],
-        {queryParams: {'widget': JSON.stringify(widget)}, relativeTo: this.activatedRoute.parent});
+      {queryParams: {widget: JSON.stringify(widget)}, relativeTo: this.activatedRoute.parent});
   }
 
   fullscreen() {

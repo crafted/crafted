@@ -16,7 +16,7 @@ export class ItemSummary<T, V> {
   @Input() viewer: Viewer<T, any>;
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['viewer'] || simpleChanges['item']) {
+    if (simpleChanges.viewer || simpleChanges.item) {
       this.views = this.viewer.getRenderedViews(this.item);
     }
   }

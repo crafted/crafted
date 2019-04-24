@@ -38,22 +38,22 @@ export class CountEditor implements WidgetEditor {
     this.data.config.dataResourcesMap.forEach(
         (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType')!.setValue(initialDataSourceType);
+    this.form.get('dataSourceType').setValue(initialDataSourceType);
 
-    const dataResource = data.config.dataResourcesMap.get(initialDataSourceType)!;
+    const dataResource = data.config.dataResourcesMap.get(initialDataSourceType);
     this.filterer = dataResource.filterer();
     this.dataSource = dataResource.dataSource();
 
     const value = data.options;
     if (value) {
       if (value.dataSourceType) {
-        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
+        this.form.get('dataSourceType').setValue(value.dataSourceType);
       }
       if (value.fontSize) {
-        this.form.get('fontSize')!.setValue(value.fontSize);
+        this.form.get('fontSize').setValue(value.fontSize);
       }
       if (value.filtererState) {
-        this.form.get('filtererState')!.setValue(value.filtererState);
+        this.form.get('filtererState').setValue(value.filtererState);
       }
     }
   }

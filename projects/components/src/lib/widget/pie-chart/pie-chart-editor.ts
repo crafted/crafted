@@ -40,10 +40,10 @@ export class PieChartEditor implements WidgetEditor {
     this.data.config.dataResourcesMap.forEach(
         dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType')!.setValue(initialDataSourceType);
+    this.form.get('dataSourceType').setValue(initialDataSourceType);
 
     // TODO: Add in a datasource type selector
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType)!;
+    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
     this.grouper = dataSourceProvider.grouper();
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
@@ -51,16 +51,16 @@ export class PieChartEditor implements WidgetEditor {
     const value = data.options;
     if (value) {
       if (value.dataSourceType) {
-        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
+        this.form.get('dataSourceType').setValue(value.dataSourceType);
       }
       if (value.grouperState) {
-        this.form.get('grouperState')!.setValue(value.grouperState);
+        this.form.get('grouperState').setValue(value.grouperState);
       }
       if (value.filteredGroups) {
-        this.form.get('filteredGroups')!.setValue(value.filteredGroups);
+        this.form.get('filteredGroups').setValue(value.filteredGroups);
       }
       if (value.filtererState) {
-        this.form.get('filtererState')!.setValue(value.filtererState);
+        this.form.get('filtererState').setValue(value.filtererState);
       }
     }
   }

@@ -8,26 +8,28 @@ import {DataStore} from './dao/data-dao';
 
 @Injectable()
 export class Markdown {
-  highlightFn =
-      (str: string, lang: string) => {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(lang, str).value;
-          } catch (err) {
-          }
-        }
 
+  md = new Remarkable({
+    html: true, breaks: true, linkify: true, highlight: (str: string, lang: string) => {
+      if (lang && hljs.getLanguage(lang)) {
         try {
-          return hljs.highlightAuto(str).value;
+          return hljs.highlight(lang, str).value;
         } catch (err) {
         }
-
-        return '';  // use external default escaping
       }
 
-  md = new Remarkable({html: true, breaks: true, linkify: true, highlight: this.highlightFn});
+      try {
+        return hljs.highlightAuto(str).value;
+      } catch (err) {
+      }
 
-  constructor(private sanitizer: DomSanitizer) {}
+      return '';  // use external default escaping
+    }
+  });
+
+  constructor(private sanitizer: DomSanitizer) {
+  }
+
 
   getItemBodyMarkdown(store: DataStore, itemId: string): Observable<SafeHtml> {
     return store.items.get(itemId).pipe(map(item => this.render(item ? item.body : '')));

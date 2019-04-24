@@ -11,22 +11,15 @@ import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';
 
-export function getGrouperProvider(labels: Observable<Label[]>) {
-  return (initialState?: GrouperState) => {
-    const contextProvider = createGrouperContextProvider(labels)
-    return new Grouper({metadata: GithubItemGroupingMetadata, contextProvider, initialState});
-  };
-}
-
 interface ContextProvider {
   labelsMap: Map<string, Label>;
 }
 
-function createGrouperContextProvider(labels: Observable<Label[]>): Observable<ContextProvider> {
-  return labels.pipe(map(labels => ({labelsMap: createLabelsMap(labels)})));
+function createGrouperContextProvider(labels$: Observable<Label[]>): Observable<ContextProvider> {
+  return labels$.pipe(map(labels => ({labelsMap: createLabelsMap(labels)})));
 }
 
-const GithubItemGroupingMetadata = new Map<string, GrouperMetadata<Item, ContextProvider>>([
+const ITEM_GROUPER_METADATA = new Map<string, GrouperMetadata<Item, ContextProvider>>([
   [
     'all', {
       label: 'All',
@@ -58,7 +51,14 @@ const GithubItemGroupingMetadata = new Map<string, GrouperMetadata<Item, Context
     'assignee', {
       label: 'Assignee',
       groupingFunction: (items: Item[]) => getGroupByListValues(items, 'assignees'),
-      titleTransform: (title: string) => title != 'null' ? title : 'No assignee'
+    titleTransform: (title: string) => title !== 'null' ? title : 'No assignee'
     }
   ],
 ]);
+
+export function getGrouperProvider(labels: Observable<Label[]>) {
+  return (initialState?: GrouperState) => {
+    const contextProvider = createGrouperContextProvider(labels);
+    return new Grouper({metadata: ITEM_GROUPER_METADATA, contextProvider, initialState});
+  };
+}

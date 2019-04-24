@@ -7,9 +7,9 @@ export function getTextColor(color: string) {
 }
 
 export function getBorderColor(color: string) {
-  let R = (Math.max(parseInt(color.slice(0, 2), 16) * .6, 16)).toString(16).slice(0, 2);
-  let G = (Math.max(parseInt(color.slice(2, 4), 16) * .6, 16)).toString(16).slice(0, 2);
-  let B = (Math.max(parseInt(color.slice(4, 6), 16) * .6, 16)).toString(16).slice(0, 2);
+  const R = (Math.max(parseInt(color.slice(0, 2), 16) * .6, 16)).toString(16).slice(0, 2);
+  const G = (Math.max(parseInt(color.slice(2, 4), 16) * .6, 16)).toString(16).slice(0, 2);
+  const B = (Math.max(parseInt(color.slice(4, 6), 16) * .6, 16)).toString(16).slice(0, 2);
 
   return '#' + R + G + B;
 }

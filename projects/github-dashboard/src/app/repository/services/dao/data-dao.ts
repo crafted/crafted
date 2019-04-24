@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {AppIndexedDb} from '../../utility/app-indexed-db';
 import {Contributor} from '../../../github/app-types/contributor';
 import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
+import {AppIndexedDb} from '../../utility/app-indexed-db';
 import {ListDao} from './list-dao';
 
 export interface DataStore {
@@ -22,7 +22,7 @@ export class Dao {
 
   get(name: string): DataStore {
     if (!this.stores.has(name)) {
-      const appIndexedDb = new AppIndexedDb(name!);
+      const appIndexedDb = new AppIndexedDb(name);
       const newStore: DataStore = {
         name,
         items: new ListDao<Item>('items', appIndexedDb),
@@ -32,6 +32,6 @@ export class Dao {
       this.stores.set(name, newStore);
     }
 
-    return this.stores.get(name)!;
+    return this.stores.get(name);
   }
 }

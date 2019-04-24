@@ -56,7 +56,7 @@ export class ItemDetail {
       public github: Github, public dao: Dao) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['itemId'] && this.itemId) {
+    if (simpleChanges.itemId && this.itemId) {
       this.elementRef.nativeElement.scrollTop = 0;  // Scroll up in case prev item was scrolled
       this.itemId = `${this.itemId}`;  // Make sure its a string since maps are string-ID based
       const store = this.dao.get(this.activeRepo.activeName);
@@ -74,8 +74,8 @@ export class ItemDetail {
       this.activities = this.activeRepo.data.pipe(
           mergeMap(dataStore => {
             return combineLatest(
-                this.github.getComments(dataStore.name!, this.itemId),
-                this.github.getTimeline(dataStore.name!, this.itemId));
+              this.github.getComments(dataStore.name, this.itemId),
+              this.github.getTimeline(dataStore.name, this.itemId));
           }),
           filter(result => {
             const commentsResult = result[0];

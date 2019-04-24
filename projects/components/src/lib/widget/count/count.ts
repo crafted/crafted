@@ -22,19 +22,6 @@ export interface CountWidgetDataConfig {
   savedFiltererStates: Observable<SavedFiltererState[]>;
 }
 
-export function getCountWidgetConfig(
-    dataResourcesMap: CountDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]> =
-        of([])): WidgetConfig<CountWidgetDataConfig> {
-  return {
-    id: 'count',
-    label: 'Count',
-    viewer: Count,
-    editor: CountEditor,
-    config: {dataResourcesMap, savedFiltererStates}
-  };
-}
-
 @Component({
   selector: 'count',
   template: `{{count | async}}`,
@@ -55,9 +42,22 @@ export class Count {
 
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     const dataSourceProvider =
-        this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
+      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const dataSource = dataSourceProvider.dataSource();
     this.count = dataSource.data.pipe(filterer.filter(), map(result => result.length));
   }
+}
+
+export function getCountWidgetConfig(
+  dataResourcesMap: CountDataResourcesMap,
+  savedFiltererStates: Observable<SavedFiltererState[]> =
+    of([])): WidgetConfig<CountWidgetDataConfig> {
+  return {
+    id: 'count',
+    label: 'Count',
+    viewer: Count,
+    editor: CountEditor,
+    config: {dataResourcesMap, savedFiltererStates}
+  };
 }

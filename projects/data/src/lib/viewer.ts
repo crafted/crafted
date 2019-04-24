@@ -92,7 +92,7 @@ export class Viewer<T = any, C = any> {
 
   getRenderedViews(item: T): Observable<RenderedView[]> {
     return combineLatest(this.state, this.contextProvider).pipe(map(results => {
-      const views = results[0].views.map(v => this.metadata.get(v)!);
+      const views = results[0].views.map(v => this.metadata.get(v));
       const context = results[1](item);
       return views.map(view => view.render(item, context));
     }));

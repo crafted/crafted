@@ -8,7 +8,7 @@ import {LoadedRepos} from '../service/loaded-repos';
   styleUrls: ['home-page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'theme-background',
+    class: 'theme-background',
   }
 })
 export class HomePage {

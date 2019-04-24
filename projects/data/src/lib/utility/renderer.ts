@@ -10,12 +10,12 @@ export interface RendererState<T> {
 
 export function renderItemGroups<T>(
     scroll: Observable<Event>, resetCount = 20, incrementCount = 20) {
-  return (itemGroups: Observable<Group<T>[]>) => {
+  return (itemGroups$: Observable<Group<T>[]>) => {
     let issuesToDisplay = 0;
     return combineLatest(
-               itemGroups.pipe(debounceTime(50)), scroll.pipe(auditTime(200), startWith(null)))
+      itemGroups$.pipe(debounceTime(50)), scroll.pipe(auditTime(200), startWith(null)))
         .pipe(map(result => {
-          let itemGroups = result[0];
+          const itemGroups = result[0];
 
           const scrollEvent = result[1];
 

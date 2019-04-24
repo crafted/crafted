@@ -1,8 +1,7 @@
-
 import {filterItems, searchItems} from '@crafted/data';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
-import {ItemsFilterMetadata} from '../../github/data-source/item-filterer-metadata';
+import {ITEM_FILTERER_METADATA} from '../../github/data-source/item-filterer-metadata';
 import {tokenizeItem} from '../../github/utility/tokenize-item';
 import {Recommendation} from '../services/dao/config/recommendation';
 
@@ -17,11 +16,11 @@ export function getRecommendations(
     const contextProvider = {
       labelsMap,
       // Cannot create recommendations based on recommendations (circular loop)
-      getRecommendations: (_item: Item) => [],
+      getRecommendations: () => [],
     };
 
     const filters = recommendation.filtererState ? recommendation.filtererState.filters : [];
-    const filteredItems = filterItems([item], filters, contextProvider, ItemsFilterMetadata);
+    const filteredItems = filterItems([item], filters, contextProvider, ITEM_FILTERER_METADATA);
 
     const search = recommendation.filtererState ? recommendation.filtererState.search : '';
     const searchedItems = searchItems(filteredItems, search, tokenizeItem);

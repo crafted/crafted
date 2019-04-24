@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MaterialColors, WIDGET_DATA, WidgetConfig, WidgetData} from '@crafted/components';
+import {MATERIAL_COLORS, WIDGET_DATA, WidgetConfig, WidgetData} from '@crafted/components';
 import {DataSource, Filterer, FiltererState, Group, Grouper, GrouperState} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -26,17 +26,6 @@ export interface BarChartOptions {
   filtererState: FiltererState;
 }
 
-export function getBarChartWidgetConfig(dataResourcesMap: BarChartDataResourcesMap):
-    WidgetConfig<BarChartWidgetDataConfig> {
-  return {
-    id: 'bar',
-    label: 'Bar Chart',
-    component: BarChart,
-    editComponent: BarChartEdit,
-    config: {dataResourcesMap}
-  };
-}
-
 @Component({
   selector: 'bar-chart',
   template: `
@@ -51,7 +40,9 @@ export function getBarChartWidgetConfig(dataResourcesMap: BarChartDataResourcesM
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarChart {
-  data: Observable<any[]>
+  data: Observable<any[]>;
+
+  colorScheme = {domain: MATERIAL_COLORS};
 
   constructor(@Inject(WIDGET_DATA) public widgetData:
                   WidgetData<BarChartOptions, BarChartWidgetDataConfig>) {}
@@ -60,7 +51,11 @@ export class BarChart {
     const config = this.widgetData.config;
     const options = this.widgetData.options;
 
-    const dataSourceProvider = config.dataResourcesMap.get(options.dataSourceType)!;
+    const dataSourceProvider = config.dataResourcesMap.get(options.dataSourceType);
+    if (!dataSourceProvider) {
+      throw Error(`Missing data source provider for type ${options.dataSourceType}`);
+    }
+
     const filterer = dataSourceProvider.filterer(options.filtererState);
     const grouper = dataSourceProvider.grouper(options.grouperState);
     const dataSource = dataSourceProvider.dataSource();
@@ -69,8 +64,6 @@ export class BarChart {
         filterer.filter(), grouper.group(),
         transformGroupsToBarChartData(this.widgetData.options.filteredGroups));
   }
-
-  colorScheme = {domain: MaterialColors};
 }
 
 function transformGroupsToBarChartData(filteredGroups: string):
@@ -84,5 +77,16 @@ function transformGroupsToBarChartData(filteredGroups: string):
 
       return itemGroups.map(group => ({name: group.title, value: group.items.length}));
     }));
-  }
+  };
+}
+
+export function getBarChartWidgetConfig(dataResourcesMap: BarChartDataResourcesMap):
+  WidgetConfig<BarChartWidgetDataConfig> {
+  return {
+    id: 'bar',
+    label: 'Bar Chart',
+    viewer: BarChart,
+    editor: BarChartEdit,
+    config: {dataResourcesMap}
+  };
 }

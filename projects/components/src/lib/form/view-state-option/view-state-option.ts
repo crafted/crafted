@@ -14,10 +14,6 @@ export class ViewStateOption implements ControlValueAccessor {
 
   views: string[];
 
-  onChange = (_: any) => {};
-
-  onTouched = () => {};
-
   @Input() label: string;
 
   @Input() viewer: Viewer<any, any>;
@@ -26,8 +22,12 @@ export class ViewStateOption implements ControlValueAccessor {
 
   @Input() type: number;
 
+  onChange: (...args: any) => any = () => null;
+
+  onTouched = () => {};
+
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['viewer']) {
+    if (simpleChanges.viewer) {
       this.options = this.viewer.getViews();
       this.views = this.options.map(o => o.id);
     }

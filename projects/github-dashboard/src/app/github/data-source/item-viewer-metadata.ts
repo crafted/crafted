@@ -9,31 +9,13 @@ import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';
 import {getBorderColor, getTextColor} from '../utility/label-colors';
 
-export function getViewerProvider(
-    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):
-    (initialState?: ViewerState) => Viewer<Item, ViewContext> {
-  return (initialState?: ViewerState) => {
-    const contextProvider = createContextProvider(labels, recommendations);
-    return new Viewer({metadata: GithubItemViewerMetadata, contextProvider, initialState});
-  };
-}
-
-function createContextProvider(
-    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>) {
-  return combineLatest(recommendations, labels).pipe(map(results => {
-    const recommendations = results[0];
-    const labelsMap = createLabelsMap(results[1]);
-    return (item: Item) => ({item, labelsMap, recommendations});
-  }));
-}
-
 interface ViewContext {
   item: Item;
   labelsMap: Map<string, Label>;
   recommendations: Recommendation[];
 }
 
-const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContext>>([
+const ITEM_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewContext>>([
   [
     'title',
     {
@@ -77,7 +59,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
           classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `State: ${item.state}`,
-        }
+        };
       },
     },
   ],
@@ -93,7 +75,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
           classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `Created: ${datePipe.transform(item.created)}`,
-        }
+        };
       },
     },
   ],
@@ -108,7 +90,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
           classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `Updated: ${datePipe.transform(item.updated)}`,
-        }
+        };
       },
     },
   ],
@@ -146,7 +128,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
                                           styles: {display: 'block', padding: '2px 0'},
                                         })),
               styles: {fontSize: '13px'},
-        }
+        };
       },
     },
   ],
@@ -170,7 +152,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
                                        styles: {display: 'block', padding: '2px 0'},
                                      })),
               styles: {fontSize: '13px'},
-        }
+        };
       },
     },
   ],
@@ -199,7 +181,7 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
           borderRadius: '4px',
           marginRight: '4px',
           marginBottom: '4px',
-        }
+        };
 
         return {
           styles: containerStyles, children: item.labels.map(id => {
@@ -218,8 +200,26 @@ const GithubItemViewerMetadata = new Map<string, ViewerMetadata<Item, ViewContex
 
             return {text: label.name, styles};
           }),
-        }
+        };
       },
     },
   ],
 ]);
+
+export function getViewerProvider(
+  labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):
+  (initialState?: ViewerState) => Viewer<Item, ViewContext> {
+  return (initialState?: ViewerState) => {
+    const contextProvider = createContextProvider(labels, recommendations);
+    return new Viewer({metadata: ITEM_VIEWER_METADATA, contextProvider, initialState});
+  };
+}
+
+function createContextProvider(
+  labels: Observable<Label[]>, recommendations$: Observable<Recommendation[]>) {
+  return combineLatest(recommendations$, labels).pipe(map(results => {
+    const recommendations = results[0];
+    const labelsMap = createLabelsMap(results[1]);
+    return (item: Item) => ({item, labelsMap, recommendations});
+  }));
+}

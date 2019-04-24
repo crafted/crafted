@@ -1,7 +1,7 @@
 import {SorterMetadata} from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const ExampleSorterMetadata = new Map<string, SorterMetadata<ExampleItem>>([
+export const EXAMPLE_SORTER_METADATA = new Map<string, SorterMetadata<ExampleItem>>([
   [
     'id', {
       label: 'ID',

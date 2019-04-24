@@ -40,7 +40,7 @@ export class EditableChipList {
   @Output() valuesChange = new EventEmitter<string[]>();
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['options'] || simpleChanges['values']) {
+    if (simpleChanges.options || simpleChanges.values) {
       this.displayedOptions = [];
       this.labels = new Map<string, string>();
 

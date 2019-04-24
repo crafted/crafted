@@ -2,13 +2,7 @@ import {DataSource, DataSourceMetadata} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {Item} from '../app-types/item';
 
-export function getDataSourceProvider(data: Observable<Item[]>) {
-  return () => {
-    return new DataSource({data, metadata: GithubItemDataMetadata});
-  };
-}
-
-const GithubItemDataMetadata = new Map<string, DataSourceMetadata<Item>>([
+const ITEM_DATA_SOURCE_METADATA = new Map<string, DataSourceMetadata<Item>>([
   [
     'opened', {
       label: 'Date Opened',
@@ -24,3 +18,9 @@ const GithubItemDataMetadata = new Map<string, DataSourceMetadata<Item>>([
     }
   ],
 ]);
+
+export function getDataSourceProvider(data: Observable<Item[]>) {
+  return () => {
+    return new DataSource({data, metadata: ITEM_DATA_SOURCE_METADATA});
+  };
+}

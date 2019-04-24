@@ -12,7 +12,7 @@ import {QueryEdit, QueryEditResult} from './query-edit/query-edit';
 export class QueryDialog {
   constructor(private dialog: MatDialog, private snackbar: MatSnackBar) {}
 
-  /** Shows the edit query dialog to change the name/group.*/
+  /** Shows the edit query dialog to change the name/group. */
   editQuery(query: Query, store: ConfigStore) {
     const data = {
       name: query.name,
@@ -21,7 +21,7 @@ export class QueryDialog {
 
     this.dialog.open(QueryEdit, {data}).afterClosed().pipe(take(1)).subscribe(result => {
       if (result) {
-        store.queries.update({id: query.id, name: result['name'], group: result['group']});
+        store.queries.update({id: query.id, name: result.name, group: result.group});
       }
     });
   }
@@ -38,7 +38,7 @@ export class QueryDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            store.queries.remove(query.id!);
+            store.queries.remove(query.id);
             this.snackbar.open(`Query "${query.name}" deleted`, '', {duration: 2000});
           }
         });

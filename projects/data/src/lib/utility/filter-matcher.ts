@@ -57,8 +57,7 @@ export function numberMatchesEquality(
     case 'lessThan':
       return inputNumber < filterNumber;
     case 'equalTo':
-      // Double-equals to cast in cases where the number was stored as a string
-      return inputNumber == filterNumber;
+      return inputNumber === filterNumber;
     default:
       throw Error(`Unknown equality: ${equality}`);
   }

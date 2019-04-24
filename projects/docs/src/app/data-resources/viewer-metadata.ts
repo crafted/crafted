@@ -2,7 +2,7 @@ import {DatePipe} from '@angular/common';
 import {ViewerMetadata} from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const ExampleViewerMetadata = new Map<string, ViewerMetadata<ExampleItem>>([
+export const EXAMPLE_VIEWER_METADATA = new Map<string, ViewerMetadata<ExampleItem>>([
   [
     'title',
     {

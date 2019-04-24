@@ -19,6 +19,13 @@
       true,
       140
     ],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ],
+    "prefer-for-of": false,
     "member-access": false,
     "member-ordering": [
       true,
@@ -64,10 +71,8 @@
     "no-output-on-prefix": true,
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
     "no-input-rename": true,
     "no-output-rename": true,
-    "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true
   }
 }

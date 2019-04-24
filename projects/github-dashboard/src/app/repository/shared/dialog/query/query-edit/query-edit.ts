@@ -47,11 +47,11 @@ export class QueryEdit {
       public dialogRef: MatDialogRef<QueryEdit>, private activeRepo: ActiveStore,
       @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
     if (data && data.name) {
-      this.formGroup.get('name')!.setValue(data.name);
+      this.formGroup.get('name').setValue(data.name);
     }
 
     if (data && data.group) {
-      this.formGroup.get('group')!.setValue(data.group);
+      this.formGroup.get('group').setValue(data.group);
     }
   }
 
@@ -59,7 +59,7 @@ export class QueryEdit {
   save() {
     if (this.formGroup.valid) {
       this.dialogRef.close(
-          {name: this.formGroup.get('name')!.value, group: this.formGroup.get('group')!.value});
+        {name: this.formGroup.get('name').value, group: this.formGroup.get('group').value});
     }
   }
 

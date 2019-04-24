@@ -1,7 +1,7 @@
 import {getGroupByValue, GrouperMetadata} from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const ExampleGrouperMetadata = new Map<string, GrouperMetadata<ExampleItem>>([
+export const EXAMPLE_GROUPER_METADATA = new Map<string, GrouperMetadata<ExampleItem>>([
   [
     'all', {
       label: 'All',

@@ -12,10 +12,6 @@ import {Grouper, GrouperState, GroupLabel} from '@crafted/data';
 export class GroupStateOption implements ControlValueAccessor {
   groups: GroupLabel[] = [];
 
-  onChange = (_: any) => {};
-
-  onTouched = () => {};
-
   @ViewChild('groupSelect') groupSelect: MatSelect;
 
   @Input() label: string;
@@ -26,8 +22,12 @@ export class GroupStateOption implements ControlValueAccessor {
 
   @Input() type: number;
 
+  onChange: (...args: any) => any = () => {};
+
+  onTouched = () => {};
+
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['grouper'] && this.grouper) {
+    if (simpleChanges.grouper && this.grouper) {
       this.groups = this.grouper.getGroups();
       this.groupSelect.value = this.groups[0].id;
     }

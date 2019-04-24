@@ -7,7 +7,7 @@ import {TimelineEvent} from 'projects/github-dashboard/src/app/service/github';
   templateUrl: 'timeline-event-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'theme-secondary-text',
+    class: 'theme-secondary-text',
   }
 })
 export class TimelineEventView {

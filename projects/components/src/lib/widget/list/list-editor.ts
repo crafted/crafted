@@ -42,8 +42,8 @@ export class ListEditor implements WidgetEditor {
         dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;
 
-    this.form.get('dataSourceType')!.setValue(initialDataSourceType);
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType)!;
+    this.form.get('dataSourceType').setValue(initialDataSourceType);
+    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
 
     this.sorter = dataSourceProvider.sorter();
     this.viewer = dataSourceProvider.viewer();
@@ -53,19 +53,19 @@ export class ListEditor implements WidgetEditor {
     const value = data.options;
     if (value) {
       if (value.dataSourceType) {
-        this.form.get('dataSourceType')!.setValue(value.dataSourceType);
+        this.form.get('dataSourceType').setValue(value.dataSourceType);
       }
       if (value.listLength) {
-        this.form.get('listLength')!.setValue(value.listLength);
+        this.form.get('listLength').setValue(value.listLength);
       }
       if (value.sorterState) {
-        this.form.get('sorterState')!.setValue(value.sorterState);
+        this.form.get('sorterState').setValue(value.sorterState);
       }
       if (value.viewerState) {
-        this.form.get('viewerState')!.setValue(value.sorterState);
+        this.form.get('viewerState').setValue(value.sorterState);
       }
       if (value.filtererState) {
-        this.form.get('filtererState')!.setValue(value.filtererState);
+        this.form.get('filtererState').setValue(value.filtererState);
       }
     }
   }

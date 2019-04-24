@@ -41,5 +41,5 @@ export class DatabasePage {
 
 function getStoreListCount(store: Observable<DataStore>, type: RepoDaoType) {
   return store.pipe(
-      mergeMap(store => (store[type] as ListDao<any>).list), map(list => list.length));
+    mergeMap(s => (s[type] as ListDao<any>).list), map(list => list.length));
 }

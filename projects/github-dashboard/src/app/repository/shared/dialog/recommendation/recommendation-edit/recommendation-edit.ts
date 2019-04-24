@@ -6,10 +6,10 @@ import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {
+  ACTION_TYPES,
   ActionType,
-  ActionTypes,
   Recommendation,
-  RecommendationTypes
+  RECOMMENDATION_TYPES
 } from '../../../../services/dao/config/recommendation';
 import {DataStore} from '../../../../services/dao/data-dao';
 
@@ -44,12 +44,13 @@ export class RecommendationEdit {
 
   typeOptions: {id: string,
                 icon: string,
-                label: string}[] = Object.keys(RecommendationTypes).map(key => {
-    return {id: key, icon: RecommendationTypes[key].icon, label: RecommendationTypes[key].label};
+    label: string
+  }[] = Object.keys(RECOMMENDATION_TYPES).map(key => {
+    return {id: key, icon: RECOMMENDATION_TYPES[key].icon, label: RECOMMENDATION_TYPES[key].label};
   });
 
-  actionOptions: {id: string, label: string}[] = Object.keys(ActionTypes).map(key => {
-    return {id: key, label: ActionTypes[key].label};
+  actionOptions: {id: string, label: string}[] = Object.keys(ACTION_TYPES).map(key => {
+    return {id: key, label: ACTION_TYPES[key].label};
   });
 
   addLabelsOptions = this.data.dataStore.labels.list.pipe(map(labels => {
@@ -86,8 +87,8 @@ export class RecommendationEdit {
         (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
 
     const dataForm = this.formGroup.get('data');
-    dataForm.valueChanges.subscribe((data: string) => {
-      const dataResource = this.data.dataResourcesMap.get(data)!;
+    dataForm.valueChanges.subscribe((value: string) => {
+      const dataResource = this.data.dataResourcesMap.get(value);
       this.filterer = dataResource.filterer();
       this.dataSource = dataResource.dataSource();
     });
@@ -103,8 +104,8 @@ export class RecommendationEdit {
       });
     }
 
-    this.formGroup.get('actionType')!.valueChanges.pipe(takeUntil(this.destroyed))
-        .subscribe(() => this.formGroup.get('action')!.setValue(null));
+    this.formGroup.get('actionType').valueChanges.pipe(takeUntil(this.destroyed))
+      .subscribe(() => this.formGroup.get('action').setValue(null));
   }
 
   ngOnDestroy() {
@@ -113,11 +114,11 @@ export class RecommendationEdit {
   }
 
   setAddLabelAction(name: string[]) {
-    this.formGroup.get('action')!.setValue({labels: name});
+    this.formGroup.get('action').setValue({labels: name});
   }
 
   setAddAssigneeAction(name: string[]) {
-    this.formGroup.get('action')!.setValue({assignees: name});
+    this.formGroup.get('action').setValue({assignees: name});
   }
 
 
@@ -140,12 +141,12 @@ export class RecommendationEdit {
 
 export function actionValidator(formGroup: FormGroup): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any}|null => {
-    const actionType = formGroup.get('actionType')!.value as ActionType;
+    const actionType = formGroup.get('actionType').value as ActionType;
 
     switch (actionType) {
       case 'add-assignee':
       case 'add-label':
-        return control.value ? null : {'invalid': control.value};
+        return control.value ? null : {invalid: control.value};
       default:
         return null;
     }

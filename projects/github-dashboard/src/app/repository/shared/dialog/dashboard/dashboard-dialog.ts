@@ -39,7 +39,7 @@ export class DashboardDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            store.dashboards.remove(dashboard.id!);
+            store.dashboards.remove(dashboard.id);
             this.snackbar.open(`Dashboard "${dashboard.name}" deleted`, '', {duration: 2000});
           }
         });

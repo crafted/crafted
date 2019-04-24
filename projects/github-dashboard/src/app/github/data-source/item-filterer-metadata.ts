@@ -17,19 +17,6 @@ import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';
 import {tokenizeItem} from '../utility/tokenize-item';
 
-export function getFiltererProvider(
-    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
-    getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
-        Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
-  return (initialState?: FiltererState) => {
-    const contextProvider =
-        createFiltererContextProvider(labels, recommendations, getRecommendations);
-    const filterer =
-        new Filterer({metadata: ItemsFilterMetadata, contextProvider, initialState, tokenizeItem});
-    return filterer;
-  };
-}
-
 interface MatcherContext {
   labelsMap: Map<string, Label>;
   getRecommendations: (item) => Recommendation[];
@@ -48,7 +35,7 @@ function createFiltererContextProvider(
   }));
 }
 
-export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, MatcherContext>>([
+export const ITEM_FILTERER_METADATA = new Map<string, FiltererMetadata<Item, MatcherContext>>([
 
   /** InputQuery Filters */
 
@@ -203,7 +190,7 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
           ['open', item.state === 'open'],
           ['closed', item.state === 'closed'],
         ]);
-        return stateMatchesEquality(values.get(filter.state)!, filter.state, filter.equality);
+        return stateMatchesEquality(values.get(filter.state), filter.state, filter.equality);
       },
     }
   ],
@@ -220,8 +207,21 @@ export const ItemsFilterMetadata = new Map<string, FiltererMetadata<Item, Matche
           ['at least one warning', recommendations.some(r => r.type === 'warning')],
           ['at least one suggestion', recommendations.some(r => r.type === 'suggestion')],
         ]);
-        return stateMatchesEquality(values.get(filter.state)!, filter.state, filter.equality);
+        return stateMatchesEquality(values.get(filter.state), filter.state, filter.equality);
       },
     }
   ],
 ]);
+
+export function getFiltererProvider(
+  labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
+  getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
+    Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
+  return (initialState?: FiltererState) => {
+    const contextProvider =
+      createFiltererContextProvider(labels, recommendations, getRecommendations);
+    const filterer =
+      new Filterer({metadata: ITEM_FILTERER_METADATA, contextProvider, initialState, tokenizeItem});
+    return filterer;
+  };
+}

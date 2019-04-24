@@ -14,7 +14,7 @@ import {NumberEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-const Equalities: {id: NumberEquality, label: string}[] = [
+const EQUALITIES: {id: NumberEquality, label: string}[] = [
   {id: 'greaterThan', label: 'greater than'},
   {id: 'equalTo', label: 'equal to'},
   {id: 'lessThan', label: 'less than'},
@@ -27,7 +27,7 @@ const Equalities: {id: NumberEquality, label: string}[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NumberFilter implements AfterViewInit {
-  equalities = Equalities;
+  equalities = EQUALITIES;
 
   form = new FormGroup({
     equality: new FormControl('greaterThan'),
@@ -50,12 +50,12 @@ export class NumberFilter implements AfterViewInit {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['value']) {
-      this.form.get('value')!.setValue(this.value, {emitEvent: false});
+    if (simpleChanges.value) {
+      this.form.get('value').setValue(this.value, {emitEvent: false});
     }
 
-    if (simpleChanges['equality']) {
-      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    if (simpleChanges.equality) {
+      this.form.get('equality').setValue(this.equality, {emitEvent: false});
     }
   }
 

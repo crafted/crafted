@@ -70,14 +70,14 @@ const DEFAULT_TOKENIZE_ITEM =
               },
               '')
           .toLowerCase();
-    }
+    };
 
 export class Filterer<T = any, C = any> {
-  private metadata: Map<string, FiltererMetadata<T, C>>;
+  private readonly metadata: Map<string, FiltererMetadata<T, C>>;
 
   private contextProvider: Observable<C>;
 
-  private tokenizeItem: (item: T) => string;
+  private readonly tokenizeItem: (item: T) => string;
 
   state = new ReplaySubject<FiltererState>(1);
 
@@ -90,8 +90,8 @@ export class Filterer<T = any, C = any> {
 
   /** Gets a stream that returns the items and updates whenever the filters or search changes. */
   filter(): (items: Observable<T[]>) => Observable<T[]> {
-    return (items: Observable<T[]>) => {
-      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
+    return (items$: Observable<T[]>) => {
+      return combineLatest(items$, this.state, this.contextProvider).pipe(map(results => {
         const items = results[0];
         const filters = results[1].filters;
         const search = results[1].search;
@@ -205,7 +205,7 @@ export function searchItems<T>(items: T[], search: string, tokenizeItem: (item: 
   return !search ? items : items.filter(item => {
     const tokens = search.split(' OR ');
     return tokens.some(token => {
-      return tokenizeItem(item).indexOf(token.toLowerCase()) != -1;
+      return tokenizeItem(item).indexOf(token.toLowerCase()) !== -1;
     });
   });
 }

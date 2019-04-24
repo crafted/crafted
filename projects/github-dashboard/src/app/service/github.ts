@@ -1,7 +1,7 @@
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
-import {BehaviorSubject, empty, merge, Observable, of, timer} from 'rxjs';
+import {BehaviorSubject, EMPTY, merge, Observable, of, timer} from 'rxjs';
 import {expand, filter, map, mergeMap, take, tap} from 'rxjs/operators';
 import {Contributor, githubContributorToContributor} from '../github/app-types/contributor';
 import {githubIssueToIssue, Item} from '../github/app-types/item';
@@ -49,7 +49,7 @@ export class Github {
     }
     const url = this.constructUrl('search/issues', query);
     return this.get(url, false, 'search')
-        .pipe(filter(v => !!v), map(result => (result!.body as any).total_count));
+        .pipe(filter(v => !!v), map(result => (result.body as any).total_count));
   }
 
   getIssues(repo: string, since?: string): Observable<CombinedPagedResults<Item>> {
@@ -94,7 +94,7 @@ export class Github {
         this.constructUrl('search/repositories', 'q=language:typescript&sort=stars&order=desc');
     return this.get<any>(url).pipe(
         filter(v => !!v && v.body && v.body.items),
-        map(response => response!.body.items.map((item: any) => item.full_name)));
+        map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
   getRateLimitsAndScopes(): void {
@@ -106,13 +106,11 @@ export class Github {
         .pipe(
             filter(v => !!v), tap(response => this.updateScopes(response)), filter(v => !!v.body),
             map(result => {
-              const resources = result!.body!.resources;
-              const ratelimit = {
+              const resources = result.body.resources;
+              return {
                 core: resources.core,
                 search: resources.search,
               };
-
-              return ratelimit;
             }),
             take(1))
         .subscribe(v => this.rateLimits.next(v));
@@ -121,7 +119,7 @@ export class Github {
   getGist(id: string): Observable<Gist|null> {
     const url = this.constructUrl(`gists/${id}`);
     return this.get<Gist>(url, true).pipe(filter(v => !!v), map(result => {
-                                            const gist = result!.body;
+                                            const gist = result.body;
 
                                             if (!gist) {
                                               return null;
@@ -184,7 +182,7 @@ export class Github {
       public: false,
     };
 
-    return this.post<Gist>(url, body, true).pipe(filter(v => !!v), map(response => response!.body));
+    return this.post<Gist>(url, body, true).pipe(filter(v => !!v), map(response => response.body));
   }
 
   addLabel(repo: string, issue: string, label: string): Observable<HttpResponse<any>|null> {
@@ -207,8 +205,8 @@ export class Github {
     return this.getPaged<T>(url, needsAuth, rateLimitType)
         .pipe(
             expand(
-                result => result.next ? this.getPaged<T>(result.next, needsAuth, rateLimitType) :
-                                        empty()),
+                result =>
+                    result.next ? this.getPaged<T>(result.next, needsAuth, rateLimitType) : EMPTY),
             map(result => {
               completed++;
               const transformedResponse = result.response.map(transform);
@@ -235,11 +233,11 @@ export class Github {
       Observable<{response: T[], next: string, numPages: number}> {
     return this.get<T[]>(url, needsAuth, rateLimitType)
         .pipe(filter(v => !!v), map(result => {
-                const response = result!.body || [];
-                const linkMap = getLinkMap(result!.headers);
+                const response = result.body || [];
+                const linkMap = getLinkMap(result.headers);
                 const next = linkMap.get('next') || '';
 
-                const last = linkMap.get('last') ? +linkMap.get('last')!.split('&page=')[1] : 0;
+                const last = linkMap.get('last') ? +linkMap.get('last').split('&page=')[1] : 0;
                 const numPages = last || 1;
                 return {response, next, numPages};
               }));
@@ -260,7 +258,7 @@ export class Github {
               })
             })),
             tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response!)));
+            tap(response => this.updateScopes(response)));
   }
 
   private patch<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):
@@ -278,7 +276,7 @@ export class Github {
               })
             })),
             tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response!)));
+            tap(response => this.updateScopes(response)));
   }
 
   private get<T>(url: string, needsAuth = false, rateLimitType: RateLimitType = 'core'):
@@ -306,13 +304,13 @@ export class Github {
               })
             })),
             tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response!)));
+            tap(response => this.updateScopes(response)));
   }
 
   private waitForRateLimit(rateLimitType: RateLimitType): Observable<any> {
     return this.rateLimits.pipe(
         filter(v => !!v), take(1), mergeMap(rateLimits => {
-          const rateLimit = rateLimits![rateLimitType];
+          const rateLimit = rateLimits[rateLimitType];
           if (!rateLimit.remaining) {
             const secondsDelay = 5;
             const refreshedDate = new Date((rateLimit.reset * 1000) + secondsDelay);
@@ -344,13 +342,13 @@ export class Github {
     const limit = +(response.headers.get('x-ratelimit-limit') || '0');
     const remaining = +(response.headers.get('x-ratelimit-remaining') || '0');
     this.rateLimits.pipe(filter(v => !!v), take(1)).subscribe(rateLimit => {
-      rateLimit![type] = {reset, limit, remaining};
+      rateLimit[type] = {reset, limit, remaining};
       this.rateLimits.next(rateLimit);
     });
   }
 
   private updateScopes(response: HttpResponse<any>) {
-    this.auth.scopes = response!.headers.get('X-OAuth-Scopes') || '';
+    this.auth.scopes = response.headers.get('X-OAuth-Scopes') || '';
   }
 }
 

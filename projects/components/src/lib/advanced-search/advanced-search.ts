@@ -44,25 +44,26 @@ const DEFAULT_FILTERS: {[key in FilterType]: (id: string) => Filter} = {
   host: {'[class.has-filters]': 'hasDisplayedFilters'},
   animations: [
     trigger(
-        'expand',
-        [
-          transition(
-              'void => true',
-              [
-                style({height: '0', opacity: 0}),
-                animate(ANIMATION_DURATION, style({height: '*', opacity: 1})),
-              ]),
-          transition(
-              ':leave',
-              [
-                style({height: '*', opacity: 1}),
-                animate(ANIMATION_DURATION, style({height: '0', opacity: 0})),
-              ]),
-        ]),
+      'expand',
+      [
+        transition(
+          'void => true',
+          [
+            style({height: '0', opacity: 0}),
+            animate(ANIMATION_DURATION, style({height: '*', opacity: 1})),
+          ]),
+        transition(
+          ':leave',
+          [
+            style({height: '*', opacity: 1}),
+            animate(ANIMATION_DURATION, style({height: '0', opacity: 0})),
+          ]),
+      ]),
   ]
 })
 export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
   searchFormControl = new FormControl('');
+
   destroyed = new Subject();
 
   autocomplete = new Map<string, Observable<string[]>>();
@@ -77,13 +78,13 @@ export class AdvancedSearch implements OnInit, AfterViewInit, OnDestroy {
 
   filterLabels: Map<string, string>;
 
-  trackByIndex = (i: number) => i;
-
   @Input() dataSource: DataSource<any>;
 
   @Input() filterer: Filterer<any, any>;
 
   hasDisplayedFilters: boolean;
+
+  trackByIndex = (i: number) => i;
 
   getTextFilterAutocomplete(id: string) {
     if (!this.autocomplete.has(id)) {

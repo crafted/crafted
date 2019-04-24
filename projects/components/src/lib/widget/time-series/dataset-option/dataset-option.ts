@@ -58,7 +58,7 @@ export class DatasetOption {
         dataResource =>
             this.dataSourceTypeOptions.push({id: dataResource.id, label: dataResource.label}));
 
-    const dataSourceTypeControl = this.controlContainer.control!.get('dataSourceType')!;
+    const dataSourceTypeControl = this.controlContainer.control.get('dataSourceType');
     if (!dataSourceTypeControl.value) {
       dataSourceTypeControl.setValue(this.dataSourceTypeOptions[0].id);
     }
@@ -66,7 +66,7 @@ export class DatasetOption {
     dataSourceTypeControl.valueChanges
         .pipe(takeUntil(this.destroyed), startWith(dataSourceTypeControl.value))
         .subscribe(value => {
-          const dataSourceProvider = this.dataResourcesMap.get(value)!;
+          const dataSourceProvider = this.dataResourcesMap.get(value);
           this.dataSource = dataSourceProvider.dataSource();
           this.filterer = dataSourceProvider.filterer();
         });

@@ -42,58 +42,15 @@ export class QueryPage<T> {
 
   viewer: Viewer<T, any>;
 
-  set query(query: Query) {
-    this._query = query;
-
-    const type = this._query.dataSourceType!;
-    const dataResource = this.dataResourcesMap.get(type)!;
-    this.viewer = dataResource.viewer(this.query.viewerState);
-    this.filterer = dataResource.filterer(this.query.filtererState);
-    this.grouper = dataResource.grouper(this.query.grouperState);
-    this.sorter = dataResource.sorter(this.query.sorterState);
-    this.dataSource = dataResource.dataSource();
-
-    this.canSave = combineLatest(
-                       this.viewer.isEquivalent(query.viewerState),
-                       this.filterer.isEquivalent(query.filtererState),
-                       this.grouper.isEquivalent(query.grouperState),
-                       this.sorter.isEquivalent(query.sorterState))
-                       .pipe(map(results => results.some(result => !result)));
-
-    this.activeItem = combineLatest(this.dataSource.data, this.itemId).pipe(map(results => {
-      // TODO: Cannot assume this is Item
-      for (let item of results[0]) {
-        if ((item as any as Item).id === results[1]) {
-          return item;
-        }
-      }
-      return null;
-    }));
-
-    this.header.title.next(this.query.name || '');
-    this.header.goBack = true;
-    this.cd.markForCheck();
-  }
-  get query(): Query {
-    return this._query;
-  }
-  private _query: Query;
-
   itemId =
       this.activatedRoute.queryParamMap.pipe(map(queryParamsMap => queryParamsMap.get('item')));
-
+  public canSave: Observable<boolean>;
+  public activeItem: Observable<T|null>;
+  public listWidth = 500;
+  @ViewChild(CdkDrag) draggable: CdkDrag;
+  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
   private destroyed = new Subject();
   private getSubscription: Subscription;
-
-  public canSave: Observable<boolean>;
-
-  public activeItem: Observable<T|null>;
-
-  public listWidth = 500;
-
-  @ViewChild(CdkDrag) draggable: CdkDrag;
-
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
 
   constructor(
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
@@ -101,7 +58,7 @@ export class QueryPage<T> {
       private activeRepo: ActiveStore, private header: Header, private queryDialog: QueryDialog,
       private cd: ChangeDetectorRef) {
     this.activatedRoute.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
-      const id = params['id'];
+      const id = params.id;
 
       if (this.getSubscription) {
         this.getSubscription.unsubscribe();
@@ -127,8 +84,8 @@ export class QueryPage<T> {
       } else {
         this.getSubscription =
             this.activeRepo.activeConfig.queries.map.pipe(takeUntil(this.destroyed))
-                .subscribe(map => {
-                  const query = map.get(id);
+                .subscribe(queriesMap => {
+                  const query = queriesMap.get(id);
                   if (query) {
                     this.query = query;
                   }
@@ -136,6 +93,45 @@ export class QueryPage<T> {
                 });
       }
     });
+  }
+
+  private _query: Query;
+
+  get query(): Query {
+    return this._query;
+  }
+
+  set query(query: Query) {
+    this._query = query;
+
+    const type = this._query.dataSourceType;
+    const dataResource = this.dataResourcesMap.get(type);
+    this.viewer = dataResource.viewer(this.query.viewerState);
+    this.filterer = dataResource.filterer(this.query.filtererState);
+    this.grouper = dataResource.grouper(this.query.grouperState);
+    this.sorter = dataResource.sorter(this.query.sorterState);
+    this.dataSource = dataResource.dataSource();
+
+    this.canSave = combineLatest(
+                       this.viewer.isEquivalent(query.viewerState),
+                       this.filterer.isEquivalent(query.filtererState),
+                       this.grouper.isEquivalent(query.grouperState),
+                       this.sorter.isEquivalent(query.sorterState))
+                       .pipe(map(results => results.some(result => !result)));
+
+    this.activeItem = combineLatest(this.dataSource.data, this.itemId).pipe(map(results => {
+      // TODO: Cannot assume this is Item
+      for (const item of results[0]) {
+        if ((item as any as Item).id === results[1]) {
+          return item;
+        }
+      }
+      return null;
+    }));
+
+    this.header.title.next(this.query.name || '');
+    this.header.goBack = true;
+    this.cd.markForCheck();
   }
 
   ngOnInit() {
@@ -147,7 +143,7 @@ export class QueryPage<T> {
       const transformStyle = releasedEvent.source.element.nativeElement.style.transform;
       this.listWidth += +transformStyle.match(/-*\d+px/g)[0].match(/-*\d+/g)[0];
       this.draggable.reset();
-    })
+    });
   }
 
   ngOnDestroy() {

@@ -23,13 +23,13 @@ export class DisplayOptions {
   @Input() viewer: Viewer;
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['grouper']) {
+    if (simpleChanges.grouper) {
       this.groups = this.grouper ? this.grouper.getGroups() : [];
     }
-    if (simpleChanges['sorter']) {
+    if (simpleChanges.sorter) {
       this.sorts = this.sorter ? this.sorter.getSorts() : [];
     }
-    if (simpleChanges['viewer']) {
+    if (simpleChanges.viewer) {
       this.views = this.viewer ? this.viewer.getViews() : [];
     }
   }

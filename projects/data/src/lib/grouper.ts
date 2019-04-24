@@ -75,14 +75,14 @@ export class Grouper<T = any, C = any> {
     }));
   }
 
-  private performGrouping(items: T[], group: string): Observable<Group<T>[]> {
-    const groupMetadata = this.getGroupMetadata(group);
+  private performGrouping(items: T[], groupId: string): Observable<Group<T>[]> {
+    const groupMetadata = this.getGroupMetadata(groupId);
     const groups = groupMetadata.groupingFunction(items);
 
-    const titleTransform = groupMetadata!.titleTransform || ((title: string) => title);
+    const titleTransform = groupMetadata.titleTransform || ((title: string) => title);
     return this.contextProvider.pipe(map(context => {
-      groups.forEach(group => {
-        group.title = titleTransform(group.title, context);
+      groups.forEach(g => {
+        g.title = titleTransform(g.title, context);
       });
       return groups;
     }));
@@ -101,37 +101,37 @@ export class Grouper<T = any, C = any> {
 
 /** Utility function that creates a group based on the value of the item's property. */
 export function getGroupByValue<T>(items: T[], property: string): Group<T>[] {
-  const map: Map<string, T[]> = new Map();
+  const valueMap: Map<string, T[]> = new Map();
 
   items.forEach((item: any) => {
     const value = item[property];
-    if (!map.has(value)) {
-      map.set(value, []);
+    if (!valueMap.has(value)) {
+      valueMap.set(value, []);
     }
 
-    map.get(value)!.push(item);
+    valueMap.get(value).push(item);
   });
 
-  return getGroupsFromMap(map);
+  return getGroupsFromMap(valueMap);
 }
 
 /** Utility function that creates a group based on the list of values of the item's property. */
 export function getGroupByListValues<T>(items: T[], key: string): Group<T>[] {
-  const map: Map<string, T[]> = new Map();
+  const valueMap: Map<string, T[]> = new Map();
   items.forEach((item: any) => {
     let values: any[] = item[key];
     if (!values || !values.length) {
       values = [null];
     }
     values.forEach((value: any) => {
-      if (!map.get(value)) {
-        map.set(value, []);
+      if (!valueMap.get(value)) {
+        valueMap.set(value, []);
       }
-      map.get(value)!.push(item);
+      valueMap.get(value).push(item);
     });
   });
 
-  return getGroupsFromMap(map);
+  return getGroupsFromMap(valueMap);
 }
 
 /** Utility function that transforms a map of groups into a list. */

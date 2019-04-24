@@ -31,19 +31,6 @@ export interface ListWidgetDataConfig {
   savedFiltererStates: Observable<SavedFiltererState[]>;
 }
 
-export function getListWidgetConfig(
-    dataResourcesMap: ListDataResourcesMap, onSelect: (item: any) => void = () => null,
-    savedFiltererStates: Observable<SavedFiltererState[]> =
-        of([])): WidgetConfig<ListWidgetDataConfig> {
-  return {
-    id: 'list',
-    label: 'List',
-    viewer: List,
-    editor: ListEditor,
-    config: {dataResourcesMap, onSelect, savedFiltererStates}
-  };
-}
-
 export interface ListOptions {
   dataSourceType: string;
   listLength: number;
@@ -59,8 +46,6 @@ export interface ListOptions {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class List {
-  trackByIndex = (index: number) => index;
-
   listLength = this.data.options.listLength;
 
   items: Observable<any[]>;
@@ -69,7 +54,7 @@ export class List {
 
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<ListOptions, ListWidgetDataConfig>) {
     const dataSourceProvider =
-        this.data.config.dataResourcesMap.get(this.data.options.dataSourceType)!;
+      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
     const sorter = dataSourceProvider.sorter(this.data.options.sorterState);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const dataSource = dataSourceProvider.dataSource();
@@ -78,4 +63,19 @@ export class List {
 
     this.viewer = dataSourceProvider.viewer(this.data.options.viewerState);
   }
+
+  trackByIndex = (index: number) => index;
+}
+
+export function getListWidgetConfig(
+  dataResourcesMap: ListDataResourcesMap, onSelect: (item: any) => void = () => null,
+  savedFiltererStates: Observable<SavedFiltererState[]> =
+    of([])): WidgetConfig<ListWidgetDataConfig> {
+  return {
+    id: 'list',
+    label: 'List',
+    viewer: List,
+    editor: ListEditor,
+    config: {dataResourcesMap, onSelect, savedFiltererStates}
+  };
 }

@@ -1,16 +1,7 @@
 import {Sorter, SorterMetadata, SorterState} from '@crafted/data';
 import {Item} from '../app-types/item';
 
-export function getSorterProvider() {
-  return (initialState?: SorterState) => {
-    return new Sorter({
-      metadata: GithubItemSortingMetadata,
-      initialState: initialState || {sort: 'created', reverse: true},
-    });
-  };
-}
-
-const GithubItemSortingMetadata = new Map<string, SorterMetadata<Item>>([
+const ITEM_SORTER_METADATA = new Map<string, SorterMetadata<Item>>([
   [
     'created', {
       label: 'Date Opened',
@@ -39,3 +30,12 @@ const GithubItemSortingMetadata = new Map<string, SorterMetadata<Item>>([
     }
   ],
 ]);
+
+export function getSorterProvider() {
+  return (initialState?: SorterState) => {
+    return new Sorter({
+      metadata: ITEM_SORTER_METADATA,
+      initialState: initialState || {sort: 'created', reverse: true},
+    });
+  };
+}

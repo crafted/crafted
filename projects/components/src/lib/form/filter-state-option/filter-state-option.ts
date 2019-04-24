@@ -24,10 +24,6 @@ interface SavedFiltererStateGroup {
   providers: [{provide: NG_VALUE_ACCESSOR, useExisting: FilterStateOption, multi: true}]
 })
 export class FilterStateOption implements ControlValueAccessor {
-  onChange = (_: any) => {};
-
-  onTouched = () => {};
-
   @Input() filterer: Filterer<any, any>;
 
   @Input() dataSource: DataSource<any>;
@@ -42,12 +38,16 @@ export class FilterStateOption implements ControlValueAccessor {
 
   private filtererStateSubscription: Subscription;
 
+  onChange: (...args: any) => any = () => {};
+
+  onTouched = () => {};
+
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['savedFiltererStates'] && this.savedFiltererStates) {
+    if (simpleChanges.savedFiltererStates && this.savedFiltererStates) {
       this.savedFiltererStateGroups = this.getSavedFiltererStateGroups();
     }
 
-    if (simpleChanges['filterer']) {
+    if (simpleChanges.filterer) {
       if (this.filtererStateSubscription) {
         this.filtererStateSubscription.unsubscribe();
       }
@@ -88,7 +88,7 @@ export class FilterStateOption implements ControlValueAccessor {
         groupsMap.set(savedFiltererState.group, []);
       }
 
-      groupsMap.get(savedFiltererState.group)!.push(savedFiltererState);
+      groupsMap.get(savedFiltererState.group).push(savedFiltererState);
     });
 
     const groupsList: SavedFiltererStateGroup[] = [];

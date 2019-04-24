@@ -30,21 +30,21 @@ export class RepoGist {
                 return;
               }
 
-              const dashboardsSync = syncResults![0] as LocalToRemoteComparison<Dashboard>;
+              const dashboardsSync = syncResults[0] as LocalToRemoteComparison<Dashboard>;
               store.dashboards.add(dashboardsSync.toAdd);
               store.dashboards.update(dashboardsSync.toUpdate);
-              store.dashboards.remove(dashboardsSync.toRemove.map(v => v.id!));
+              store.dashboards.remove(dashboardsSync.toRemove.map(v => v.id));
 
-              const querySync = syncResults![1] as LocalToRemoteComparison<Query>;
+              const querySync = syncResults[1] as LocalToRemoteComparison<Query>;
               store.queries.add(querySync.toAdd);
               store.queries.update(querySync.toUpdate);
-              store.queries.remove(querySync.toRemove.map(v => v.id!));
+              store.queries.remove(querySync.toRemove.map(v => v.id));
 
               const recommendationsSync =
-                  syncResults![2] as LocalToRemoteComparison<Recommendation>;
+                syncResults[2] as LocalToRemoteComparison<Recommendation>;
               store.recommendations.add(recommendationsSync.toAdd);
               store.recommendations.update(recommendationsSync.toUpdate);
-              store.recommendations.remove(recommendationsSync.toRemove.map(v => v.id!));
+              store.recommendations.remove(recommendationsSync.toRemove.map(v => v.id));
             }));
   }
 
@@ -85,8 +85,8 @@ function getSyncResults(store: ConfigStore, remoteConfig: RepoConfig|null):
   return combineLatest(store.dashboards.list, store.queries.list, store.recommendations.list)
       .pipe(
           map(results =>
-                  [compareLocalToRemote(results[0]!, remoteConfig.dashboards),
-                   compareLocalToRemote(results[1]!, remoteConfig.queries),
-                   compareLocalToRemote(results[2]!, remoteConfig.recommendations)]),
+            [compareLocalToRemote(results[0], remoteConfig.dashboards),
+              compareLocalToRemote(results[1], remoteConfig.queries),
+              compareLocalToRemote(results[2], remoteConfig.recommendations)]),
           take(1));
 }

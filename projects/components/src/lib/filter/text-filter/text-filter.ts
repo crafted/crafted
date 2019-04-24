@@ -14,7 +14,7 @@ import {TextEquality} from '@crafted/data';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {debounceTime, map, startWith, takeUntil} from 'rxjs/operators';
 
-const Equalities: {id: TextEquality, label: string}[] = [
+const EQUALITIES: {id: TextEquality, label: string}[] = [
   {id: 'contains', label: 'contains'},
   {id: 'is', label: 'is'},
   {id: 'notContains', label: `doesn't contain`},
@@ -28,7 +28,7 @@ const Equalities: {id: TextEquality, label: string}[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextFilter implements AfterViewInit, OnChanges {
-  equalities = Equalities;
+  equalities = EQUALITIES;
 
   form = new FormGroup({
     equality: new FormControl(''),
@@ -70,12 +70,12 @@ export class TextFilter implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['value']) {
-      this.form.get('value')!.setValue(this.value, {emitEvent: false});
+    if (simpleChanges.value) {
+      this.form.get('value').setValue(this.value, {emitEvent: false});
     }
 
-    if (simpleChanges['equality']) {
-      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    if (simpleChanges.equality) {
+      this.form.get('equality').setValue(this.equality, {emitEvent: false});
     }
   }
 

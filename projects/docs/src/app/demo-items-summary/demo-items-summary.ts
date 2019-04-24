@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Viewer} from '@crafted/data';
 import {EXAMPLE_ITEMS} from '../data';
-import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
+import {EXAMPLE_VIEWER_METADATA} from '../data-resources/viewer-metadata';
 
 
 @Component({
@@ -12,6 +12,6 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
 export class DemoItemsSummary {
   exampleItems = EXAMPLE_ITEMS;
 
-  viewer = new Viewer({metadata: ExampleViewerMetadata});
+  viewer = new Viewer({metadata: EXAMPLE_VIEWER_METADATA});
   viewOptions = this.viewer.getViews();
 }

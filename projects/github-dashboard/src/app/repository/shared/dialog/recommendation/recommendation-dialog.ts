@@ -74,7 +74,7 @@ export class RecommendationDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            store.recommendations.remove(recommendation.id!);
+            store.recommendations.remove(recommendation.id);
             this.snackbar.open(`Recommendation deleted`, '', {duration: 2000});
           }
         });

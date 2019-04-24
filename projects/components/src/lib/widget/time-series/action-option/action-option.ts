@@ -29,12 +29,12 @@ export class ActionOption {
   ngOnInit() {
     this.datePropertyIdOptions = this.dataSource.getDataLabelsWithType('date');
 
-    const typeFormControl = this.controlContainer.control!.get('type')!;
+    const typeFormControl = this.controlContainer.control.get('type');
     if (!typeFormControl.value) {
       typeFormControl.setValue(this.actionTypeOptions[0].id);
     }
 
-    const datePropertyIdFormControl = this.controlContainer.control!.get('datePropertyId')!;
+    const datePropertyIdFormControl = this.controlContainer.control.get('datePropertyId');
     if (!datePropertyIdFormControl.value) {
       datePropertyIdFormControl.setValue(this.datePropertyIdOptions[0].id);
     }

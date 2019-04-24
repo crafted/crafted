@@ -13,10 +13,6 @@ import {Sorter, SorterState, SortLabel} from '@crafted/data';
 export class SortStateOption implements ControlValueAccessor {
   sorts: SortLabel[] = [];
 
-  onChange = (_: any) => {};
-
-  onTouched = () => {};
-
   @ViewChild('sortIdSelect') sortId: MatSelect;
 
   @ViewChild('sortDirSelect') sortDir: MatSelect;
@@ -29,8 +25,12 @@ export class SortStateOption implements ControlValueAccessor {
 
   @Input() type: number;
 
+  onChange: (...args: any) => any = () => {};
+
+  onTouched = () => {};
+
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['sorter']) {
+    if (simpleChanges.sorter) {
       this.sorts = this.sorter.getSorts();
       this.sortId.value = this.sorts[0];
       this.sortDir.value = false;

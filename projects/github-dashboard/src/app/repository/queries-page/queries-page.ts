@@ -28,6 +28,12 @@ interface QueryGroup {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
+
+  constructor(
+    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
+    private header: Header, private router: Router, private activeRepo: ActiveStore) {
+    this.dataResourcesMap.forEach(dataResources => this.dataResourcesIds.push(dataResources.id));
+  }
   dataResourcesIds: string[] = [];
 
   recommendationsList =
@@ -38,17 +44,11 @@ export class QueriesPage {
 
   queryGroups = this.queries.pipe(map(queries => this.getSortedGroups(queries)));
 
-  queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
-
   @ViewChild(CdkPortal) toolbarActions: CdkPortal;
 
   private destroyed = new Subject();
 
-  constructor(
-      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-      private header: Header, private router: Router, private activeRepo: ActiveStore) {
-    this.dataResourcesMap.forEach(dataResources => this.dataResourcesIds.push(dataResources.id));
-  }
+  queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
 
   ngOnInit() {
     this.queries.pipe(takeUntil(this.destroyed)).subscribe(list => {
@@ -73,7 +73,7 @@ export class QueriesPage {
   createQueryFromRecommendation(recommendation: Recommendation) {
     this.router.navigate(
         [`${this.activeRepo.activeName}/query/new`],
-        {queryParams: {'recommendationId': recommendation.id}});
+      {queryParams: {recommendationId: recommendation.id}});
   }
 
   navigateToQuery(id: string) {
@@ -81,7 +81,7 @@ export class QueriesPage {
   }
 
   private getQueryCount(query: Query): Observable<number> {
-    const dataSourceProvider = this.dataResourcesMap.get(query.dataSourceType!)!;
+    const dataSourceProvider = this.dataResourcesMap.get(query.dataSourceType);
     const filterer = dataSourceProvider.filterer(query.filtererState);
     const dataSource = dataSourceProvider.dataSource();
 
@@ -96,19 +96,19 @@ export class QueriesPage {
         groups.set(group, []);
       }
 
-      groups.get(group)!.push({
-        id: query.id!,
-        name: query.name!,
+      groups.get(group).push({
+        id: query.id,
+        name: query.name,
         count: this.getQueryCount(query),
-        type: query.dataSourceType!,
+        type: query.dataSourceType,
       });
     });
 
     const sortedGroups: QueryGroup[] = [];
     Array.from(groups.keys()).sort().forEach(group => {
-      const queries = groups.get(group)!;
-      queries.sort((a, b) => (a.name! < b.name!) ? -1 : 1);
-      sortedGroups.push({name: group, queries});
+      const groupQueries = groups.get(group);
+      groupQueries.sort((a, b) => (a.name < b.name) ? -1 : 1);
+      sortedGroups.push({name: group, queries: groupQueries});
     });
 
     return sortedGroups;

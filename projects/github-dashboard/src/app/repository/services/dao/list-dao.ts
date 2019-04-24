@@ -22,9 +22,9 @@ export class ListDao<T extends IdentifiedObject> {
     if (!this._map) {
       this._map = new BehaviorSubject<Map<string, T>>(new Map<string, T>());
       this.list.subscribe(list => {
-        const map = new Map<string, T>();
-        list.forEach(obj => map.set(obj.id!, obj));
-        this._map.next(map);
+        const valuesMap = new Map<string, T>();
+        list.forEach(obj => valuesMap.set(obj.id, obj));
+        this._map.next(valuesMap);
       });
     }
 
@@ -51,15 +51,13 @@ export class ListDao<T extends IdentifiedObject> {
     items.forEach(decorateForDb);
     this.repoIndexedDb.updateValues(items, this.collectionId);
     this.rawList.next([...(this.rawList.value || []), ...items]);
-    return items.map(obj => obj.id!);
+    return items.map(obj => obj.id);
   }
 
   get(id: string): Observable<T|null> {
-    return this.map.pipe(map(map => (map && map.get(id)) ? map.get(id)! : null));
+    return this.map.pipe(map(v => (v && v.get(id)) ? v.get(id) : null));
   }
 
-  update(item: T): void;
-  update(items: T[]): void;
   update(itemOrItems: T|T[]): void {
     const items = (itemOrItems instanceof Array) ? itemOrItems : [itemOrItems];
     items.forEach(obj => {
@@ -71,35 +69,33 @@ export class ListDao<T extends IdentifiedObject> {
     items.forEach(decorateForDb);
     this.repoIndexedDb.updateValues(items, this.collectionId);
 
-    this.map.pipe(filter(map => !!map), take(1)).subscribe(map => {
+    this.map.pipe(filter(v => !!v), take(1)).subscribe(v => {
       items.forEach(obj => {
-        map.set(obj.id!, {...(map.get(obj.id!) as object), ...(obj as object)} as T);
+        v.set(obj.id, {...(v.get(obj.id) as object), ...(obj as object)} as T);
       });
 
       const values: T[] = [];
-      map.forEach(value => values.push(value));
+      v.forEach(value => values.push(value));
       this.rawList.next(values);
     });
   }
 
-  remove(id: string): void;
-  remove(ids: string[]): void;
   remove(idOrIds: string|string[]) {
     const ids = (idOrIds instanceof Array) ? idOrIds : [idOrIds];
     this.repoIndexedDb.removeValues(ids, this.collectionId);
 
-    this.map.pipe(filter(map => !!map), take(1)).subscribe(map => {
-      ids.forEach(id => map.delete(id));
+    this.map.pipe(filter(values => !!values), take(1)).subscribe(v => {
+      ids.forEach(id => v.delete(id));
 
       const values: T[] = [];
-      map.forEach(value => values.push(value));
+      v.forEach(value => values.push(value));
       this.rawList.next(values);
     });
   }
 
   removeAll() {
     this.repoIndexedDb
-        .removeValues((this.rawList.value || []).map(item => item.id!), this.collectionId)
+      .removeValues((this.rawList.value || []).map(item => item.id), this.collectionId)
         .then(() => {
           this.rawList.next([]);
         });
@@ -124,9 +120,9 @@ function createId(): string {
 
 /** Creates a new map of the items keys on their id property. */
 function createMap<T extends IdentifiedObject>(items: T[]) {
-  const map = new Map<string, T>();
-  items.forEach(item => map.set(item.id!, item));
-  return map;
+  const valuesMap = new Map<string, T>();
+  items.forEach(item => valuesMap.set(item.id, item));
+  return valuesMap;
 }
 
 /** Compares the values to see what changes would occur to sync from local to remote */
@@ -157,8 +153,8 @@ export function compareLocalToRemote<T extends IdentifiedObject>(
   localMap.forEach((localValue, k) => {
     const remoteValue = remoteMap.get(k);
     if (remoteValue) {
-      const localModifiedDate = localValue.dbModified!;
-      const remoteModifiedDate = remoteValue.dbModified!;
+      const localModifiedDate = localValue.dbModified;
+      const remoteModifiedDate = remoteValue.dbModified;
       if (remoteModifiedDate > localModifiedDate) {
         toUpdate.push(remoteValue);
       }

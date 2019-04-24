@@ -1,9 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {WIDGET_EDIT_DATA, WidgetEditData} from '@crafted/components';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '@crafted/components';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Subject} from 'rxjs';
-import {startWith, take, takeUntil} from 'rxjs/operators';
 
 import {BarChartOptions, BarChartWidgetDataConfig} from './bar-chart';
 
@@ -12,7 +11,7 @@ import {BarChartOptions, BarChartWidgetDataConfig} from './bar-chart';
   templateUrl: 'bar-chart-edit.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BarChartEdit {
+export class BarChartEdit implements WidgetEditor {
   dataOptions: {id: string, label: string}[] = [];
 
   grouper: Grouper<any, any>;
@@ -28,38 +27,36 @@ export class BarChartEdit {
 
   destroyed = new Subject();
 
-  constructor(@Inject(WIDGET_EDIT_DATA) public data:
-                  WidgetEditData<BarChartOptions, BarChartWidgetDataConfig>) {
+  constructor(@Inject(WIDGET_DATA) public data:
+                WidgetData<BarChartOptions, BarChartWidgetDataConfig>) {
     this.data.config.dataResourcesMap.forEach(
-        dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
+      dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
     const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType')!.setValue(initialDataSourceType);
+    this.form.get('dataSourceType').setValue(initialDataSourceType);
 
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType)!;
+    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
     this.grouper = dataSourceProvider.grouper();
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
 
-    data.options.pipe(take(1)).subscribe(value => {
-      if (value) {
-        if (value.dataSourceType) {
-          this.form.get('dataSourceType')!.setValue(value.dataSourceType);
-        }
-        if (value.grouperState) {
-          this.form.get('grouperState')!.setValue(value.grouperState);
-        }
-        if (value.filteredGroups) {
-          this.form.get('filteredGroups')!.setValue(value.filteredGroups);
-        }
-        if (value.filtererState) {
-          this.form.get('filtererState')!.setValue(value.filtererState);
-        }
+    const value = data.options;
+    if (value) {
+      if (value.dataSourceType) {
+        this.form.get('dataSourceType').setValue(value.dataSourceType);
       }
-    });
+      if (value.grouperState) {
+        this.form.get('grouperState').setValue(value.grouperState);
+      }
+      if (value.filteredGroups) {
+        this.form.get('filteredGroups').setValue(value.filteredGroups);
+      }
+      if (value.filtererState) {
+        this.form.get('filtererState').setValue(value.filtererState);
+      }
+    }
+  }
 
-    this.form.valueChanges.pipe(startWith(this.form.value), takeUntil(this.destroyed))
-        .subscribe(value => {
-          data.options.next(value);
-        });
+  get options() {
+    return this.form.value;
   }
 }

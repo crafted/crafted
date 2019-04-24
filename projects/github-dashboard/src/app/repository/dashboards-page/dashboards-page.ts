@@ -16,17 +16,17 @@ import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardsPage {
-  trackById = (_i: number, dashboard: Dashboard) => dashboard.id;
+
+  constructor(
+      private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
+      private activeRepo: ActiveStore) {}
 
   list = this.activeRepo.activeConfig.dashboards.list;
 
   @ViewChild(CdkPortal) toolbarActions: CdkPortal;
 
   private destroyed = new Subject();
-
-  constructor(
-      private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
-      private activeRepo: ActiveStore) {}
+  trackById = (_i: number, dashboard: Dashboard) => dashboard.id;
 
   ngOnInit() {
     this.list.pipe(takeUntil(this.destroyed)).subscribe(list => {

@@ -50,7 +50,7 @@ export class Updater {
     let remoteList: Contributor[] = [];
 
     return new Promise(resolve => {
-      this.github.getContributors(repository!)
+      this.github.getContributors(repository)
           .pipe(
               filter(result => result.completed === result.total), take(1),
               tap(result => remoteList = result.accumulated), mergeMap(() => contributorsDao.list),
@@ -68,7 +68,7 @@ export class Updater {
       this.getStaleIssuesState(store)
           .pipe(
               mergeMap(state => {
-                return state.count ? this.getAllStaleIssues(state.repository!, state.lastUpdated) :
+                return state.count ? this.getAllStaleIssues(state.repository, state.lastUpdated) :
                                      of([]);
               }),
               take(1))

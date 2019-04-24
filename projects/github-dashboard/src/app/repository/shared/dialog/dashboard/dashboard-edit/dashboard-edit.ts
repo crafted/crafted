@@ -21,11 +21,11 @@ export class DashboardEdit {
       public dialogRef: MatDialogRef<DashboardEdit>,
       @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
     if (data && data.name) {
-      this.formGroup.get('name')!.setValue(data.name);
+      this.formGroup.get('name').setValue(data.name);
     }
 
     if (data && data.description) {
-      this.formGroup.get('description')!.setValue(data.description);
+      this.formGroup.get('description').setValue(data.description);
     }
   }
 
@@ -33,8 +33,8 @@ export class DashboardEdit {
   save() {
     if (this.formGroup.valid) {
       this.dialogRef.close({
-        name: this.formGroup.get('name')!.value,
-        description: this.formGroup.get('description')!.value
+        name: this.formGroup.get('name').value,
+        description: this.formGroup.get('description').value
       });
     }
   }

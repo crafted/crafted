@@ -5,7 +5,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
   template: '<router-outlet></router-outlet>',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'theme-text',
+    class: 'theme-text',
   }
 })
 export class App {

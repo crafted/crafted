@@ -40,9 +40,8 @@ export class WidgetEdit {
   constructor(
       private dialogRef: MatDialogRef<WidgetEdit, Widget>,
       @Inject(MAT_DIALOG_DATA) public data: WidgetEditDialogData) {
-    for (let id of Object.keys(data.configs)) {
-      this.typeOptions.push({id, label: data.configs[id].label});
-    }
+    Object.keys(data.configs)
+      .forEach(id => this.typeOptions.push({id, label: data.configs[id].label}));
 
     if (data.widget) {
       this.form.setValue({
@@ -50,12 +49,12 @@ export class WidgetEdit {
         type: data.widget.type,
       });
     } else {
-      this.form.get('type')!.setValue(this.typeOptions[0].id);
+      this.form.get('type').setValue(this.typeOptions[0].id);
     }
   }
 
   ngOnInit() {
-    this.form.get('type')!.valueChanges.pipe(startWith(this.form.value.type)).subscribe(type => {
+    this.form.get('type').valueChanges.pipe(startWith(this.form.value.type)).subscribe(type => {
       this.editor = this.attachEditor(type);
     });
   }

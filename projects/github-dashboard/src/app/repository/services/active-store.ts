@@ -20,10 +20,10 @@ export class ActiveStore {
   }
 
   data = new BehaviorSubject<DataStore>(
-      this.getStoreFromParams(this.activatedRoute.firstChild!.snapshot.params));
+    this.getStoreFromParams(this.activatedRoute.firstChild.snapshot.params));
 
   config = new BehaviorSubject<ConfigStore>(
-      this.getConfigStoreFromParams(this.activatedRoute.firstChild!.snapshot.params));
+    this.getConfigStoreFromParams(this.activatedRoute.firstChild.snapshot.params));
 
   name = this.data.pipe(map(store => store.name));
 
@@ -31,7 +31,7 @@ export class ActiveStore {
 
   constructor(
       private activatedRoute: ActivatedRoute, private dao: Dao, private configDao: ConfigDao) {
-    this.activatedRoute.firstChild!.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
+    this.activatedRoute.firstChild.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
       this.data.next(this.getStoreFromParams(params));
       this.config.next(this.getConfigStoreFromParams(params));
     });
@@ -43,12 +43,12 @@ export class ActiveStore {
   }
 
   private getStoreFromParams(params: Params) {
-    const repository = `${params['org']}/${params['name']}`;
+    const repository = `${params.org}/${params.name}`;
     return this.dao.get(repository);
   }
 
   private getConfigStoreFromParams(params: Params) {
-    const repository = `${params['org']}/${params['name']}`;
+    const repository = `${params.org}/${params.name}`;
     return this.configDao.get(repository);
   }
 }

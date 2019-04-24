@@ -1,7 +1,7 @@
 import {DataSourceMetadata} from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const ExampleDataSourceMetadata = new Map<string, DataSourceMetadata<ExampleItem>>([
+export const EXAMPLE_DATA_SOURCE_METADATA = new Map<string, DataSourceMetadata<ExampleItem>>([
   [
     'anniversary', {
       label: 'Anniversary',

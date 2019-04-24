@@ -14,8 +14,6 @@ import {WidgetEdit, WidgetEditDialogData} from './widget-edit/widget-edit';
   host: {'[class.edit-mode]': 'edit'}
 })
 export class DashboardView {
-  trackByIndex = (i: number) => i;
-
   @Input() dashboard: Dashboard;
 
   @Input() edit: boolean;
@@ -27,6 +25,8 @@ export class DashboardView {
   @Output() dashboardChange = new EventEmitter<Dashboard>();
 
   @Output() openWidget = new EventEmitter<Widget>();
+
+  trackByIndex = (i: number) => i;
 
   constructor(private dialog: MatDialog) {}
 
@@ -55,7 +55,7 @@ export class DashboardView {
 
   editWidget(column: Column, index: number, widget?: Widget) {
     const data: WidgetEditDialogData = {
-      widget: widget,
+      widget,
       configs: this.widgetConfigs,
     };
 

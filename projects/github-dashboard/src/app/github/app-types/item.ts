@@ -1,6 +1,5 @@
-import {Reactions} from '../github-types/reactions';
-
 import {GithubIssue} from '../github-types/issue';
+import {Reactions} from '../github-types/reactions';
 
 export interface Item {
   id: string;
@@ -21,9 +20,6 @@ export interface Item {
   dbAdded?: string;
   dbModified?: string;
 }
-
-export interface PullRequest extends Item {}
-export interface Issue extends Item {}
 
 export function githubIssueToIssue(o: GithubIssue): Item {
   return {

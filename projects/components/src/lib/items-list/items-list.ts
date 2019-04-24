@@ -47,10 +47,6 @@ export class ItemsList<T> {
 
   itemGroups: Observable<Group<T>[]>;
 
-  trackByIndex = (i: number) => i;
-
-  trackByGroupId = (_i: number, itemGroup: Group<T>) => itemGroup.id;
-
   renderState = new Subject<RendererState<T>>();
 
   hasMore = this.renderState.pipe(map(state => state.count < state.total));
@@ -58,6 +54,10 @@ export class ItemsList<T> {
   @ViewChild(CdkScrollable) scrollableContainer: CdkScrollable;
 
   private destroyed = new Subject();
+
+  trackByIndex = (i: number) => i;
+
+  trackByGroupId = (_i: number, itemGroup: Group<T>) => itemGroup.id;
 
   constructor(public ngZone: NgZone, public elementRef: ElementRef) {}
 

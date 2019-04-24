@@ -40,7 +40,7 @@ export class Auth {
     // Check if the URL location has the access token embedded
     const search = window.location.search;
     if (search) {
-      let tokens = search.substring(1).split('&');
+      const tokens = search.substring(1).split('&');
       tokens.forEach(token => {
         const key = token.split('=')[0];
         const value = token.split('=')[1];

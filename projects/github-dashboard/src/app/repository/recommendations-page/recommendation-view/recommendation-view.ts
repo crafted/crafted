@@ -1,4 +1,3 @@
-
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -8,18 +7,18 @@ import {map} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../../repository';
 import {ActiveStore} from '../../services/active-store';
 import {
-  ActionTypes,
+  ACTION_TYPES,
   Recommendation,
-  RecommendationTypes
+  RECOMMENDATION_TYPES
 } from '../../services/dao/config/recommendation';
 import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
 
 const equalityToString = {
-  'notContains': `does not contain`,
-  'notIs': 'is not',
-  'greaterThan': 'is greater than',
-  'lessThan': 'is less than',
-  'equalTo': 'is equal to',
+  notContains: `does not contain`,
+  notIs: 'is not',
+  greaterThan: 'is greater than',
+  lessThan: 'is less than',
+  equalTo: 'is equal to',
 };
 
 @Component({
@@ -29,9 +28,9 @@ const equalityToString = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecommendationView {
-  actionTypes = ActionTypes;
+  actionTypes = ACTION_TYPES;
 
-  recommendationTypes = RecommendationTypes;
+  recommendationTypes = RECOMMENDATION_TYPES;
 
   filtererString: Observable<string>;
 
@@ -45,7 +44,7 @@ export class RecommendationView {
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['recommendation'] && this.recommendation) {
+    if (simpleChanges.recommendation && this.recommendation) {
       const provider = this.dataResourcesMap.get(this.recommendation.data);
       const filterer = provider.filterer(this.recommendation.filtererState);
       this.resultsCount =

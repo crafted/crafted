@@ -1,7 +1,7 @@
 import {SorterMetadata} from '@crafted/data';
 import {Recommendation} from '../../services/dao/config/recommendation';
 
-export const RecommendationSorterMetadata = new Map<string, SorterMetadata<Recommendation>>([
+export const RECOMMENDATION_SORTER_METADATA = new Map<string, SorterMetadata<Recommendation>>([
   [
     'date-created', {
       label: 'Date Created',

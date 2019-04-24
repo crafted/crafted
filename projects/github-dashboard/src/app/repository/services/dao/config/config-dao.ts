@@ -28,7 +28,7 @@ export class ConfigDao {
 
   get(name: string): ConfigStore {
     if (!this.stores.has(name)) {
-      const appIndexedDb = new AppIndexedDb(name!);
+      const appIndexedDb = new AppIndexedDb(name);
       const newStore = {
         name,
         dashboards: new ListDao<Dashboard>('dashboards', appIndexedDb),
@@ -43,7 +43,7 @@ export class ConfigDao {
       });
     }
 
-    return this.stores.get(name)!;
+    return this.stores.get(name);
   }
 
   ngOnDestroy() {
@@ -57,9 +57,9 @@ export class ConfigDao {
     combineLatest(...configDaoLists)
         .pipe(debounceTime(500), takeUntil(this.destroyed))
         .subscribe(result => {
-          const dashboards = result[0]!;
-          const queries = result[1]!;
-          const recommendations = result[2]!;
+          const dashboards = result[0];
+          const queries = result[1];
+          const recommendations = result[2];
 
           this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
         });

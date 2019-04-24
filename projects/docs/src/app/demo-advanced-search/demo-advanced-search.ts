@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {DataSource, Filterer, Viewer} from '@crafted/data';
 import {EXAMPLE_ITEMS} from '../data';
-import {ExampleFiltererMetadata} from '../data-resources/filterer-metadata';
-import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
+import {EXAMPLE_FILTERER_METADATA} from '../data-resources/filterer-metadata';
+import {EXAMPLE_VIEWER_METADATA} from '../data-resources/viewer-metadata';
 
 
 @Component({
@@ -12,8 +12,8 @@ import {ExampleViewerMetadata} from '../data-resources/viewer-metadata';
 })
 export class DemoAdvancedSearch {
   dataSource = new DataSource({data: EXAMPLE_ITEMS});
-  viewer = new Viewer({metadata: ExampleViewerMetadata});
-  filterer = new Filterer({metadata: ExampleFiltererMetadata});
+  viewer = new Viewer({metadata: EXAMPLE_VIEWER_METADATA});
+  filterer = new Filterer({metadata: EXAMPLE_FILTERER_METADATA});
 
   exampleItems = this.dataSource.data.pipe(this.filterer.filter());
 }

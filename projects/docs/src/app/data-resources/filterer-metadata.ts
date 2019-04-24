@@ -6,7 +6,7 @@ import {
 } from '@crafted/data';
 import {ExampleItem} from '../data';
 
-export const ExampleFiltererMetadata = new Map<string, FiltererMetadata<ExampleItem>>([
+export const EXAMPLE_FILTERER_METADATA = new Map<string, FiltererMetadata<ExampleItem>>([
   [
     'id', {
       label: 'ID',

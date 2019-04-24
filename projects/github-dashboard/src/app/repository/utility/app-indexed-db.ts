@@ -5,7 +5,7 @@ const DB_VERSION = 1;
 
 export type StoreId = 'items'|'labels'|'contributors'|'dashboards'|'queries'|'recommendations';
 
-export const StoreIds: StoreId[] =
+export const STORE_IDS: StoreId[] =
     ['items', 'labels', 'contributors', 'dashboards', 'queries', 'recommendations'];
 
 export class AppIndexedDb {
@@ -18,8 +18,8 @@ export class AppIndexedDb {
   private destroyed = new Subject();
 
   constructor(name: string) {
-    StoreIds.forEach(id => this.initialValues[id] = new Subject<any[]>());
-    this.name = name!;
+    STORE_IDS.forEach(id => this.initialValues[id] = new Subject<any[]>());
+    this.name = name;
     this.openDb();
   }
 
@@ -60,8 +60,8 @@ export class AppIndexedDb {
   }
 
   private openDb() {
-    this.db = openDb(this.name, DB_VERSION, function(db) {
-      StoreIds.forEach(collectionId => {
+    this.db = openDb(this.name, DB_VERSION, db => {
+      STORE_IDS.forEach(collectionId => {
         if (!db.objectStoreNames.contains(collectionId)) {
           db.createObjectStore(collectionId, {keyPath: 'id'});
         }
@@ -71,7 +71,7 @@ export class AppIndexedDb {
   }
 
   private initializeAllValues() {
-    StoreIds.forEach(id => {
+    STORE_IDS.forEach(id => {
       this.db.then(db => db.transaction(id, 'readonly').objectStore(id).getAll()).then(result => {
         const initialValues = this.initialValues[id];
         if (!initialValues) {

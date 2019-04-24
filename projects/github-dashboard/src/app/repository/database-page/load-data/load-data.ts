@@ -36,7 +36,7 @@ export class LoadData {
 
   totalLabelsCount =
       this.activeRepo.name.pipe(filter(v => !!v), mergeMap((repository => {
-                                  return this.github.getLabels(repository!)
+                                  return this.github.getLabels(repository)
                                       .pipe(
                                           filter(result => result.completed === result.total),
                                           map(result => result.accumulated.length));
@@ -45,9 +45,9 @@ export class LoadData {
   totalItemCount =
       combineLatest(this.activeRepo.name, this.formGroup.valueChanges.pipe(startWith(null)))
           .pipe(filter(result => !!result[0]), mergeMap(result => {
-                  const repository = result[0]!;
+                  const repository = result[0];
                   const since = this.getIssuesDateSince();
-                  return this.github.getItemsCount(repository!, since);
+                  return this.github.getItemsCount(repository, since);
                 }));
 
   isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
@@ -59,7 +59,7 @@ export class LoadData {
       private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
     const lastMonth = new Date();
     lastMonth.setDate(new Date().getDate() - 30);
-    this.formGroup.get('issueDate')!.setValue(lastMonth, {emitEvent: false});
+    this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
 
     this.isLoading.pipe(takeUntil(this.destroyed)).subscribe(isLoading => {
       isLoading ? this.formGroup.disable() : this.formGroup.enable();
@@ -79,16 +79,15 @@ export class LoadData {
     this.isLoading.next(true);
 
     const getLabels = this.getValues(
-        repository, 'labels', repository => this.github.getLabels(repository),
+        repository, 'labels', r => this.github.getLabels(r),
         (values: Label[]) => store.labels.update(values));
 
     const getIssues = this.getValues(
-        repository, 'issues',
-        repository => this.github.getIssues(repository, this.getIssuesDateSince()),
+        repository, 'issues', r => this.github.getIssues(r, this.getIssuesDateSince()),
         (values: Item[]) => store.items.update(values));
 
     const getContributors = this.getValues(
-        repository, 'contributor', repository => this.github.getContributors(repository),
+        repository, 'contributor', r => this.github.getContributors(r),
         (values: Contributor[]) => store.contributors.update(values));
 
     getContributors.pipe(mergeMap(() => getLabels), mergeMap(() => getIssues)).subscribe(() => {
@@ -116,7 +115,7 @@ export class LoadData {
           this.cd.markForCheck();
         }),
         mergeMap(() => loadFn(repository)), tap(result => {
-          this.state!.progress!.value = result.completed / result.total * 100;
+          this.state.progress.value = result.completed / result.total * 100;
           this.cd.markForCheck();
           saver(result.current);
         }),

@@ -12,7 +12,7 @@ import {DateEquality} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-const Equalities: {id: DateEquality, label: string}[] = [
+const EQUALITIES: {id: DateEquality, label: string}[] = [
   {id: 'before', label: 'before'},
   {id: 'on', label: 'on'},
   {id: 'after', label: 'after'},
@@ -25,7 +25,7 @@ const Equalities: {id: DateEquality, label: string}[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DateFilter {
-  equalities = Equalities;
+  equalities = EQUALITIES;
 
   form = new FormGroup({
     equality: new FormControl('on'),
@@ -47,12 +47,12 @@ export class DateFilter {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges['date']) {
-      this.form.get('date')!.setValue(new Date(this.date), {emitEvent: false});
+    if (simpleChanges.date) {
+      this.form.get('date').setValue(new Date(this.date), {emitEvent: false});
     }
 
-    if (simpleChanges['equality']) {
-      this.form.get('equality')!.setValue(this.equality, {emitEvent: false});
+    if (simpleChanges.equality) {
+      this.form.get('equality').setValue(this.equality, {emitEvent: false});
     }
   }
 
@@ -63,7 +63,7 @@ export class DateFilter {
   emit() {
     // Check if the input still has focus. If so, do not save.
     const input = this.elementRef.nativeElement.querySelector('input');
-    if (document.activeElement == input || !input.value) {
+    if (document.activeElement === input || !input.value) {
       return;
     }
 

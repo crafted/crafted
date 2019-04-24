@@ -9,8 +9,8 @@ import {ActiveStore} from '../services/active-store';
 import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
-import {RecommendationGrouperMetadata} from './metadata/grouper-metadata';
-import {RecommendationSorterMetadata} from './metadata/sorter-metadata';
+import {RECOMMENDATION_GROUPER_METADATA} from './metadata/grouper-metadata';
+import {RECOMMENDATION_SORTER_METADATA} from './metadata/sorter-metadata';
 
 @Component({
   selector: 'recommendations-page',
@@ -30,14 +30,12 @@ export class RecommendationsPage {
 
   filterer = new Filterer({tokenizeItem: tokenizeRecommendation});
 
-  grouper = new Grouper({metadata: RecommendationGrouperMetadata});
+  grouper = new Grouper({metadata: RECOMMENDATION_GROUPER_METADATA});
 
-  sorter = new Sorter({metadata: RecommendationSorterMetadata});
+  sorter = new Sorter({metadata: RECOMMENDATION_SORTER_METADATA});
 
   recommendationGroups =
       this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort(), this.grouper.group());
-
-  trackById = (_i: number, r: Recommendation) => r.id;
 
   trackByGroupId = (_i: number, g: Group<Recommendation>) => g.id;
 
@@ -66,13 +64,6 @@ export class RecommendationsPage {
   add() {
     this.recommendationDialog.create(
         this.activeRepo.activeConfig, this.activeRepo.activeData, this.dataResourcesMap);
-  }
-
-  matchesFilter(recommendation: Recommendation) {
-    const values: any[] = [];
-    Object.keys(recommendation)
-        .forEach(key => values.push(JSON.stringify((recommendation as any)[key] as any)));
-    return values.join(';').toLowerCase().indexOf(this.filter.value.toLowerCase()) != -1;
   }
 
   editJson() {

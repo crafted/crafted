@@ -57,6 +57,6 @@ export class Remover {
 
   private remove(repoStore: DataStore) {
     [repoStore.contributors, repoStore.items, repoStore.labels].forEach(dao => dao.removeAll());
-    this.loadedRepos.removeLoadedRepo(repoStore.name!);
+    this.loadedRepos.removeLoadedRepo(repoStore.name);
   }
 }

@@ -5,7 +5,7 @@ import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
-import {MaterialColors} from '../../dashboard/widget-view';
+import {MATERIAL_COLORS} from '../../dashboard/widget-view';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {TimeSeriesEditor} from './time-series-editor';
@@ -21,19 +21,6 @@ export type TimeSeriesDataResourcesMap = Map<string, {
 export interface TimeSeriesWidgetDataConfig {
   dataResourcesMap: TimeSeriesDataResourcesMap;
   savedFiltererStates: Observable<SavedFiltererState[]>;
-}
-
-export function getTimeSeriesWidgetConfig(
-    dataResourcesMap: TimeSeriesDataResourcesMap,
-    savedFiltererStates: Observable<SavedFiltererState[]> =
-        of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
-  return {
-    id: 'timeSeries',
-    label: 'Time Series',
-    viewer: TimeSeries,
-    editor: TimeSeriesEditor,
-    config: {dataResourcesMap, savedFiltererStates}
-  };
 }
 
 interface DateCount {
@@ -93,7 +80,7 @@ export class TimeSeries<T> {
   ngOnInit() {
     const datasetData = this.data.options.datasets.map(datasetConfig => {
       const dataSourceProvider =
-          this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType)!;
+        this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType);
       const filterer = dataSourceProvider.filterer(datasetConfig.filtererState);
       const dataSource = dataSourceProvider.dataSource();
       return dataSource.data.pipe(filterer.filter());
@@ -116,7 +103,7 @@ export class TimeSeries<T> {
             label: datasetConfig.label,
             data: this.createData(items[index], datasetConfig),
             fill: false,
-            borderColor: datasetConfig.color || MaterialColors[index],
+            borderColor: datasetConfig.color || MATERIAL_COLORS[index],
           };
         });
 
@@ -154,9 +141,9 @@ export class TimeSeries<T> {
 
   private updateChart(datasets: Chart.ChartDataSets[], time: Chart.TimeScale) {
     // Remove animations since dataset changes can cause weird glitching
-    this.chart.config.options!.animation!.duration = 0;
+    this.chart.config.options.animation.duration = 0;
     this.chart.data.datasets = datasets;
-    this.chart.config.options!.scales!.xAxes![0].time = time;
+    this.chart.config.options.scales.xAxes[0].time = time;
     this.chart.update();
   }
 
@@ -171,13 +158,12 @@ export class TimeSeries<T> {
         dateCountsMap.set(date, 0);
       }
 
-      let count = dateCountsMap.get(date)!;
       switch (actionType) {
         case 'increment':
-          dateCountsMap.set(date, count + 1);
+          dateCountsMap.set(date, dateCountsMap.get(date) + 1);
           break;
         case 'decrement':
-          dateCountsMap.set(date, count - 1);
+          dateCountsMap.set(date, dateCountsMap.get(date) - 1);
           break;
       }
     });
@@ -212,7 +198,7 @@ export class TimeSeries<T> {
     items.forEach(item => {
       datasetConfig.actions.forEach(action => {
         const dataSource =
-            this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType)!.dataSource();
+          this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType).dataSource();
         // TODO: Error handling if the property does not exist
         const date = dataSource.getDataProperty(action.datePropertyId, item);
         if (date) {
@@ -223,7 +209,7 @@ export class TimeSeries<T> {
     const dateCounts = this.getDateCounts(dateActions);
 
     let accumulatedCount = 0;
-    let data: TimeSeriesData[] = [];
+    const data: TimeSeriesData[] = [];
     dateCounts.forEach((dateCount => {
       accumulatedCount += dateCount.count;
       data.push({
@@ -234,4 +220,17 @@ export class TimeSeries<T> {
 
     return data;
   }
+}
+
+export function getTimeSeriesWidgetConfig(
+  dataResourcesMap: TimeSeriesDataResourcesMap,
+  savedFiltererStates: Observable<SavedFiltererState[]> =
+    of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
+  return {
+    id: 'timeSeries',
+    label: 'Time Series',
+    viewer: TimeSeries,
+    editor: TimeSeriesEditor,
+    config: {dataResourcesMap, savedFiltererStates}
+  };
 }
