@@ -24,7 +24,7 @@
       ],
       "@crafted/components": [
         "dist/components"
-      ],
+      ]
     }
   }
 }
