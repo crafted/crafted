@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
@@ -18,7 +18,8 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 export class DatabasePage {
   isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
-  isLoaded = this.activeRepo.name.pipe(map(activeRepo => this.loadedRepos.isLoaded(activeRepo)));
+  isLoaded = combineLatest(this.activeRepo.name, this.loadedRepos.repos$)
+    .pipe(map(results => results[1].indexOf(results[0]) !== -1));
 
   repoLabels = this.activeRepo.data.pipe(
       mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
@@ -40,6 +41,5 @@ export class DatabasePage {
 }
 
 function getStoreListCount(store: Observable<DataStore>, type: RepoDaoType) {
-  return store.pipe(
-    mergeMap(s => (s[type] as ListDao<any>).list), map(list => list.length));
+  return store.pipe(mergeMap(s => (s[type] as ListDao<any>).list), map(list => list.length));
 }

@@ -1,7 +1,7 @@
 <div class="info">
   <div class="title"> {{activeRepo.name | async}} </div>
 
-  <load-data #loadData></load-data>
+  <load-data #loadData [style.display]="(isLoaded | async) ? 'none' : ''"></load-data>
 
   <div class="description" *ngIf="!(isEmpty | async)">
     <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
@@ -23,10 +23,10 @@
       </div>
     </ng-container>
 
-    <button mat-button class="remove" *ngIf="(isLoaded | async) && loadData"
-            color="warn" (click)="remover.removeAllData()">
-      Remove all locally stored data (includes dashboards, recommendations, and
-      queries)
+    <button (click)="remover.removeAllData(activeRepo.activeData, true)"
+            *ngIf="(isLoaded | async) && !(loadData.isLoading | async)" class="remove"
+            color="warn" mat-button>
+      Remove data
     </button>
   </div>
 </div>

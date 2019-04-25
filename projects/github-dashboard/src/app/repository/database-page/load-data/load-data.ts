@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
-import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
-import {filter, map, mergeMap, startWith, takeUntil, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {filter, map, mergeMap, startWith, tap} from 'rxjs/operators';
 import {Contributor} from '../../../github/app-types/contributor';
 import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
@@ -29,8 +29,6 @@ export class LoadData {
 
   isLoading = new BehaviorSubject<boolean>(false);
 
-  completedTypes = new Set();
-
   formGroup = new FormGroup(
       {issueDateType: new FormControl('last updated since'), issueDate: new FormControl('')});
 
@@ -52,23 +50,15 @@ export class LoadData {
 
   isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
-  private destroyed = new Subject();
-
   constructor(
       private loadedRepos: LoadedRepos, private activeRepo: ActiveStore,
       private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
     const lastMonth = new Date();
     lastMonth.setDate(new Date().getDate() - 30);
     this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
-
-    this.isLoading.pipe(takeUntil(this.destroyed)).subscribe(isLoading => {
-      isLoading ? this.formGroup.disable() : this.formGroup.enable();
-    });
   }
 
   ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
     this.isLoading.next(false);
   }
 

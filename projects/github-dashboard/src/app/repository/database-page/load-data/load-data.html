@@ -1,8 +1,8 @@
 <div class="load">
 
-  <div class="action">
+  <div *ngIf="!(isLoading | async)" class="action">
     <button mat-raised-button color="accent" class="load-data"
-            [disabled]="state" (click)="store()">
+            (click)="store()" [disabled]="!!state">
       Load Data
     </button>
 
@@ -33,12 +33,13 @@
 </div>
 
 
-<ng-container *ngIf="state?.progress; let progress">
+<ng-container *ngIf="state?.progress as progress">
   <div class="loading theme-secondary-text">
     {{state.label}}
     {{'(' + (state.progress.value | number:'1.0-0') + '% complete)'}}
   </div>
   <mat-progress-bar *ngIf="progress.type === 'determinate'" mode="determinate"
+                    color="accent"
                     [value]="state.progress.value">
   </mat-progress-bar>
 
