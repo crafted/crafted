@@ -1,10 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CdkPortal} from '@angular/cdk/portal';
+import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
 import {DataStore, RepoDaoType} from '../services/dao/data-dao';
 import {ListDao} from '../services/dao/list-dao';
+import {Header} from '../services/header';
 import {Remover} from '../services/remover';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 
@@ -16,6 +18,8 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatabasePage {
+  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
+
   isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
   isLoaded = combineLatest(this.activeRepo.name, this.loadedRepos.repos$)
@@ -37,7 +41,13 @@ export class DatabasePage {
   ];
 
   constructor(
-      public activeRepo: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover) {}
+    private header: Header, public activeRepo: ActiveStore, private loadedRepos: LoadedRepos,
+    public remover: Remover) {
+  }
+
+  ngOnInit() {
+    this.header.toolbarOutlet.next(this.toolbarActions);
+  }
 }
 
 function getStoreListCount(store: Observable<DataStore>, type: RepoDaoType) {

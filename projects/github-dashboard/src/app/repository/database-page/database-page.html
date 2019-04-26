@@ -17,16 +17,24 @@
 
         <ng-container [ngSwitch]="typeInfo.type">
           <ng-container *ngSwitchCase="'labels'">
-            <label-list [labelIds]="(repoLabels | async) || []"> </label-list>
+            <label-list [labelIds]="(repoLabels | async) || []"></label-list>
           </ng-container>
         </ng-container>
       </div>
     </ng-container>
-
-    <button (click)="remover.removeAllData(activeRepo.activeData, true)"
-            *ngIf="(isLoaded | async) && !(loadData.isLoading | async)" class="remove"
-            color="warn" mat-button>
-      Remove data
-    </button>
   </div>
 </div>
+
+<ng-template cdkPortal>
+  <button *ngIf="isLoaded | async" [matMenuTriggerFor]="settings" class="settings"
+          mat-icon-button>
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</ng-template>
+
+<mat-menu #settings="matMenu">
+  <button (click)="remover.removeAllData(activeRepo.activeData, true)" mat-menu-item>
+    <mat-icon> delete</mat-icon>
+    Remove data
+  </button>
+</mat-menu>
