@@ -29,7 +29,7 @@ export interface Recommendation {
   id?: string;
   message?: string;
   type?: RecommendationType;
-  data?: string;
+  dataType?: string;
   actionType?: ActionType;
   action?: Action;
   filtererState?: FiltererState;

@@ -5,7 +5,7 @@ import {Sorter, SorterState} from '../sorter';
 import {Viewer, ViewerState} from '../viewer';
 
 export interface DataResources {
-  id: string;
+  type: string;
   label: string;
   viewer: (initialState?: ViewerState) => Viewer;
   filterer: (initialState?: FiltererState) => Filterer;

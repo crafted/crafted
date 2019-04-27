@@ -103,14 +103,14 @@ function getSavedFiltererStates(queries: Query[], recommendations: Recommendatio
     state: query.filtererState,
     label: query.name,
     group: 'Queries',
-    dataSourceType: query.dataSourceType,
+    dataType: query.dataType,
   }));
 
   recommendations.forEach(recommendation => savedFiltererStates.push({
     state: recommendation.filtererState,
     label: recommendation.message,
     group: 'Recommendations',
-    dataSourceType: recommendation.data
+    dataType: recommendation.dataType
   }));
 
   return savedFiltererStates;

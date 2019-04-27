@@ -17,7 +17,7 @@ import {ListEditor} from './list-editor';
 
 
 export type ListDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   sorter: (initialValue?: SorterState) => Sorter,
@@ -32,7 +32,7 @@ export interface ListWidgetDataConfig {
 }
 
 export interface ListOptions {
-  dataSourceType: string;
+  dataType: string;
   listLength: number;
   sorterState: SorterState;
   viewerState: ViewerState;
@@ -54,7 +54,7 @@ export class List {
 
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<ListOptions, ListWidgetDataConfig>) {
     const dataSourceProvider =
-      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
+      this.data.config.dataResourcesMap.get(this.data.options.dataType);
     const sorter = dataSourceProvider.sorter(this.data.options.sorterState);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const dataSource = dataSourceProvider.dataSource();

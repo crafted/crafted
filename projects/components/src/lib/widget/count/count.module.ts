@@ -9,7 +9,7 @@ import {Count} from './count';
 import {CountEditor} from './count-editor';
 
 export interface CountOptions {
-  dataSourceType: string;
+  dataType: string;
   fontSize: 'small'|'normal'|'large';
   filtererState: FiltererState;
 }

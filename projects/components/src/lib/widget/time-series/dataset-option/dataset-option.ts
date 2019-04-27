@@ -13,7 +13,7 @@ import {TimeSeriesDataResourcesMap} from '../time-series';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatasetOption {
-  dataSourceTypeOptions: {id: string, label: string}[] = [];
+  dataTypeOptions: {id: string, label: string}[] = [];
 
   // TODO: Should be determined by data source
   datePropertyIdOptions: {id: string, label: string}[] = [
@@ -55,16 +55,15 @@ export class DatasetOption {
     this.actionsFormArray = this.controlContainer.control.get('actions') as FormArray;
 
     this.dataResourcesMap.forEach(
-        dataResource =>
-            this.dataSourceTypeOptions.push({id: dataResource.id, label: dataResource.label}));
+      d => this.dataTypeOptions.push({id: d.type, label: d.label}));
 
-    const dataSourceTypeControl = this.controlContainer.control.get('dataSourceType');
-    if (!dataSourceTypeControl.value) {
-      dataSourceTypeControl.setValue(this.dataSourceTypeOptions[0].id);
+    const dataTypeForm = this.controlContainer.control.get('dataType');
+    if (!dataTypeForm.value) {
+      dataTypeForm.setValue(this.dataTypeOptions[0].id);
     }
 
-    dataSourceTypeControl.valueChanges
-        .pipe(takeUntil(this.destroyed), startWith(dataSourceTypeControl.value))
+    dataTypeForm.valueChanges
+      .pipe(takeUntil(this.destroyed), startWith(dataTypeForm.value))
         .subscribe(value => {
           const dataSourceProvider = this.dataResourcesMap.get(value);
           this.dataSource = dataSourceProvider.dataSource();

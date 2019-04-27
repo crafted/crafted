@@ -12,7 +12,7 @@ import {TimeSeriesEditor} from './time-series-editor';
 
 
 export type TimeSeriesDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   dataSource: () => DataSource,
@@ -50,7 +50,7 @@ export interface DatasetConfig {
   color: string;
   seriesType: 'count'|'accumulate';
   actions: DatasetConfigAction[];
-  dataSourceType: string;
+  dataType: string;
   filtererState: FiltererState;
 }
 
@@ -80,7 +80,7 @@ export class TimeSeries<T> {
   ngOnInit() {
     const datasetData = this.data.options.datasets.map(datasetConfig => {
       const dataSourceProvider =
-        this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType);
+        this.data.config.dataResourcesMap.get(datasetConfig.dataType);
       const filterer = dataSourceProvider.filterer(datasetConfig.filtererState);
       const dataSource = dataSourceProvider.dataSource();
       return dataSource.data.pipe(filterer.filter());
@@ -198,7 +198,7 @@ export class TimeSeries<T> {
     items.forEach(item => {
       datasetConfig.actions.forEach(action => {
         const dataSource =
-          this.data.config.dataResourcesMap.get(datasetConfig.dataSourceType).dataSource();
+          this.data.config.dataResourcesMap.get(datasetConfig.dataType).dataSource();
         // TODO: Error handling if the property does not exist
         const date = dataSource.getDataProperty(action.datePropertyId, item);
         if (date) {

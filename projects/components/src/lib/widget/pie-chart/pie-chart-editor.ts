@@ -21,7 +21,7 @@ export class PieChartEditor implements WidgetEditor {
   dataSource: DataSource<any>;
 
   form = new FormGroup({
-    dataSourceType: new FormControl(null),
+    dataType: new FormControl(null),
     grouperState: new FormControl(null),
     filteredGroups: new FormControl(null),
     filtererState: new FormControl(null),
@@ -35,23 +35,22 @@ export class PieChartEditor implements WidgetEditor {
 
   constructor(@Inject(WIDGET_DATA) public data:
                   WidgetData<PieChartOptions, PieChartWidgetDataConfig>) {
-    // TODO: Filter based on datasource type
+    // TODO: Filter based on data type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-        dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
-    const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType').setValue(initialDataSourceType);
+      d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    // TODO: Add in a datasource type selector
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
+    const dataType = this.dataOptions[0].id;
+    this.form.get('dataType').setValue(dataType);
+    const dataSourceProvider = data.config.dataResourcesMap.get(dataType);
     this.grouper = dataSourceProvider.grouper();
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
 
     const value = data.options;
     if (value) {
-      if (value.dataSourceType) {
-        this.form.get('dataSourceType').setValue(value.dataSourceType);
+      if (value.dataType) {
+        this.form.get('dataType').setValue(value.dataType);
       }
       if (value.grouperState) {
         this.form.get('grouperState').setValue(value.grouperState);

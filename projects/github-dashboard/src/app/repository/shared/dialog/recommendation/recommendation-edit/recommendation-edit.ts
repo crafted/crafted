@@ -20,10 +20,6 @@ export interface RecommendationEditData {
   dataResourcesMap: Map<string, DataResources>;
 }
 
-export interface RecommendationEditResult {
-  recommendation: Recommendation;
-}
-
 @Component({
   styleUrls: ['recommendation-edit.scss'],
   templateUrl: 'recommendation-edit.html',
@@ -34,7 +30,7 @@ export class RecommendationEdit {
   formGroup = new FormGroup({
     message: new FormControl('', Validators.required),
     type: new FormControl('', Validators.required),
-    data: new FormControl('', Validators.required),
+    dataType: new FormControl('', Validators.required),
     action: new FormControl(null),
     actionType: new FormControl('', Validators.required),
     filtererState: new FormControl(null),
@@ -84,9 +80,9 @@ export class RecommendationEdit {
     actionForm.validator = actionValidator(this.formGroup);
 
     this.data.dataResourcesMap.forEach(
-        (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
+      d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    const dataForm = this.formGroup.get('data');
+    const dataForm = this.formGroup.get('dataType');
     dataForm.valueChanges.subscribe((value: string) => {
       const dataResource = this.data.dataResourcesMap.get(value);
       this.filterer = dataResource.filterer();
@@ -97,7 +93,7 @@ export class RecommendationEdit {
       this.formGroup.setValue({
         message: data.recommendation.message || '',
         type: data.recommendation.type || 'warning',
-        data: data.recommendation.data || this.dataOptions[0].id,
+        dataType: data.recommendation.dataType || this.dataOptions[0].id,
         actionType: data.recommendation.actionType || 'add-label',
         action: data.recommendation.action || null,
         filtererState: data.recommendation.filtererState || null
@@ -129,7 +125,7 @@ export class RecommendationEdit {
         ...this.data.recommendation,
         message: formValue.message,
         type: formValue.type,
-        data: formValue.data,
+        dataType: formValue.dataType,
         actionType: formValue.actionType,
         action: formValue.action,
         filtererState: formValue.filtererState,

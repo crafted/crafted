@@ -51,8 +51,8 @@ export class QueryPage<T> {
           if (results[0].id === 'new') {
             const configStore = this.activeRepo.activeConfig;
             return newQuery(results[1], configStore).pipe(tap(query => {
-              if (!query.dataSourceType && this.dataResourceOptions.length === 1) {
-                query.dataSourceType = this.dataResourceOptions[0].id;
+              if (!query.dataType && this.dataResourceOptions.length === 1) {
+                query.dataType = this.dataResourceOptions[0].id;
               }
             }));
           }
@@ -63,8 +63,8 @@ export class QueryPage<T> {
 
   queryResources: Observable<QueryResources> = this.query.pipe(
     map(query => {
-      if (query.dataSourceType) {
-        const dataResource = this.dataResourcesMap.get(query.dataSourceType);
+      if (query.dataType) {
+        const dataResource = this.dataResourcesMap.get(query.dataType);
         return {
           viewer: dataResource.viewer(query.viewerState),
           filterer: dataResource.filterer(query.filtererState),
@@ -122,7 +122,7 @@ export class QueryPage<T> {
     private activeRepo: ActiveStore, private queryDialog: QueryDialog) {
     this.dataResourcesMap.forEach(
       dataResource =>
-        this.dataResourceOptions.push({id: dataResource.id, label: dataResource.label}));
+        this.dataResourceOptions.push({id: dataResource.type, label: dataResource.label}));
   }
 
   openSaveAsDialog() {
@@ -197,7 +197,7 @@ export class QueryPage<T> {
 
 function createNewQueryFromRecommendation(store: ConfigStore, id: string) {
   return store.recommendations.get(id).pipe(map(recommendation => {
-    const query: Query = {name: recommendation.message, dataSourceType: recommendation.data};
+    const query: Query = {name: recommendation.message, dataType: recommendation.dataType};
     query.filtererState = recommendation.filtererState;
     return query;
   }));
@@ -213,8 +213,8 @@ function newQuery(queryParamMap: ParamMap, configStore: ConfigStore): Observable
   if (widgetJson) {
     // TODO: Figure out how to convert widget into query again
     const widget: Widget = JSON.parse(widgetJson);
-    return of({name: widget.title || 'Widget', dataSourceType: 'issue'});
+    return of({name: widget.title || 'Widget', dataType: 'issue'});
   }
 
-  return of({name: 'New Query', dataSourceType: queryParamMap.get('type')});
+  return of({name: 'New Query', dataType: queryParamMap.get('type')});
 }

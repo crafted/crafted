@@ -20,7 +20,7 @@ export interface BarChartWidgetDataConfig {
 }
 
 export interface BarChartOptions {
-  dataSourceType: string;
+  dataType: string;
   grouperState: GrouperState;
   filteredGroups: string;
   filtererState: FiltererState;
@@ -51,9 +51,9 @@ export class BarChart {
     const config = this.widgetData.config;
     const options = this.widgetData.options;
 
-    const dataSourceProvider = config.dataResourcesMap.get(options.dataSourceType);
+    const dataSourceProvider = config.dataResourcesMap.get(options.dataType);
     if (!dataSourceProvider) {
-      throw Error(`Missing data source provider for type ${options.dataSourceType}`);
+      throw Error(`Missing data source provider for type ${options.dataType}`);
     }
 
     const filterer = dataSourceProvider.filterer(options.filtererState);

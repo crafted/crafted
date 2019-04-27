@@ -12,7 +12,7 @@ import {RecommendationEdit} from './recommendation-edit/recommendation-edit';
 import {RecommendationsEditJson} from './recommendations-edit-json/recommendations-edit-json';
 
 export type RecommendationsDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   dataSource: () => DataSource,

@@ -22,7 +22,7 @@ export class ListEditor implements WidgetEditor {
   dataSource: DataSource;
 
   form = new FormGroup({
-    dataSourceType: new FormControl(null),
+    dataType: new FormControl(null),
     listLength: new FormControl(5),
     sorterState: new FormControl(null),
     viewerState: new FormControl(null),
@@ -36,15 +36,13 @@ export class ListEditor implements WidgetEditor {
   }
 
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<ListOptions, ListWidgetDataConfig>) {
-    // TODO: Filter based on datasource type
+    // TODO: Filter based on data type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-        dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
-    const initialDataSourceType = this.dataOptions[0].id;
+      d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    this.form.get('dataSourceType').setValue(initialDataSourceType);
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
-
+    const dataType = this.dataOptions[0].id;
+    const dataSourceProvider = data.config.dataResourcesMap.get(dataType);
     this.sorter = dataSourceProvider.sorter();
     this.viewer = dataSourceProvider.viewer();
     this.filterer = dataSourceProvider.filterer();
@@ -52,8 +50,8 @@ export class ListEditor implements WidgetEditor {
 
     const value = data.options;
     if (value) {
-      if (value.dataSourceType) {
-        this.form.get('dataSourceType').setValue(value.dataSourceType);
+      if (value.dataType) {
+        this.form.get('dataType').setValue(value.dataType);
       }
       if (value.listLength) {
         this.form.get('listLength').setValue(value.listLength);

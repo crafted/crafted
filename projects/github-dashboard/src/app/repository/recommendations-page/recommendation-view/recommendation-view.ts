@@ -45,7 +45,7 @@ export class RecommendationView {
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.recommendation && this.recommendation) {
-      const provider = this.dataResourcesMap.get(this.recommendation.data);
+      const provider = this.dataResourcesMap.get(this.recommendation.dataType);
       const filterer = provider.filterer(this.recommendation.filtererState);
       this.resultsCount =
           provider.dataSource().data.pipe(filterer.filter(), map(items => items.length));

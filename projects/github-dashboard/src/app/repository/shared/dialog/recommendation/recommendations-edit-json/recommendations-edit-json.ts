@@ -16,8 +16,7 @@ type ValidationError =
   | 'missingId'
   | 'missingAction'
   | 'missingActionType'
-  |
-  'missingData'
+  | 'missingData'
   | 'missingFiltererState'
   | 'missingMessage'
   | 'missingType';
@@ -70,8 +69,8 @@ const ERRORS: {id: ValidationError, message: (r: Recommendation) => string}[] = 
 export class RecommendationsEditJson {
 
   constructor(
-      public dialogRef: MatDialogRef<RecommendationsEditJson>,
-      @Inject(MAT_DIALOG_DATA) public data: RecommendationsEditJsonData) {
+    public dialogRef: MatDialogRef<RecommendationsEditJson>,
+    @Inject(MAT_DIALOG_DATA) public data: RecommendationsEditJsonData) {
     const recommendations = data.recommendations.map(r => {
       const recommendation = ({...r});
       delete recommendation.dbAdded;
@@ -101,8 +100,8 @@ export class RecommendationsEditJson {
   }
 }
 
-function recommendationsValidator(control: AbstractControl): {[key: string]: any}|null {
-  const validation: {[key in string]: {recommendation: Recommendation|null}} = {};
+function recommendationsValidator(control: AbstractControl): {[key: string]: any} | null {
+  const validation: { [key in string]: {recommendation: Recommendation | null} } = {};
   let recommendations: Recommendation[];
 
   try {
@@ -132,11 +131,11 @@ function recommendationsValidator(control: AbstractControl): {[key: string]: any
       validation.missingActionType = {recommendation};
     }
 
-    if (!recommendation.data) {
+    if (!recommendation.dataType) {
       validation.missingData = {recommendation};
     }
 
-    if (!recommendation.filtererState) {
+    if (recommendation.filtererState === undefined) {
       validation.missingFiltererState = {recommendation};
     }
 

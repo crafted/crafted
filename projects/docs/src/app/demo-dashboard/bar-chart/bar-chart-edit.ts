@@ -19,7 +19,7 @@ export class BarChartEdit implements WidgetEditor {
   dataSource: DataSource<any>;
 
   form = new FormGroup({
-    dataSourceType: new FormControl(null),
+    dataType: new FormControl(null),
     grouperState: new FormControl(null),
     filteredGroups: new FormControl(null),
     filtererState: new FormControl(null),
@@ -30,19 +30,19 @@ export class BarChartEdit implements WidgetEditor {
   constructor(@Inject(WIDGET_DATA) public data:
                 WidgetData<BarChartOptions, BarChartWidgetDataConfig>) {
     this.data.config.dataResourcesMap.forEach(
-      dataSource => this.dataOptions.push({id: dataSource.id, label: dataSource.label}));
-    const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType').setValue(initialDataSourceType);
+      d => this.dataOptions.push({id: d.type, label: d.label}));
+    const initialDataType = this.dataOptions[0].id;
+    this.form.get('dataType').setValue(initialDataType);
 
-    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataSourceType);
+    const dataSourceProvider = data.config.dataResourcesMap.get(initialDataType);
     this.grouper = dataSourceProvider.grouper();
     this.filterer = dataSourceProvider.filterer();
     this.dataSource = dataSourceProvider.dataSource();
 
     const value = data.options;
     if (value) {
-      if (value.dataSourceType) {
-        this.form.get('dataSourceType').setValue(value.dataSourceType);
+      if (value.dataType) {
+        this.form.get('dataType').setValue(value.dataType);
       }
       if (value.grouperState) {
         this.form.get('grouperState').setValue(value.grouperState);

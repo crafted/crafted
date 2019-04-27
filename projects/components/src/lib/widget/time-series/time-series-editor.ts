@@ -20,7 +20,7 @@ export class TimeSeriesEditor implements WidgetEditor {
   ];
 
   form = new FormGroup({
-    dataSourceType: new FormControl(null),
+    dataType: new FormControl(null),
     start: new FormControl(null),
     end: new FormControl(null),
     group: new FormControl('week'),
@@ -54,7 +54,7 @@ export class TimeSeriesEditor implements WidgetEditor {
   }
 
   addDataset() {
-    const newDataset = this.createDataset();
+    const newDataset = createDataset();
     const datasetsFormArray = this.form.get('datasets') as FormArray;
     datasetsFormArray.push(newDataset);
     this.addAction(newDataset);
@@ -71,26 +71,24 @@ export class TimeSeriesEditor implements WidgetEditor {
   private initializeForm(value: TimeSeriesOptions) {
     const datasetsFormArray = this.form.get('datasets') as FormArray;
     value.datasets.forEach(dataset => {
-      const datasetFormGroup = this.createDataset();
-      dataset.actions.forEach(() => {
-        this.addAction(datasetFormGroup);
-      });
+      const datasetFormGroup = createDataset();
+      dataset.actions.forEach(() => this.addAction(datasetFormGroup));
       datasetsFormArray.push(datasetFormGroup);
     });
 
     this.form.setValue(value);
   }
+}
 
-  private createDataset() {
-    return new FormGroup({
-      label: new FormControl('New Series'),
-      color: new FormControl(''),
-      seriesType: new FormControl('count'),
-      actions: new FormArray([]),
-      dataSourceType: new FormControl(''),
-      filtererState: new FormControl(null),
-    });
-  }
+function createDataset() {
+  return new FormGroup({
+    label: new FormControl('New Series'),
+    color: new FormControl(''),
+    seriesType: new FormControl('count'),
+    actions: new FormArray([]),
+    dataType: new FormControl(''),
+    filtererState: new FormControl(null),
+  });
 }
 
 /**

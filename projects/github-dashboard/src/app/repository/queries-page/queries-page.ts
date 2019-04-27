@@ -37,14 +37,14 @@ const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
 })
 export class QueriesPage {
   queries = this.activeRepo.config.pipe(mergeMap(configStore => configStore.queries.list));
-  dataResourcesIds: string[] = [];
+  dataTypes: string[] = [];
   headerActions: Observable<HeaderContentAction[]> =
     this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));
 
   constructor(
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
     private router: Router, private activeRepo: ActiveStore) {
-    this.dataResourcesMap.forEach(dataResources => this.dataResourcesIds.push(dataResources.id));
+    this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 
   queryGroups = this.queries.pipe(map(queries => this.getSortedGroups(queries)));
@@ -66,7 +66,7 @@ export class QueriesPage {
   }
 
   private getQueryCount(query: Query): Observable<number> {
-    const dataSourceProvider = this.dataResourcesMap.get(query.dataSourceType);
+    const dataSourceProvider = this.dataResourcesMap.get(query.dataType);
     const filterer = dataSourceProvider.filterer(query.filtererState);
     const dataSource = dataSourceProvider.dataSource();
 
@@ -85,7 +85,7 @@ export class QueriesPage {
         id: query.id,
         name: query.name,
         count: this.getQueryCount(query),
-        type: query.dataSourceType,
+        type: query.dataType,
       });
     });
 

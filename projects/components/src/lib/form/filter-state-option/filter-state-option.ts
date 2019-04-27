@@ -8,7 +8,7 @@ export interface SavedFiltererState {
   state: FiltererState;
   group: string;
   label: string;
-  dataSourceType: string;
+  dataType: string;
 }
 
 interface SavedFiltererStateGroup {

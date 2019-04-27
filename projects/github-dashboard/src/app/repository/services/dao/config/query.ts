@@ -6,7 +6,7 @@ export interface Query {
   dbModified?: string;
   name?: string;
   group?: string;
-  dataSourceType?: string;
+  dataType?: string;
   filtererState?: FiltererState;
   grouperState?: GrouperState;
   sorterState?: SorterState;

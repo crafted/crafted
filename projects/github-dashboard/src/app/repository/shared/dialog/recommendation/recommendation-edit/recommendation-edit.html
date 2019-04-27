@@ -17,7 +17,7 @@
   </form-field>
 
   <form-field label="Data">
-    <mat-button-toggle-group formControlName="data">
+    <mat-button-toggle-group formControlName="dataType">
       <mat-button-toggle *ngFor="let option of dataOptions" [value]="option.id">
         {{option.label}}
       </mat-button-toggle>

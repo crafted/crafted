@@ -12,7 +12,7 @@ import {PieChartEditor} from './pie-chart-editor';
 
 
 export type PieChartDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   grouper: (initialValue?: GrouperState) => Grouper,
@@ -25,7 +25,7 @@ export interface PieChartWidgetDataConfig {
 }
 
 export interface PieChartOptions {
-  dataSourceType: string;
+  dataType: string;
   grouperState: GrouperState;
   filteredGroups: string;
   filtererState: FiltererState;
@@ -49,7 +49,7 @@ export class PieChart<T, G> {
 
   ngOnInit() {
     const dataSourceProvider =
-      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
+      this.data.config.dataResourcesMap.get(this.data.options.dataType);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const grouper = dataSourceProvider.grouper(this.data.options.grouperState);
     const dataSource = dataSourceProvider.dataSource();

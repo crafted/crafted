@@ -32,7 +32,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
   return new Map<string, DataResources>([
     [
       'issue', {
-        id: 'issue',
+      type: 'issue',
         label: 'Issues',
         dataSource: getDataSourceProvider(issues),
         viewer: getViewerProvider(labels, recommendations),
@@ -43,7 +43,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
     ],
     [
       'pr', {
-        id: 'pr',
+      type: 'pr',
         label: 'Pull Requests',
         dataSource: getDataSourceProvider(prs),
         viewer: getViewerProvider(labels, recommendations),

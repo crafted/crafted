@@ -11,7 +11,7 @@ import {CountOptions} from './count.module';
 
 
 export type CountDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   dataSource: () => DataSource,
@@ -42,7 +42,7 @@ export class Count {
 
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     const dataSourceProvider =
-      this.data.config.dataResourcesMap.get(this.data.options.dataSourceType);
+      this.data.config.dataResourcesMap.get(this.data.options.dataType);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const dataSource = dataSourceProvider.dataSource();
     this.count = dataSource.data.pipe(filterer.filter(), map(result => result.length));

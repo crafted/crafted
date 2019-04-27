@@ -40,14 +40,14 @@ export const RECOMMENDATION_SORTER_METADATA = new Map<string, SorterMetadata<Rec
   [
     'data', {
       label: 'Data',
-      comparator: (a, b) => a.data < b.data ? -1 : 1,
+    comparator: (a, b) => a.dataType < b.dataType ? -1 : 1,
     }
   ],
 
   [
     'resultsCount', {
       label: 'Results Count',
-      comparator: (a, b) => a.data < b.data ? -1 : 1,
+    comparator: (a, b) => a.dataType < b.dataType ? -1 : 1,
     }
   ],
 ]);

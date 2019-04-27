@@ -22,7 +22,7 @@ export class CountEditor implements WidgetEditor {
   dataSource: DataSource<any>;
 
   form = new FormGroup({
-    dataSourceType: new FormControl(null),
+    dataType: new FormControl(null),
     fontSize: new FormControl(48),
     filtererState: new FormControl(null),
   });
@@ -36,18 +36,18 @@ export class CountEditor implements WidgetEditor {
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-        (dataSource, type) => this.dataOptions.push({id: type, label: dataSource.label}));
-    const initialDataSourceType = this.dataOptions[0].id;
-    this.form.get('dataSourceType').setValue(initialDataSourceType);
+      d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    const dataResource = data.config.dataResourcesMap.get(initialDataSourceType);
+    const dataType = this.dataOptions[0].id;
+    this.form.get('dataType').setValue(dataType);
+    const dataResource = data.config.dataResourcesMap.get(dataType);
     this.filterer = dataResource.filterer();
     this.dataSource = dataResource.dataSource();
 
     const value = data.options;
     if (value) {
-      if (value.dataSourceType) {
-        this.form.get('dataSourceType').setValue(value.dataSourceType);
+      if (value.dataType) {
+        this.form.get('dataType').setValue(value.dataType);
       }
       if (value.fontSize) {
         this.form.get('fontSize').setValue(value.fontSize);

@@ -4,8 +4,8 @@
   </form-field>
 
   <form-field label="Data">
-    <mat-button-toggle-group formControlName="dataSourceType">
-      <mat-button-toggle *ngFor="let option of dataSourceTypeOptions"
+    <mat-button-toggle-group formControlName="dataType">
+      <mat-button-toggle *ngFor="let option of dataTypeOptions"
                          [value]="option.id">
         {{option.label}}
       </mat-button-toggle>
