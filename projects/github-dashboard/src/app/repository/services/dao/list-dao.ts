@@ -1,4 +1,4 @@
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
 import {filter, map, take} from 'rxjs/operators';
 import {AppIndexedDb, StoreId} from '../../utility/app-indexed-db';
 
@@ -18,9 +18,11 @@ export class ListDao<T extends IdentifiedObject> {
   rawList = new BehaviorSubject<T[]|null>(null);
   list = this.rawList.pipe(filter(v => !!v)) as Observable<T[]>;
 
-  get map(): BehaviorSubject<Map<string, T>> {
+  _map: ReplaySubject<Map<string, T>>;
+
+  get map(): ReplaySubject<Map<string, T>> {
     if (!this._map) {
-      this._map = new BehaviorSubject<Map<string, T>>(new Map<string, T>());
+      this._map = new ReplaySubject<Map<string, T>>(1);
       this.list.subscribe(list => {
         const valuesMap = new Map<string, T>();
         list.forEach(obj => valuesMap.set(obj.id, obj));
@@ -30,7 +32,6 @@ export class ListDao<T extends IdentifiedObject> {
 
     return this._map;
   }
-  _map: BehaviorSubject<Map<string, T>>;
 
   private repoIndexedDb: AppIndexedDb;
 

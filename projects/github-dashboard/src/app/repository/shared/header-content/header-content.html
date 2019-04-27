@@ -1,0 +1,26 @@
+<ng-template cdkPortal>
+  <div class="name">
+    {{name}}
+  </div>
+
+  <div class="actions">
+    <ng-container *ngFor="let action of actions; trackBy: trackById">
+      <div (click)="actionSelected.emit(action.id)">
+        <button *ngIf="action.isPrimary; else secondaryButton" [disabled]="action.isDisabled"
+                color="primary" mat-raised-button>
+          <mat-icon *ngIf="action.icon">{{action.icon}}</mat-icon>
+          {{action.text}}
+        </button>
+
+        <ng-template #secondaryButton>
+          <button [disabled]="action.isDisabled" [matTooltip]="action.tooltip" mat-stroked-button>
+            <mat-icon *ngIf="action.icon">{{action.icon}}</mat-icon>
+            {{action.text}}
+          </button>
+        </ng-template>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-content></ng-content>
+</ng-template>

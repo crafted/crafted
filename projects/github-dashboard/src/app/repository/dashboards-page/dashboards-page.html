@@ -1,12 +1,21 @@
-<ng-container *ngIf="list | async; let dashboards">
+<header-content (actionSelected)="handleHeaderAction($event)"
+                [actions]="headerActions | async"
+                name="Dashboards">
+</header-content>
+
+<ng-container *ngIf="dashboards$ | async as dashboards">
 
   <div *ngIf="!dashboards.length" class="empty-state theme-secondary-text">
     <mat-icon class="page-icon"> dashboard </mat-icon>
-    <div>Build dashboards to view your data through charts and graphs.
+    <div>
+      Build dashboards to view your data through charts and graphs.
     </div>
 
     <div class="create-new">
-      <ng-container *ngTemplateOutlet="newButton"></ng-container>
+      <button (click)="create()" class="create" color="accent"
+              mat-raised-button>
+        Create New Dashboard
+      </button>
     </div>
   </div>
 
@@ -41,10 +50,3 @@
     </div>
   </div>
 </ng-container>
-
-<ng-template cdkPortal #newButton>
-  <button mat-raised-button color="accent" class="create"
-          (click)="createDashboard()">
-    Create New Dashboard
-  </button>
-</ng-template>

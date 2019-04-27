@@ -1,9 +1,15 @@
-import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatButtonModule, MatDividerModule, MatIconModule, MatMenuModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatDividerModule,
+  MatIconModule,
+  MatMenuModule,
+  MatRippleModule
+} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {QueryEditModule} from '../shared/dialog/query/query-edit/query-edit.module';
+import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {QueryMenuModule} from '../shared/query-menu/query-menu.module';
 import {QueriesPage} from './queries-page';
 
@@ -22,9 +28,11 @@ export class QueriesPageRoutingModule {
     MatDividerModule,
     MatMenuModule,
     MatButtonModule,
-    PortalModule,
+    HeaderContentModule,
+    MatRippleModule,
     QueryEditModule,
     QueryMenuModule,
+    HeaderContentModule,
   ],
   declarations: [QueriesPage],
   exports: [QueriesPage],

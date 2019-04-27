@@ -1,13 +1,22 @@
-import {CdkPortal} from '@angular/cdk/portal';
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {Dashboard} from '@crafted/components';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Column, Dashboard} from '@crafted/components';
+import {Observable} from 'rxjs';
+import {map, mergeMap} from 'rxjs/operators';
 import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';
 import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
+import {HeaderContentAction} from '../shared/header-content/header-content';
 
+type DashboardsPageAction = 'editJson' | 'create';
+
+const HEADER_ACTIONS: HeaderContentAction<DashboardsPageAction>[] = [
+  {
+    id: 'create',
+    isPrimary: true,
+    text: 'Create New Dashboard',
+  },
+];
 
 @Component({
   selector: 'dashboards-page',
@@ -16,39 +25,31 @@ import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardsPage {
-
   constructor(
       private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
       private activeRepo: ActiveStore) {}
 
-  list = this.activeRepo.activeConfig.dashboards.list;
+  dashboards$ = this.activeRepo.config.pipe(mergeMap(store => store.dashboards.list));
 
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
+  headerActions: Observable<HeaderContentAction[]> =
+    this.dashboards$.pipe(map(dashboards => dashboards.length ? HEADER_ACTIONS : []));
 
-  private destroyed = new Subject();
   trackById = (_i: number, dashboard: Dashboard) => dashboard.id;
 
-  ngOnInit() {
-    this.list.pipe(takeUntil(this.destroyed)).subscribe(list => {
-      if (list.length) {
-        this.header.toolbarOutlet.next(this.toolbarActions);
-      } else {
-        this.header.toolbarOutlet.next(null);
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.header.toolbarOutlet.next(null);
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
-  createDashboard() {
-    this.router.navigate([`${this.activeRepo.activeName}/dashboard/new`]);
+  create() {
+    const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
+    const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
+    const id = this.activeRepo.activeConfig.dashboards.add(newDashboard);
+    this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
   }
 
   navigateToDashboard(id: string) {
     this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
+  }
+
+  handleHeaderAction(action: DashboardsPageAction) {
+    if (action === 'create') {
+      this.create();
+    }
   }
 }

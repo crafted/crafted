@@ -1,27 +1,37 @@
-import {CdkDrag, CdkDragRelease} from '@angular/cdk/drag-drop';
-import {CdkPortal} from '@angular/cdk/portal';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Widget} from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
-import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {map, take, takeUntil} from 'rxjs/operators';
+import {combineLatest, Observable, of} from 'rxjs';
+import {filter, map, mergeMap, shareReplay, take, tap} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {isMobile} from '../../utility/media-matcher';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {ConfigStore} from '../services/dao/config/config-dao';
 import {Query} from '../services/dao/config/query';
-import {Header} from '../services/header';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
+import {HeaderContentAction} from '../shared/header-content/header-content';
+
+interface QueryResources {
+  viewer: Viewer;
+  filterer: Filterer;
+  grouper: Grouper;
+  sorter: Sorter;
+  dataSource: DataSource;
+}
+
+type QueryPageHeaderAction = 'save' | 'saveAs';
+
+const NEW_QUERY_HEADER_ACTIONS: HeaderContentAction<QueryPageHeaderAction>[] = [
+  {
+    id: 'saveAs',
+    isPrimary: true,
+    text: 'Save Query As',
+  },
+];
 
 @Component({
   styleUrls: ['query-page.scss'],
@@ -32,131 +42,90 @@ import {QueryDialog} from '../shared/dialog/query/query-dialog';
 export class QueryPage<T> {
   isMobile = isMobile;
 
-  filterer: Filterer<T>;
+  dataResourceOptions: {id: string, label: string}[] = [];
 
-  grouper: Grouper<T>;
+  query: Observable<Query> =
+    combineLatest(this.activatedRoute.params, this.activatedRoute.queryParamMap)
+      .pipe(
+        mergeMap(results => {
+          if (results[0].id === 'new') {
+            const configStore = this.activeRepo.activeConfig;
+            return newQuery(results[1], configStore).pipe(tap(query => {
+              if (!query.dataSourceType && this.dataResourceOptions.length === 1) {
+                query.dataSourceType = this.dataResourceOptions[0].id;
+              }
+            }));
+          }
 
-  sorter: Sorter<T>;
+          return this.activeRepo.activeConfig.queries.get(results[0].id);
+        }),
+        shareReplay(1));
 
-  dataSource: DataSource<T>;
+  queryResources: Observable<QueryResources> = this.query.pipe(
+    map(query => {
+      if (query.dataSourceType) {
+        const dataResource = this.dataResourcesMap.get(query.dataSourceType);
+        return {
+          viewer: dataResource.viewer(query.viewerState),
+          filterer: dataResource.filterer(query.filtererState),
+          grouper: dataResource.grouper(query.grouperState),
+          sorter: dataResource.sorter(query.sorterState),
+          dataSource: dataResource.dataSource()
+        };
+      }
+    }),
+    filter(v => !!v), shareReplay(1));
 
-  viewer: Viewer<T, any>;
+  canSave = combineLatest(this.query, this.queryResources).pipe(mergeMap(results => {
+    const query = results[0];
+    const queryResources = results[1];
+    return combineLatest(
+      queryResources.viewer.isEquivalent(query.viewerState),
+      queryResources.filterer.isEquivalent(query.filtererState),
+      queryResources.grouper.isEquivalent(query.grouperState),
+      queryResources.sorter.isEquivalent(query.sorterState))
+      .pipe(map(equivalent => equivalent.some(r => !r)));
+  }));
 
   itemId =
-      this.activatedRoute.queryParamMap.pipe(map(queryParamsMap => queryParamsMap.get('item')));
-  public canSave: Observable<boolean>;
-  public activeItem: Observable<T|null>;
-  public listWidth = 500;
-  @ViewChild(CdkDrag) draggable: CdkDrag;
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
-  private destroyed = new Subject();
-  private getSubscription: Subscription;
+    this.activatedRoute.queryParamMap.pipe(map(queryParamsMap => queryParamsMap.get('item')));
 
-  constructor(
-      @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-      private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-      private activeRepo: ActiveStore, private header: Header, private queryDialog: QueryDialog,
-      private cd: ChangeDetectorRef) {
-    this.activatedRoute.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
-      const id = params.id;
-
-      if (this.getSubscription) {
-        this.getSubscription.unsubscribe();
-      }
-
-      if (id === 'new') {
-        const queryParamMap = this.activatedRoute.snapshot.queryParamMap;
-        const recommendationId = queryParamMap.get('recommendationId');
-        const widgetJson = queryParamMap.get('widget');
-
-        if (recommendationId) {
-          this.createNewQueryFromRecommendation(this.activeRepo.activeConfig, recommendationId);
-        } else if (widgetJson) {
-          // TODO: Figure out how to convert widget into query again
-          const widget: Widget = JSON.parse(widgetJson);
-          this.query = createNewQuery(widget.title || 'Widget', 'issue');
-        } else {
-          const type = queryParamMap.get('type') || '';
-          this.query = createNewQuery('New Query', type);
-        }
-
-        this.cd.markForCheck();
-      } else {
-        this.getSubscription =
-            this.activeRepo.activeConfig.queries.map.pipe(takeUntil(this.destroyed))
-                .subscribe(queriesMap => {
-                  const query = queriesMap.get(id);
-                  if (query) {
-                    this.query = query;
-                  }
-                  this.cd.markForCheck();
-                });
-      }
-    });
-  }
-
-  private _query: Query;
-
-  get query(): Query {
-    return this._query;
-  }
-
-  set query(query: Query) {
-    this._query = query;
-
-    const type = this._query.dataSourceType;
-    const dataResource = this.dataResourcesMap.get(type);
-    this.viewer = dataResource.viewer(this.query.viewerState);
-    this.filterer = dataResource.filterer(this.query.filtererState);
-    this.grouper = dataResource.grouper(this.query.grouperState);
-    this.sorter = dataResource.sorter(this.query.sorterState);
-    this.dataSource = dataResource.dataSource();
-
-    this.canSave = combineLatest(
-                       this.viewer.isEquivalent(query.viewerState),
-                       this.filterer.isEquivalent(query.filtererState),
-                       this.grouper.isEquivalent(query.grouperState),
-                       this.sorter.isEquivalent(query.sorterState))
-                       .pipe(map(results => results.some(result => !result)));
-
-    this.activeItem = combineLatest(this.dataSource.data, this.itemId).pipe(map(results => {
-      // TODO: Cannot assume this is Item
-      for (const item of results[0]) {
-        if ((item as any as Item).id === results[1]) {
+  activeItem = combineLatest(this.queryResources, this.itemId).pipe(mergeMap(result => {
+    return result[0].dataSource.data.pipe(map(data => {
+      for (const item of data) {
+        if ((item as any as Item).id === result[1]) {
           return item;
         }
       }
-      return null;
+    }));
+  }));
+
+  headerActions: Observable<HeaderContentAction[]> =
+    combineLatest(this.query, this.canSave).pipe(map(results => {
+      if (!results[0].id) {
+        return NEW_QUERY_HEADER_ACTIONS;
+      }
+
+      return [{
+        id: 'save',
+        isPrimary: true,
+        isDisabled: !results[1],
+        text: 'Save',
+      }];
     }));
 
-    this.header.title.next(this.query.name || '');
-    this.header.goBack = true;
-    this.cd.markForCheck();
-  }
+  listWidth = 500;
 
-  ngOnInit() {
-    this.header.toolbarOutlet.next(this.toolbarActions);
-  }
-
-  ngAfterViewInit() {
-    this.draggable.released.subscribe((releasedEvent: CdkDragRelease) => {
-      const transformStyle = releasedEvent.source.element.nativeElement.style.transform;
-      this.listWidth += +transformStyle.match(/-*\d+px/g)[0].match(/-*\d+/g)[0];
-      this.draggable.reset();
-    });
-  }
-
-  ngOnDestroy() {
-    this.header.toolbarOutlet.next(null);
-    this.destroyed.next();
-    this.destroyed.complete();
+  constructor(
+    @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
+    private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
+    private activeRepo: ActiveStore, private queryDialog: QueryDialog) {
+    this.dataResourcesMap.forEach(
+      dataResource =>
+        this.dataResourceOptions.push({id: dataResource.id, label: dataResource.label}));
   }
 
   openSaveAsDialog() {
-    const queryType = this.query.dataSourceType;
-    if (!queryType) {
-      throw Error('Missing query type');
-    }
     this.queryDialog.saveAsQuery().pipe(take(1)).subscribe(result => {
       if (result) {
         this.saveAs(result.name, result.group);
@@ -164,28 +133,32 @@ export class QueryPage<T> {
     });
   }
 
+  save() {
+    this.query.pipe(take(1)).subscribe(query => this.saveAs(query.name, query.group));
+  }
+
   saveAs(name: string, group: string) {
-    combineLatest(this.filterer.state, this.grouper.state, this.sorter.state, this.viewer.state)
-        .pipe(take(1))
-        .subscribe(results => {
-          this.query.name = name;
-          this.query.group = group;
-          const store = this.activeRepo.activeConfig;
-          const newQueryId = store.queries.add(this.query);
+    this.queryResources
+      .pipe(
+        mergeMap(
+          resources => combineLatest(
+            this.query, resources.filterer.state, resources.grouper.state,
+            resources.sorter.state, resources.viewer.state)),
+        take(1))
+      .subscribe(results => {
+        const states = {
+          filtererState: results[1],
+          grouperState: results[2],
+          sorterState: results[3],
+          viewerState: results[4],
+        };
+        const query = {...results[0], ...states, name, group};
+        const id = this.activeRepo.activeConfig.queries.add(query);
 
-          const queryState = {
-            filtererState: results[0],
-            grouperState: results[1],
-            sorterState: results[2],
-            viewerState: results[3],
-          };
-
-          this.activeRepo.activeConfig.queries.update({...this.query, ...queryState});
-
-          this.router.navigate(
-              [`${this.activeRepo.activeData.name}/query/${newQueryId}`],
-              {replaceUrl: true, queryParamsHandling: 'merge'});
-        });
+        this.router.navigate(
+          [`${this.activeRepo.activeData.name}/query/${id}`],
+          {replaceUrl: true, queryParamsHandling: 'merge'});
+      });
   }
 
   navigateToItem(itemId: number) {
@@ -201,21 +174,47 @@ export class QueryPage<T> {
     }
   }
 
-  private createNewQueryFromRecommendation(store: ConfigStore, id: string) {
-    store.recommendations.list.pipe(take(1)).subscribe(list => {
-      list.forEach(r => {
-        if (r.id === id) {
-          this.query = createNewQuery('New Query', 'issue');
-          if (r.filtererState) {
-            this.filterer.setState(r.filtererState);
-          }
-          this.cd.markForCheck();
-        }
-      });
+  handleHeaderAction(action: QueryPageHeaderAction) {
+    switch (action) {
+      case 'save':
+        this.save();
+        break;
+      case 'saveAs':
+        this.openSaveAsDialog();
+        break;
+    }
+  }
+
+  createQueryWithType(type: string) {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute.parent,
+      queryParams: {type},
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
     });
   }
 }
 
-function createNewQuery(name: string, dataSourceType: string): Query {
-  return {name, dataSourceType};
+function createNewQueryFromRecommendation(store: ConfigStore, id: string) {
+  return store.recommendations.get(id).pipe(map(recommendation => {
+    const query: Query = {name: recommendation.message, dataSourceType: recommendation.data};
+    query.filtererState = recommendation.filtererState;
+    return query;
+  }));
+}
+
+function newQuery(queryParamMap: ParamMap, configStore: ConfigStore): Observable<Query> {
+  const recommendationId = queryParamMap.get('recommendationId');
+  if (recommendationId) {
+    return createNewQueryFromRecommendation(configStore, recommendationId);
+  }
+
+  const widgetJson = queryParamMap.get('widget');
+  if (widgetJson) {
+    // TODO: Figure out how to convert widget into query again
+    const widget: Widget = JSON.parse(widgetJson);
+    return of({name: widget.title || 'Widget', dataSourceType: 'issue'});
+  }
+
+  return of({name: 'New Query', dataSourceType: queryParamMap.get('type')});
 }

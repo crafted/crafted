@@ -15,6 +15,9 @@
 
 .description {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 64px;
 }
 
 .title {
@@ -47,4 +50,8 @@ label-list {
 
 .settings {
   margin-right: 16px;
+}
+
+button {
+  margin: auto;
 }

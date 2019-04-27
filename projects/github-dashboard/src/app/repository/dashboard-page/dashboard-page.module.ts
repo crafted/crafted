@@ -1,4 +1,3 @@
-import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -11,9 +10,8 @@ import {
   PieChartModule,
   TimeSeriesModule
 } from '@crafted/components';
-import {
-  ItemDetailDialogModule
-} from '../shared/dialog/item-detail-dialog/item-detail-dialog.module';
+import {ItemDetailDialogModule} from '../shared/dialog/item-detail-dialog/item-detail-dialog.module';
+import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {DashboardPage} from './dashboard-page';
 
 const routes: Routes = [{
@@ -30,12 +28,12 @@ export class DashboardPageRoutingModule {
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    PortalModule,
     ReactiveFormsModule,
     DashboardViewModule,
     DashboardPageRoutingModule,
     PieChartModule,
     ListModule,
+    HeaderContentModule,
     CountModule,
     TimeSeriesModule,
     ItemDetailDialogModule,

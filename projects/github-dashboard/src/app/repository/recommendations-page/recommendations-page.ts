@@ -1,16 +1,31 @@
-import {CdkPortal} from '@angular/cdk/portal';
-import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
-import {Subject} from 'rxjs';
-import {mergeMap, take, takeUntil} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {map, mergeMap, take} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Recommendation} from '../services/dao/config/recommendation';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
+import {HeaderContentAction} from '../shared/header-content/header-content';
 import {RECOMMENDATION_GROUPER_METADATA} from './metadata/grouper-metadata';
 import {RECOMMENDATION_SORTER_METADATA} from './metadata/sorter-metadata';
+
+type RecommendationAction = 'editJson' | 'create';
+
+const HEADER_ACTIONS: HeaderContentAction<RecommendationAction>[] = [
+  {
+    id: 'editJson',
+    icon: 'code',
+    tooltip: 'Edit recommendations in JSON format',
+  },
+  {
+    id: 'create',
+    isPrimary: true,
+    text: 'Create New Recommendation',
+  },
+];
 
 @Component({
   selector: 'recommendations-page',
@@ -21,12 +36,11 @@ import {RECOMMENDATION_SORTER_METADATA} from './metadata/sorter-metadata';
 export class RecommendationsPage {
   filter = new FormControl('');
 
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
-
-  private destroyed = new Subject();
-
   dataSource = new DataSource(
       {data: this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list))});
+
+  headerActions: Observable<HeaderContentAction[]> =
+    this.dataSource.data.pipe(map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
 
   filterer = new Filterer({tokenizeItem: tokenizeRecommendation});
 
@@ -44,24 +58,7 @@ export class RecommendationsPage {
       private header: Header, private activeRepo: ActiveStore,
       private recommendationDialog: RecommendationDialog) {}
 
-  ngOnInit() {
-    this.dataSource.data.pipe(takeUntil(this.destroyed)).subscribe(list => {
-      if (list.length) {
-        this.header.toolbarOutlet.next(this.toolbarActions);
-      } else {
-        this.header.toolbarOutlet.next(null);
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
-    this.header.toolbarOutlet.next(null);
-  }
-
-
-  add() {
+  create() {
     this.recommendationDialog.create(
         this.activeRepo.activeConfig, this.activeRepo.activeData, this.dataResourcesMap);
   }
@@ -70,6 +67,17 @@ export class RecommendationsPage {
     this.activeRepo.activeConfig.recommendations.list.pipe(take(1)).subscribe(list => {
       this.recommendationDialog.jsonEditor(list, this.activeRepo.activeConfig);
     });
+  }
+
+  handleHeaderAction(action: RecommendationAction) {
+    switch (action) {
+      case 'editJson':
+        this.editJson();
+        break;
+      case 'create':
+        this.create();
+        break;
+    }
   }
 }
 

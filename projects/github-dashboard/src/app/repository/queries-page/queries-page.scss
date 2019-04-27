@@ -59,27 +59,3 @@
     border-radius: 8px;
   }
 }
-
-.secondary {
-  height: 40px;
-  width: 40px;
-  opacity: 0;
-  transition: opacity 150ms ease-in-out;
-
-  .new-buttons:hover &, .new-buttons.menu-open & {
-    opacity: 1;
-  }
-}
-
-::ng-deep .recommendations-menu {
-  max-width: 40vw;
-}
-
-button.create {
-  margin-right: 16px;
-
-  .button-text {
-    display: flex;
-    align-items: center;
-  }
-}

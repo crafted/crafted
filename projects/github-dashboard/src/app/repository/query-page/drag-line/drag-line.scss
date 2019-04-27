@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+}
+
+.drag {
+  cursor: col-resize;
+  border-width: 1px;
+  border-style: solid;
+}

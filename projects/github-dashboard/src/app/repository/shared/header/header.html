@@ -12,13 +12,9 @@
     </ng-template>
   </button>
 
-  <div class="name"> {{header.title | async}}</div>
-
-  <div class="end">
-    <ng-template *ngIf="header.toolbarOutlet | async; let toolbarOutlet"
-                 [cdkPortalOutlet]="toolbarOutlet">
-    </ng-template>
-  </div>
+  <ng-template *ngIf="header.toolbarOutlet | async as toolbarOutlet"
+               [cdkPortalOutlet]="toolbarOutlet">
+  </ng-template>
 </mat-toolbar>
 
 <mat-divider></mat-divider>

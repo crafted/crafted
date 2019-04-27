@@ -1,16 +1,7 @@
-import {CdkPortal} from '@angular/cdk/portal';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Inject,
-  ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  Column,
   Dashboard,
   getCountWidgetConfig,
   getListWidgetConfig,
@@ -23,14 +14,16 @@ import {
 } from '@crafted/components';
 import {DataResources} from '@crafted/data';
 import * as Chart from 'chart.js';
-import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
-import {delay, map, mergeMap, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
-import {Header} from '../services/header';
+import {Query} from '../services/dao/config/query';
+import {Recommendation} from '../services/dao/config/recommendation';
 import {Theme} from '../services/theme';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
+import {HeaderContentAction} from '../shared/header-content/header-content';
 
 @Component({
   selector: 'dashboard-page',
@@ -39,28 +32,24 @@ import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-
   savedFiltererStates = this.activeRepo.config.pipe(
       mergeMap(config => combineLatest(config.queries.list, config.recommendations.list)),
-      map(result => {
-        const savedFiltererStates: SavedFiltererState[] = [];
-        result[0].forEach(query => savedFiltererStates.push({
-          state: query.filtererState,
-          label: query.name,
-          group: 'Queries',
-          dataSourceType: query.dataSourceType,
-        }));
-        result[1].forEach(recommendation => savedFiltererStates.push({
-          state: recommendation.filtererState,
-          label: recommendation.message,
-          group: 'Recommendations',
-          dataSourceType: ''  // TODO: Needs to be provided by the recommendation
-        }));
-        return savedFiltererStates;
-      }));
-  dashboard: Dashboard;
+    map(result => getSavedFiltererStates(result[0], result[1])));
+
+  dashboard: Observable<Dashboard> =
+    combineLatest(this.activeRepo.config, this.activatedRoute.params)
+      .pipe(mergeMap(results => results[0].dashboards.get(results[1].id)), shareReplay(1));
 
   edit = new BehaviorSubject<boolean>(false);
+
+  headerActions: Observable<HeaderContentAction[]> = this.edit.pipe(map(edit => {
+    return [{
+      id: 'toggleEdit',
+      isPrimary: edit,
+      text: edit ? 'View' : 'Edit',
+    }];
+  }));
+
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
     count: getCountWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
     list: getListWidgetConfig(
@@ -72,79 +61,22 @@ export class DashboardPage {
     pie: getPieChartWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
     timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
   };
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
-  private destroyed = new Subject();
-
-  private getSubscription: Subscription;
 
   constructor(
     private dialog: MatDialog, private elementRef: ElementRef,
     @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
     private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
-    private activeRepo: ActiveStore, private header: Header, private cd: ChangeDetectorRef) {
+    private activeRepo: ActiveStore) {
     // TODO: Needs to listen for theme changes to know when this should change
     Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
 
-    this.activatedRoute.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
-      const id = params.id;
-
-      if (this.getSubscription) {
-        this.getSubscription.unsubscribe();
-      }
-
-      if (id === 'new') {
-        this.createNewDashboard();
-        return;
-      }
-
-      // Delay added to improve page responsiveness on first load
-      this.getSubscription =
-        this.activeRepo.activeConfig.dashboards.map.pipe(delay(0), takeUntil(this.destroyed))
-          .subscribe(dashboardsMap => {
-            const dashboard = dashboardsMap.get(id);
-            if (dashboard) {
-              this.setDashboard(dashboard);
-            }
-            this.cd.markForCheck();
-          });
-    });
+    this.dashboard.pipe(take(1)).subscribe(dashboard => this.edit.next(!hasWidgets(dashboard)));
   }
 
   trackByIndex = (i: number) => i;
 
-  private createNewDashboard() {
-    const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
-    const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
-    this.setDashboard(newDashboard);
-    const newDashboardId = this.activeRepo.activeConfig.dashboards.add(newDashboard);
-    this.router.navigate(
-        [`${this.activeRepo.activeName}/dashboard/${newDashboardId}`],
-        {replaceUrl: true, queryParamsHandling: 'merge'});
-  }
-
-  ngOnInit() {
-    this.header.toolbarOutlet.next(this.toolbarActions);
-  }
-
-  ngOnDestroy() {
-    this.header.toolbarOutlet.next(null);
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
   saveDashboard(dashboard: Dashboard) {
     this.activeRepo.activeConfig.dashboards.update(dashboard);
-  }
-
-  setDashboard(dashboard: Dashboard) {
-    this.dashboard = dashboard;
-    this.header.title.next(this.dashboard.name || '');
-
-    if (!hasWidgets(dashboard)) {
-      this.edit.next(true);
-    }
-
-    this.header.goBack = true;
   }
 
   openQuery(widget: Widget) {
@@ -156,4 +88,30 @@ export class DashboardPage {
   fullscreen() {
     this.elementRef.nativeElement.requestFullscreen();
   }
+
+  handleHeaderAction(action: string) {
+    if (action === 'toggleEdit') {
+      this.edit.pipe(take(1)).subscribe(edit => this.edit.next(!edit));
+    }
+  }
+}
+
+function getSavedFiltererStates(queries: Query[], recommendations: Recommendation[]) {
+  const savedFiltererStates: SavedFiltererState[] = [];
+
+  queries.forEach(query => savedFiltererStates.push({
+    state: query.filtererState,
+    label: query.name,
+    group: 'Queries',
+    dataSourceType: query.dataSourceType,
+  }));
+
+  recommendations.forEach(recommendation => savedFiltererStates.push({
+    state: recommendation.filtererState,
+    label: recommendation.message,
+    group: 'Recommendations',
+    dataSourceType: recommendation.data
+  }));
+
+  return savedFiltererStates;
 }

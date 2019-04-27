@@ -1,4 +1,10 @@
-<dashboard-view *ngIf="dashboard" [dashboard]="dashboard" [edit]="edit | async"
+<header-content (actionSelected)="handleHeaderAction($event)"
+                [actions]="headerActions | async"
+                [name]="(dashboard | async)?.name"
+                [showBack]="true">
+</header-content>
+
+<dashboard-view *ngIf="dashboard" [dashboard]="dashboard | async" [edit]="edit | async"
                 (openWidget)="openQuery($event)" [widgetConfigs]="widgetConfigs"
                 [savedFiltererStates]="savedFiltererStates | async"
                 (dashboardChange)="saveDashboard($event)"></dashboard-view>

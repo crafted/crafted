@@ -1,13 +1,19 @@
-<div class="recommendations" *ngIf="dataSource.data | async; let list">
+<header-content (actionSelected)="handleHeaderAction($event)"
+                [actions]="headerActions | async"
+                name="Recommendations">
+</header-content>
 
+<div *ngIf="dataSource.data | async as list" class="recommendations">
   <div *ngIf="!list.length" class="empty-state theme-secondary-text">
-    <mat-icon class="page-icon"> label </mat-icon>
+    <mat-icon class="page-icon"> label</mat-icon>
     <div>
       Configure actionable warnings and suggestions for your data.
     </div>
 
     <div class="create-new">
-      <ng-container *ngTemplateOutlet="newButton"></ng-container>
+      <button (click)="create()" color="accent" mat-raised-button>
+        Create New Recommendation
+      </button>
     </div>
   </div>
 
@@ -16,7 +22,7 @@
   </div>
 
   <div
-       *ngFor="let group of recommendationGroups | async; trackBy: trackByGroupId">
+    *ngFor="let group of recommendationGroups | async; trackBy: trackByGroupId">
     <div class="group-title" *ngIf="group.title">
       {{group.title}}
     </div>
@@ -25,23 +31,5 @@
       </recommendation-view>
       <mat-divider></mat-divider>
     </ng-container>
-
   </div>
 </div>
-
-<ng-template cdkPortal #newButton>
-  <button mat-raised-button color="accent" class="create" (click)="add()">
-    Create New Recommendation
-  </button>
-
-  <button mat-icon-button class="settings" [matMenuTriggerFor]="settings"
-          *ngIf="(dataSource.data | async)?.length">
-    <mat-icon>settings</mat-icon>
-  </button>
-</ng-template>
-
-<mat-menu #settings="matMenu">
-  <button mat-menu-item (click)="editJson()">
-    Edit JSON
-  </button>
-</mat-menu>

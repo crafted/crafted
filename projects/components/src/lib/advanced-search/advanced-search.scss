@@ -17,17 +17,7 @@
 }
 
 input {
-  border: none;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  outline: none;
-  width: 100%;
-  color: inherit;
-  background: transparent;
-  font-size: 15px;
-  padding-bottom: 4px;
-  padding-left: 0;
-  margin-top: 5px; // Balance the bottom padding and border
+  @include unstyled-input();
 }
 
 .filter-container {

@@ -1,10 +1,10 @@
-import {PortalModule} from '@angular/cdk/portal';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatIconModule, MatMenuModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {DeleteConfirmationModule} from '../shared/dialog/delete-confirmation/delete-confirmation.module';
+import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {LabelListModule} from '../shared/label-list/label-list.module';
 import {LoadingModule} from '../shared/loading/loading.module';
 import {DatabasePage} from './database-page';
@@ -25,8 +25,8 @@ export class DatabasePageRoutingModule {
     MatMenuModule,
     MatIconModule,
     LoadingModule,
-    PortalModule,
     ReactiveFormsModule,
+    HeaderContentModule,
     DeleteConfirmationModule,
     TypeActionsModule,
     DatabasePageRoutingModule,

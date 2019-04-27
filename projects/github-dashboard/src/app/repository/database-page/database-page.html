@@ -1,3 +1,5 @@
+<header-content name="Database"></header-content>
+
 <div class="info">
   <div class="title"> {{activeRepo.name | async}} </div>
 
@@ -22,19 +24,10 @@
         </ng-container>
       </div>
     </ng-container>
+
+    <button (click)="remove()" color="warn" mat-stroked-button>
+      Remove locally stored data
+    </button>
   </div>
 </div>
 
-<ng-template cdkPortal>
-  <button *ngIf="isLoaded | async" [matMenuTriggerFor]="settings" class="settings"
-          mat-icon-button>
-    <mat-icon>more_vert</mat-icon>
-  </button>
-</ng-template>
-
-<mat-menu #settings="matMenu">
-  <button (click)="remover.removeAllData(activeRepo.activeData, true)" mat-menu-item>
-    <mat-icon> delete</mat-icon>
-    Remove data
-  </button>
-</mat-menu>

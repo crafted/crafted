@@ -1,31 +1,39 @@
-<div class="master" [style.width.px]="listWidth">
-  <items-list *ngIf="query" [viewer]="viewer" [grouper]="grouper"
-              [sorter]="sorter" [filterer]="filterer" [dataSource]="dataSource"
-              [activeItem]="activeItem | async"
-              (itemSelected)="navigateToItem($event.number)">
-  </items-list>
-</div>
+<header-content (actionSelected)="handleHeaderAction($event)"
+                [actions]="headerActions | async"
+                [name]="(query | async)?.name || 'Loading'"
+                [showBack]="true">
+</header-content>
 
-<div class="drag theme-border" *ngIf="!isMobile()" cdkDrag cdkDragLockAxis="x">
-</div>
+<ng-container *ngIf="query | async">
+  <div [style.width.px]="listWidth" class="master">
+    <items-list (itemSelected)="navigateToItem($event.number)"
+                *ngIf="queryResources | async as resources; else selectType"
+                [activeItem]="activeItem | async"
+                [dataSource]="resources.dataSource" [filterer]="resources.filterer"
+                [grouper]="resources.grouper"
+                [sorter]="resources.sorter"
+                [viewer]="resources.viewer">
+    </items-list>
+  </div>
 
-<div class="detail" *ngIf="!isMobile()">
-  <item-detail [itemId]="itemId | async"></item-detail>
-</div>
+  <drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
 
-<ng-template cdkPortal>
-  <ng-container *ngIf="query">
-    <button mat-raised-button color="accent" *ngIf="!query.id" class="save-as"
-            (click)="openSaveAsDialog()">
-      Save As
-    </button>
+  <div *ngIf="!isMobile()" class="detail">
+    <item-detail [itemId]="itemId | async"></item-detail>
+  </div>
+</ng-container>
 
-    <button mat-raised-button color="accent" *ngIf="query.id"
-            (click)="saveState()" [disabled]="!(canSave | async)">
-      {{canSave ? 'Save' : 'Saved'}}
-    </button>
 
-    <query-menu [query]="query" icon="settings" *ngIf="query.id">
-    </query-menu>
-  </ng-container>
+<ng-template #selectType>
+  <div class="select-type">
+    <div class="empty-state-title">
+      Select data to query
+    </div>
+    <div class="type-options">
+      <button (click)="createQueryWithType(option.id)" *ngFor="let option of dataResourceOptions"
+              mat-stroked-button>
+        {{option.label}}
+      </button>
+    </div>
+  </div>
 </ng-template>

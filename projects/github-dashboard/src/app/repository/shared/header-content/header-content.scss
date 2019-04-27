@@ -1,0 +1,12 @@
+.name {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+}
+
+.actions button {
+  margin-right: 16px;
+  min-width: 0;
+}

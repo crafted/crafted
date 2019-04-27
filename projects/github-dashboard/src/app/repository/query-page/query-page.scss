@@ -17,38 +17,23 @@
   }
 }
 
-.drag {
-  cursor: col-resize;
-  border-width: 1px;
-  border-style: solid;
-}
-
-.title {
-  flex: 1;
-}
-
 .detail {
   flex: 1;
   display: flex;
 }
 
-advanced-search {
-  display: block;
-  padding: 8px;
-}
-
-display-options-header {
-  margin-bottom: 24px;
-}
-
-query-menu {
+.select-type {
+  margin: 0 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 64px;
-  width: 64px;
+
+  button {
+    margin: 0 8px;
+  }
 }
 
-.save-as {
-  margin-right: 16px;
+.empty-state-title {
+  font-size: 18px;
+  margin: 24px 0;
 }

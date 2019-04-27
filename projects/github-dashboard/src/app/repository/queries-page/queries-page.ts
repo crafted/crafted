@@ -1,14 +1,12 @@
-import {CdkPortal} from '@angular/cdk/portal';
-import {ChangeDetectionStrategy, Component, Inject, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
-import {Observable, Subject} from 'rxjs';
-import {delay, map, mergeMap, takeUntil} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {delay, map, mergeMap} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Query} from '../services/dao/config/query';
-import {Recommendation} from '../services/dao/config/recommendation';
-import {Header} from '../services/header';
+import {HeaderContentAction} from '../shared/header-content/header-content';
 
 interface QueryListItem {
   id: string;
@@ -22,62 +20,49 @@ interface QueryGroup {
   name: string;
 }
 
+type QueriesPageAction = 'create';
+
+const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
+  {
+    id: 'create',
+    isPrimary: true,
+    text: 'Create New Query',
+  },
+];
+
 @Component({
   styleUrls: ['queries-page.scss'],
   templateUrl: 'queries-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
+  queries = this.activeRepo.config.pipe(mergeMap(configStore => configStore.queries.list));
+  dataResourcesIds: string[] = [];
+  headerActions: Observable<HeaderContentAction[]> =
+    this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));
 
   constructor(
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-    private header: Header, private router: Router, private activeRepo: ActiveStore) {
+    private router: Router, private activeRepo: ActiveStore) {
     this.dataResourcesMap.forEach(dataResources => this.dataResourcesIds.push(dataResources.id));
   }
-  dataResourcesIds: string[] = [];
-
-  recommendationsList =
-      this.activeRepo.config.pipe(mergeMap(configStore => configStore.recommendations.list));
-
-  queries =
-      this.activeRepo.config.pipe(delay(100), mergeMap(configStore => configStore.queries.list));
 
   queryGroups = this.queries.pipe(map(queries => this.getSortedGroups(queries)));
 
-  @ViewChild(CdkPortal) toolbarActions: CdkPortal;
-
-  private destroyed = new Subject();
-
   queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
 
-  ngOnInit() {
-    this.queries.pipe(takeUntil(this.destroyed)).subscribe(list => {
-      if (list.length) {
-        this.header.toolbarOutlet.next(this.toolbarActions);
-      } else {
-        this.header.toolbarOutlet.next(null);
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.header.toolbarOutlet.next(null);
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
-  createQuery(type: string) {
-    this.router.navigate([`${this.activeRepo.activeName}/query/new`], {queryParams: {type}});
-  }
-
-  createQueryFromRecommendation(recommendation: Recommendation) {
-    this.router.navigate(
-        [`${this.activeRepo.activeName}/query/new`],
-      {queryParams: {recommendationId: recommendation.id}});
+  createQuery() {
+    this.router.navigate([`${this.activeRepo.activeName}/query/new`]);
   }
 
   navigateToQuery(id: string) {
     this.router.navigate([`${this.activeRepo.activeName}/query/${id}`]);
+  }
+
+  handleHeaderAction(action: QueriesPageAction) {
+    if (action === 'create') {
+      this.createQuery();
+    }
   }
 
   private getQueryCount(query: Query): Observable<number> {
