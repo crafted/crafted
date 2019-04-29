@@ -8,6 +8,7 @@ import {
   MatRippleModule
 } from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
+import {CollectionPageEmptyStateModule} from '../shared/collection-page-empty-state/collection-page-empty-state.module';
 import {QueryEditModule} from '../shared/dialog/query/query-edit/query-edit.module';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {QueryMenuModule} from '../shared/query-menu/query-menu.module';
@@ -33,6 +34,7 @@ export class QueriesPageRoutingModule {
     QueryEditModule,
     QueryMenuModule,
     HeaderContentModule,
+    CollectionPageEmptyStateModule,
   ],
   declarations: [QueriesPage],
   exports: [QueriesPage],

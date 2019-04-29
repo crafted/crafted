@@ -10,6 +10,7 @@ import {
 } from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {AdvancedSearchModule} from '@crafted/components';
+import {CollectionPageEmptyStateModule} from '../shared/collection-page-empty-state/collection-page-empty-state.module';
 import {RecommendationDialogModule} from '../shared/dialog/recommendation/recommendation-dialog.module';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {LoadingModule} from '../shared/loading/loading.module';
@@ -33,6 +34,7 @@ export class RecommendationsPageRoutingModule {
     HeaderContentModule,
     LoadingModule,
     ReactiveFormsModule,
+    CollectionPageEmptyStateModule,
     RecommendationsPageRoutingModule,
     RecommendationDialogModule,
     RecommendationViewModule,

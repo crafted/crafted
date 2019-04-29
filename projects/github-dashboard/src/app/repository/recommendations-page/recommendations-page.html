@@ -3,33 +3,28 @@
                 name="Recommendations">
 </header-content>
 
-<div *ngIf="dataSource.data | async as list" class="recommendations">
-  <div *ngIf="!list.length" class="empty-state theme-secondary-text">
-    <mat-icon class="page-icon"> label</mat-icon>
-    <div>
-      Configure actionable warnings and suggestions for your data.
+<ng-container *ngIf="dataSource.data | async as recommendations">
+  <collection-page-empty-state (action)="create()"
+                               *ngIf="!recommendations.length"
+                               actionText="Create New Recommendation"
+                               icon="label"
+                               message="Configure actionable warnings and suggestions for your data">
+  </collection-page-empty-state>
+
+  <div class="recommendations">
+    <div *ngIf="recommendations.length > 3" class="search">
+      <advanced-search [filterer]="filterer"></advanced-search>
     </div>
 
-    <div class="create-new">
-      <button (click)="create()" color="accent" mat-raised-button>
-        Create New Recommendation
-      </button>
+    <div *ngFor="let group of recommendationGroups | async; trackBy: trackByGroupId" class="groups">
+      <div *ngIf="group.title" class="group-title">
+        {{group.title}}
+      </div>
+      <ng-container *ngFor="let recommendation of group.items">
+        <recommendation-view [recommendation]="recommendation">
+        </recommendation-view>
+        <mat-divider></mat-divider>
+      </ng-container>
     </div>
   </div>
-
-  <div class="heading" *ngIf="list.length > 3">
-    <advanced-search [filterer]="filterer"></advanced-search>
-  </div>
-
-  <div
-    *ngFor="let group of recommendationGroups | async; trackBy: trackByGroupId">
-    <div class="group-title" *ngIf="group.title">
-      {{group.title}}
-    </div>
-    <ng-container *ngFor="let recommendation of group.items">
-      <recommendation-view [recommendation]="recommendation">
-      </recommendation-view>
-      <mat-divider></mat-divider>
-    </ng-container>
-  </div>
-</div>
+</ng-container>

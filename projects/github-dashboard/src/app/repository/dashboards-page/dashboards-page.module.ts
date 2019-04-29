@@ -2,6 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule, MatIconModule, MatMenuModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
+import {CollectionPageEmptyStateModule} from '../shared/collection-page-empty-state/collection-page-empty-state.module';
 import {DashboardDialogModule} from '../shared/dialog/dashboard/dashboard-dialog.module';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {DashboardsPage} from './dashboards-page';
@@ -22,6 +23,7 @@ export class DashboardsPageRoutingModule {
     MatMenuModule,
     DashboardDialogModule,
     HeaderContentModule,
+    CollectionPageEmptyStateModule,
   ],
   declarations: [DashboardsPage],
   exports: [DashboardsPage],

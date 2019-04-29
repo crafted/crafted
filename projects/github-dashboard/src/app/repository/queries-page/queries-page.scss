@@ -28,7 +28,6 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 0 16px;
   cursor: pointer;
   outline: none;
   height: 48px;
@@ -41,6 +40,7 @@
 .name {
   flex: 1;
   font-size: 14px;
+  padding-left: 16px;
 
   @media (max-width: $mobile-width - 1) {
     font-size: 16px;

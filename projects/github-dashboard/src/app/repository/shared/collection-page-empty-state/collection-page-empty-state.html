@@ -1,0 +1,10 @@
+<mat-icon>
+  {{icon}}
+</mat-icon>
+
+<div class="message"> {{message}} </div>
+
+<button (click)="action.emit()" color="primary"
+        mat-raised-button>
+  {{actionText}}
+</button>

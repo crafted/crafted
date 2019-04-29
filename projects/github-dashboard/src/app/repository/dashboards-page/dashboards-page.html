@@ -4,23 +4,14 @@
 </header-content>
 
 <ng-container *ngIf="dashboards$ | async as dashboards">
-
-  <div *ngIf="!dashboards.length" class="empty-state theme-secondary-text">
-    <mat-icon class="page-icon"> dashboard </mat-icon>
-    <div>
-      Build dashboards to view your data through charts and graphs.
-    </div>
-
-    <div class="create-new">
-      <button (click)="create()" class="create" color="accent"
-              mat-raised-button>
-        Create New Dashboard
-      </button>
-    </div>
-  </div>
+  <collection-page-empty-state (action)="create()"
+                               *ngIf="!dashboards.length"
+                               actionText="Create New Dashboard"
+                               icon="dashboard"
+                               message="Build dashboards to view your data through charts and graphs">
+  </collection-page-empty-state>
 
   <div class="dashboards">
-
     <div class="dashboard theme-border theme-background-card theme-hover"
          *ngFor="let dashboard of dashboards; trackBy: trackById"
          (click)="navigateToDashboard(dashboard.id)">

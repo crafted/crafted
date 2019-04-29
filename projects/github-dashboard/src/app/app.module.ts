@@ -1,12 +1,11 @@
-import 'hammerjs';
-
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {MatIconRegistry, MatSnackBarModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterModule} from '@angular/router';
+import {PreloadAllModules, RouterModule} from '@angular/router';
+import 'hammerjs';
 import {TimeAgoPipe} from 'time-ago-pipe';
 
 import {App} from './app';
@@ -36,7 +35,7 @@ export class TimeAgoPipeModule {
         path: ':org/:name',
         loadChildren: './repository/repository.module#RepositoryModule',
       },
-    ])
+    ], {preloadingStrategy: PreloadAllModules})
   ],
   providers: [MatIconRegistry, Theme],
   bootstrap: [App]
