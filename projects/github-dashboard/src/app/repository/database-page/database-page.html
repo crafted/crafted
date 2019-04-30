@@ -1,33 +1,31 @@
 <header-content name="Database"></header-content>
 
-<div class="info">
-  <div class="title"> {{activeRepo.name | async}} </div>
+<div class="title"> {{activeRepo.name | async}} </div>
 
-  <load-data #loadData [style.display]="(isLoaded | async) ? 'none' : ''"></load-data>
+<load-data #loadData [style.display]="(isLoaded | async) ? 'none' : ''"></load-data>
 
-  <div class="description" *ngIf="!(isEmpty | async)">
-    <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
-      <div class="type issues theme-border theme-background-card"
-           *ngIf="(typeInfo.count | async) !== null">
-        <div class="type-title">
-          {{typeInfo.count | async}} {{typeInfo.label}}
+<ng-container *ngIf="!(isEmpty | async)">
+  <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
+    <div *ngIf="(typeInfo.count | async) !== null"
+         class="type issues theme-border theme-background-card">
+      <div class="type-title">
+        {{typeInfo.count | async}} {{typeInfo.label}}
 
-          <type-actions *ngIf="!(loadData.isLoading | async)"
-                        [type]="typeInfo.type">
-          </type-actions>
-        </div>
-
-        <ng-container [ngSwitch]="typeInfo.type">
-          <ng-container *ngSwitchCase="'labels'">
-            <label-list [labelIds]="(repoLabels | async) || []"></label-list>
-          </ng-container>
-        </ng-container>
+        <type-actions *ngIf="!(loadData.isLoading | async)"
+                      [type]="typeInfo.type">
+        </type-actions>
       </div>
-    </ng-container>
 
-    <button (click)="remove()" color="warn" mat-stroked-button>
-      Remove locally stored data
-    </button>
-  </div>
-</div>
+      <ng-container [ngSwitch]="typeInfo.type">
+        <ng-container *ngSwitchCase="'labels'">
+          <label-list [labelIds]="(repoLabels | async) || []"></label-list>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <button (click)="remove()" color="warn" mat-stroked-button>
+    Remove locally stored data
+  </button>
+</ng-container>
 

@@ -1,28 +1,15 @@
 :host {
   display: flex;
-  flex: 1;
   flex-direction: column;
-  align-items: center;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
   max-width: 650px;
-}
-
-.description {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 64px;
+  margin: auto;
 }
 
 .title {
-  margin: 64px;
+  margin: 64px 0;
   font-size: 32px;
+  text-align: center;
 }
 
 .type {
@@ -39,19 +26,11 @@
   justify-content: space-between;
 }
 
-.remove {
-  margin: 32px;
-}
-
 label-list {
   display: block;
   margin: 32px 0;
 }
 
-.settings {
-  margin-right: 16px;
-}
-
 button {
-  margin: auto;
+  margin: 32px auto;
 }

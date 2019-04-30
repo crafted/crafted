@@ -3,8 +3,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
-import {DataStore, RepoDaoType} from '../services/dao/data-dao';
-import {ListDao} from '../services/dao/list-dao';
+import {RepoDaoType} from '../services/dao/data-dao';
 import {Remover} from '../services/remover';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 
@@ -24,16 +23,22 @@ export class DatabasePage {
   repoLabels = this.activeRepo.data.pipe(
       mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
 
-  counts: {[key in RepoDaoType]: Observable<number>} = {
-    items: getStoreListCount(this.activeRepo.data, 'items'),
-    labels: getStoreListCount(this.activeRepo.data, 'labels'),
-    contributors: getStoreListCount(this.activeRepo.data, 'contributors'),
-  };
-
   repoDaoTypeInfo: {type: RepoDaoType, label: string, count: Observable<number>}[] = [
-    {type: 'items', label: 'Issues and pull requests', count: this.counts.items},
-    {type: 'labels', label: 'Labels', count: this.counts.labels},
-    {type: 'contributors', label: 'Contributors', count: this.counts.contributors},
+    {
+      type: 'items',
+      label: 'Issues and pull requests',
+      count: this.activeRepo.data.pipe(mergeMap(s => s.items.list), map(l => l.length))
+    },
+    {
+      type: 'labels',
+      label: 'Labels',
+      count: this.activeRepo.data.pipe(mergeMap(s => s.labels.list), map(l => l.length))
+    },
+    {
+      type: 'contributors',
+      label: 'Contributors',
+      count: this.activeRepo.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length))
+    },
   ];
 
   constructor(
@@ -43,8 +48,4 @@ export class DatabasePage {
   remove() {
     this.remover.removeAllData(this.activeRepo.activeData, true);
   }
-}
-
-function getStoreListCount(store: Observable<DataStore>, type: RepoDaoType) {
-  return store.pipe(mergeMap(s => (s[type] as ListDao<any>).list), map(list => list.length));
 }
