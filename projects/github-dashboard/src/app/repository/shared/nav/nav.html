@@ -23,6 +23,7 @@
 <div class="link-list">
   <ng-container *ngFor="let link of links">
     <div (click)="sidenav.close()" class="link theme-text"
+         *ngIf="!(link.disabled | async)"
          routerLinkActive="active" [routerLink]="link.route">
       <div class="link-highlight"></div>
       <div class="link-text">

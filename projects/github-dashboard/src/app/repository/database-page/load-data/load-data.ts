@@ -32,7 +32,7 @@ interface StorageState {
 export class LoadData {
   state: StorageState|null = null;
 
-  isLoading = false;
+  loadingState = false;
 
   formGroup = new FormGroup(
       {issueDateType: new FormControl('last updated since'), issueDate: new FormControl('')});
@@ -51,7 +51,7 @@ export class LoadData {
         return this.github.getItemsCount(dataStore.name, since);
       }));
 
-  @Output() loading = new EventEmitter();
+  @Output() loading = new EventEmitter<boolean>();
 
   constructor(
     private loadedRepos: LoadedRepos, private activeStore: ActiveStore,
@@ -62,8 +62,8 @@ export class LoadData {
   }
 
   store() {
-    this.loading.emit();
-    this.isLoading = true;
+    this.loading.emit(true);
+    this.loadingState = true;
 
     this.activeStore.data
       .pipe(mergeMap(dataStore => {
@@ -86,6 +86,7 @@ export class LoadData {
       }))
       .subscribe(() => {
         this.snackbar.open(`Successfully loaded data`, '', {duration: 2000});
+        this.loading.emit(false);
       });
   }
 

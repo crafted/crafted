@@ -1,6 +1,6 @@
 <div class="load">
 
-  <div *ngIf="!isLoading" class="action">
+  <div *ngIf="!loadingState" class="action">
     <button mat-raised-button color="accent" class="load-data"
             (click)="store()" [disabled]="!!state">
       Load Data
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!isLoading">
+  <ng-container *ngIf="!loadingState">
     <div class="data-to-load theme-secondary-text">
       ({{(totalItemCount | async) || '...'}} issues and pull requests,
       {{(totalLabelsCount | async) || '...'}} labels)

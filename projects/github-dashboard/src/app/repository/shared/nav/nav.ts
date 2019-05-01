@@ -1,17 +1,19 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {Router} from '@angular/router';
-import {combineLatest, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {map, mergeMap, shareReplay} from 'rxjs/operators';
 import {Auth} from '../../../service/auth';
 import {LoadedRepos} from '../../../service/loaded-repos';
 import {ActiveStore} from '../../services/active-store';
 import {Theme} from '../../services/theme';
+import {isRepoStoreEmpty} from '../../utility/is-repo-store-empty';
 
 export interface NavLink {
   route: string;
   label: string;
   icon: string;
+  disabled?: Observable<boolean>;
 }
 
 @Component({
@@ -23,11 +25,13 @@ export interface NavLink {
 export class Nav {
   activeRepository = this.activeStore.data.pipe(map(dataStore => dataStore.name));
 
+  isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)), shareReplay(1));
+
   links: NavLink[] = [
     {route: 'database', label: 'Database', icon: 'archive'},
-    {route: 'dashboards', label: 'Dashboards', icon: 'dashboard'},
-    {route: 'queries', label: 'Queries', icon: 'find_in_page'},
-    {route: 'recommendations', label: 'Recommendations', icon: 'label'},
+    {route: 'dashboards', label: 'Dashboards', icon: 'dashboard', disabled: this.isEmpty},
+    {route: 'queries', label: 'Queries', icon: 'find_in_page', disabled: this.isEmpty},
+    {route: 'recommendations', label: 'Recommendations', icon: 'label', disabled: this.isEmpty},
   ];
 
   repositories$ =

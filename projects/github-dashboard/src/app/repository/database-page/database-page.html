@@ -2,7 +2,7 @@
 
 <div class="title"> {{activeRepository | async}} </div>
 
-<load-data (loading)="isLoading = true"
+<load-data (loading)="isLoading = $event"
            *ngIf="!(isLoaded | async)">
 </load-data>
 
@@ -20,7 +20,8 @@
       <ng-container [ngSwitch]="typeInfo.type">
 
         <ng-container *ngSwitchCase="'items'">
-          <button (click)="navigateToNewQuery()" class="create-query"
+          <button (click)="navigateToNewQuery()"
+                  *ngIf="!isLoading" class="create-query"
                   color="primary" mat-stroked-button>
             Create Query
           </button>

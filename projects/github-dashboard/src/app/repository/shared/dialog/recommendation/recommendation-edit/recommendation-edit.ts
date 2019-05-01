@@ -94,7 +94,7 @@ export class RecommendationEdit {
         message: data.recommendation.message || '',
         type: data.recommendation.type || 'warning',
         dataType: data.recommendation.dataType || this.dataOptions[0].id,
-        actionType: data.recommendation.actionType || 'add-label',
+        actionType: data.recommendation.actionType || 'none',
         action: data.recommendation.action || null,
         filtererState: data.recommendation.filtererState || null
       });
