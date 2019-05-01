@@ -2,4 +2,4 @@
   <mat-icon> close </mat-icon>
 </button>
 
-<item-detail [itemId]="data.itemId"></item-detail>
+<item-detail *ngIf="item$ | async as item" [item]="item"></item-detail>

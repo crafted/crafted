@@ -8,7 +8,7 @@
   <div [style.width.px]="listWidth" class="master">
     <items-list (itemSelected)="navigateToItem($event.number)"
                 *ngIf="queryResources | async as resources; else selectType"
-                [activeItem]="activeItem | async"
+                [activeItem]="item$ | async"
                 [dataSource]="resources.dataSource" [filterer]="resources.filterer"
                 [grouper]="resources.grouper"
                 [sorter]="resources.sorter"
@@ -19,7 +19,7 @@
   <drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
 
   <div *ngIf="!isMobile()" class="detail">
-    <item-detail [itemId]="itemId | async"></item-detail>
+    <item-detail *ngIf="item$ | async as item" [item]="item"></item-detail>
   </div>
 </ng-container>
 

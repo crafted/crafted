@@ -1,4 +1,3 @@
-<ng-container *ngIf="item | async; let item">
   <div class="header">
     <div class="title">
       {{item.title}}
@@ -60,13 +59,12 @@
       </timeline-event-view>
     </ng-container>
   </div>
-</ng-container>
 
 
 <mat-menu #addAssigneeMenu="matMenu" class="option-menu">
   <button mat-menu-item *ngFor="let option of addAssigneeOptions | async"
-          (click)="addAssignee(option.id, option.assignee)">
-    {{option.label}}
+          (click)="addAssignee(option)">
+    {{option}}
   </button>
 </mat-menu>
 

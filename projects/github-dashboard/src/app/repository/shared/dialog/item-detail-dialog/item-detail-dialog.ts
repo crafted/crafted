@@ -1,5 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import {mergeMap} from 'rxjs/operators';
+import {ActiveStore} from '../../../services/active-store';
 
 export interface ItemDetailDialogData {
   itemId: string;
@@ -11,5 +13,11 @@ export interface ItemDetailDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemDetailDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData) {}
+  item$ =
+    this.activeStore.data.pipe(mergeMap(dataStore => dataStore.items.get(`${this.data.itemId}`)));
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData,
+    private activeStore: ActiveStore) {
+  }
 }

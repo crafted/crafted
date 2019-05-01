@@ -5,7 +5,6 @@ import {Widget} from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take, tap} from 'rxjs/operators';
-import {Item} from '../../github/app-types/item';
 import {isMobile} from '../../utility/media-matcher';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
@@ -87,18 +86,8 @@ export class QueryPage<T> {
       .pipe(map(equivalent => equivalent.some(r => !r)));
   }));
 
-  itemId =
-    this.activatedRoute.queryParamMap.pipe(map(queryParamsMap => queryParamsMap.get('item')));
-
-  activeItem = combineLatest(this.queryResources, this.itemId).pipe(mergeMap(result => {
-    return result[0].dataSource.data.pipe(map(data => {
-      for (const item of data) {
-        if ((item as any as Item).id === result[1]) {
-          return item;
-        }
-      }
-    }));
-  }));
+  item$ = combineLatest(this.activatedRoute.queryParamMap, this.activeStore.data)
+    .pipe(mergeMap(results => results[1].items.get(results[0].get('item'))));
 
   headerActions: Observable<HeaderContentAction[]> =
     combineLatest(this.query, this.canSave).pipe(map(results => {
@@ -138,26 +127,28 @@ export class QueryPage<T> {
   }
 
   saveAs(name: string, group: string) {
-    const currentState = this.queryResources
-      .pipe(
+    const currentState = this.queryResources.pipe(
         mergeMap(
-          resources => combineLatest(resources.filterer.state, resources.grouper.state,
-            resources.sorter.state, resources.viewer.state)),
+          resources => combineLatest(
+            resources.filterer.state, resources.grouper.state, resources.sorter.state,
+            resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.name).pipe(
-      mergeMap(results => {
-        const state = results[1];
-        const configStore = results[2];
-        const states = {
-          filtererState: state[0],
-          grouperState: state[1],
-          sorterState: state[2],
-          viewerState: state[3],
-        };
-        const query = {...results[0], ...states, name, group};
-        return combineLatest(configStore.queries.add(query), this.activeStore.name);
-      }), take(1))
+    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.name)
+      .pipe(
+        mergeMap(results => {
+          const state = results[1];
+          const configStore = results[2];
+          const states = {
+            filtererState: state[0],
+            grouperState: state[1],
+            sorterState: state[2],
+            viewerState: state[3],
+          };
+          const query = {...results[0], ...states, name, group};
+          return combineLatest(configStore.queries.add(query), this.activeStore.name);
+        }),
+        take(1))
       .subscribe(results => {
         this.router.navigate(
           [`${results[1]}/query/${results[0]}`],
