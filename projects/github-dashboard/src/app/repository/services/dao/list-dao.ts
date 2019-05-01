@@ -1,5 +1,5 @@
-import {BehaviorSubject, Observable, ReplaySubject} from 'rxjs';
-import {filter, map, take} from 'rxjs/operators';
+import {Observable, ReplaySubject} from 'rxjs';
+import {map, shareReplay, take} from 'rxjs/operators';
 import {AppIndexedDb, StoreId} from '../../utility/app-indexed-db';
 
 export interface IdentifiedObject {
@@ -15,23 +15,9 @@ export interface LocalToRemoteComparison<T> {
 }
 
 export class ListDao<T extends IdentifiedObject> {
-  rawList = new BehaviorSubject<T[]|null>(null);
-  list = this.rawList.pipe(filter(v => !!v)) as Observable<T[]>;
+  list = new ReplaySubject<T[]>(1);
 
-  _map: ReplaySubject<Map<string, T>>;
-
-  get map(): ReplaySubject<Map<string, T>> {
-    if (!this._map) {
-      this._map = new ReplaySubject<Map<string, T>>(1);
-      this.list.subscribe(list => {
-        const valuesMap = new Map<string, T>();
-        list.forEach(obj => valuesMap.set(obj.id, obj));
-        this._map.next(valuesMap);
-      });
-    }
-
-    return this._map;
-  }
+  map = this.list.pipe(map(list => createMap(list)), shareReplay(1));
 
   private repoIndexedDb: AppIndexedDb;
 
@@ -42,17 +28,20 @@ export class ListDao<T extends IdentifiedObject> {
       throw Error('Object store not initialized: ' + this.collectionId);
     }
 
-    initialValues.pipe(take(1)).subscribe(values => this.rawList.next(values));
+    initialValues.pipe(take(1)).subscribe(values => this.list.next(values));
   }
 
-  add(item: T): string;
-  add(items: T[]): string[];
-  add(itemOrItems: T|T[]): string|string[] {
+  add(item: T): Observable<string>;
+  add(items: T[]): Observable<string[]>;
+  add(itemOrItems: T | T[]): Observable<string | string[]> {
     const items = (itemOrItems instanceof Array) ? itemOrItems : [itemOrItems];
     items.forEach(decorateForDb);
     this.repoIndexedDb.updateValues(items, this.collectionId);
-    this.rawList.next([...(this.rawList.value || []), ...items]);
-    return items.map(obj => obj.id);
+
+    return this.list.pipe(take(1), map(list => {
+      this.list.next([...(list || []), ...items]);
+      return (itemOrItems instanceof Array) ? items.map(obj => obj.id) : items[0].id;
+    }));
   }
 
   get(id: string): Observable<T|null> {
@@ -70,14 +59,14 @@ export class ListDao<T extends IdentifiedObject> {
     items.forEach(decorateForDb);
     this.repoIndexedDb.updateValues(items, this.collectionId);
 
-    this.map.pipe(filter(v => !!v), take(1)).subscribe(v => {
+    this.map.pipe(take(1)).subscribe(v => {
       items.forEach(obj => {
         v.set(obj.id, {...(v.get(obj.id) as object), ...(obj as object)} as T);
       });
 
       const values: T[] = [];
       v.forEach(value => values.push(value));
-      this.rawList.next(values);
+      this.list.next(values);
     });
   }
 
@@ -85,21 +74,23 @@ export class ListDao<T extends IdentifiedObject> {
     const ids = (idOrIds instanceof Array) ? idOrIds : [idOrIds];
     this.repoIndexedDb.removeValues(ids, this.collectionId);
 
-    this.map.pipe(filter(values => !!values), take(1)).subscribe(v => {
+    this.map.pipe(take(1)).subscribe(v => {
       ids.forEach(id => v.delete(id));
 
       const values: T[] = [];
       v.forEach(value => values.push(value));
-      this.rawList.next(values);
+      this.list.next(values);
     });
   }
 
   removeAll() {
-    this.repoIndexedDb
-      .removeValues((this.rawList.value || []).map(item => item.id), this.collectionId)
+    this.list.pipe(take(1)).subscribe(list => {
+      this.repoIndexedDb
+        .removeValues(list.map(item => item.id), this.collectionId)
         .then(() => {
-          this.rawList.next([]);
+          this.list.next([]);
         });
+    });
   }
 }
 

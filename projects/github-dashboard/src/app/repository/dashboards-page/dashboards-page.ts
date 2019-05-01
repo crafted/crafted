@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Column, Dashboard} from '@crafted/components';
 import {Observable} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap, take} from 'rxjs/operators';
 import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';
 import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
@@ -39,8 +39,9 @@ export class DashboardsPage {
   create() {
     const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
     const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
-    const id = this.activeRepo.activeConfig.dashboards.add(newDashboard);
-    this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
+    this.activeRepo.activeConfig.dashboards.add(newDashboard).pipe(take(1)).subscribe(id => {
+      this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
+    });
   }
 
   navigateToDashboard(id: string) {

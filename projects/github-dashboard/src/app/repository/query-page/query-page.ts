@@ -153,11 +153,11 @@ export class QueryPage<T> {
           viewerState: results[4],
         };
         const query = {...results[0], ...states, name, group};
-        const id = this.activeRepo.activeConfig.queries.add(query);
-
-        this.router.navigate(
-          [`${this.activeRepo.activeData.name}/query/${id}`],
-          {replaceUrl: true, queryParamsHandling: 'merge'});
+        this.activeRepo.activeConfig.queries.add(query).pipe(take(1)).subscribe(id => {
+          this.router.navigate(
+            [`${this.activeRepo.activeData.name}/query/${id}`],
+            {replaceUrl: true, queryParamsHandling: 'merge'});
+        });
       });
   }
 
