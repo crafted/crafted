@@ -138,26 +138,30 @@ export class QueryPage<T> {
   }
 
   saveAs(name: string, group: string) {
-    this.queryResources
+    const currentState = this.queryResources
       .pipe(
         mergeMap(
-          resources => combineLatest(
-            this.query, resources.filterer.state, resources.grouper.state,
+          resources => combineLatest(resources.filterer.state, resources.grouper.state,
             resources.sorter.state, resources.viewer.state)),
-        take(1))
-      .subscribe(results => {
+        take(1));
+
+    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.name).pipe(
+      mergeMap(results => {
+        const state = results[1];
+        const configStore = results[2];
         const states = {
-          filtererState: results[1],
-          grouperState: results[2],
-          sorterState: results[3],
-          viewerState: results[4],
+          filtererState: state[0],
+          grouperState: state[1],
+          sorterState: state[2],
+          viewerState: state[3],
         };
         const query = {...results[0], ...states, name, group};
-        this.activeStore.activeConfig.queries.add(query).pipe(take(1)).subscribe(id => {
-          this.router.navigate(
-            [`${this.activeStore.activeData.name}/query/${id}`],
-            {replaceUrl: true, queryParamsHandling: 'merge'});
-        });
+        return combineLatest(configStore.queries.add(query), this.activeStore.name);
+      }), take(1))
+      .subscribe(results => {
+        this.router.navigate(
+          [`${results[1]}/query/${results[0]}`],
+          {replaceUrl: true, queryParamsHandling: 'merge'});
       });
   }
 

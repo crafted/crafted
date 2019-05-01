@@ -32,7 +32,7 @@ export class RecommendationDialog {
         .pipe(take(1))
         .subscribe(result => {
           if (result) {
-            configStore.recommendations.add(result);
+            configStore.recommendations.add(result).pipe(take(1)).subscribe();
           }
         });
   }

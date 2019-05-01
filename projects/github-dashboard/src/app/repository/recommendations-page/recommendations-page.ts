@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map, mergeMap, take} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
@@ -39,8 +39,8 @@ export class RecommendationsPage {
   dataSource = new DataSource(
     {data: this.activeStore.config.pipe(mergeMap(store => store.recommendations.list))});
 
-  headerActions: Observable<HeaderContentAction[]> =
-    this.dataSource.data.pipe(map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
+  headerActions: Observable<HeaderContentAction[]> = this.dataSource.data.pipe(
+    map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
 
   filterer = new Filterer({tokenizeItem: tokenizeRecommendation});
 
@@ -56,16 +56,23 @@ export class RecommendationsPage {
   constructor(
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
     private header: Header, private activeStore: ActiveStore,
-    private recommendationDialog: RecommendationDialog) {}
+    private recommendationDialog: RecommendationDialog) {
+  }
 
   create() {
-    this.recommendationDialog.create(
-      this.activeStore.activeConfig, this.activeStore.activeData, this.dataResourcesMap);
+    combineLatest(this.activeStore.config, this.activeStore.data)
+      .pipe(take(1))
+      .subscribe(results => {
+        this.recommendationDialog.create(results[0], results[1], this.dataResourcesMap);
+      });
   }
 
   editJson() {
-    this.activeStore.activeConfig.recommendations.list.pipe(take(1)).subscribe(list => {
-      this.recommendationDialog.jsonEditor(list, this.activeStore.activeConfig);
+    const recommendationsList =
+      this.activeStore.config.pipe(mergeMap(configStore => configStore.recommendations.list));
+
+    combineLatest(recommendationsList, this.activeStore.config).pipe(take(1)).subscribe(results => {
+      this.recommendationDialog.jsonEditor(results[0], results[1]);
     });
   }
 

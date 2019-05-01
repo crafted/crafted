@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap, take} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
 import {RepoDaoType} from '../services/dao/data-dao';
@@ -50,7 +50,9 @@ export class DatabasePage {
   }
 
   remove() {
-    this.remover.removeAllData(this.activeStore.activeData, true);
+    this.activeStore.data.pipe(take(1)).subscribe(dataStore => {
+      this.remover.removeAllData(dataStore, true);
+    });
   }
 
   navigateToNewQuery() {

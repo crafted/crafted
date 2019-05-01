@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {take} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
+import {mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
 import {Github} from '../../../service/github';
@@ -21,20 +22,26 @@ export class RecommendationAction {
   }
 
   addLabel(label: Label) {
-    const newItem: Item = {...this.item};
-    newItem.labels = [...this.item.labels, +label.id];
-    this.activeStore.activeData.items.update(newItem);
-    this.github.addLabel(this.activeStore.activeName, this.item.id, label.name)
-        .pipe(take(1))
-        .subscribe();
+    combineLatest(this.activeStore.name, this.activeStore.data).pipe(mergeMap(results => {
+      const repository = results[0];
+      const dataStore = results[1];
+
+      const newItem: Item = {...this.item};
+      newItem.labels = [...this.item.labels, +label.id];
+      dataStore.items.update(newItem);
+      return this.github.addLabel(repository, this.item.id, label.name);
+    }), take(1)).subscribe();
   }
 
   addAssignee(assignee: string) {
-    const newItem: Item = {...this.item};
-    newItem.assignees = [...this.item.assignees, assignee];
-    this.activeStore.activeData.items.update(newItem);
-    this.github.addAssignee(this.activeStore.activeName, this.item.id, assignee)
-        .pipe(take(1))
-        .subscribe();
+    combineLatest(this.activeStore.name, this.activeStore.data).pipe(mergeMap(results => {
+      const repository = results[0];
+      const dataStore = results[1];
+
+      const newItem: Item = {...this.item};
+      newItem.assignees = [...this.item.assignees, assignee];
+      dataStore.items.update(newItem);
+      return this.github.addAssignee(repository, this.item.id, assignee);
+    }), take(1)).subscribe();
   }
 }

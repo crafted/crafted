@@ -2,8 +2,8 @@ import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {combineLatest, Observable} from 'rxjs';
+import {map, take} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../../repository';
 import {ActiveStore} from '../../services/active-store';
 import {
@@ -41,7 +41,8 @@ export class RecommendationView {
   constructor(
     private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
     private router: Router, private activatedRoute: ActivatedRoute,
-    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
+    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {
+  }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.recommendation && this.recommendation) {
@@ -54,9 +55,12 @@ export class RecommendationView {
   }
 
   edit() {
-    this.recommendationDialog.edit(
-      this.recommendation, this.activeStore.activeConfig, this.activeStore.activeData,
-        this.dataResourcesMap);
+    combineLatest(this.activeStore.config, this.activeStore.data)
+      .pipe(take(1))
+      .subscribe(results => {
+        this.recommendationDialog.edit(
+          this.recommendation, results[0], results[1], this.dataResourcesMap);
+      });
   }
 
   duplicate() {

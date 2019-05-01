@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
+import {take} from 'rxjs/operators';
 import {ActiveStore} from '../../services/active-store';
 import {RepoDaoType} from '../../services/dao/data-dao';
 import {Updater} from '../../services/updater';
@@ -22,7 +23,8 @@ export class TypeActions {
 
   update() {
     this.updateState.next('updating');
-    this.updater.update(this.activeStore.activeData, this.type)
-        .then(() => this.updateState.next('updated'));
+    this.activeStore.data.pipe(take(1)).subscribe(dataStore => {
+      this.updater.update(dataStore, this.type).then(() => this.updateState.next('updated'));
+    });
   }
 }

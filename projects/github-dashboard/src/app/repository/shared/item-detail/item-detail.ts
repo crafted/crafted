@@ -34,26 +34,29 @@ export class ItemDetail {
 
   item: Observable<Item|null>;
 
-  addLabelOptions = this.activeStore.activeData.labels.list.pipe(map(labels => {
-    const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
-    labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
-    return labelOptions;
-  }));
+  addLabelOptions = this.activeStore.data.pipe(
+    mergeMap(dataStore => dataStore.labels.list), map(labels => {
+      const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
+      labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+      return labelOptions;
+    }));
 
-  addAssigneeOptions = this.activeStore.activeData.items.list.pipe(map(items => {
-    const assigneesSet = new Set<string>();
-    items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
-    const assigneesList: string[] = [];
-    assigneesSet.forEach(a => assigneesList.push(a));
-    return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
+  addAssigneeOptions = this.activeStore.data.pipe(
+    mergeMap(dataStore => dataStore.items.list), map(items => {
+      const assigneesSet = new Set<string>();
+      items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
+      const assigneesList: string[] = [];
+      assigneesSet.forEach(a => assigneesList.push(a));
+      return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
         .map(a => ({id: a, label: a}));
-  }));
+    }));
 
   private destroyed = new Subject();
 
   constructor(
     private elementRef: ElementRef, private markdown: Markdown, public activeStore: ActiveStore,
-    public github: Github, public dao: Dao) {}
+    public github: Github, public dao: Dao) {
+  }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.itemId && this.itemId) {
@@ -65,8 +68,10 @@ export class ItemDetail {
 
       this.recommendations =
           combineLatest(
-            this.item, this.activeStore.activeConfig.recommendations.list,
-            this.activeStore.activeData.labels.map)
+            this.item,
+            this.activeStore.config.pipe(
+              mergeMap(configStore => configStore.recommendations.list)),
+            this.activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.map)))
               .pipe(map(
                   results =>
                       results[0] ? getRecommendations(results[0], results[1], results[2]) : []));
@@ -110,22 +115,28 @@ export class ItemDetail {
   }
 
   addLabel(id: string, label: string) {
-    this.github.addLabel(this.activeStore.activeName, this.itemId, label).pipe(take(1)).subscribe();
+    this.activeStore.name
+      .pipe(mergeMap(repository => this.github.addLabel(repository, this.itemId, label)), take(1))
+      .subscribe();
 
-    this.item.pipe(take(1)).subscribe(item => {
-      item.labels.push(+id);
-      this.activeStore.activeData.items.update(item);
+    // Manually patch in the new label to the current item object until the next sync with GitHub.
+    combineLatest(this.item, this.activeStore.data).pipe(take(1)).subscribe(results => {
+      results[0].labels.push(+id);
+      results[1].items.update(results[0]);
     });
   }
 
   addAssignee(assignee: string) {
-    this.github.addAssignee(this.activeStore.activeName, this.itemId, assignee)
-        .pipe(take(1))
+    this.activeStore.name
+      .pipe(
+        mergeMap(repository => this.github.addAssignee(repository, this.itemId, assignee)),
+        take(1))
         .subscribe();
 
-    this.item.pipe(take(1)).subscribe(item => {
-      item.assignees.push(assignee);
-      this.activeStore.activeData.items.update(item);
+    // Manually patch in the new label to the current item object until the next sync with GitHub.
+    combineLatest(this.item, this.activeStore.data).pipe(take(1)).subscribe(results => {
+      results[0].assignees.push(assignee);
+      results[1].items.update(results[0]);
     });
   }
 }

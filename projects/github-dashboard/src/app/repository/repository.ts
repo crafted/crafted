@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
-import {interval} from 'rxjs';
+import {combineLatest, interval, Observable} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
+import {Item} from '../github/app-types/item';
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
@@ -20,14 +21,28 @@ import {isRepoStoreEmpty} from './utility/is-repo-store-empty';
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
+/** Observable pipe that gets the list of issues from the data store. */
+function dataStoreIssuesList(): (dataStore$: Observable<DataStore>) => Observable<Item[]> {
+  return (dataStore$: Observable<DataStore>) => {
+    return dataStore$.pipe(
+      mergeMap(dataStore => dataStore.items.list), map(items => items.filter(i => !i.pr)));
+  };
+}
+
+/** Observable pipe that gets the list of prs from the data store. */
+function dataStorePrsList(): (dataStore$: Observable<DataStore>) => Observable<Item[]> {
+  return (dataStore$: Observable<DataStore>) => {
+    return dataStore$.pipe(
+      mergeMap(dataStore => dataStore.items.list), map(items => items.filter(i => !i.pr)));
+  };
+}
+
 export const provideDataResourcesMap = (activeStore: ActiveStore) => {
-  const recommendations = activeStore.activeConfig.recommendations.list;
-  const labels = activeStore.activeData.labels.list;
-
-  const issues =
-      activeStore.activeData.items.list.pipe(map(items => items.filter(item => !item.pr)));
-
-  const prs = activeStore.activeData.items.list.pipe(map(items => items.filter(item => !!item.pr)));
+  const recommendations =
+    activeStore.config.pipe(mergeMap(dataStore => dataStore.recommendations.list));
+  const labels = activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.list));
+  const issues = activeStore.data.pipe(dataStoreIssuesList());
+  const prs = activeStore.data.pipe(dataStorePrsList());
 
   return new Map<string, DataResources>([
     [
@@ -66,21 +81,24 @@ export class Repository {
   constructor(
     private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
     private remover: Remover, private activeStore: ActiveStore, private auth: Auth) {
-    this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))))
-        .subscribe(isEmpty => {
-          const store = this.activeStore.activeData;
-          const isLoaded = this.loadedRepos.isLoaded(store.name);
+    const isEmpty$ =
+      this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))));
 
-          if (!isEmpty && !isLoaded) {
-            this.remover.removeAllData(store, false);
-          }
+    combineLatest(this.activeStore.data, isEmpty$).pipe(take(1)).subscribe(results => {
+      const dataStore = results[0];
+      const isEmpty = results[1];
+      const isLoaded = this.loadedRepos.isLoaded(dataStore.name);
 
-          if (isEmpty) {
-            this.router.navigate([`${store.name}/database`]);
-          } else if (this.auth.token) {
-            this.initializeAutoIssueUpdates(this.activeStore.activeData);
-          }
-        });
+      if (!isEmpty && !isLoaded) {
+        this.remover.removeAllData(dataStore, false);
+      }
+
+      if (isEmpty) {
+        this.router.navigate([`${dataStore.name}/database`]);
+      } else if (this.auth.token) {
+        this.initializeAutoIssueUpdates(dataStore);
+      }
+    });
   }
 
   private initializeAutoIssueUpdates(store: DataStore) {
