@@ -1,9 +1,21 @@
 <div class="header theme-background-app-bar">
-  <mat-select [formControl]="repository">
-    <mat-option *ngFor="let repo of repositories | async" [value]="repo">
-      <div>{{repo}}</div>
+  <button (click)="navigateHome()" class="home" mat-icon-button>
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <ng-container *ngIf="repositories$ | async as repositories">
+    <mat-select (selectionChange)="router.navigate([$event.value])"
+                *ngIf="repositories.length > 1; else singleRepository"
+                [value]="activeRepo.name | async">
+      <mat-option *ngFor="let repository of repositories" [value]="repository">
+        {{repository}}
     </mat-option>
   </mat-select>
+
+    <ng-template #singleRepository>
+      {{activeRepo.name | async}}
+    </ng-template>
+  </ng-container>
 </div>
 
 <mat-divider></mat-divider>
