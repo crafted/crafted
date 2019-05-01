@@ -72,7 +72,7 @@ export class Repository {
           const isLoaded = this.loadedRepos.isLoaded(store.name);
 
           if (!isEmpty && !isLoaded) {
-            this.remover.removeAllData(store);
+            this.remover.removeAllData(store, false);
           }
 
           if (isEmpty) {

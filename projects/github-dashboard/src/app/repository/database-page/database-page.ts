@@ -15,6 +15,8 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatabasePage {
+  isLoading = false;
+
   isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
   isLoaded = combineLatest(this.activeRepo.name, this.loadedRepos.repos$)

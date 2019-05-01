@@ -1,7 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Output
+} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, startWith, tap} from 'rxjs/operators';
 import {Contributor} from '../../../github/app-types/contributor';
 import {Item} from '../../../github/app-types/item';
@@ -9,7 +15,6 @@ import {Label} from '../../../github/app-types/label';
 import {Github} from '../../../service/github';
 import {LoadedRepos} from '../../../service/loaded-repos';
 import {ActiveStore} from '../../services/active-store';
-import {isRepoStoreEmpty} from '../../utility/is-repo-store-empty';
 
 
 interface StorageState {
@@ -27,7 +32,7 @@ interface StorageState {
 export class LoadData {
   state: StorageState|null = null;
 
-  isLoading = new BehaviorSubject<boolean>(false);
+  isLoading = false;
 
   formGroup = new FormGroup(
       {issueDateType: new FormControl('last updated since'), issueDate: new FormControl('')});
@@ -48,7 +53,7 @@ export class LoadData {
                   return this.github.getItemsCount(repository, since);
                 }));
 
-  isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
+  @Output() loading = new EventEmitter();
 
   constructor(
       private loadedRepos: LoadedRepos, private activeRepo: ActiveStore,
@@ -58,15 +63,11 @@ export class LoadData {
     this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
   }
 
-  ngOnDestroy() {
-    this.isLoading.next(false);
-  }
-
   store() {
+    this.loading.emit();
+    this.isLoading = true;
     const repository = this.activeRepo.activeName;
     const store = this.activeRepo.activeData;
-
-    this.isLoading.next(true);
 
     const getLabels = this.getValues(
         repository, 'labels', r => this.github.getLabels(r),
@@ -80,11 +81,10 @@ export class LoadData {
         repository, 'contributor', r => this.github.getContributors(r),
         (values: Contributor[]) => store.contributors.update(values));
 
-    getContributors.pipe(mergeMap(() => getLabels), mergeMap(() => getIssues)).subscribe(() => {
+    getLabels.pipe(mergeMap(() => getContributors), mergeMap(() => getIssues)).subscribe(() => {
       this.state = null;
       this.snackbar.open(`Successfully loaded data`, '', {duration: 2000});
       this.loadedRepos.addLoadedRepo(repository);
-      this.isLoading.next(false);
       this.cd.markForCheck();
     });
   }
