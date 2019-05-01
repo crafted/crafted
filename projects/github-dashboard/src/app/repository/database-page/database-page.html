@@ -18,14 +18,23 @@
       </div>
 
       <ng-container [ngSwitch]="typeInfo.type">
+
+        <ng-container *ngSwitchCase="'items'">
+          <button (click)="navigateToNewQuery()" class="create-query"
+                  color="primary" mat-stroked-button>
+            Create Query
+          </button>
+        </ng-container>
+
         <ng-container *ngSwitchCase="'labels'">
           <label-list [labelIds]="(repoLabels | async) || []"></label-list>
         </ng-container>
+
       </ng-container>
     </div>
   </ng-container>
 
-  <button (click)="remove()" *ngIf="(isEmpty | async) === false"
+  <button (click)="remove()" *ngIf="(isEmpty | async) === false" class="remove"
           color="warn" mat-stroked-button>
     Remove locally stored data
   </button>

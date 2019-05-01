@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
@@ -44,10 +45,15 @@ export class DatabasePage {
   ];
 
   constructor(
-    public activeRepo: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover) {
+    public activeRepo: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
+    private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
   remove() {
     this.remover.removeAllData(this.activeRepo.activeData, true);
+  }
+
+  navigateToNewQuery() {
+    this.router.navigate(['../../../query/new'], {relativeTo: this.activatedRoute});
   }
 }
