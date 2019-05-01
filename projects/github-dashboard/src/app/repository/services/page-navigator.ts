@@ -20,7 +20,7 @@ export class PageNavigator {
   }
 
   navigateToDashboard(id: string) {
-    this.navigate(`query/${id}`);
+    this.navigate(`dashboard/${id}`);
   }
 
   private navigate(subPath: string, queryParams?: QueryQueryParams) {

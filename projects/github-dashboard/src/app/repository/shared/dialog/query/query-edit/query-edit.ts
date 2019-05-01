@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {combineLatest} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 
 import {ActiveStore} from '../../../../services/active-store';
 
@@ -27,21 +27,21 @@ export class QueryEdit {
   formGroup =
       new FormGroup({name: new FormControl('', Validators.required), group: new FormControl('')});
 
-  filteredGroupOptions =
-    combineLatest(this.activeStore.activeConfig.queries.list, this.formGroup.valueChanges)
-          .pipe(map(result => {
-            const queries = result[0];
-            const groupOptionsSet = new Set<string>();
-            queries.forEach(query => {
-              if (query.group) {
-                groupOptionsSet.add(query.group);
-              }
-            });
+  filteredGroupOptions = this.activeStore.config.pipe(
+    mergeMap(configStore => combineLatest(configStore.queries.list, this.formGroup.valueChanges)),
+    map(result => {
+      const queries = result[0];
+      const groupOptionsSet = new Set<string>();
+      queries.forEach(query => {
+        if (query.group) {
+          groupOptionsSet.add(query.group);
+        }
+      });
 
-            const groupOptions: string[] = [];
-            groupOptionsSet.forEach(groupOption => groupOptions.push(groupOption));
-            return this._filter(this.formGroup.value.group, groupOptions);
-          }));
+      const groupOptions: string[] = [];
+      groupOptionsSet.forEach(groupOption => groupOptions.push(groupOption));
+      return this._filter(result[1].group, groupOptions);
+    }));
 
   constructor(
     public dialogRef: MatDialogRef<QueryEdit>, private activeStore: ActiveStore,

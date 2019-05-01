@@ -68,11 +68,16 @@ export class RecommendationView {
   duplicate() {
     const newRecommendation = {...this.recommendation};
     delete newRecommendation.id;
-    this.activeStore.activeConfig.recommendations.add(newRecommendation);
+
+    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
+      configStore.recommendations.add(newRecommendation).pipe(take(1)).subscribe();
+    });
   }
 
   remove() {
-    this.recommendationDialog.remove(this.recommendation, this.activeStore.activeConfig);
+    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
+      this.recommendationDialog.remove(this.recommendation, configStore);
+    });
   }
 
   open() {

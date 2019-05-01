@@ -41,8 +41,9 @@ export class DashboardsPage {
   create() {
     const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
     const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
-    this.activeStore.activeConfig.dashboards.add(newDashboard)
-      .pipe(take(1))
+
+    this.activeStore.config
+      .pipe(mergeMap(configStore => configStore.dashboards.add(newDashboard)), take(1))
       .subscribe(id => this.navigateToDashboard(id));
   }
 

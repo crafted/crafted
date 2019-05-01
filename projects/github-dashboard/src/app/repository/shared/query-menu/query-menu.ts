@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {take} from 'rxjs/operators';
 import {ActiveStore} from '../../services/active-store';
 import {Query} from '../../services/dao/config/query';
 import {QueryDialog} from '../dialog/query/query-dialog';
@@ -17,10 +18,14 @@ export class QueryMenu {
   }
 
   openEditNameDialog() {
-    this.queryDialog.editQuery(this.query, this.activeStore.activeConfig);
+    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
+      this.queryDialog.editQuery(this.query, configStore);
+    });
   }
 
   deleteQuery() {
-    this.queryDialog.deleteQuery(this.query, this.activeStore.activeConfig);
+    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
+      this.queryDialog.deleteQuery(this.query, configStore);
+    });
   }
 }

@@ -7,10 +7,6 @@ import {Dao, DataStore} from './dao/data-dao';
 
 @Injectable()
 export class ActiveStore {
-  get activeConfig(): ConfigStore {
-    return this.config.value;
-  }
-
   data = new BehaviorSubject<DataStore>(
     this.getStoreFromParams(this.activatedRoute.firstChild.snapshot.params));
 

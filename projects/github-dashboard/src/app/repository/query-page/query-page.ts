@@ -44,19 +44,18 @@ export class QueryPage<T> {
   dataResourceOptions: {id: string, label: string}[] = [];
 
   query: Observable<Query> =
-    combineLatest(this.activatedRoute.params, this.activatedRoute.queryParamMap)
+    combineLatest(this.activatedRoute.params, this.activatedRoute.queryParamMap, this.activeStore.config)
       .pipe(
         mergeMap(results => {
           if (results[0].id === 'new') {
-            const configStore = this.activeStore.activeConfig;
-            return newQuery(results[1], configStore).pipe(tap(query => {
+            return newQuery(results[1], results[2]).pipe(tap(query => {
               if (!query.dataType && this.dataResourceOptions.length === 1) {
                 query.dataType = this.dataResourceOptions[0].id;
               }
             }));
           }
 
-          return this.activeStore.activeConfig.queries.get(results[0].id);
+          return results[2].queries.get(results[0].id);
         }),
         shareReplay(1));
 

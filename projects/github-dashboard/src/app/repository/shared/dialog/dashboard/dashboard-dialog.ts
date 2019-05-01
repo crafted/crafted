@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Dashboard} from '@crafted/components';
-import {of} from 'rxjs';
+import {combineLatest, of} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {ActiveStore} from '../../../services/active-store';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
@@ -14,17 +14,19 @@ export class DashboardDialog {
   }
 
   editDashboard(dashboard: Dashboard) {
-    const data = {
-      name: dashboard.name,
-      description: dashboard.description,
-    };
-
-    const store = this.activeStore.activeConfig;
-    this.dialog.open(DashboardEdit, {data}).afterClosed().pipe(take(1)).subscribe(result => {
-      if (result) {
-        store.dashboards.update({id: dashboard.id, ...result});
+    const dialogRef = this.dialog.open(DashboardEdit, {
+      data: {
+        name: dashboard.name,
+        description: dashboard.description,
       }
     });
+    combineLatest(this.activeStore.config, dialogRef.afterClosed())
+      .pipe(take(1))
+      .subscribe(results => {
+        if (results[1]) {
+          results[0].dashboards.update({id: dashboard.id, ...results[1]});
+        }
+      });
   }
 
   /**
@@ -32,17 +34,14 @@ export class DashboardDialog {
    * query and navigate to the queries page.
    */
   removeDashboard(dashboard: Dashboard) {
-    const data = {name: of(dashboard.name)};
-    const store = this.activeStore.activeConfig;
-
-    this.dialog.open(DeleteConfirmation, {data})
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe(confirmed => {
-          if (confirmed) {
-            store.dashboards.remove(dashboard.id);
-            this.snackbar.open(`Dashboard "${dashboard.name}" deleted`, '', {duration: 2000});
-          }
-        });
+    const dialogRef = this.dialog.open(DeleteConfirmation, {data: {name: of(dashboard.name)}});
+    combineLatest(this.activeStore.config, dialogRef.afterClosed())
+      .pipe(take(1))
+      .subscribe(results => {
+        if (results[1]) {
+          results[0].dashboards.remove(dashboard.id);
+          this.snackbar.open(`Dashboard "${dashboard.name}" deleted`, '', {duration: 2000});
+        }
+      });
   }
 }

@@ -76,7 +76,9 @@ export class DashboardPage {
   trackByIndex = (i: number) => i;
 
   saveDashboard(dashboard: Dashboard) {
-    this.activeStore.activeConfig.dashboards.update(dashboard);
+    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
+      configStore.dashboards.update(dashboard);
+    });
   }
 
   openQuery(widget: Widget) {
