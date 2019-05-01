@@ -12,11 +12,12 @@ import {isRepoStoreEmpty} from '../../utility/is-repo-store-empty';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SeasonHeader {
-  isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
+  isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
   @Input() sidenav: MatSidenav;
 
-  constructor(public header: Header, private activeRepo: ActiveStore) {}
+  constructor(public header: Header, private activeStore: ActiveStore) {
+  }
 
   leftButtonClicked() {
     if (this.header.goBack) {

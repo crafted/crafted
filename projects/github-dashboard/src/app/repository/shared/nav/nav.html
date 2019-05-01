@@ -6,14 +6,14 @@
   <ng-container *ngIf="repositories$ | async as repositories">
     <mat-select (selectionChange)="router.navigate([$event.value])"
                 *ngIf="repositories.length > 1; else singleRepository"
-                [value]="activeRepo.name | async">
+                [value]="activeStore.name | async">
       <mat-option *ngFor="let repository of repositories" [value]="repository">
         {{repository}}
     </mat-option>
   </mat-select>
 
     <ng-template #singleRepository>
-      {{activeRepo.name | async}}
+      {{activeStore.name | async}}
     </ng-template>
   </ng-container>
 </div>

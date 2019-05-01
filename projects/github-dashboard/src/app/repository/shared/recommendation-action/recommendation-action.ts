@@ -17,13 +17,14 @@ export class RecommendationAction {
 
   @Input() recommendation: Recommendation;
 
-  constructor(private github: Github, private activeRepo: ActiveStore) {}
+  constructor(private github: Github, private activeStore: ActiveStore) {
+  }
 
   addLabel(label: Label) {
     const newItem: Item = {...this.item};
     newItem.labels = [...this.item.labels, +label.id];
-    this.activeRepo.activeData.items.update(newItem);
-    this.github.addLabel(this.activeRepo.activeName, this.item.id, label.name)
+    this.activeStore.activeData.items.update(newItem);
+    this.github.addLabel(this.activeStore.activeName, this.item.id, label.name)
         .pipe(take(1))
         .subscribe();
   }
@@ -31,8 +32,8 @@ export class RecommendationAction {
   addAssignee(assignee: string) {
     const newItem: Item = {...this.item};
     newItem.assignees = [...this.item.assignees, assignee];
-    this.activeRepo.activeData.items.update(newItem);
-    this.github.addAssignee(this.activeRepo.activeName, this.item.id, assignee)
+    this.activeStore.activeData.items.update(newItem);
+    this.github.addAssignee(this.activeStore.activeName, this.item.id, assignee)
         .pipe(take(1))
         .subscribe();
   }

@@ -18,39 +18,39 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 export class DatabasePage {
   isLoading = false;
 
-  isEmpty = this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
+  isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
-  isLoaded = combineLatest(this.activeRepo.name, this.loadedRepos.repos$)
+  isLoaded = combineLatest(this.activeStore.name, this.loadedRepos.repos$)
     .pipe(map(results => results[1].indexOf(results[0]) !== -1));
 
-  repoLabels = this.activeRepo.data.pipe(
+  repoLabels = this.activeStore.data.pipe(
       mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
 
   repoDaoTypeInfo: {type: RepoDaoType, label: string, count: Observable<number>}[] = [
     {
       type: 'items',
       label: 'Issues and pull requests',
-      count: this.activeRepo.data.pipe(mergeMap(s => s.items.list), map(l => l.length))
+      count: this.activeStore.data.pipe(mergeMap(s => s.items.list), map(l => l.length))
     },
     {
       type: 'labels',
       label: 'Labels',
-      count: this.activeRepo.data.pipe(mergeMap(s => s.labels.list), map(l => l.length))
+      count: this.activeStore.data.pipe(mergeMap(s => s.labels.list), map(l => l.length))
     },
     {
       type: 'contributors',
       label: 'Contributors',
-      count: this.activeRepo.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length))
+      count: this.activeStore.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length))
     },
   ];
 
   constructor(
-    public activeRepo: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
+    public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
     private router: Router, private activatedRoute: ActivatedRoute) {
   }
 
   remove() {
-    this.remover.removeAllData(this.activeRepo.activeData, true);
+    this.remover.removeAllData(this.activeStore.activeData, true);
   }
 
   navigateToNewQuery() {

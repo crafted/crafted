@@ -36,14 +36,14 @@ const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
-  queries = this.activeRepo.config.pipe(mergeMap(configStore => configStore.queries.list));
+  queries = this.activeStore.config.pipe(mergeMap(configStore => configStore.queries.list));
   dataTypes: string[] = [];
   headerActions: Observable<HeaderContentAction[]> =
     this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));
 
   constructor(
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-    private router: Router, private activeRepo: ActiveStore) {
+    private router: Router, private activeStore: ActiveStore) {
     this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 
@@ -52,11 +52,11 @@ export class QueriesPage {
   queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
 
   createQuery() {
-    this.router.navigate([`${this.activeRepo.activeName}/query/new`]);
+    this.router.navigate([`${this.activeStore.activeName}/query/new`]);
   }
 
   navigateToQuery(id: string) {
-    this.router.navigate([`${this.activeRepo.activeName}/query/${id}`]);
+    this.router.navigate([`${this.activeStore.activeName}/query/${id}`]);
   }
 
   handleHeaderAction(action: QueriesPageAction) {

@@ -49,7 +49,7 @@ export class QueryPage<T> {
       .pipe(
         mergeMap(results => {
           if (results[0].id === 'new') {
-            const configStore = this.activeRepo.activeConfig;
+            const configStore = this.activeStore.activeConfig;
             return newQuery(results[1], configStore).pipe(tap(query => {
               if (!query.dataType && this.dataResourceOptions.length === 1) {
                 query.dataType = this.dataResourceOptions[0].id;
@@ -57,7 +57,7 @@ export class QueryPage<T> {
             }));
           }
 
-          return this.activeRepo.activeConfig.queries.get(results[0].id);
+          return this.activeStore.activeConfig.queries.get(results[0].id);
         }),
         shareReplay(1));
 
@@ -119,7 +119,7 @@ export class QueryPage<T> {
   constructor(
     @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
     private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-    private activeRepo: ActiveStore, private queryDialog: QueryDialog) {
+    private activeStore: ActiveStore, private queryDialog: QueryDialog) {
     this.dataResourcesMap.forEach(
       dataResource =>
         this.dataResourceOptions.push({id: dataResource.type, label: dataResource.label}));
@@ -153,9 +153,9 @@ export class QueryPage<T> {
           viewerState: results[4],
         };
         const query = {...results[0], ...states, name, group};
-        this.activeRepo.activeConfig.queries.add(query).pipe(take(1)).subscribe(id => {
+        this.activeStore.activeConfig.queries.add(query).pipe(take(1)).subscribe(id => {
           this.router.navigate(
-            [`${this.activeRepo.activeData.name}/query/${id}`],
+            [`${this.activeStore.activeData.name}/query/${id}`],
             {replaceUrl: true, queryParamsHandling: 'merge'});
         });
       });

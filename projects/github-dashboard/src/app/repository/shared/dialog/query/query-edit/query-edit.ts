@@ -28,7 +28,7 @@ export class QueryEdit {
       new FormGroup({name: new FormControl('', Validators.required), group: new FormControl('')});
 
   filteredGroupOptions =
-      combineLatest(this.activeRepo.activeConfig.queries.list, this.formGroup.valueChanges)
+    combineLatest(this.activeStore.activeConfig.queries.list, this.formGroup.valueChanges)
           .pipe(map(result => {
             const queries = result[0];
             const groupOptionsSet = new Set<string>();
@@ -44,8 +44,8 @@ export class QueryEdit {
           }));
 
   constructor(
-      public dialogRef: MatDialogRef<QueryEdit>, private activeRepo: ActiveStore,
-      @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
+    public dialogRef: MatDialogRef<QueryEdit>, private activeStore: ActiveStore,
+    @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
     if (data && data.name) {
       this.formGroup.get('name').setValue(data.name);
     }

@@ -17,12 +17,12 @@ export class TypeActions {
 
   updateState = new BehaviorSubject<UpdateState>('not-updating');
 
-  constructor(private updater: Updater, private activeRepo: ActiveStore) {
+  constructor(private updater: Updater, private activeStore: ActiveStore) {
   }
 
   update() {
     this.updateState.next('updating');
-    this.updater.update(this.activeRepo.activeData, this.type)
+    this.updater.update(this.activeStore.activeData, this.type)
         .then(() => this.updateState.next('updated'));
   }
 }

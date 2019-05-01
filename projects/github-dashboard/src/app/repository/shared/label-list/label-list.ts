@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
-import { Label } from '../../../github/app-types/label';
-import { ActiveStore } from '../../services/active-store';
-import { getTextColor, getBorderColor } from '../../../github/utility/label-colors';
+import {Label} from '../../../github/app-types/label';
+import {getBorderColor, getTextColor} from '../../../github/utility/label-colors';
+import {ActiveStore} from '../../services/active-store';
 
 interface DisplayedLabel {
   id: string;
@@ -33,7 +33,7 @@ export class LabelList {
   @Output() selected = new EventEmitter<Label>();
 
 
-  labels = this.activeRepo.data.pipe(
+  labels = this.activeStore.data.pipe(
       mergeMap(store => combineLatest(this._labelIds, store.labels.list)), map(result => {
         const labelIds = result[0];
         const repoLabels = result[1];
@@ -55,7 +55,8 @@ export class LabelList {
         return labels;
       }));
 
-  constructor(private activeRepo: ActiveStore) {}
+  constructor(private activeStore: ActiveStore) {
+  }
 
   select(label: Label) {
     if (this.selectable) {

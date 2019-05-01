@@ -25,11 +25,12 @@ const HEADER_ACTIONS: HeaderContentAction<DashboardsPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardsPage {
-  constructor(
-      private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
-      private activeRepo: ActiveStore) {}
+  dashboards$ = this.activeStore.config.pipe(mergeMap(store => store.dashboards.list));
 
-  dashboards$ = this.activeRepo.config.pipe(mergeMap(store => store.dashboards.list));
+  constructor(
+    private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
+    private activeStore: ActiveStore) {
+  }
 
   headerActions: Observable<HeaderContentAction[]> =
     this.dashboards$.pipe(map(dashboards => dashboards.length ? HEADER_ACTIONS : []));
@@ -39,13 +40,13 @@ export class DashboardsPage {
   create() {
     const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
     const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
-    this.activeRepo.activeConfig.dashboards.add(newDashboard).pipe(take(1)).subscribe(id => {
-      this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
+    this.activeStore.activeConfig.dashboards.add(newDashboard).pipe(take(1)).subscribe(id => {
+      this.router.navigate([`${this.activeStore.activeName}/dashboard/${id}`]);
     });
   }
 
   navigateToDashboard(id: string) {
-    this.router.navigate([`${this.activeRepo.activeName}/dashboard/${id}`]);
+    this.router.navigate([`${this.activeStore.activeName}/dashboard/${id}`]);
   }
 
   handleHeaderAction(action: DashboardsPageAction) {

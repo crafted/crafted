@@ -28,7 +28,7 @@ export class Nav {
     {route: 'recommendations', label: 'Recommendations', icon: 'label'},
   ];
 
-  repositories$ = combineLatest(this.activeRepo.name, this.loadedRepos.repos$).pipe(map(results => {
+  repositories$ = combineLatest(this.activeStore.name, this.loadedRepos.repos$).pipe(map(results => {
     const repositoriesSet = new Set([results[0], ...results[1]]);
     const repositories = [];
     repositoriesSet.forEach(r => repositories.push(r));
@@ -40,7 +40,7 @@ export class Nav {
   private destroyed = new Subject();
 
   constructor(
-    public activeRepo: ActiveStore, public loadedRepos: LoadedRepos, public theme: Theme,
+    public activeStore: ActiveStore, public loadedRepos: LoadedRepos, public theme: Theme,
     public router: Router, public auth: Auth) {
   }
 

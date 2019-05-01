@@ -34,13 +34,13 @@ export class ItemDetail {
 
   item: Observable<Item|null>;
 
-  addLabelOptions = this.activeRepo.activeData.labels.list.pipe(map(labels => {
+  addLabelOptions = this.activeStore.activeData.labels.list.pipe(map(labels => {
     const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
     labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
     return labelOptions;
   }));
 
-  addAssigneeOptions = this.activeRepo.activeData.items.list.pipe(map(items => {
+  addAssigneeOptions = this.activeStore.activeData.items.list.pipe(map(items => {
     const assigneesSet = new Set<string>();
     items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
     const assigneesList: string[] = [];
@@ -52,26 +52,26 @@ export class ItemDetail {
   private destroyed = new Subject();
 
   constructor(
-      private elementRef: ElementRef, private markdown: Markdown, public activeRepo: ActiveStore,
-      public github: Github, public dao: Dao) {}
+    private elementRef: ElementRef, private markdown: Markdown, public activeStore: ActiveStore,
+    public github: Github, public dao: Dao) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.itemId && this.itemId) {
       this.elementRef.nativeElement.scrollTop = 0;  // Scroll up in case prev item was scrolled
       this.itemId = `${this.itemId}`;  // Make sure its a string since maps are string-ID based
-      const store = this.dao.get(this.activeRepo.activeName);
+      const store = this.dao.get(this.activeStore.activeName);
       this.item = store.items.get(this.itemId);
       this.bodyMarkdown = this.markdown.getItemBodyMarkdown(store, this.itemId);
 
       this.recommendations =
           combineLatest(
-              this.item, this.activeRepo.activeConfig.recommendations.list,
-              this.activeRepo.activeData.labels.map)
+            this.item, this.activeStore.activeConfig.recommendations.list,
+            this.activeStore.activeData.labels.map)
               .pipe(map(
                   results =>
                       results[0] ? getRecommendations(results[0], results[1], results[2]) : []));
 
-      this.activities = this.activeRepo.data.pipe(
+      this.activities = this.activeStore.data.pipe(
           mergeMap(dataStore => {
             return combineLatest(
               this.github.getComments(dataStore.name, this.itemId),
@@ -110,22 +110,22 @@ export class ItemDetail {
   }
 
   addLabel(id: string, label: string) {
-    this.github.addLabel(this.activeRepo.activeName, this.itemId, label).pipe(take(1)).subscribe();
+    this.github.addLabel(this.activeStore.activeName, this.itemId, label).pipe(take(1)).subscribe();
 
     this.item.pipe(take(1)).subscribe(item => {
       item.labels.push(+id);
-      this.activeRepo.activeData.items.update(item);
+      this.activeStore.activeData.items.update(item);
     });
   }
 
   addAssignee(assignee: string) {
-    this.github.addAssignee(this.activeRepo.activeName, this.itemId, assignee)
+    this.github.addAssignee(this.activeStore.activeName, this.itemId, assignee)
         .pipe(take(1))
         .subscribe();
 
     this.item.pipe(take(1)).subscribe(item => {
       item.assignees.push(assignee);
-      this.activeRepo.activeData.items.update(item);
+      this.activeStore.activeData.items.update(item);
     });
   }
 }

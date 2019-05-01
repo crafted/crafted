@@ -32,12 +32,12 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-  savedFiltererStates = this.activeRepo.config.pipe(
+  savedFiltererStates = this.activeStore.config.pipe(
       mergeMap(config => combineLatest(config.queries.list, config.recommendations.list)),
     map(result => getSavedFiltererStates(result[0], result[1])));
 
   dashboard: Observable<Dashboard> =
-    combineLatest(this.activeRepo.config, this.activatedRoute.params)
+    combineLatest(this.activeStore.config, this.activatedRoute.params)
       .pipe(mergeMap(results => results[0].dashboards.get(results[1].id)), shareReplay(1));
 
   edit = new BehaviorSubject<boolean>(false);
@@ -66,7 +66,7 @@ export class DashboardPage {
     private dialog: MatDialog, private elementRef: ElementRef,
     @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
     private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
-    private activeRepo: ActiveStore) {
+    private activeStore: ActiveStore) {
     // TODO: Needs to listen for theme changes to know when this should change
     Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
 
@@ -76,7 +76,7 @@ export class DashboardPage {
   trackByIndex = (i: number) => i;
 
   saveDashboard(dashboard: Dashboard) {
-    this.activeRepo.activeConfig.dashboards.update(dashboard);
+    this.activeStore.activeConfig.dashboards.update(dashboard);
   }
 
   openQuery(widget: Widget) {

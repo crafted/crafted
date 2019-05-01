@@ -37,7 +37,7 @@ export class RecommendationsPage {
   filter = new FormControl('');
 
   dataSource = new DataSource(
-      {data: this.activeRepo.config.pipe(mergeMap(store => store.recommendations.list))});
+    {data: this.activeStore.config.pipe(mergeMap(store => store.recommendations.list))});
 
   headerActions: Observable<HeaderContentAction[]> =
     this.dataSource.data.pipe(map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
@@ -54,18 +54,18 @@ export class RecommendationsPage {
   trackByGroupId = (_i: number, g: Group<Recommendation>) => g.id;
 
   constructor(
-      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-      private header: Header, private activeRepo: ActiveStore,
-      private recommendationDialog: RecommendationDialog) {}
+    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
+    private header: Header, private activeStore: ActiveStore,
+    private recommendationDialog: RecommendationDialog) {}
 
   create() {
     this.recommendationDialog.create(
-        this.activeRepo.activeConfig, this.activeRepo.activeData, this.dataResourcesMap);
+      this.activeStore.activeConfig, this.activeStore.activeData, this.dataResourcesMap);
   }
 
   editJson() {
-    this.activeRepo.activeConfig.recommendations.list.pipe(take(1)).subscribe(list => {
-      this.recommendationDialog.jsonEditor(list, this.activeRepo.activeConfig);
+    this.activeStore.activeConfig.recommendations.list.pipe(take(1)).subscribe(list => {
+      this.recommendationDialog.jsonEditor(list, this.activeStore.activeConfig);
     });
   }
 

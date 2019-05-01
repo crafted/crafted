@@ -38,7 +38,7 @@ export class LoadData {
       {issueDateType: new FormControl('last updated since'), issueDate: new FormControl('')});
 
   totalLabelsCount =
-      this.activeRepo.name.pipe(filter(v => !!v), mergeMap((repository => {
+    this.activeStore.name.pipe(filter(v => !!v), mergeMap((repository => {
                                   return this.github.getLabels(repository)
                                       .pipe(
                                           filter(result => result.completed === result.total),
@@ -46,7 +46,7 @@ export class LoadData {
                                 })));
 
   totalItemCount =
-      combineLatest(this.activeRepo.name, this.formGroup.valueChanges.pipe(startWith(null)))
+    combineLatest(this.activeStore.name, this.formGroup.valueChanges.pipe(startWith(null)))
           .pipe(filter(result => !!result[0]), mergeMap(result => {
                   const repository = result[0];
                   const since = this.getIssuesDateSince();
@@ -56,8 +56,8 @@ export class LoadData {
   @Output() loading = new EventEmitter();
 
   constructor(
-      private loadedRepos: LoadedRepos, private activeRepo: ActiveStore,
-      private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
+    private loadedRepos: LoadedRepos, private activeStore: ActiveStore,
+    private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
     const lastMonth = new Date();
     lastMonth.setDate(new Date().getDate() - 30);
     this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
@@ -66,8 +66,8 @@ export class LoadData {
   store() {
     this.loading.emit();
     this.isLoading = true;
-    const repository = this.activeRepo.activeName;
-    const store = this.activeRepo.activeData;
+    const repository = this.activeStore.activeName;
+    const store = this.activeStore.activeData;
 
     const getLabels = this.getValues(
         repository, 'labels', r => this.github.getLabels(r),

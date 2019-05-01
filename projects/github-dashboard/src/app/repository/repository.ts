@@ -64,11 +64,11 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
 })
 export class Repository {
   constructor(
-      private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-      private remover: Remover, private activeRepo: ActiveStore, private auth: Auth) {
-    this.activeRepo.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))))
+    private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
+    private remover: Remover, private activeStore: ActiveStore, private auth: Auth) {
+    this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))))
         .subscribe(isEmpty => {
-          const store = this.activeRepo.activeData;
+          const store = this.activeStore.activeData;
           const isLoaded = this.loadedRepos.isLoaded(store.name);
 
           if (!isEmpty && !isLoaded) {
@@ -78,7 +78,7 @@ export class Repository {
           if (isEmpty) {
             this.router.navigate([`${store.name}/database`]);
           } else if (this.auth.token) {
-            this.initializeAutoIssueUpdates(this.activeRepo.activeData);
+            this.initializeAutoIssueUpdates(this.activeStore.activeData);
           }
         });
   }

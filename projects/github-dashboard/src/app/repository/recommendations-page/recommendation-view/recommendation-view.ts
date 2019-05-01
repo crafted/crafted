@@ -39,9 +39,9 @@ export class RecommendationView {
   @Input() recommendation: Recommendation;
 
   constructor(
-      private recommendationDialog: RecommendationDialog, private activeRepo: ActiveStore,
-      private router: Router, private activatedRoute: ActivatedRoute,
-      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
+    private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
+    private router: Router, private activatedRoute: ActivatedRoute,
+    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.recommendation && this.recommendation) {
@@ -55,22 +55,22 @@ export class RecommendationView {
 
   edit() {
     this.recommendationDialog.edit(
-        this.recommendation, this.activeRepo.activeConfig, this.activeRepo.activeData,
+      this.recommendation, this.activeStore.activeConfig, this.activeStore.activeData,
         this.dataResourcesMap);
   }
 
   duplicate() {
     const newRecommendation = {...this.recommendation};
     delete newRecommendation.id;
-    this.activeRepo.activeConfig.recommendations.add(newRecommendation);
+    this.activeStore.activeConfig.recommendations.add(newRecommendation);
   }
 
   remove() {
-    this.recommendationDialog.remove(this.recommendation, this.activeRepo.activeConfig);
+    this.recommendationDialog.remove(this.recommendation, this.activeStore.activeConfig);
   }
 
   open() {
-    this.router.navigate([`../../../${this.activeRepo.activeName}/query/new`], {
+    this.router.navigate([`../../../${this.activeStore.activeName}/query/new`], {
       relativeTo: this.activatedRoute.parent,
       queryParams: {recommendationId: this.recommendation.id},
     });

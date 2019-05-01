@@ -1,6 +1,6 @@
 <header-content name="Database"></header-content>
 
-<div class="title"> {{activeRepo.name | async}} </div>
+<div class="title"> {{activeStore.name | async}} </div>
 
 <load-data (loading)="isLoading = true"
            *ngIf="!(isLoaded | async)">
