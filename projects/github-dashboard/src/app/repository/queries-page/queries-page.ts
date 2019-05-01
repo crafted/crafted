@@ -6,6 +6,7 @@ import {delay, map, mergeMap} from 'rxjs/operators';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {Query} from '../services/dao/config/query';
+import {PageNavigator} from '../services/page-navigator';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 
 interface QueryListItem {
@@ -43,7 +44,7 @@ export class QueriesPage {
 
   constructor(
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-    private router: Router, private activeStore: ActiveStore) {
+    private router: Router, private activeStore: ActiveStore, private pageNavigator: PageNavigator) {
     this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 
@@ -52,11 +53,11 @@ export class QueriesPage {
   queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
 
   createQuery() {
-    this.router.navigate([`${this.activeStore.activeName}/query/new`]);
+    this.pageNavigator.navigateToQuery();
   }
 
   navigateToQuery(id: string) {
-    this.router.navigate([`${this.activeStore.activeName}/query/${id}`]);
+    this.pageNavigator.navigateToQuery(id);
   }
 
   handleHeaderAction(action: QueriesPageAction) {

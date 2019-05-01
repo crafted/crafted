@@ -11,6 +11,7 @@ import {
   Recommendation,
   RECOMMENDATION_TYPES
 } from '../../services/dao/config/recommendation';
+import {PageNavigator} from '../../services/page-navigator';
 import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
 
 const equalityToString = {
@@ -41,6 +42,7 @@ export class RecommendationView {
   constructor(
     private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
     private router: Router, private activatedRoute: ActivatedRoute,
+    private pageNavigator: PageNavigator,
     @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {
   }
 
@@ -74,10 +76,7 @@ export class RecommendationView {
   }
 
   open() {
-    this.router.navigate([`../../../${this.activeStore.activeName}/query/new`], {
-      relativeTo: this.activatedRoute.parent,
-      queryParams: {recommendationId: this.recommendation.id},
-    });
+    this.pageNavigator.navigateToQuery('new', {recommendationId: this.recommendation.id});
   }
 }
 

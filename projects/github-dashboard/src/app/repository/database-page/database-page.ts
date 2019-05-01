@@ -5,6 +5,7 @@ import {map, mergeMap, take} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
 import {RepoDaoType} from '../services/dao/data-dao';
+import {PageNavigator} from '../services/page-navigator';
 import {Remover} from '../services/remover';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 
@@ -46,7 +47,7 @@ export class DatabasePage {
 
   constructor(
     public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
-    private router: Router, private activatedRoute: ActivatedRoute) {
+    private router: Router, private activatedRoute: ActivatedRoute, private pageNavigator: PageNavigator) {
   }
 
   remove() {
@@ -56,6 +57,6 @@ export class DatabasePage {
   }
 
   navigateToNewQuery() {
-    this.router.navigate(['../../../query/new'], {relativeTo: this.activatedRoute});
+    this.pageNavigator.navigateToQuery();
   }
 }

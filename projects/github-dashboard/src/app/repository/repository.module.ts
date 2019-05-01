@@ -8,15 +8,12 @@ import {ConfigDao} from './services/dao/config/config-dao';
 import {Dao} from './services/dao/data-dao';
 import {Header} from './services/header';
 import {Markdown} from './services/markdown';
+import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
-import {
-  ConfirmConfigUpdatesModule
-} from './shared/dialog/confirm-config-updates/confirm-config-updates.module';
-import {
-  DeleteConfirmationModule
-} from './shared/dialog/delete-confirmation/delete-confirmation.module';
+import {ConfirmConfigUpdatesModule} from './shared/dialog/confirm-config-updates/confirm-config-updates.module';
+import {DeleteConfirmationModule} from './shared/dialog/delete-confirmation/delete-confirmation.module';
 import {HeaderModule} from './shared/header/header.module';
 import {NavModule} from './shared/nav/nav.module';
 
@@ -73,7 +70,7 @@ export class RepositoryRoutingModule {
   ],
   declarations: [Repository],
   exports: [Repository],
-  providers: [Dao, ConfigDao, Header, Updater, Remover, Markdown, ActiveStore, RepoGist]
+  providers: [Dao, ConfigDao, Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
 })
 export class RepositoryModule {
 }

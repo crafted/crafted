@@ -7,16 +7,8 @@ import {Dao, DataStore} from './dao/data-dao';
 
 @Injectable()
 export class ActiveStore {
-  get activeData(): DataStore {
-    return this.data.value;
-  }
-
   get activeConfig(): ConfigStore {
     return this.config.value;
-  }
-
-  get activeName(): string {
-    return this.activeData.name;
   }
 
   data = new BehaviorSubject<DataStore>(
