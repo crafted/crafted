@@ -15,7 +15,7 @@ export interface DataStore {
 export type RepoDaoType = 'items'|'labels'|'contributors';
 
 @Injectable()
-export class Dao {
+export class DataDao {
   private stores: Map<string, DataStore> = new Map();
 
   constructor() {}

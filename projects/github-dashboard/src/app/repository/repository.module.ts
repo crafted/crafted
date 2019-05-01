@@ -5,7 +5,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {Repository} from './repository';
 import {ActiveStore} from './services/active-store';
 import {ConfigDao} from './services/dao/config/config-dao';
-import {Dao} from './services/dao/data-dao';
+import {DataDao} from './services/dao/data-dao';
 import {Header} from './services/header';
 import {Markdown} from './services/markdown';
 import {PageNavigator} from './services/page-navigator';
@@ -70,7 +70,7 @@ export class RepositoryRoutingModule {
   ],
   declarations: [Repository],
   exports: [Repository],
-  providers: [Dao, ConfigDao, Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
+  providers: [DataDao, ConfigDao, Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
 })
 export class RepositoryModule {
 }

@@ -6,7 +6,6 @@ import {Item} from '../../../github/app-types/item';
 import {Github, TimelineEvent, UserComment} from '../../../service/github';
 import {ActiveStore} from '../../services/active-store';
 import {Recommendation} from '../../services/dao/config/recommendation';
-import {Dao} from '../../services/dao/data-dao';
 import {Markdown} from '../../services/markdown';
 import {getRecommendations} from '../../utility/get-recommendations';
 
@@ -52,7 +51,7 @@ export class ItemDetail {
 
   constructor(
     private elementRef: ElementRef, private markdown: Markdown, public activeStore: ActiveStore,
-    public github: Github, public dao: Dao) {
+    public github: Github) {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {

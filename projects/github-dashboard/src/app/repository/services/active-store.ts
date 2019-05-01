@@ -1,42 +1,23 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
-import {ConfigDao, ConfigStore} from './dao/config/config-dao';
-import {Dao, DataStore} from './dao/data-dao';
+import {map, shareReplay} from 'rxjs/operators';
+import {ConfigDao} from './dao/config/config-dao';
+import {DataDao} from './dao/data-dao';
 
 @Injectable()
 export class ActiveStore {
-  data = new BehaviorSubject<DataStore>(
-    this.getStoreFromParams(this.activatedRoute.firstChild.snapshot.params));
-
-  config = new BehaviorSubject<ConfigStore>(
-    this.getConfigStoreFromParams(this.activatedRoute.firstChild.snapshot.params));
-
+  data = this.activatedRoute.firstChild.params.pipe(
+    map(params => this.dataDao.get(getRepository(params))), shareReplay(1));
+  config = this.activatedRoute.firstChild.params.pipe(
+    map(params => this.configDao.get(getRepository(params))), shareReplay(1));
   name = this.data.pipe(map(store => store.name));
 
-  private destroyed = new Subject();
-
   constructor(
-      private activatedRoute: ActivatedRoute, private dao: Dao, private configDao: ConfigDao) {
-    this.activatedRoute.firstChild.params.pipe(takeUntil(this.destroyed)).subscribe(params => {
-      this.data.next(this.getStoreFromParams(params));
-      this.config.next(this.getConfigStoreFromParams(params));
-    });
+    private activatedRoute: ActivatedRoute, private dataDao: DataDao,
+    private configDao: ConfigDao) {
   }
+}
 
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
-  private getStoreFromParams(params: Params) {
-    const repository = `${params.org}/${params.name}`;
-    return this.dao.get(repository);
-  }
-
-  private getConfigStoreFromParams(params: Params) {
-    const repository = `${params.org}/${params.name}`;
-    return this.configDao.get(repository);
-  }
+function getRepository(params: Params) {
+  return `${params.org}/${params.name}`;
 }
