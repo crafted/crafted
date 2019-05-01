@@ -1,19 +1,19 @@
 <div class="header theme-background-app-bar">
   <button (click)="navigateHome()" class="home" mat-icon-button>
-    <mat-icon>arrow_back</mat-icon>
+    <mat-icon>home</mat-icon>
   </button>
 
   <ng-container *ngIf="repositories$ | async as repositories">
     <mat-select (selectionChange)="router.navigate([$event.value])"
                 *ngIf="repositories.length > 1; else singleRepository"
-                [value]="activeStore.name | async">
+                [value]="activeRepository | async">
       <mat-option *ngFor="let repository of repositories" [value]="repository">
         {{repository}}
     </mat-option>
   </mat-select>
 
     <ng-template #singleRepository>
-      {{activeStore.name | async}}
+      {{activeRepository | async}}
     </ng-template>
   </ng-container>
 </div>
@@ -22,7 +22,7 @@
 
 <div class="link-list">
   <ng-container *ngFor="let link of links">
-    <div mat-button class="link theme-text" (click)="sidenav.close()"
+    <div (click)="sidenav.close()" class="link theme-text"
          routerLinkActive="active" [routerLink]="link.route">
       <div class="link-highlight"></div>
       <div class="link-text">

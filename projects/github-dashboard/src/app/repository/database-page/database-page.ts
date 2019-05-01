@@ -17,11 +17,13 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatabasePage {
+  activeRepository = this.activeStore.data.pipe(map(dataStore => dataStore.name));
+
   isLoading = false;
 
   isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
-  isLoaded = combineLatest(this.activeStore.name, this.loadedRepos.repos$)
+  isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
     .pipe(map(results => results[1].indexOf(results[0]) !== -1));
 
   repoLabels = this.activeStore.data.pipe(

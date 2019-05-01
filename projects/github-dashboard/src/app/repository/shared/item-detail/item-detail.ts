@@ -108,8 +108,9 @@ export class ItemDetail {
   }
 
   addLabel(id: string, label: string) {
-    this.activeStore.name
+    this.activeStore.data
       .pipe(
+        map(dataStore => dataStore.name),
         mergeMap(repository => this.github.addLabel(repository, this.item.id, label)), take(1))
       .subscribe();
 
@@ -121,9 +122,9 @@ export class ItemDetail {
   }
 
   addAssignee(assignee: string) {
-    this.activeStore.name
+    this.activeStore.data
       .pipe(
-        mergeMap(repository => this.github.addAssignee(repository, this.item.id, assignee)),
+        mergeMap(dataStore => this.github.addAssignee(dataStore.name, this.item.id, assignee)),
         take(1))
         .subscribe();
 

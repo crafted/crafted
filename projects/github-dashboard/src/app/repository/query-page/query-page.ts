@@ -133,7 +133,7 @@ export class QueryPage<T> {
             resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.name)
+    combineLatest(this.query, currentState, this.activeStore.config)
       .pipe(
         mergeMap(results => {
           const state = results[1];
@@ -145,7 +145,7 @@ export class QueryPage<T> {
             viewerState: state[3],
           };
           const query = {...results[0], ...states, name, group};
-          return combineLatest(configStore.queries.add(query), this.activeStore.name);
+          return combineLatest(configStore.queries.add(query), configStore.name);
         }),
         take(1))
       .subscribe(results => {

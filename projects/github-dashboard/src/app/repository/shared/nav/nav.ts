@@ -21,6 +21,8 @@ export interface NavLink {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Nav {
+  activeRepository = this.activeStore.data.pipe(map(dataStore => dataStore.name));
+
   links: NavLink[] = [
     {route: 'database', label: 'Database', icon: 'archive'},
     {route: 'dashboards', label: 'Dashboards', icon: 'dashboard'},
@@ -28,12 +30,13 @@ export class Nav {
     {route: 'recommendations', label: 'Recommendations', icon: 'label'},
   ];
 
-  repositories$ = combineLatest(this.activeStore.name, this.loadedRepos.repos$).pipe(map(results => {
-    const repositoriesSet = new Set([results[0], ...results[1]]);
-    const repositories = [];
-    repositoriesSet.forEach(r => repositories.push(r));
-    return repositories;
-  }));
+  repositories$ =
+    combineLatest(this.activeRepository, this.loadedRepos.repos$).pipe(map(results => {
+      const repositoriesSet = new Set([results[0], ...results[1]]);
+      const repositories = [];
+      repositoriesSet.forEach(r => repositories.push(r));
+      return repositories;
+    }));
 
   @Input() sidenav: MatSidenav;
 
@@ -53,4 +56,3 @@ export class Nav {
     this.router.navigate(['../..']);
   }
 }
-

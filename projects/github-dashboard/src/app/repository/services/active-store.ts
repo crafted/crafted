@@ -10,7 +10,6 @@ export class ActiveStore {
     map(params => this.dataDao.get(getRepository(params))), shareReplay(1));
   config = this.activatedRoute.firstChild.params.pipe(
     map(params => this.configDao.get(getRepository(params))), shareReplay(1));
-  name = this.data.pipe(map(store => store.name));
 
   constructor(
     private activatedRoute: ActivatedRoute, private dataDao: DataDao,
