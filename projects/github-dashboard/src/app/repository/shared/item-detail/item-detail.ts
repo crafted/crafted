@@ -56,7 +56,7 @@ export class ItemDetail {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges.item && this.item.id) {
+    if (simpleChanges.item && this.item && this.item.id) {
       this.elementRef.nativeElement.scrollTop = 0;  // Scroll up in case prev item was scrolled
       this.bodyMarkdown = this.activeStore.data.pipe(
         mergeMap(dataStore => this.markdown.getItemBodyMarkdown(dataStore, this.item.id)));
