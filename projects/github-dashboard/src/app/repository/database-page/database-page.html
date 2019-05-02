@@ -6,22 +6,20 @@
            *ngIf="!(isLoaded | async)">
 </load-data>
 
-<ng-container *ngIf="(isLoaded | async) || isLoading">
+<ng-container *ngIf="isLoaded | async">
   <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
     <div *ngIf="(typeInfo.count | async) !== null"
          class="type theme-border theme-background-card">
       <div class="type-title">
         {{typeInfo.count | async}} {{typeInfo.label}}
 
-        <type-actions *ngIf="!isLoading" [type]="typeInfo.type">
-        </type-actions>
+        <type-actions [type]="typeInfo.type"></type-actions>
       </div>
 
       <ng-container [ngSwitch]="typeInfo.type">
 
         <ng-container *ngSwitchCase="'items'">
-          <button (click)="navigateToNewQuery()"
-                  *ngIf="!isLoading" class="create-query"
+          <button (click)="navigateToNewQuery()" class="create-query"
                   color="primary" mat-stroked-button>
             Create Query
           </button>

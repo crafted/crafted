@@ -52,7 +52,7 @@ export class ListDao<T extends IdentifiedObject> {
     const items = (itemOrItems instanceof Array) ? itemOrItems : [itemOrItems];
     items.forEach(obj => {
       if (!obj.id) {
-        throw new Error('Must have an on the object in order to update: ' + JSON.stringify(obj));
+        throw new Error('Must have an ID on the object in order to update: ' + JSON.stringify(obj));
       }
     });
 

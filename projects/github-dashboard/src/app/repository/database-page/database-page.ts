@@ -7,8 +7,8 @@ import {ActiveStore} from '../services/active-store';
 import {RepoDaoType} from '../services/dao/data-dao';
 import {PageNavigator} from '../services/page-navigator';
 import {Remover} from '../services/remover';
+import {Updater} from '../services/updater';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
-
 
 @Component({
   selector: 'database-page',
@@ -49,7 +49,8 @@ export class DatabasePage {
 
   constructor(
     public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
-    private router: Router, private activatedRoute: ActivatedRoute, private pageNavigator: PageNavigator) {
+    private router: Router, private activatedRoute: ActivatedRoute,
+    private pageNavigator: PageNavigator, private updater: Updater) {
   }
 
   remove() {
