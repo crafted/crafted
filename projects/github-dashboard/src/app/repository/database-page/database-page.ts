@@ -29,6 +29,12 @@ export class DatabasePage {
   repoLabels = this.activeStore.data.pipe(
       mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
 
+  counts = {
+    items: this.activeStore.data.pipe(mergeMap(s => s.items.list), map(l => l.length)),
+    labels: this.activeStore.data.pipe(mergeMap(s => s.labels.list), map(l => l.length)),
+    contributors: this.activeStore.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length)),
+  };
+
   repoDaoTypeInfo: {type: RepoDaoType, label: string, count: Observable<number>}[] = [
     {
       type: 'items',

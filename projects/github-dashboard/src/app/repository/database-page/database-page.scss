@@ -38,3 +38,7 @@ button.remove {
 button.create-query {
   margin-top: 24px;
 }
+
+a:not(:hover) {
+  text-decoration: none;
+}

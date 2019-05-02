@@ -7,31 +7,36 @@
 </load-data>
 
 <ng-container *ngIf="isLoaded | async">
-  <ng-container *ngFor="let typeInfo of repoDaoTypeInfo">
-    <div *ngIf="(typeInfo.count | async) !== null"
-         class="type theme-border theme-background-card">
-      <div class="type-title">
-        {{typeInfo.count | async}} {{typeInfo.label}}
+  <div class="type theme-border theme-background-card">
+    <div class="type-title">
+      <a class="theme-text"
+         matTooltip="Create a new query"
+         matTooltipShowDelay="1000"
+         routerLink="../../../query/new">
+        {{(counts.items | async) || '...'}} Issues and pull requests
+      </a>
 
-        <type-actions [type]="typeInfo.type"></type-actions>
-      </div>
-
-      <ng-container [ngSwitch]="typeInfo.type">
-
-        <ng-container *ngSwitchCase="'items'">
-          <button (click)="navigateToNewQuery()" class="create-query"
-                  color="primary" mat-stroked-button>
-            Create Query
-          </button>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="'labels'">
-          <label-list [labelIds]="(repoLabels | async) || []"></label-list>
-        </ng-container>
-
-      </ng-container>
+      <type-actions type="items"></type-actions>
     </div>
-  </ng-container>
+  </div>
+
+  <div class="type theme-border theme-background-card">
+    <div class="type-title">
+      {{(counts.labels | async) || '...'}} labels
+
+      <type-actions type="labels"></type-actions>
+    </div>
+
+    <label-list [labelIds]="(repoLabels | async) || []"></label-list>
+  </div>
+
+  <div class="type theme-border theme-background-card">
+    <div class="type-title">
+      {{(counts.contributors | async) || '...'}} Contributors
+
+      <type-actions type="contributors"></type-actions>
+    </div>
+  </div>
 
   <button (click)="remove()" *ngIf="(isEmpty | async) === false" class="remove"
           color="warn" mat-stroked-button>

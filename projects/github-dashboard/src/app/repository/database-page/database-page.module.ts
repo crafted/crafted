@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule, MatIconModule, MatMenuModule} from '@angular/material';
+import {MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {DeleteConfirmationModule} from '../shared/dialog/delete-confirmation/delete-confirmation.module';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
@@ -32,6 +32,7 @@ export class DatabasePageRoutingModule {
     DatabasePageRoutingModule,
     LabelListModule,
     LoadDataModule,
+    MatTooltipModule,
   ],
   declarations: [DatabasePage],
   exports: [DatabasePage],
