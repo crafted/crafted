@@ -16,7 +16,7 @@
         {{(counts.items | async) || '...'}} Issues and pull requests
       </a>
 
-      <type-actions type="items"></type-actions>
+      <update-action type="items"></update-action>
     </div>
   </div>
 
@@ -24,7 +24,7 @@
     <div class="type-title">
       {{(counts.labels | async) || '...'}} labels
 
-      <type-actions type="labels"></type-actions>
+      <update-action type="labels"></update-action>
     </div>
 
     <label-list [labelIds]="(repoLabels | async) || []"></label-list>
@@ -34,7 +34,7 @@
     <div class="type-title">
       {{(counts.contributors | async) || '...'}} Contributors
 
-      <type-actions type="contributors"></type-actions>
+      <update-action type="contributors"></update-action>
     </div>
   </div>
 

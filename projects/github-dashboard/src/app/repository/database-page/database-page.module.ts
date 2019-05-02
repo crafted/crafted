@@ -9,8 +9,7 @@ import {LabelListModule} from '../shared/label-list/label-list.module';
 import {LoadingModule} from '../shared/loading/loading.module';
 import {DatabasePage} from './database-page';
 import {LoadDataModule} from './load-data/load-data.module';
-import {TypeActionsModule} from './type-actions/type-actions.module';
-
+import {UpdateActionModule} from './type-actions/update-action.module';
 
 const routes: Routes = [{path: '', component: DatabasePage}];
 
@@ -28,7 +27,7 @@ export class DatabasePageRoutingModule {
     ReactiveFormsModule,
     HeaderContentModule,
     DeleteConfirmationModule,
-    TypeActionsModule,
+    UpdateActionModule,
     DatabasePageRoutingModule,
     LabelListModule,
     LoadDataModule,
@@ -39,3 +38,4 @@ export class DatabasePageRoutingModule {
 })
 export class DatabasePageModule {
 }
+

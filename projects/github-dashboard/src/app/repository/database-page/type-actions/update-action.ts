@@ -8,12 +8,12 @@ import {Updater} from '../../services/updater';
 export type UpdateState = 'not-updating'|'updating'|'updated';
 
 @Component({
-  selector: 'type-actions',
-  styleUrls: ['type-actions.scss'],
-  templateUrl: 'type-actions.html',
+  selector: 'update-action',
+  styleUrls: ['update-action.scss'],
+  templateUrl: 'update-action.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TypeActions {
+export class UpdateAction {
   @Input() type: RepoDaoType;
 
   updateState = new BehaviorSubject<UpdateState>('not-updating');
