@@ -1,6 +1,5 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {SafeHtml} from '@angular/platform-browser';
-import {UserComment} from 'projects/github-dashboard/src/app/service/github';
 import {Markdown} from '../../../services/markdown';
 
 @Component({
@@ -10,8 +9,6 @@ import {Markdown} from '../../../services/markdown';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemMessage {
-  @Input() comment: UserComment;
-
   @Input() user: string;
 
   @Input() dateTime: string;
@@ -22,7 +19,9 @@ export class ItemMessage {
 
   constructor(private markdown: Markdown) {}
 
-  ngOnInit() {
-    this.messageMarkdown = this.markdown.render(this.message);
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges.message) {
+      this.messageMarkdown = this.markdown.render(this.message);
+    }
   }
 }
