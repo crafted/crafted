@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Widget} from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {combineLatest, Observable, of} from 'rxjs';
-import {filter, map, mergeMap, shareReplay, take, tap} from 'rxjs/operators';
+import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {isMobile} from '../../utility/media-matcher';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
@@ -41,23 +41,18 @@ const NEW_QUERY_HEADER_ACTIONS: HeaderContentAction<QueryPageHeaderAction>[] = [
 export class QueryPage<T> {
   isMobile = isMobile;
 
-  dataResourceOptions: {id: string, label: string}[] = [];
+  dataResourceOptions: {id: string, label: string}[];
 
-  query: Observable<Query> =
-    combineLatest(this.activatedRoute.params, this.activatedRoute.queryParamMap, this.activeStore.config)
-      .pipe(
-        mergeMap(results => {
-          if (results[0].id === 'new') {
-            return newQuery(results[1], results[2]).pipe(tap(query => {
-              if (!query.dataType && this.dataResourceOptions.length === 1) {
-                query.dataType = this.dataResourceOptions[0].id;
-              }
-            }));
-          }
+  query: Observable<Query> = combineLatest(this.activatedRoute.params, this.activeStore.config)
+    .pipe(
+      mergeMap(results => {
+        if (results[0].id !== 'new') {
+          return results[1].queries.get(results[0].id);
+        }
 
-          return results[2].queries.get(results[0].id);
-        }),
-        shareReplay(1));
+        return this.newQuery();
+      }),
+      shareReplay(1));
 
   queryResources: Observable<QueryResources> = this.query.pipe(
     map(query => {
@@ -108,6 +103,7 @@ export class QueryPage<T> {
     @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
     private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
     private activeStore: ActiveStore, private queryDialog: QueryDialog) {
+    this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
       dataResource =>
         this.dataResourceOptions.push({id: dataResource.type, label: dataResource.label}));
@@ -187,6 +183,28 @@ export class QueryPage<T> {
       queryParamsHandling: 'merge',
     });
   }
+
+  newQuery(): Observable<Query> {
+    return combineLatest(this.activatedRoute.queryParamMap, this.activeStore.config)
+      .pipe(take(1), mergeMap(result => {
+        const queryParamMap = result[0];
+        const configStore = result[1];
+
+        const recommendationId = queryParamMap.get('recommendationId');
+        if (recommendationId) {
+          return createNewQueryFromRecommendation(configStore, recommendationId);
+        }
+
+        const widgetJson = queryParamMap.get('widget');
+        if (widgetJson) {
+          // TODO: Figure out how to convert widget into query again
+          const widget: Widget = JSON.parse(widgetJson);
+          return of({name: widget.title || 'Widget', dataType: 'issue'});
+        }
+
+        return of({name: 'New Query', dataType: queryParamMap.get('type')});
+      }));
+  }
 }
 
 function createNewQueryFromRecommendation(store: ConfigStore, id: string) {
@@ -195,20 +213,4 @@ function createNewQueryFromRecommendation(store: ConfigStore, id: string) {
     query.filtererState = recommendation.filtererState;
     return query;
   }));
-}
-
-function newQuery(queryParamMap: ParamMap, configStore: ConfigStore): Observable<Query> {
-  const recommendationId = queryParamMap.get('recommendationId');
-  if (recommendationId) {
-    return createNewQueryFromRecommendation(configStore, recommendationId);
-  }
-
-  const widgetJson = queryParamMap.get('widget');
-  if (widgetJson) {
-    // TODO: Figure out how to convert widget into query again
-    const widget: Widget = JSON.parse(widgetJson);
-    return of({name: widget.title || 'Widget', dataType: 'issue'});
-  }
-
-  return of({name: 'New Query', dataType: queryParamMap.get('type')});
 }

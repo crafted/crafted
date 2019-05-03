@@ -45,13 +45,15 @@
 </ng-container>
 
 <item-message [dateTime]="item.created"
+              class="body"
               [message]="item.body"
               [user]="item.reporter">
 </item-message>
 
-<div *ngFor="let activity of activities | async"
-     [ngSwitch]="activity.type" class="activities">
+<ng-container *ngFor="let activity of activities | async"
+              [ngSwitch]="activity.type" class="activities">
   <item-message *ngSwitchCase="'comment'" [dateTime]="activity.context.created"
+                class="comment"
                 [message]="activity.context.message"
                 [user]="activity.context.user"
                 type="comment">
@@ -59,7 +61,7 @@
   <timeline-event-view *ngSwitchCase="'timeline'"
                        [timelineEvent]="activity.context">
   </timeline-event-view>
-</div>
+</ng-container>
 
 
 <mat-menu #addAssigneeMenu="matMenu" class="option-menu">
