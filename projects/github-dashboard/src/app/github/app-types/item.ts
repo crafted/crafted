@@ -7,7 +7,7 @@ export interface Item {
   body: string;
   title: string;
   comments: number;
-  labels: number[];
+  labels: string[];
   number: number;
   state: string;
   reporter: string;
@@ -28,7 +28,7 @@ export function githubIssueToIssue(o: GithubIssue): Item {
     body: o.body,
     title: o.title,
     comments: o.comments,
-    labels: o.labels.map(l => l.id),
+    labels: o.labels.map(l => `${l.id}`),
     number: o.number,
     state: o.state,
     reporter: o.user.login,

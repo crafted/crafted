@@ -1,5 +1,12 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {BehaviorSubject, combineLatest} from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+import {Observable} from 'rxjs';
 import {map, mergeMap} from 'rxjs/operators';
 import {Label} from '../../../github/app-types/label';
 import {getBorderColor, getTextColor} from '../../../github/utility/label-colors';
@@ -21,46 +28,51 @@ interface DisplayedLabel {
 })
 export class LabelList {
   /** Label identification either by id or name */
-  @Input()
-  set labelIds(labelIds: string[]) {
-    this._labelIds.next(labelIds);
-  }
-  _labelIds = new BehaviorSubject<string[]>([]);
+  @Input() labelIds: string[];
 
   /** Whether the labels are a selection list */
-  @Input() selectable: boolean;
+  @Input() selectable = false;
 
-  @Output() selected = new EventEmitter<Label>();
+  @Input() removable = false;
 
+  @Output() selected = new EventEmitter<{id: string, name: string}>();
 
-  labels = this.activeStore.data.pipe(
-      mergeMap(store => combineLatest(this._labelIds, store.labels.list)), map(result => {
-        const labelIds = result[0];
-        const repoLabels = result[1];
+  @Output() removed = new EventEmitter<{id: string, name: string}>();
 
-        const labelsMap = new Map<string, Label>();
-        repoLabels.forEach(label => {
-          labelsMap.set(label.id, label);
-          labelsMap.set(label.name, label);
-        });
+  labelsMap = this.activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.list), map(list => {
+    const labelsMap = new Map<string, DisplayedLabel>();
+    list.forEach(label => {
+      const displayedLabel = convertLabelToDisplayedLabel(label);
+      labelsMap.set(label.id, displayedLabel);
+      labelsMap.set(label.name, displayedLabel);
+    });
+    return labelsMap;
+  }));
 
-        const labels: DisplayedLabel[] = [];
-        labelIds.forEach(labelId => {
-          const label = labelsMap.get(`${labelId}`);
-          if (label) {  // labels may be applied but no longer exist
-            labels.push(convertLabelToDisplayedLabel(label));
-          }
-        });
-        labels.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
-        return labels;
-      }));
+  displayedLabels: Observable<DisplayedLabel[]>;
 
   constructor(private activeStore: ActiveStore) {
   }
 
-  select(label: Label) {
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges.labelIds && this.labelIds) {
+      this.displayedLabels = this.labelsMap.pipe(map(labelsMap => {
+        const displayedLabels = this.labelIds.map(id => labelsMap.get(id)).filter(l => !!l);
+        displayedLabels.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
+        return displayedLabels;
+      }));
+    }
+  }
+
+  select(label: DisplayedLabel) {
     if (this.selectable) {
-      this.selected.emit(label);
+      this.selected.emit({id: label.id, name: label.name});
+    }
+  }
+
+  remove(label: DisplayedLabel) {
+    if (this.removable) {
+      this.removed.emit({id: label.id, name: label.name});
     }
   }
 }

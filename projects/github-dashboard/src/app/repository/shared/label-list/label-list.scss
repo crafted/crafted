@@ -2,11 +2,11 @@ mat-chip-list {
   display: block;
 }
 
-mat-chip {
+mat-chip.mat-chip {
   border: 1px solid;
-  min-height: 24px;
   border-radius: 8px;
   padding: 8px;
+  margin: 4px 8px 4px 0;
 }
 
 .selectable {

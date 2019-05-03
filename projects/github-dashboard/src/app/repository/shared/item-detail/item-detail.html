@@ -1,10 +1,16 @@
   <div class="header">
     <div class="title">
       {{item.title}}
-      <span class="item-number">
-        (<a class="theme-primary" [href]="item.url">#{{item.number}}</a>)
-      </span>
     </div>
+
+    <span class="item-number">
+        <a [href]="item.url" class="theme-primary">#{{item.number}}</a>
+      </span>
+
+    <span [class.theme-background-positive]="item.state === 'open'"
+          [class.theme-background-warn]="item.state === 'closed'"
+          class="state theme-border">
+        {{item.state}} </span>
   </div>
 
   <div class="context">
@@ -13,10 +19,6 @@
       <ng-container *ngIf="item.created != item.updated">
         - last updated {{item.updated | timeAgo}}
       </ng-container>
-      <span class="state theme-border"
-            [class.theme-background-warn]="item.state === 'closed'"
-            [class.theme-background-positive]="item.state === 'open'">
-        {{item.state}} </span>
     </div>
 
     <div class="detail">
@@ -28,7 +30,7 @@
     </div>
 
     <div class="detail">
-      <label-list *ngIf="item.labels.length" [labelIds]="item.labels">
+      <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true">
       </label-list>
       <button mat-stroked-button class="add-label"
               [matMenuTriggerFor]="addLabelMenu"> + Add label </button>
