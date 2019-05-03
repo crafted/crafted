@@ -4,19 +4,25 @@ import {UserComment} from 'projects/github-dashboard/src/app/service/github';
 import {Markdown} from '../../../services/markdown';
 
 @Component({
-  selector: 'comment-view',
-  styleUrls: ['comment-view.scss'],
-  templateUrl: 'comment-view.html',
+  selector: 'item-message',
+  styleUrls: ['item-message.scss'],
+  templateUrl: 'item-message.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CommentView {
+export class ItemMessage {
   @Input() comment: UserComment;
+
+  @Input() user: string;
+
+  @Input() dateTime: string;
+
+  @Input() message: string;
 
   messageMarkdown: SafeHtml;
 
   constructor(private markdown: Markdown) {}
 
   ngOnInit() {
-    this.messageMarkdown = this.markdown.render(this.comment.message);
+    this.messageMarkdown = this.markdown.render(this.message);
   }
 }

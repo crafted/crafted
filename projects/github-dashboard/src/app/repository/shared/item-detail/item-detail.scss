@@ -4,16 +4,18 @@
   font-size: 14px;
   display: block;
   overflow: auto;
-  padding: 8px 16px;
+  padding: 0 16px;
   flex: 1;
 }
 
 .header {
-  min-height: 48px;
   display: flex;
-  align-items: center;
   font-size: 22px;
-  margin-bottom: 16px;
+  margin: 20px 0 16px 16px;
+}
+
+.context {
+  margin: 0 16px;
 }
 
 .title {
@@ -21,7 +23,7 @@
 }
 
 .item-number {
-  font-size: 18px;
+  font-size: 16px;
   margin: 0 8px;
 }
 
@@ -39,12 +41,12 @@
   padding-bottom: 16px;
 }
 
-.assignees {
-  margin-right: 8px;
-}
-
 .assignees, label-list {
   display: inline-block;
+}
+
+.assignees + .add-assignee, label-list + .add-label {
+  margin-left: 8px;
 }
 
 .body {

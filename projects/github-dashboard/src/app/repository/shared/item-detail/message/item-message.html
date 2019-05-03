@@ -1,0 +1,8 @@
+<div class="heading theme-border theme-background-card theme-secondary-text">
+  <div>{{user}} commented {{dateTime | timeAgo}}</div>
+  <div>{{dateTime | date:'medium'}}</div>
+</div>
+
+<div class="message theme-border theme-background-card markdown"
+     [innerHTML]="messageMarkdown">
+</div>

@@ -1,7 +1,9 @@
-  <div class="header">
-    <div class="title">
-      {{item.title}}
-    </div>
+<div class="header">
+  <div class="title">
+    {{item.title}}
+  </div>
+
+  <div class="header-details">
 
     <span class="item-number">
         <a [href]="item.url" class="theme-primary">#{{item.number}}</a>
@@ -9,58 +11,55 @@
 
     <span [class.theme-background-positive]="item.state === 'open'"
           [class.theme-background-warn]="item.state === 'closed'"
-          class="state theme-border">
-        {{item.state}} </span>
+          class="state theme-border">{{item.state}}</span>
+  </div>
+</div>
+
+<div class="context">
+  <div class="detail">
+    <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true">
+    </label-list>
+    <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
+            mat-stroked-button> + Add label
+    </button>
   </div>
 
-  <div class="context">
-    <div class="detail">
-      Reported by {{item.reporter}} on {{item.created | date}}
-      <ng-container *ngIf="item.created != item.updated">
-        - last updated {{item.updated | timeAgo}}
-      </ng-container>
-    </div>
-
-    <div class="detail">
+  <div class="detail">
       <span *ngIf="item.assignees.length > 0" class="assignees">
         Assigned to {{item.assignees.join(', ')}}
       </span>
-      <button mat-stroked-button class="add-assignee"
-              [matMenuTriggerFor]="addAssigneeMenu"> + Add assignee </button>
-    </div>
-
-    <div class="detail">
-      <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true">
-      </label-list>
-      <button mat-stroked-button class="add-label"
-              [matMenuTriggerFor]="addLabelMenu"> + Add label </button>
-    </div>
+    <button [matMenuTriggerFor]="addAssigneeMenu" class="add-assignee"
+            mat-stroked-button> + Add assignee
+    </button>
   </div>
+</div>
 
-  <ng-container
-                *ngFor="let recommendation of recommendations | async; let last = last">
-    <mat-divider></mat-divider>
+<ng-container
+  *ngFor="let recommendation of recommendations | async; let last = last">
+  <mat-divider></mat-divider>
 
-    <recommendation-action [recommendation]="recommendation" [item]="item">
-    </recommendation-action>
+  <recommendation-action [item]="item" [recommendation]="recommendation">
+  </recommendation-action>
 
-    <mat-divider *ngIf="last"></mat-divider>
-  </ng-container>
+  <mat-divider *ngIf="last"></mat-divider>
+</ng-container>
 
-  <div class="body theme-border theme-background-card markdown"
-       [innerHTML]="bodyMarkdown | async"></div>
+<item-message [dateTime]="item.created"
+              [message]="item.body"
+              [user]="item.reporter">
+</item-message>
 
-  <div *ngIf="activities | async; let activities" class="activities">
-    <mat-divider *ngIf="activities.length"></mat-divider>
-
-    <ng-container *ngFor="let a of activities" [ngSwitch]="a.type">
-      <comment-view *ngSwitchCase="'comment'" [comment]="a.context">
-      </comment-view>
-      <timeline-event-view *ngSwitchCase="'timeline'"
-                           [timelineEvent]="a.context">
-      </timeline-event-view>
-    </ng-container>
-  </div>
+<div *ngFor="let activity of activities | async"
+     [ngSwitch]="activity.type" class="activities">
+  <item-message *ngSwitchCase="'comment'" [dateTime]="activity.context.created"
+                [message]="activity.context.message"
+                [user]="activity.context.user"
+                type="comment">
+  </item-message>
+  <timeline-event-view *ngSwitchCase="'timeline'"
+                       [timelineEvent]="activity.context">
+  </timeline-event-view>
+</div>
 
 
 <mat-menu #addAssigneeMenu="matMenu" class="option-menu">

@@ -23,7 +23,7 @@ export class RecommendationAction {
   addLabel(label: Label) {
     this.activeStore.data.pipe(mergeMap(dataStore => {
       const newItem: Item = {...this.item};
-      newItem.labels = [...this.item.labels, +label.id];
+      newItem.labels = [...this.item.labels, label.id];
       dataStore.items.update(newItem);
       return this.github.addLabel(dataStore.name, this.item.id, label.name);
     }), take(1)).subscribe();
