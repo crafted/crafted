@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
+import {RepoState} from '../../../../services/active-store';
 
 import {
   ACTION_TYPES,
@@ -11,12 +12,10 @@ import {
   Recommendation,
   RECOMMENDATION_TYPES
 } from '../../../../services/dao/config/recommendation';
-import {DataStore} from '../../../../services/dao/data-dao';
-
 
 export interface RecommendationEditData {
   recommendation: Recommendation;
-  dataStore: DataStore;
+  repoState: RepoState;
   dataResourcesMap: Map<string, DataResources>;
 }
 
@@ -49,13 +48,13 @@ export class RecommendationEdit {
     return {id: key, label: ACTION_TYPES[key].label};
   });
 
-  addLabelsOptions = this.data.dataStore.labels.list.pipe(map(labels => {
+  addLabelsOptions = this.data.repoState.labelsDao.list.pipe(map(labels => {
     const labelNames = labels.map(l => l.name);
     labelNames.sort();
     return labelNames.map(name => ({id: name, label: name}));
   }));
 
-  addAssigneesOptions = this.data.dataStore.items.list.pipe(map(items => {
+  addAssigneesOptions = this.data.repoState.itemsDao.list.pipe(map(items => {
     const assigneesSet = new Set<string>();
     items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
     const assigneesList: string[] = [];

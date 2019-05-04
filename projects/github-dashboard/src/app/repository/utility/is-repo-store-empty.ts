@@ -1,9 +1,9 @@
 import {combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {DataStore} from '../services/dao/data-dao';
+import {RepoState} from '../services/active-store';
 
 /** Whether the store contains repo data (labels, items, contributors) */
-export function isRepoStoreEmpty(store: DataStore) {
-  return combineLatest(store.labels.list, store.items.list, store.contributors.list)
+export function isRepoStoreEmpty(repoState: RepoState) {
+  return combineLatest(repoState.labelsDao.list, repoState.itemsDao.list, repoState.contributorsDao.list)
       .pipe(map(results => !results[0].length && !results[1].length && !results[2].length));
 }

@@ -7,7 +7,6 @@ import {Auth} from '../../../service/auth';
 import {LoadedRepos} from '../../../service/loaded-repos';
 import {ActiveStore} from '../../services/active-store';
 import {Theme} from '../../services/theme';
-import {isRepoStoreEmpty} from '../../utility/is-repo-store-empty';
 
 export interface NavLink {
   route: string;
@@ -23,9 +22,10 @@ export interface NavLink {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Nav {
-  activeRepository = this.activeStore.data.pipe(map(dataStore => dataStore.name));
+  activeRepository = this.activeStore.state.pipe(map(repoState => repoState.repository));
 
-  isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)), shareReplay(1));
+  isEmpty = this.activeStore.state.pipe(
+    mergeMap(repoState => repoState.itemsDao.list), map(list => !list.length), shareReplay(1));
 
   links: NavLink[] = [
     {route: 'database', label: 'Database', icon: 'archive'},

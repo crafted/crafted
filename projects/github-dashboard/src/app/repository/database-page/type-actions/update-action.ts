@@ -1,11 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map, take, tap} from 'rxjs/operators';
 import {ActiveStore} from '../../services/active-store';
-import {RepoDaoType} from '../../services/dao/data-dao';
-import {Updater} from '../../services/updater';
-
-export type UpdateState = 'not-updating'|'updating'|'updated';
+import {UpdatableType, Updater, UpdateState} from '../../services/updater';
 
 @Component({
   selector: 'update-action',
@@ -14,17 +11,20 @@ export type UpdateState = 'not-updating'|'updating'|'updated';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateAction {
-  @Input() type: RepoDaoType;
+  @Input() type: UpdatableType;
 
-  updateState = new BehaviorSubject<UpdateState>('not-updating');
+  updateState: Observable<UpdateState>;
 
   constructor(private updater: Updater, private activeStore: ActiveStore) {
   }
 
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    if (simpleChanges.type && this.type) {
+      this.updateState = this.updater.state.pipe(tap(console.log), map(state => state[this.type]));
+    }
+  }
+
   update() {
-    this.updateState.next('updating');
-    this.activeStore.data.pipe(take(1)).subscribe(dataStore => {
-      this.updater.update(dataStore, this.type).then(() => this.updateState.next('updated'));
-    });
+    this.activeStore.state.pipe(take(1)).subscribe(state => this.updater.update(state, this.type));
   }
 }

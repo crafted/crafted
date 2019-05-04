@@ -1,13 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest} from 'rxjs';
 import {map, mergeMap, take} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {ActiveStore} from '../services/active-store';
-import {RepoDaoType} from '../services/dao/data-dao';
-import {PageNavigator} from '../services/page-navigator';
 import {Remover} from '../services/remover';
-import {Updater} from '../services/updater';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 
 @Component({
@@ -21,7 +17,7 @@ export class DatabasePage {
 
   isLoading = false;
 
-  isEmpty = this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store)));
+  isEmpty = this.activeStore.state.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
   isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
     .pipe(map(results => results[1].indexOf(results[0]) !== -1));
@@ -30,42 +26,18 @@ export class DatabasePage {
       mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
 
   counts = {
-    items: this.activeStore.data.pipe(mergeMap(s => s.items.list), map(l => l.length)),
-    labels: this.activeStore.data.pipe(mergeMap(s => s.labels.list), map(l => l.length)),
-    contributors: this.activeStore.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length)),
+    items: this.activeStore.state.pipe(mergeMap(s => s.itemsDao.list), map(l => l.length)),
+    labels: this.activeStore.state.pipe(mergeMap(s => s.labelsDao.list), map(l => l.length)),
+    contributors: this.activeStore.state.pipe(mergeMap(s => s.contributorsDao.list), map(l => l.length)),
   };
 
-  repoDaoTypeInfo: {type: RepoDaoType, label: string, count: Observable<number>}[] = [
-    {
-      type: 'items',
-      label: 'Issues and pull requests',
-      count: this.activeStore.data.pipe(mergeMap(s => s.items.list), map(l => l.length))
-    },
-    {
-      type: 'labels',
-      label: 'Labels',
-      count: this.activeStore.data.pipe(mergeMap(s => s.labels.list), map(l => l.length))
-    },
-    {
-      type: 'contributors',
-      label: 'Contributors',
-      count: this.activeStore.data.pipe(mergeMap(s => s.contributors.list), map(l => l.length))
-    },
-  ];
-
   constructor(
-    public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
-    private router: Router, private activatedRoute: ActivatedRoute,
-    private pageNavigator: PageNavigator, private updater: Updater) {
+    public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover) {
   }
 
   remove() {
-    this.activeStore.data.pipe(take(1)).subscribe(dataStore => {
-      this.remover.removeAllData(dataStore, true);
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.remover.removeAllData(repoState, true);
     });
-  }
-
-  navigateToNewQuery() {
-    this.pageNavigator.navigateToQuery();
   }
 }

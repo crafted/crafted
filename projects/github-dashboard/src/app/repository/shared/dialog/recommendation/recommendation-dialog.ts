@@ -3,9 +3,9 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {RepoState} from '../../../services/active-store';
 import {ConfigStore} from '../../../services/dao/config/config-dao';
 import {Recommendation} from '../../../services/dao/config/recommendation';
-import {DataStore} from '../../../services/dao/data-dao';
 import {compareLocalToRemote} from '../../../services/dao/list-dao';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {RecommendationEdit} from './recommendation-edit/recommendation-edit';
@@ -23,31 +23,29 @@ export class RecommendationDialog {
   constructor(private dialog: MatDialog, private snackbar: MatSnackBar) {}
 
   /** Opens a dialog for the user to create a new recommendation. */
-  create(
-      configStore: ConfigStore, dataStore: DataStore,
-      dataResourcesMap: RecommendationsDataResourcesMap) {
-    const data = {recommendation: {}, dataResourcesMap, dataStore};
+  create(repoState: RepoState, dataResourcesMap: RecommendationsDataResourcesMap) {
+    const data = {recommendation: {}, dataResourcesMap, repoState};
     this.dialog.open(RecommendationEdit, {data, width: '600px'})
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {
           if (result) {
-            configStore.recommendations.add(result).pipe(take(1)).subscribe();
+            repoState.recommendationsDao.add(result).pipe(take(1)).subscribe();
           }
         });
   }
 
   /** Opens a dialog for the user to edit an existing recommendation. */
   edit(
-      recommendation: Recommendation, configStore: ConfigStore, dataStore: DataStore,
-      dataResourcesMap: RecommendationsDataResourcesMap) {
-    const data = {recommendation, dataResourcesMap, dataStore};
+    recommendation: Recommendation, repoState: RepoState,
+    dataResourcesMap: RecommendationsDataResourcesMap) {
+    const data = {recommendation, dataResourcesMap, repoState};
     this.dialog.open(RecommendationEdit, {data, width: '600px'})
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {
           if (result) {
-            configStore.recommendations.update(result);
+            repoState.recommendationsDao.update(result);
           }
         });
   }

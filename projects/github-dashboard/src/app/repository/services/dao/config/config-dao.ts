@@ -15,8 +15,6 @@ export interface ConfigStore {
   recommendations: ListDao<Recommendation>;
 }
 
-export type ConfigDaoType = 'dashboards'|'queries'|'recommendations';
-
 @Injectable()
 export class ConfigDao {
   private stores: Map<string, ConfigStore> = new Map();
@@ -29,7 +27,6 @@ export class ConfigDao {
     if (!this.stores.has(name)) {
       const appIndexedDb = new AppIndexedDb(name);
       const newStore = {
-        name,
         dashboards: new ListDao<Dashboard>('dashboards', appIndexedDb),
         queries: new ListDao<Query>('queries', appIndexedDb),
         recommendations: new ListDao<Recommendation>('recommendations', appIndexedDb),

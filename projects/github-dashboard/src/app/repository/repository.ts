@@ -11,39 +11,37 @@ import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Auth} from '../service/auth';
 import {LoadedRepos} from '../service/loaded-repos';
-import {ActiveStore} from './services/active-store';
-import {DataStore} from './services/dao/data-dao';
+import {ActiveStore, RepoState} from './services/active-store';
 import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
 import {Updater} from './services/updater';
 import {getRecommendations} from './utility/get-recommendations';
-import {isRepoStoreEmpty} from './utility/is-repo-store-empty';
 
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
 /** Observable pipe that gets the list of issues from the data store. */
-function dataStoreIssuesList(): (dataStore$: Observable<DataStore>) => Observable<Item[]> {
-  return (dataStore$: Observable<DataStore>) => {
+function dataStoreIssuesList(): (repoState$: Observable<RepoState>) => Observable<Item[]> {
+  return (dataStore$: Observable<RepoState>) => {
     return dataStore$.pipe(
-      mergeMap(dataStore => dataStore.items.list), map(items => items.filter(i => !i.pr)));
+      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !i.pr)));
   };
 }
 
 /** Observable pipe that gets the list of prs from the data store. */
-function dataStorePrsList(): (dataStore$: Observable<DataStore>) => Observable<Item[]> {
-  return (dataStore$: Observable<DataStore>) => {
+function dataStorePrsList(): (dataStore$: Observable<RepoState>) => Observable<Item[]> {
+  return (dataStore$: Observable<RepoState>) => {
     return dataStore$.pipe(
-      mergeMap(dataStore => dataStore.items.list), map(items => items.filter(i => !i.pr)));
+      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !i.pr)));
   };
 }
 
 export const provideDataResourcesMap = (activeStore: ActiveStore) => {
   const recommendations =
-    activeStore.config.pipe(mergeMap(dataStore => dataStore.recommendations.list));
-  const labels = activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.list));
-  const issues = activeStore.data.pipe(dataStoreIssuesList());
-  const prs = activeStore.data.pipe(dataStorePrsList());
+    activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
+  const labels = activeStore.state.pipe(mergeMap(repoState => repoState.labelsDao.list));
+  const issues = activeStore.state.pipe(dataStoreIssuesList());
+  const prs = activeStore.state.pipe(dataStorePrsList());
 
   return new Map<string, DataResources>([
     [
@@ -81,35 +79,31 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
 export class Repository {
   constructor(
     private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-    private remover: Remover, private activeStore: ActiveStore, private auth: Auth, private pageNavigator: PageNavigator) {
-    const isEmpty$ =
-      this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))));
-
-    combineLatest(this.activeStore.data, isEmpty$).pipe(take(1)).subscribe(results => {
-      const dataStore = results[0];
-      const isEmpty = results[1];
-      const isLoaded = this.loadedRepos.isLoaded(dataStore.name);
-
-      if (!isEmpty && !isLoaded) {
-        this.remover.removeAllData(dataStore, false);
-      }
-
-      if (isEmpty) {
-        this.pageNavigator.navigateToDatabase();
-      } else if (this.auth.token) {
-        this.initializeAutoIssueUpdates(dataStore);
-      }
-    });
+    private remover: Remover, private activeStore: ActiveStore, private auth: Auth,
+    private pageNavigator: PageNavigator) {
+    combineLatest(this.activeStore.state, this.activeStore.repository)
+      .pipe(take(1))
+      .subscribe(results => {
+        if (!this.loadedRepos.isLoaded(results[1])) {
+          this.pageNavigator.navigateToDatabase();
+        } else if (this.auth.token) {
+          const repoState = results[0];
+          this.updater.update(repoState, 'items');
+          this.updater.update(repoState, 'contributors');
+          this.updater.update(repoState, 'labels');
+          this.initializeAutoIssueUpdates(repoState);
+        }
+      });
   }
 
-  private initializeAutoIssueUpdates(store: DataStore) {
+  private initializeAutoIssueUpdates(repoState: RepoState) {
+    // TODO: This never unsubscribes and does not check if we are already updating a repository
     interval(60 * 1000)
-        .pipe(mergeMap(() => store.items.list.pipe(take(1))), filter(items => items.length > 0))
+      .pipe(
+        mergeMap(() => repoState.itemsDao.list.pipe(take(1))),
+        filter(items => items.length > 0))
         .subscribe(() => {
-          this.updater.update(store, 'items');
+          this.updater.update(repoState, 'items');
         });
-
-    this.updater.update(store, 'contributors');
-    this.updater.update(store, 'labels');
   }
 }

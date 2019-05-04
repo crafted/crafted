@@ -60,10 +60,10 @@ export class RecommendationsPage {
   }
 
   create() {
-    combineLatest(this.activeStore.config, this.activeStore.data)
+    this.activeStore.state
       .pipe(take(1))
-      .subscribe(results => {
-        this.recommendationDialog.create(results[0], results[1], this.dataResourcesMap);
+      .subscribe(repoState => {
+        this.recommendationDialog.create(repoState, this.dataResourcesMap);
       });
   }
 

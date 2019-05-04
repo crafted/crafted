@@ -1,4 +1,4 @@
-<ng-container *ngIf="updateState | async; let state">
+<ng-container *ngIf="updateState | async as state">
   <button mat-button [disabled]="state !== 'not-updating'" (click)="update()">
     <mat-icon class="update" *ngIf="state !== 'updated'"
               [class.updating]="state === 'updating'">
