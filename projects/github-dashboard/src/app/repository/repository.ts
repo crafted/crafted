@@ -13,6 +13,7 @@ import {Auth} from '../service/auth';
 import {LoadedRepos} from '../service/loaded-repos';
 import {ActiveStore} from './services/active-store';
 import {DataStore} from './services/dao/data-dao';
+import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
 import {Updater} from './services/updater';
 import {getRecommendations} from './utility/get-recommendations';
@@ -80,7 +81,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
 export class Repository {
   constructor(
     private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-    private remover: Remover, private activeStore: ActiveStore, private auth: Auth) {
+    private remover: Remover, private activeStore: ActiveStore, private auth: Auth, private pageNavigator: PageNavigator) {
     const isEmpty$ =
       this.activeStore.data.pipe(mergeMap(store => isRepoStoreEmpty(store).pipe(take(1))));
 
@@ -94,7 +95,7 @@ export class Repository {
       }
 
       if (isEmpty) {
-        this.router.navigate([`${dataStore.name}/database`]);
+        this.pageNavigator.navigateToDatabase();
       } else if (this.auth.token) {
         this.initializeAutoIssueUpdates(dataStore);
       }

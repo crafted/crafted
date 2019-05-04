@@ -15,6 +15,10 @@ export class PageNavigator {
     return `${splitPath[1]}/${splitPath[2]}`;
   }
 
+  navigateToDatabase() {
+    this.navigate('database');
+  }
+
   navigateToQuery(id: string = 'new', queryParams?: QueryQueryParams) {
     this.navigate(`query/${id}`, queryParams);
   }
