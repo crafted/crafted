@@ -10,7 +10,6 @@ import {Query} from './query';
 import {Recommendation} from './recommendation';
 
 export interface ConfigStore {
-  name: string;
   dashboards: ListDao<Dashboard>;
   queries: ListDao<Query>;
   recommendations: ListDao<Recommendation>;

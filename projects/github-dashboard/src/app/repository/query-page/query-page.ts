@@ -129,11 +129,10 @@ export class QueryPage<T> {
             resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.config)
+    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.repository)
       .pipe(
         mergeMap(results => {
           const state = results[1];
-          const configStore = results[2];
           const states = {
             filtererState: state[0],
             grouperState: state[1],
@@ -141,7 +140,7 @@ export class QueryPage<T> {
             viewerState: state[3],
           };
           const query = {...results[0], ...states, name, group};
-          return combineLatest(configStore.queries.add(query), configStore.name);
+          return combineLatest(results[2].queries.add(query), results[3]);
         }),
         take(1))
       .subscribe(results => {
