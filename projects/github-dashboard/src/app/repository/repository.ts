@@ -34,7 +34,7 @@ function dataStoreIssuesList(): (repoState$: Observable<RepoState>) => Observabl
 function dataStorePrsList(): (dataStore$: Observable<RepoState>) => Observable<Item[]> {
   return (dataStore$: Observable<RepoState>) => {
     return dataStore$.pipe(
-      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !i.pr)));
+      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !!i.pr)));
   };
 }
 

@@ -26,6 +26,8 @@ export class ActiveStore {
 
   state = this.activatedRoute.firstChild.params.pipe(
     map(params => `${params.org}/${params.name}`), map(repository => {
+
+
       if (!this.repoStateCache.has(repository)) {
         this.repoStateCache.set(repository, createRepoState(repository));
       }

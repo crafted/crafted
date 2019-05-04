@@ -4,25 +4,22 @@
                 [showBack]="true">
 </header-content>
 
-<ng-container *ngIf="query | async">
-  <div [style.width.px]="listWidth" class="master">
-    <items-list (itemSelected)="navigateToItem($event.number)"
-                *ngIf="queryResources | async as resources; else selectType"
-                [activeItem]="item$ | async"
-                [dataSource]="resources.dataSource" [filterer]="resources.filterer"
-                [grouper]="resources.grouper"
-                [sorter]="resources.sorter"
-                [viewer]="resources.viewer">
-    </items-list>
-  </div>
+<div [style.width.px]="listWidth" class="master">
+  <items-list (itemSelected)="navigateToItem($event.number)"
+              *ngIf="queryResources | async as resources; else selectType"
+              [activeItem]="item$ | async"
+              [dataSource]="resources.dataSource" [filterer]="resources.filterer"
+              [grouper]="resources.grouper"
+              [sorter]="resources.sorter"
+              [viewer]="resources.viewer">
+  </items-list>
+</div>
 
-  <drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
+<drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
 
-  <div *ngIf="!isMobile()" class="detail">
-    <item-detail *ngIf="item$ | async as item" [item]="item"></item-detail>
-  </div>
-</ng-container>
-
+<div *ngIf="!isMobile()" class="detail">
+  <item-detail *ngIf="item$ | async as item" [item]="item"></item-detail>
+</div>
 
 <ng-template #selectType>
   <div class="select-type">

@@ -185,7 +185,7 @@ export class QueryPage<T> {
 
   newQuery(): Observable<Query> {
     return combineLatest(this.activatedRoute.queryParamMap, this.activeStore.state)
-      .pipe(take(1), mergeMap(result => {
+      .pipe(mergeMap(result => {
         const queryParamMap = result[0];
         const repoState = result[1];
 
@@ -201,8 +201,13 @@ export class QueryPage<T> {
           return of({name: widget.title || 'Widget', dataType: 'issue'});
         }
 
-        return of({name: 'New Query', dataType: queryParamMap.get('type')});
-      }));
+        const dataType = queryParamMap.get('type');
+        if (dataType) {
+          return of({name: 'New Query', dataType});
+        }
+
+        return of();
+      }), take(1));
   }
 }
 
