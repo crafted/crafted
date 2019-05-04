@@ -16,11 +16,11 @@ export class RepoGist {
 
   constructor(private config: Config, private dialog: MatDialog) {}
 
-  sync(repository: string, state: RepoState): Observable<void> {
+  sync(repository: string, repoState: RepoState): Observable<void> {
     let syncResults: LocalToRemoteComparison<IdentifiedObject>[]|null;
     return this.config.getRepoConfig(repository)
         .pipe(
-          mergeMap(repoConfig => getSyncResults(state, repoConfig)),
+          mergeMap(repoConfig => getSyncResults(repoState, repoConfig)),
             tap(results => syncResults = results), mergeMap(results => this.confirmSync(results)),
             map(confirmed => {
               if (!confirmed) {
@@ -31,20 +31,19 @@ export class RepoGist {
               }
 
               const dashboardsSync = syncResults[0] as LocalToRemoteComparison<Dashboard>;
-              state.dashboardsDao.add(dashboardsSync.toAdd);
-              state.dashboardsDao.update(dashboardsSync.toUpdate);
-              state.dashboardsDao.remove(dashboardsSync.toRemove.map(v => v.id));
+              repoState.dashboardsDao.add(dashboardsSync.toAdd);
+              repoState.dashboardsDao.update(dashboardsSync.toUpdate);
+              repoState.dashboardsDao.remove(dashboardsSync.toRemove.map(v => v.id));
 
               const querySync = syncResults[1] as LocalToRemoteComparison<Query>;
-              state.queriesDao.add(querySync.toAdd);
-              state.queriesDao.update(querySync.toUpdate);
-              state.queriesDao.remove(querySync.toRemove.map(v => v.id));
+              repoState.queriesDao.add(querySync.toAdd);
+              repoState.queriesDao.update(querySync.toUpdate);
+              repoState.queriesDao.remove(querySync.toRemove.map(v => v.id));
 
-              const recommendationsSync =
-                syncResults[2] as LocalToRemoteComparison<Recommendation>;
-              state.recommendationsDao.add(recommendationsSync.toAdd);
-              state.recommendationsDao.update(recommendationsSync.toUpdate);
-              state.recommendationsDao.remove(recommendationsSync.toRemove.map(v => v.id));
+              const recommendationsSync = syncResults[2] as LocalToRemoteComparison<Recommendation>;
+              repoState.recommendationsDao.add(recommendationsSync.toAdd);
+              repoState.recommendationsDao.update(recommendationsSync.toUpdate);
+              repoState.recommendationsDao.remove(recommendationsSync.toRemove.map(v => v.id));
             }));
   }
 
@@ -76,13 +75,15 @@ function hasSyncChanges(syncResponse: LocalToRemoteComparison<any>): boolean {
 }
 
 /** Gets the comparison results between the local store and remote config */
-function getSyncResults(state: RepoState, remoteConfig: RepoConfig | null):
+function getSyncResults(repoState: RepoState, remoteConfig: RepoConfig | null):
     Observable<LocalToRemoteComparison<any>[]|null> {
   if (!remoteConfig) {
     return of(null);
   }
 
-  return combineLatest(state.dashboardsDao.list, state.queriesDao.list, state.recommendationsDao.list)
+  return combineLatest(
+    repoState.dashboardsDao.list, repoState.queriesDao.list,
+    repoState.recommendationsDao.list)
       .pipe(
           map(results =>
             [compareLocalToRemote(results[0], remoteConfig.dashboards),

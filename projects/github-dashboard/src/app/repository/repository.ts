@@ -121,8 +121,8 @@ export class Repository {
   }
 
   /** Persist changes to config lists to gist */
-  private saveConfigChangesToGist(repository: string, state: RepoState) {
-    const configDaoLists = [state.dashboardsDao.list, state.queriesDao.list, state.recommendationsDao.list];
+  private saveConfigChangesToGist(repository: string, repoState: RepoState) {
+    const configDaoLists = [repoState.dashboardsDao.list, repoState.queriesDao.list, repoState.recommendationsDao.list];
     combineLatest(...configDaoLists)
       .pipe(debounceTime(500), takeUntil(this.destroyed))
       .subscribe(result => {
