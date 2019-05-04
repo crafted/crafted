@@ -27,8 +27,8 @@ export class QueryEdit {
   formGroup =
       new FormGroup({name: new FormControl('', Validators.required), group: new FormControl('')});
 
-  filteredGroupOptions = this.activeStore.config.pipe(
-    mergeMap(configStore => combineLatest(configStore.queries.list, this.formGroup.valueChanges)),
+  filteredGroupOptions = this.activeStore.state.pipe(
+    mergeMap(repoState => combineLatest(repoState.queriesDao.list, this.formGroup.valueChanges)),
     map(result => {
       const queries = result[0];
       const groupOptionsSet = new Set<string>();

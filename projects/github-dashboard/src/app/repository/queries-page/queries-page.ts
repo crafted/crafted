@@ -37,7 +37,7 @@ const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
-  queries = this.activeStore.config.pipe(mergeMap(configStore => configStore.queries.list));
+  queries = this.activeStore.state.pipe(mergeMap(repoState => repoState.queriesDao.list));
   dataTypes: string[] = [];
   headerActions: Observable<HeaderContentAction[]> =
     this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));

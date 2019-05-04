@@ -37,7 +37,7 @@ export class RecommendationsPage {
   filter = new FormControl('');
 
   dataSource = new DataSource(
-    {data: this.activeStore.config.pipe(mergeMap(store => store.recommendations.list))});
+    {data: this.activeStore.state.pipe(mergeMap(store => store.recommendationsDao.list))});
 
   headerActions: Observable<HeaderContentAction[]> = this.dataSource.data.pipe(
     map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
@@ -69,9 +69,9 @@ export class RecommendationsPage {
 
   editJson() {
     const recommendationsList =
-      this.activeStore.config.pipe(mergeMap(configStore => configStore.recommendations.list));
+      this.activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
 
-    combineLatest(recommendationsList, this.activeStore.config).pipe(take(1)).subscribe(results => {
+    combineLatest(recommendationsList, this.activeStore.state).pipe(take(1)).subscribe(results => {
       this.recommendationDialog.jsonEditor(results[0], results[1]);
     });
   }

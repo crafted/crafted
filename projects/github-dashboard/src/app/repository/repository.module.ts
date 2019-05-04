@@ -4,7 +4,6 @@ import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {Repository} from './repository';
 import {ActiveStore} from './services/active-store';
-import {ConfigDao} from './services/dao/config/config-dao';
 import {Header} from './services/header';
 import {Markdown} from './services/markdown';
 import {PageNavigator} from './services/page-navigator';
@@ -69,7 +68,7 @@ export class RepositoryRoutingModule {
   ],
   declarations: [Repository],
   exports: [Repository],
-  providers: [ConfigDao, Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
+  providers: [Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
 })
 export class RepositoryModule {
 }

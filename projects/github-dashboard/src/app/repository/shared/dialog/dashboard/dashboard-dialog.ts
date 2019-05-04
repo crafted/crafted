@@ -20,11 +20,11 @@ export class DashboardDialog {
         description: dashboard.description,
       }
     });
-    combineLatest(this.activeStore.config, dialogRef.afterClosed())
+    combineLatest(this.activeStore.state, dialogRef.afterClosed())
       .pipe(take(1))
       .subscribe(results => {
         if (results[1]) {
-          results[0].dashboards.update({id: dashboard.id, ...results[1]});
+          results[0].dashboardsDao.update({id: dashboard.id, ...results[1]});
         }
       });
   }
@@ -35,11 +35,11 @@ export class DashboardDialog {
    */
   removeDashboard(dashboard: Dashboard) {
     const dialogRef = this.dialog.open(DeleteConfirmation, {data: {name: of(dashboard.name)}});
-    combineLatest(this.activeStore.config, dialogRef.afterClosed())
+    combineLatest(this.activeStore.state, dialogRef.afterClosed())
       .pipe(take(1))
       .subscribe(results => {
         if (results[1]) {
-          results[0].dashboards.remove(dashboard.id);
+          results[0].dashboardsDao.remove(dashboard.id);
           this.snackbar.open(`Dashboard "${dashboard.name}" deleted`, '', {duration: 2000});
         }
       });

@@ -18,14 +18,14 @@ export class QueryMenu {
   }
 
   openEditNameDialog() {
-    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
-      this.queryDialog.editQuery(this.query, configStore);
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.queryDialog.editQuery(this.query, repoState);
     });
   }
 
   deleteQuery() {
-    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
-      this.queryDialog.deleteQuery(this.query, configStore);
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.queryDialog.deleteQuery(this.query, repoState);
     });
   }
 }

@@ -6,7 +6,6 @@ import {Contributor} from '../../github/app-types/contributor';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {AppIndexedDb} from '../utility/app-indexed-db';
-import {ConfigDao} from './dao/config/config-dao';
 import {Query} from './dao/config/query';
 import {Recommendation} from './dao/config/recommendation';
 import {ListDao} from './dao/list-dao';
@@ -23,14 +22,8 @@ export interface RepoState {
 
 @Injectable()
 export class ActiveStore {
-  repository = this.state.pipe(map(state => state.repository));
-  data = this.state.pipe(map(r => ({
-    name: r.repository,
-    items: r.itemsDao,
-    labels: r.labelsDao,
-    contributors: r.contributorsDao,
-  })));
   private repoStateCache = new Map<string, RepoState>();
+
   state = this.activatedRoute.firstChild.params.pipe(
     map(params => `${params.org}/${params.name}`), map(repository => {
       if (!this.repoStateCache.has(repository)) {
@@ -40,9 +33,17 @@ export class ActiveStore {
       return this.repoStateCache.get(repository);
     }),
     shareReplay(1));
-  config = this.repository.pipe(map(r => this.configDao.get(r)), shareReplay(1));
 
-  constructor(private activatedRoute: ActivatedRoute, private configDao: ConfigDao) {
+  repository = this.state.pipe(map(state => state.repository));
+
+  data = this.state.pipe(map(r => ({
+    name: r.repository,
+    items: r.itemsDao,
+    labels: r.labelsDao,
+    contributors: r.contributorsDao,
+  })));
+
+  constructor(private activatedRoute: ActivatedRoute) {
   }
 }
 

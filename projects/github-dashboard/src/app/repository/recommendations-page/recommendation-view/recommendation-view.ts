@@ -69,14 +69,14 @@ export class RecommendationView {
     const newRecommendation = {...this.recommendation};
     delete newRecommendation.id;
 
-    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
-      configStore.recommendations.add(newRecommendation).pipe(take(1)).subscribe();
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      repoState.recommendationsDao.add(newRecommendation).pipe(take(1)).subscribe();
     });
   }
 
   remove() {
-    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
-      this.recommendationDialog.remove(this.recommendation, configStore);
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.recommendationDialog.remove(this.recommendation, repoState);
     });
   }
 

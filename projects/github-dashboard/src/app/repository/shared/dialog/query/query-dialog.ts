@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Observable, of} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {ConfigStore} from '../../../services/dao/config/config-dao';
+import {RepoState} from '../../../services/active-store';
 import {Query} from '../../../services/dao/config/query';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {QueryEdit, QueryEditResult} from './query-edit/query-edit';
@@ -13,7 +13,7 @@ export class QueryDialog {
   constructor(private dialog: MatDialog, private snackbar: MatSnackBar) {}
 
   /** Shows the edit query dialog to change the name/group. */
-  editQuery(query: Query, store: ConfigStore) {
+  editQuery(query: Query, repoState: RepoState) {
     const data = {
       name: query.name,
       group: query.group,
@@ -21,7 +21,7 @@ export class QueryDialog {
 
     this.dialog.open(QueryEdit, {data}).afterClosed().pipe(take(1)).subscribe(result => {
       if (result) {
-        store.queries.update({id: query.id, name: result.name, group: result.group});
+        repoState.queriesDao.update({id: query.id, name: result.name, group: result.group});
       }
     });
   }
@@ -30,7 +30,7 @@ export class QueryDialog {
    * Shows delete query dialog. If user confirms deletion, remove the
    * query and navigate to the queries page.
    */
-  deleteQuery(query: Query, store: ConfigStore) {
+  deleteQuery(query: Query, repoState: RepoState) {
     const data = {name: of(query.name)};
 
     this.dialog.open(DeleteConfirmation, {data})
@@ -38,7 +38,7 @@ export class QueryDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            store.queries.remove(query.id);
+            repoState.queriesDao.remove(query.id);
             this.snackbar.open(`Query "${query.name}" deleted`, '', {duration: 2000});
           }
         });

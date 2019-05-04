@@ -32,13 +32,13 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-  savedFiltererStates = this.activeStore.config.pipe(
-      mergeMap(config => combineLatest(config.queries.list, config.recommendations.list)),
+  savedFiltererStates = this.activeStore.state.pipe(
+    mergeMap(config => combineLatest(config.queriesDao.list, config.recommendationsDao.list)),
     map(result => getSavedFiltererStates(result[0], result[1])));
 
   dashboard: Observable<Dashboard> =
-    combineLatest(this.activeStore.config, this.activatedRoute.params)
-      .pipe(mergeMap(results => results[0].dashboards.get(results[1].id)), shareReplay(1));
+    combineLatest(this.activeStore.state, this.activatedRoute.params)
+      .pipe(mergeMap(results => results[0].dashboardsDao.get(results[1].id)), shareReplay(1));
 
   edit = new BehaviorSubject<boolean>(false);
 
@@ -76,8 +76,8 @@ export class DashboardPage {
   trackByIndex = (i: number) => i;
 
   saveDashboard(dashboard: Dashboard) {
-    this.activeStore.config.pipe(take(1)).subscribe(configStore => {
-      configStore.dashboards.update(dashboard);
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      repoState.dashboardsDao.update(dashboard);
     });
   }
 

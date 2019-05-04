@@ -4,7 +4,6 @@ import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {RepoState} from '../../../services/active-store';
-import {ConfigStore} from '../../../services/dao/config/config-dao';
 import {Recommendation} from '../../../services/dao/config/recommendation';
 import {compareLocalToRemote} from '../../../services/dao/list-dao';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
@@ -50,21 +49,21 @@ export class RecommendationDialog {
         });
   }
 
-  jsonEditor(recommendations: Recommendation[], configStore: ConfigStore) {
+  jsonEditor(recommendations: Recommendation[], repoState: RepoState) {
     this.dialog.open(RecommendationsEditJson, {data: {recommendations}, width: '600px'})
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {
           if (result) {
             const changes = compareLocalToRemote(recommendations, result);
-            changes.toAdd.forEach(r => configStore.recommendations.add(r));
-            changes.toUpdate.forEach(r => configStore.recommendations.update(r));
-            changes.toRemove.forEach(r => configStore.recommendations.remove(r.id));
+            changes.toAdd.forEach(r => repoState.recommendationsDao.add(r));
+            changes.toUpdate.forEach(r => repoState.recommendationsDao.update(r));
+            changes.toRemove.forEach(r => repoState.recommendationsDao.remove(r.id));
           }
         });
   }
 
-  remove(recommendation: Recommendation, store: ConfigStore) {
+  remove(recommendation: Recommendation, repoState: RepoState) {
     const data = {name: of('this recommendation')};
 
     this.dialog.open(DeleteConfirmation, {data})
@@ -72,7 +71,7 @@ export class RecommendationDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            store.recommendations.remove(recommendation.id);
+            repoState.recommendationsDao.remove(recommendation.id);
             this.snackbar.open(`Recommendation deleted`, '', {duration: 2000});
           }
         });

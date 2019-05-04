@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
-import {combineLatest, interval, Observable} from 'rxjs';
-import {filter, map, mergeMap, take} from 'rxjs/operators';
+import {combineLatest, interval, Observable, Subject} from 'rxjs';
+import {debounceTime, filter, map, mergeMap, take, takeUntil} from 'rxjs/operators';
 import {Item} from '../github/app-types/item';
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
@@ -10,10 +10,12 @@ import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Auth} from '../service/auth';
+import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
 import {ActiveStore, RepoState} from './services/active-store';
 import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
+import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
 import {getRecommendations} from './utility/get-recommendations';
 
@@ -77,23 +79,34 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
       [{provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [ActiveStore]}]
 })
 export class Repository {
+  private destroyed = new Subject();
+
   constructor(
     private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
     private remover: Remover, private activeStore: ActiveStore, private auth: Auth,
-    private pageNavigator: PageNavigator) {
-    combineLatest(this.activeStore.state, this.activeStore.repository)
+    private pageNavigator: PageNavigator, private repoGist: RepoGist, private config: Config) {
+    this.activeStore.state
       .pipe(take(1))
-      .subscribe(results => {
-        if (!this.loadedRepos.isLoaded(results[1])) {
+      .subscribe(repoState => {
+        if (!this.loadedRepos.isLoaded(repoState.repository)) {
           this.pageNavigator.navigateToDatabase();
         } else if (this.auth.token) {
-          const repoState = results[0];
           this.updater.update(repoState, 'items');
           this.updater.update(repoState, 'contributors');
           this.updater.update(repoState, 'labels');
           this.initializeAutoIssueUpdates(repoState);
         }
+
+        // Sync and then start saving
+        this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
+          this.saveConfigChangesToGist(name, repoState);
+        });
       });
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   private initializeAutoIssueUpdates(repoState: RepoState) {
@@ -105,5 +118,19 @@ export class Repository {
         .subscribe(() => {
           this.updater.update(repoState, 'items');
         });
+  }
+
+  /** Persist changes to config lists to gist */
+  private saveConfigChangesToGist(repository: string, state: RepoState) {
+    const configDaoLists = [state.dashboardsDao.list, state.queriesDao.list, state.recommendationsDao.list];
+    combineLatest(...configDaoLists)
+      .pipe(debounceTime(500), takeUntil(this.destroyed))
+      .subscribe(result => {
+        const dashboards = result[0];
+        const queries = result[1];
+        const recommendations = result[2];
+
+        this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
+      });
   }
 }

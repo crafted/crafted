@@ -44,22 +44,18 @@ export class ItemDetail {
     }));
 
   constructor(
-    private elementRef: ElementRef, public activeStore: ActiveStore,
-    public github: Github) {
+    private elementRef: ElementRef, public activeStore: ActiveStore, public github: Github) {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.item && this.item && this.item.id) {
       this.elementRef.nativeElement.scrollTop = 0;  // Scroll up in case prev item was scrolled
 
-      this.recommendations =
-        combineLatest(
-          this.activeStore.config.pipe(
-            mergeMap(configStore => configStore.recommendations.list)),
-          this.activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.map)))
-          .pipe(
-            map(results =>
-              results[0] ? getRecommendations(this.item, results[0], results[1]) : []));
+      this.recommendations = this.activeStore.state.pipe(
+        mergeMap(
+          repoState =>
+            combineLatest(repoState.recommendationsDao.list, repoState.labelsDao.map)),
+        map(results => results[0] ? getRecommendations(this.item, results[0], results[1]) : []));
 
       this.activities = this.activeStore.data.pipe(
         mergeMap(dataStore => {

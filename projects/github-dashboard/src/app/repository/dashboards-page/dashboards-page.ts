@@ -26,7 +26,7 @@ const HEADER_ACTIONS: HeaderContentAction<DashboardsPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardsPage {
-  dashboards$ = this.activeStore.config.pipe(mergeMap(store => store.dashboards.list));
+  dashboards$ = this.activeStore.state.pipe(mergeMap(store => store.dashboardsDao.list));
 
   headerActions: Observable<HeaderContentAction[]> =
     this.dashboards$.pipe(map(dashboards => dashboards.length ? HEADER_ACTIONS : []));
@@ -42,8 +42,8 @@ export class DashboardsPage {
     const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
     const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
 
-    this.activeStore.config
-      .pipe(mergeMap(configStore => configStore.dashboards.add(newDashboard)), take(1))
+    this.activeStore.state
+      .pipe(mergeMap(repoState => repoState.dashboardsDao.add(newDashboard)), take(1))
       .subscribe(id => this.navigateToDashboard(id));
   }
 

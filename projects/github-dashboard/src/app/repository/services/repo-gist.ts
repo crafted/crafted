@@ -5,7 +5,7 @@ import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
 import {Config, RepoConfig} from '../../service/config';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
-import {ConfigStore} from './dao/config/config-dao';
+import {RepoState} from './active-store';
 import {Query} from './dao/config/query';
 import {Recommendation} from './dao/config/recommendation';
 import {compareLocalToRemote, IdentifiedObject, LocalToRemoteComparison} from './dao/list-dao';
@@ -16,11 +16,11 @@ export class RepoGist {
 
   constructor(private config: Config, private dialog: MatDialog) {}
 
-  sync(repository: string, store: ConfigStore): Observable<void> {
+  sync(repository: string, state: RepoState): Observable<void> {
     let syncResults: LocalToRemoteComparison<IdentifiedObject>[]|null;
     return this.config.getRepoConfig(repository)
         .pipe(
-            mergeMap(repoConfig => getSyncResults(store, repoConfig)),
+          mergeMap(repoConfig => getSyncResults(state, repoConfig)),
             tap(results => syncResults = results), mergeMap(results => this.confirmSync(results)),
             map(confirmed => {
               if (!confirmed) {
@@ -31,20 +31,20 @@ export class RepoGist {
               }
 
               const dashboardsSync = syncResults[0] as LocalToRemoteComparison<Dashboard>;
-              store.dashboards.add(dashboardsSync.toAdd);
-              store.dashboards.update(dashboardsSync.toUpdate);
-              store.dashboards.remove(dashboardsSync.toRemove.map(v => v.id));
+              state.dashboardsDao.add(dashboardsSync.toAdd);
+              state.dashboardsDao.update(dashboardsSync.toUpdate);
+              state.dashboardsDao.remove(dashboardsSync.toRemove.map(v => v.id));
 
               const querySync = syncResults[1] as LocalToRemoteComparison<Query>;
-              store.queries.add(querySync.toAdd);
-              store.queries.update(querySync.toUpdate);
-              store.queries.remove(querySync.toRemove.map(v => v.id));
+              state.queriesDao.add(querySync.toAdd);
+              state.queriesDao.update(querySync.toUpdate);
+              state.queriesDao.remove(querySync.toRemove.map(v => v.id));
 
               const recommendationsSync =
                 syncResults[2] as LocalToRemoteComparison<Recommendation>;
-              store.recommendations.add(recommendationsSync.toAdd);
-              store.recommendations.update(recommendationsSync.toUpdate);
-              store.recommendations.remove(recommendationsSync.toRemove.map(v => v.id));
+              state.recommendationsDao.add(recommendationsSync.toAdd);
+              state.recommendationsDao.update(recommendationsSync.toUpdate);
+              state.recommendationsDao.remove(recommendationsSync.toRemove.map(v => v.id));
             }));
   }
 
@@ -76,13 +76,13 @@ function hasSyncChanges(syncResponse: LocalToRemoteComparison<any>): boolean {
 }
 
 /** Gets the comparison results between the local store and remote config */
-function getSyncResults(store: ConfigStore, remoteConfig: RepoConfig|null):
+function getSyncResults(state: RepoState, remoteConfig: RepoConfig | null):
     Observable<LocalToRemoteComparison<any>[]|null> {
   if (!remoteConfig) {
     return of(null);
   }
 
-  return combineLatest(store.dashboards.list, store.queries.list, store.recommendations.list)
+  return combineLatest(state.dashboardsDao.list, state.queriesDao.list, state.recommendationsDao.list)
       .pipe(
           map(results =>
             [compareLocalToRemote(results[0], remoteConfig.dashboards),

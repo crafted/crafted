@@ -7,8 +7,7 @@ import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {isMobile} from '../../utility/media-matcher';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore} from '../services/active-store';
-import {ConfigStore} from '../services/dao/config/config-dao';
+import {ActiveStore, RepoState} from '../services/active-store';
 import {Query} from '../services/dao/config/query';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
@@ -43,11 +42,11 @@ export class QueryPage<T> {
 
   dataResourceOptions: {id: string, label: string}[];
 
-  query: Observable<Query> = combineLatest(this.activatedRoute.params, this.activeStore.config)
+  query: Observable<Query> = combineLatest(this.activatedRoute.params, this.activeStore.state)
     .pipe(
       mergeMap(results => {
         if (results[0].id !== 'new') {
-          return results[1].queries.get(results[0].id);
+          return results[1].queriesDao.get(results[0].id);
         }
 
         return this.newQuery();
@@ -129,7 +128,7 @@ export class QueryPage<T> {
             resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.config, this.activeStore.repository)
+    combineLatest(this.query, currentState, this.activeStore.state, this.activeStore.repository)
       .pipe(
         mergeMap(results => {
           const state = results[1];
@@ -140,7 +139,7 @@ export class QueryPage<T> {
             viewerState: state[3],
           };
           const query = {...results[0], ...states, name, group};
-          return combineLatest(results[2].queries.add(query), results[3]);
+          return combineLatest(results[2].queriesDao.add(query), results[3]);
         }),
         take(1))
       .subscribe(results => {
@@ -184,14 +183,14 @@ export class QueryPage<T> {
   }
 
   newQuery(): Observable<Query> {
-    return combineLatest(this.activatedRoute.queryParamMap, this.activeStore.config)
+    return combineLatest(this.activatedRoute.queryParamMap, this.activeStore.state)
       .pipe(take(1), mergeMap(result => {
         const queryParamMap = result[0];
-        const configStore = result[1];
+        const repoState = result[1];
 
         const recommendationId = queryParamMap.get('recommendationId');
         if (recommendationId) {
-          return createNewQueryFromRecommendation(configStore, recommendationId);
+          return createNewQueryFromRecommendation(repoState, recommendationId);
         }
 
         const widgetJson = queryParamMap.get('widget');
@@ -206,8 +205,8 @@ export class QueryPage<T> {
   }
 }
 
-function createNewQueryFromRecommendation(store: ConfigStore, id: string) {
-  return store.recommendations.get(id).pipe(map(recommendation => {
+function createNewQueryFromRecommendation(repoState: RepoState, id: string) {
+  return repoState.recommendationsDao.get(id).pipe(map(recommendation => {
     const query: Query = {name: recommendation.message, dataType: recommendation.dataType};
     query.filtererState = recommendation.filtererState;
     return query;
