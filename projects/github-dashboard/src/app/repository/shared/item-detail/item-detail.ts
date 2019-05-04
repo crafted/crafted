@@ -27,15 +27,15 @@ export class ItemDetail {
 
   @Input() item: Item;
 
-  addLabelOptions: Observable<{id: string, label: string}[]> = this.activeStore.data.pipe(
-    mergeMap(dataStore => dataStore.labels.list), map(labels => {
+  addLabelOptions: Observable<{id: string, label: string}[]> = this.activeStore.state.pipe(
+    mergeMap(repoState => repoState.labelsDao.list), map(labels => {
       const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
       labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
       return labelOptions;
     }));
 
-  addAssigneeOptions: Observable<string[]> = this.activeStore.data.pipe(
-    mergeMap(dataStore => dataStore.items.list), map(items => {
+  addAssigneeOptions: Observable<string[]> = this.activeStore.state.pipe(
+    mergeMap(repoState => repoState.itemsDao.list), map(items => {
       const assigneesSet = new Set<string>();
       items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
       const assigneesList: string[] = [];
@@ -57,11 +57,11 @@ export class ItemDetail {
             combineLatest(repoState.recommendationsDao.list, repoState.labelsDao.map)),
         map(results => results[0] ? getRecommendations(this.item, results[0], results[1]) : []));
 
-      this.activities = this.activeStore.data.pipe(
-        mergeMap(dataStore => {
+      this.activities = this.activeStore.state.pipe(
+        mergeMap(repoState => {
           return combineLatest(
-            this.github.getComments(dataStore.name, this.item.id),
-            this.github.getTimeline(dataStore.name, this.item.id));
+            this.github.getComments(repoState.repository, this.item.id),
+            this.github.getTimeline(repoState.repository, this.item.id));
         }),
         filter(result => {
           const commentsFinished = result[0].completed === result[0].total;
@@ -88,30 +88,30 @@ export class ItemDetail {
   }
 
   addLabel(id: string, label: string) {
-    this.activeStore.data
+    this.activeStore.state
       .pipe(
-        map(dataStore => dataStore.name),
+        map(repoState => repoState.repository),
         mergeMap(repository => this.github.addLabel(repository, this.item.id, label)), take(1))
       .subscribe();
 
     // Manually patch in the new label to the current item object until the next sync with GitHub.
-    combineLatest(this.activeStore.data).pipe(take(1)).subscribe(results => {
+    combineLatest(this.activeStore.state).pipe(take(1)).subscribe(results => {
       this.item.labels.push(id);
-      results[0].items.update(this.item);
+      results[0].itemsDao.update(this.item);
     });
   }
 
   addAssignee(assignee: string) {
-    this.activeStore.data
+    this.activeStore.state
       .pipe(
-        mergeMap(dataStore => this.github.addAssignee(dataStore.name, this.item.id, assignee)),
+        mergeMap(repoState => this.github.addAssignee(repoState.repository, this.item.id, assignee)),
         take(1))
       .subscribe();
 
     // Manually patch in the new label to the current item object until the next sync with GitHub.
-    combineLatest(this.activeStore.data).pipe(take(1)).subscribe(results => {
+    combineLatest(this.activeStore.state).pipe(take(1)).subscribe(results => {
       this.item.assignees.push(assignee);
-      results[0].items.update(this.item);
+      results[0].itemsDao.update(this.item);
     });
   }
 }

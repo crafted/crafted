@@ -34,15 +34,6 @@ export class ActiveStore {
     }),
     shareReplay(1));
 
-  repository = this.state.pipe(map(state => state.repository));
-
-  data = this.state.pipe(map(r => ({
-    name: r.repository,
-    items: r.itemsDao,
-    labels: r.labelsDao,
-    contributors: r.contributorsDao,
-  })));
-
   constructor(private activatedRoute: ActivatedRoute) {
   }
 }

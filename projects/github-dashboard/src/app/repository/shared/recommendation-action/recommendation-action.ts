@@ -21,20 +21,20 @@ export class RecommendationAction {
   }
 
   addLabel(label: Label) {
-    this.activeStore.data.pipe(mergeMap(dataStore => {
+    this.activeStore.state.pipe(mergeMap(repoState => {
       const newItem: Item = {...this.item};
       newItem.labels = [...this.item.labels, label.id];
-      dataStore.items.update(newItem);
-      return this.github.addLabel(dataStore.name, this.item.id, label.name);
+      repoState.itemsDao.update(newItem);
+      return this.github.addLabel(repoState.repository, this.item.id, label.name);
     }), take(1)).subscribe();
   }
 
   addAssignee(assignee: string) {
-    this.activeStore.data.pipe(mergeMap(dataStore => {
+    this.activeStore.state.pipe(mergeMap(repoState => {
       const newItem: Item = {...this.item};
       newItem.assignees = [...this.item.assignees, assignee];
-      dataStore.items.update(newItem);
-      return this.github.addAssignee(dataStore.name, this.item.id, assignee);
+      repoState.itemsDao.update(newItem);
+      return this.github.addAssignee(repoState.repository, this.item.id, assignee);
     }), take(1)).subscribe();
   }
 }

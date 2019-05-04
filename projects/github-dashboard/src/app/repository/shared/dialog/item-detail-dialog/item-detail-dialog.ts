@@ -14,7 +14,7 @@ export interface ItemDetailDialogData {
 })
 export class ItemDetailDialog {
   item$ =
-    this.activeStore.data.pipe(mergeMap(dataStore => dataStore.items.get(`${this.data.itemId}`)));
+    this.activeStore.state.pipe(mergeMap(repoState => repoState.itemsDao.get(`${this.data.itemId}`)));
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData,

@@ -39,7 +39,7 @@ export class LabelList {
 
   @Output() removed = new EventEmitter<{id: string, name: string}>();
 
-  labelsMap = this.activeStore.data.pipe(mergeMap(dataStore => dataStore.labels.list), map(list => {
+  labelsMap = this.activeStore.state.pipe(mergeMap(repoState => repoState.labelsDao.list), map(list => {
     const labelsMap = new Map<string, DisplayedLabel>();
     list.forEach(label => {
       const displayedLabel = convertLabelToDisplayedLabel(label);

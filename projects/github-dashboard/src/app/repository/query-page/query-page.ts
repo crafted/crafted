@@ -79,8 +79,8 @@ export class QueryPage<T> {
       .pipe(map(equivalent => equivalent.some(r => !r)));
   }));
 
-  item$ = combineLatest(this.activatedRoute.queryParamMap, this.activeStore.data)
-    .pipe(mergeMap(results => results[1].items.get(results[0].get('item'))));
+  item$ = combineLatest(this.activatedRoute.queryParamMap, this.activeStore.state)
+    .pipe(mergeMap(results => results[1].itemsDao.get(results[0].get('item'))));
 
   headerActions: Observable<HeaderContentAction[]> =
     combineLatest(this.query, this.canSave).pipe(map(results => {
@@ -128,9 +128,10 @@ export class QueryPage<T> {
             resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.state, this.activeStore.repository)
+    combineLatest(this.query, currentState, this.activeStore.state)
       .pipe(
         mergeMap(results => {
+          const repoState = results[2];
           const state = results[1];
           const states = {
             filtererState: state[0],
@@ -139,7 +140,7 @@ export class QueryPage<T> {
             viewerState: state[3],
           };
           const query = {...results[0], ...states, name, group};
-          return combineLatest(results[2].queriesDao.add(query), results[3]);
+          return combineLatest(repoState.queriesDao.add(query), repoState.repository);
         }),
         take(1))
       .subscribe(results => {

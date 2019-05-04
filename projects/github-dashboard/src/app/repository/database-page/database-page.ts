@@ -13,7 +13,7 @@ import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatabasePage {
-  activeRepository = this.activeStore.data.pipe(map(dataStore => dataStore.name));
+  activeRepository = this.activeStore.state.pipe(map(dataStore => dataStore.repository));
 
   isLoading = false;
 
@@ -22,8 +22,8 @@ export class DatabasePage {
   isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
     .pipe(map(results => results[1].indexOf(results[0]) !== -1));
 
-  repoLabels = this.activeStore.data.pipe(
-      mergeMap(store => store.labels.list), map(labels => labels.map(l => l.id)));
+  repoLabels = this.activeStore.state.pipe(
+    mergeMap(repoState => repoState.labelsDao.list), map(labels => labels.map(l => l.id)));
 
   counts = {
     items: this.activeStore.state.pipe(mergeMap(s => s.itemsDao.list), map(l => l.length)),
