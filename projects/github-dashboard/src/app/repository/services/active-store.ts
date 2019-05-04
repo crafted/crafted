@@ -5,10 +5,10 @@ import {map, shareReplay} from 'rxjs/operators';
 import {Contributor} from '../../github/app-types/contributor';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
+import {Query} from '../model/query';
+import {Recommendation} from '../model/recommendation';
 import {AppIndexedDb} from '../utility/app-indexed-db';
-import {Query} from './dao/config/query';
-import {Recommendation} from './dao/config/recommendation';
-import {ListDao} from './dao/list-dao';
+import {ListDao} from '../utility/list-dao';
 
 export interface RepoState {
   repository: string;

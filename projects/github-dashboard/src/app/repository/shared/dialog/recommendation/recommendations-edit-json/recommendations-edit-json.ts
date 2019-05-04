@@ -3,7 +3,7 @@ import {AbstractControl, FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Subject} from 'rxjs';
 
-import {Recommendation} from '../../../../services/dao/config/recommendation';
+import {Recommendation} from '../../../../model/recommendation';
 
 
 export interface RecommendationsEditJsonData {

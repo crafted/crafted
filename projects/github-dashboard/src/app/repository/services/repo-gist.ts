@@ -4,11 +4,11 @@ import {Dashboard} from '@crafted/components';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
 import {Config, RepoConfig} from '../../service/config';
+import {Query} from '../model/query';
+import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
+import {compareLocalToRemote, IdentifiedObject, LocalToRemoteComparison} from '../utility/list-dao';
 import {RepoState} from './active-store';
-import {Query} from './dao/config/query';
-import {Recommendation} from './dao/config/recommendation';
-import {compareLocalToRemote, IdentifiedObject, LocalToRemoteComparison} from './dao/list-dao';
 
 @Injectable()
 export class RepoGist {

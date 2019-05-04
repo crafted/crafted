@@ -3,8 +3,8 @@ import {combineLatest, Observable} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
 import {Github, TimelineEvent, UserComment} from '../../../service/github';
+import {Recommendation} from '../../model/recommendation';
 import {ActiveStore} from '../../services/active-store';
-import {Recommendation} from '../../services/dao/config/recommendation';
 import {getRecommendations} from '../../utility/get-recommendations';
 
 export interface Activity {

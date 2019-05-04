@@ -3,8 +3,8 @@ import {mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
 import {Github} from '../../../service/github';
+import {Recommendation} from '../../model/recommendation';
 import {ActiveStore} from '../../services/active-store';
-import {Recommendation} from '../../services/dao/config/recommendation';
 
 @Component({
   selector: 'recommendation-action',

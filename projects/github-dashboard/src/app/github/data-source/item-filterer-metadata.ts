@@ -11,7 +11,7 @@ import {
 } from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Recommendation} from '../../repository/services/dao/config/recommendation';
+import {Recommendation} from '../../repository/model/recommendation';
 import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';
 import {createLabelsMap} from '../utility/create-labels-map';
@@ -220,8 +220,7 @@ export function getFiltererProvider(
   return (initialState?: FiltererState) => {
     const contextProvider =
       createFiltererContextProvider(labels, recommendations, getRecommendations);
-    const filterer =
-      new Filterer({metadata: ITEM_FILTERER_METADATA, contextProvider, initialState, tokenizeItem});
-    return filterer;
+    return new Filterer(
+      {metadata: ITEM_FILTERER_METADATA, contextProvider, initialState, tokenizeItem});
   };
 }

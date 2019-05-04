@@ -3,9 +3,9 @@ import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {delay, map, mergeMap} from 'rxjs/operators';
+import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
-import {Query} from '../services/dao/config/query';
 import {PageNavigator} from '../services/page-navigator';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 

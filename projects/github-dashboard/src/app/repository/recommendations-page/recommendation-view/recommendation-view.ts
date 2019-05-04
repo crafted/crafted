@@ -4,13 +4,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
+import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../../repository';
 import {ActiveStore} from '../../services/active-store';
-import {
-  ACTION_TYPES,
-  Recommendation,
-  RECOMMENDATION_TYPES
-} from '../../services/dao/config/recommendation';
 import {PageNavigator} from '../../services/page-navigator';
 import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
 

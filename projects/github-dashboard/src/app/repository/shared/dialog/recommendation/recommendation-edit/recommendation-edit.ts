@@ -4,14 +4,14 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import {RepoState} from '../../../../services/active-store';
 
 import {
   ACTION_TYPES,
   ActionType,
   Recommendation,
   RECOMMENDATION_TYPES
-} from '../../../../services/dao/config/recommendation';
+} from '../../../../model/recommendation';
+import {RepoState} from '../../../../services/active-store';
 
 export interface RecommendationEditData {
   recommendation: Recommendation;

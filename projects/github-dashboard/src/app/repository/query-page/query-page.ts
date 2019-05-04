@@ -6,9 +6,9 @@ import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@cra
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {isMobile} from '../../utility/media-matcher';
+import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore, RepoState} from '../services/active-store';
-import {Query} from '../services/dao/config/query';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';

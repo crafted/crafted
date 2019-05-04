@@ -2,7 +2,7 @@ import {DatePipe} from '@angular/common';
 import {Viewer, ViewerMetadata, ViewerState} from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Recommendation} from '../../repository/services/dao/config/recommendation';
+import {Recommendation} from '../../repository/model/recommendation';
 import {getRecommendations} from '../../repository/utility/get-recommendations';
 import {Item} from '../app-types/item';
 import {Label} from '../app-types/label';

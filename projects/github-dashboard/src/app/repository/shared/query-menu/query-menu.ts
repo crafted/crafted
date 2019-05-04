@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {take} from 'rxjs/operators';
+import {Query} from '../../model/query';
 import {ActiveStore} from '../../services/active-store';
-import {Query} from '../../services/dao/config/query';
 import {QueryDialog} from '../dialog/query/query-dialog';
 
 @Component({

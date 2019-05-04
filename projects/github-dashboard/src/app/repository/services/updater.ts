@@ -3,8 +3,8 @@ import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {Github} from '../../service/github';
+import {compareLocalToRemote} from '../utility/list-dao';
 import {RepoState} from './active-store';
-import {compareLocalToRemote} from './dao/list-dao';
 
 export interface StaleIssuesState {
   repository: string;

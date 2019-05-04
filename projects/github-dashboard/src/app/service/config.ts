@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {Dashboard} from '@crafted/components';
 import {Observable, of} from 'rxjs';
 import {map, mergeMap, take} from 'rxjs/operators';
-import {Query} from '../repository/services/dao/config/query';
-import {Recommendation} from '../repository/services/dao/config/recommendation';
+import {Query} from '../repository/model/query';
+import {Recommendation} from '../repository/model/recommendation';
 import {Github} from './github';
 
 

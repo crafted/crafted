@@ -3,7 +3,7 @@ import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {ITEM_FILTERER_METADATA} from '../../github/data-source/item-filterer-metadata';
 import {tokenizeItem} from '../../github/utility/tokenize-item';
-import {Recommendation} from '../services/dao/config/recommendation';
+import {Recommendation} from '../model/recommendation';
 
 export function getRecommendations(
     item: Item, recommendations: Recommendation[],

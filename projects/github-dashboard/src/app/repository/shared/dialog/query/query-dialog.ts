@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Observable, of} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {Query} from '../../../model/query';
 import {RepoState} from '../../../services/active-store';
-import {Query} from '../../../services/dao/config/query';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {QueryEdit, QueryEditResult} from './query-edit/query-edit';
 

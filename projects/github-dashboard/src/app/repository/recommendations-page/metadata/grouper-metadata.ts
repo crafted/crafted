@@ -1,5 +1,5 @@
 import {getGroupByValue, GrouperMetadata} from '@crafted/data';
-import {Recommendation} from '../../services/dao/config/recommendation';
+import {Recommendation} from '../../model/recommendation';
 
 export const RECOMMENDATION_GROUPER_METADATA = new Map<string, GrouperMetadata<Recommendation>>([
   [

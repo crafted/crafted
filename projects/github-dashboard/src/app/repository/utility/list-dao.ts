@@ -1,6 +1,6 @@
 import {Observable, ReplaySubject} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
-import {AppIndexedDb, StoreId} from '../../utility/app-indexed-db';
+import {AppIndexedDb, StoreId} from './app-indexed-db';
 
 export interface IdentifiedObject {
   id?: string;
