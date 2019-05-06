@@ -20,6 +20,9 @@
     renamed this from "{{timelineEvent.rename.from}}" to
     "{{timelineEvent.rename.to}}"
   </ng-container>
+  <ng-container *ngSwitchCase="'reopened'">
+    reopened this
+  </ng-container>
 
   <!-- For now, hiding unknown types
   <ng-container *ngSwitchDefault>

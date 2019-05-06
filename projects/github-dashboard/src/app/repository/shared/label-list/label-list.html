@@ -1,10 +1,9 @@
 <mat-chip-list>
   <ng-container *ngFor="let label of displayedLabels | async">
-    <mat-chip class="label" (click)="select(label)"
+    <mat-chip class="label" (click)="select(label)" class="theme-border"
               [class.selectable]="selectable" [ngStyle]="{
                 color: label.textColor,
-                backgroundColor: label.backgroundColor,
-                borderColor: label.borderColor
+                backgroundColor: label.backgroundColor
               }">
       {{label.name}}
       <mat-icon (click)="remove(label)" *ngIf="removable"

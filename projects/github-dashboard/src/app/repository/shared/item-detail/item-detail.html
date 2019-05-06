@@ -32,17 +32,14 @@
             mat-stroked-button> + Add assignee
     </button>
   </div>
+
+  <div class="detail">
+    <recommendation-action *ngFor="let recommendation of recommendations | async"
+                           [item]="item" [recommendation]="recommendation">
+    </recommendation-action>
+  </div>
 </div>
 
-<ng-container
-  *ngFor="let recommendation of recommendations | async; let last = last">
-  <mat-divider></mat-divider>
-
-  <recommendation-action [item]="item" [recommendation]="recommendation">
-  </recommendation-action>
-
-  <mat-divider *ngIf="last"></mat-divider>
-</ng-container>
 
 <item-message [dateTime]="item.created"
               class="body"

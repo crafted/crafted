@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
+import {Query} from '../../model/query';
 import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../../repository';
 import {ActiveStore} from '../../services/active-store';
@@ -77,7 +78,12 @@ export class RecommendationView {
   }
 
   open() {
-    this.pageNavigator.navigateToQuery('new', {recommendationId: this.recommendation.id});
+    const query: Query = {
+      name: this.recommendation.message,
+      dataType: this.recommendation.dataType,
+      filtererState: this.recommendation.filtererState,
+    };
+    this.pageNavigator.navigateToQuery('new', {query: JSON.stringify(query)});
   }
 }
 

@@ -24,7 +24,7 @@ export class RecommendationDialog {
   /** Opens a dialog for the user to create a new recommendation. */
   create(repoState: RepoState, dataResourcesMap: RecommendationsDataResourcesMap) {
     const data = {recommendation: {}, dataResourcesMap, repoState};
-    this.dialog.open(RecommendationEdit, {data, width: '600px'})
+    this.dialog.open(RecommendationEdit, {data, width: '600px', disableClose: true})
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {

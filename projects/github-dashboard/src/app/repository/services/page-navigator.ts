@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
+import {Query} from '../model/query';
 
 interface QueryQueryParams {
-  recommendationId?: string;
+  query?: string;
 }
 
 @Injectable()

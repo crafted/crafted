@@ -11,7 +11,8 @@ import {combineLatest, Observable, of, Subject, Subscription} from 'rxjs';
 import {filter, map, mergeMap, startWith, takeUntil, tap} from 'rxjs/operators';
 import {Github} from '../../../service/github';
 import {LoadedRepos} from '../../../service/loaded-repos';
-import {ActiveStore} from '../../services/active-store';
+import {Query} from '../../model/query';
+import {ActiveStore, RepoState} from '../../services/active-store';
 
 
 interface StorageState {

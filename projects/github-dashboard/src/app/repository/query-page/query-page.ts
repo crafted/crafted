@@ -172,46 +172,26 @@ export class QueryPage<T> {
     }
   }
 
-  createQueryWithType(type: string) {
+  createQueryWithType(dataType: string) {
     this.router.navigate([], {
       relativeTo: this.activatedRoute.parent,
-      queryParams: {type},
+      queryParams: {query: JSON.stringify({name: 'New Query', dataType})},
       replaceUrl: true,
       queryParamsHandling: 'merge',
     });
   }
 
   newQuery(): Observable<Query> {
-    return combineLatest(this.activatedRoute.queryParamMap, this.activeStore.state)
+    return this.activatedRoute.queryParamMap
         .pipe(
-            mergeMap(([queryParamMap, repoState]) => {
-              const recommendationId = queryParamMap.get('recommendationId');
-              if (recommendationId) {
-                return createNewQueryFromRecommendation(repoState, recommendationId);
-              }
-
-              const widgetJson = queryParamMap.get('widget');
-              if (widgetJson) {
-                // TODO: Figure out how to convert widget into query again
-                const widget: Widget = JSON.parse(widgetJson);
-                return of({name: widget.title || 'Widget', dataType: 'issue'});
-              }
-
-              const dataType = queryParamMap.get('type');
-              if (dataType) {
-                return of({name: 'New Query', dataType});
+            mergeMap(queryParamMap => {
+              const query = queryParamMap.get('query');
+              if (query) {
+                return of(JSON.parse(query));
               }
 
               return of();
             }),
             take(1));
   }
-}
-
-function createNewQueryFromRecommendation(repoState: RepoState, id: string) {
-  return repoState.recommendationsDao.get(id).pipe(map(recommendation => {
-    const query: Query = {name: recommendation.message, dataType: recommendation.dataType};
-    query.filtererState = recommendation.filtererState;
-    return query;
-  }));
 }
