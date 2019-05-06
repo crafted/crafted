@@ -25,7 +25,7 @@ export class Nav {
   activeRepository = this.activeStore.state.pipe(map(repoState => repoState.repository));
 
   isEmpty = this.activeStore.state.pipe(
-    mergeMap(repoState => repoState.itemsDao.list), map(list => !list.length), shareReplay(1));
+      mergeMap(repoState => repoState.itemsDao.list), map(list => !list.length), shareReplay(1));
 
   links: NavLink[] = [
     {route: 'database', label: 'Database', icon: 'archive'},
@@ -34,22 +34,21 @@ export class Nav {
     {route: 'recommendations', label: 'Recommendations', icon: 'label', disabled: this.isEmpty},
   ];
 
-  repositories$ =
-    combineLatest(this.activeRepository, this.loadedRepos.repos$).pipe(map(results => {
-      const repositoriesSet = new Set([results[0], ...results[1]]);
-      const repositories = [];
-      repositoriesSet.forEach(r => repositories.push(r));
-      return repositories;
-    }));
+  repositories$ = combineLatest(this.activeRepository, this.loadedRepos.repos$)
+                      .pipe(map(([repository, loadedRepos]) => {
+                        const repositoriesSet = new Set([repository, ...loadedRepos]);
+                        const repositories = [];
+                        repositoriesSet.forEach(r => repositories.push(r));
+                        return repositories;
+                      }));
 
   @Input() sidenav: MatSidenav;
 
   private destroyed = new Subject();
 
   constructor(
-    public activeStore: ActiveStore, public loadedRepos: LoadedRepos, public theme: Theme,
-    public router: Router, public auth: Auth) {
-  }
+      public activeStore: ActiveStore, public loadedRepos: LoadedRepos, public theme: Theme,
+      public router: Router, public auth: Auth) {}
 
   ngOnDestroy() {
     this.destroyed.next();

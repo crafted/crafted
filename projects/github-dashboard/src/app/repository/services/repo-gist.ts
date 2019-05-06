@@ -85,9 +85,9 @@ function getSyncResults(repoState: RepoState, remoteConfig: RepoConfig | null):
     repoState.dashboardsDao.list, repoState.queriesDao.list,
     repoState.recommendationsDao.list)
       .pipe(
-          map(results =>
-            [compareLocalToRemote(results[0], remoteConfig.dashboards),
-              compareLocalToRemote(results[1], remoteConfig.queries),
-              compareLocalToRemote(results[2], remoteConfig.recommendations)]),
+          map(([dashboards, queries, recommendations]) =>
+            [compareLocalToRemote(dashboards, remoteConfig.dashboards),
+              compareLocalToRemote(queries, remoteConfig.queries),
+              compareLocalToRemote(recommendations, remoteConfig.recommendations)]),
           take(1));
 }

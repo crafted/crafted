@@ -216,10 +216,8 @@ export function getViewerProvider(
 }
 
 function createContextProvider(
-  labels: Observable<Label[]>, recommendations$: Observable<Recommendation[]>) {
-  return combineLatest(recommendations$, labels).pipe(map(results => {
-    const recommendations = results[0];
-    const labelsMap = createLabelsMap(results[1]);
-    return (item: Item) => ({item, labelsMap, recommendations});
+  labels$: Observable<Label[]>, recommendations$: Observable<Recommendation[]>) {
+  return combineLatest(recommendations$, labels$).pipe(map(([recommendations, labels]) => {
+    return (item: Item) => ({item, labelsMap: createLabelsMap(labels), recommendations});
   }));
 }

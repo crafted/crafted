@@ -29,8 +29,7 @@ export class QueryEdit {
 
   filteredGroupOptions = this.activeStore.state.pipe(
     mergeMap(repoState => combineLatest(repoState.queriesDao.list, this.formGroup.valueChanges)),
-    map(result => {
-      const queries = result[0];
+    map(([queries, formValue]) => {
       const groupOptionsSet = new Set<string>();
       queries.forEach(query => {
         if (query.group) {
@@ -40,7 +39,7 @@ export class QueryEdit {
 
       const groupOptions: string[] = [];
       groupOptionsSet.forEach(groupOption => groupOptions.push(groupOption));
-      return this._filter(result[1].group, groupOptions);
+      return this._filter(formValue.group, groupOptions);
     }));
 
   constructor(

@@ -33,12 +33,14 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
 })
 export class DashboardPage {
   savedFiltererStates = this.activeStore.state.pipe(
-    mergeMap(config => combineLatest(config.queriesDao.list, config.recommendationsDao.list)),
-    map(result => getSavedFiltererStates(result[0], result[1])));
+      mergeMap(config => combineLatest(config.queriesDao.list, config.recommendationsDao.list)),
+      map(([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
 
   dashboard: Observable<Dashboard> =
-    combineLatest(this.activeStore.state, this.activatedRoute.params)
-      .pipe(mergeMap(results => results[0].dashboardsDao.get(results[1].id)), shareReplay(1));
+      combineLatest(this.activeStore.state, this.activatedRoute.params)
+          .pipe(
+              mergeMap(([repoState, params]) => repoState.dashboardsDao.get(params.id)),
+              shareReplay(1));
 
   edit = new BehaviorSubject<boolean>(false);
 
@@ -63,10 +65,10 @@ export class DashboardPage {
   };
 
   constructor(
-    private dialog: MatDialog, private elementRef: ElementRef,
-    @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-    private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
-    private activeStore: ActiveStore) {
+      private dialog: MatDialog, private elementRef: ElementRef,
+      @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
+      private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
+      private activeStore: ActiveStore) {
     // TODO: Needs to listen for theme changes to know when this should change
     Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
 
@@ -84,7 +86,7 @@ export class DashboardPage {
   openQuery(widget: Widget) {
     this.router.navigate(
         [`../../query/new`],
-      {queryParams: {widget: JSON.stringify(widget)}, relativeTo: this.activatedRoute.parent});
+        {queryParams: {widget: JSON.stringify(widget)}, relativeTo: this.activatedRoute.parent});
   }
 
   fullscreen() {

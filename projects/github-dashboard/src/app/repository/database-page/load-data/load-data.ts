@@ -44,8 +44,7 @@ export class LoadData {
 
   totalItemCount =
     combineLatest(this.activeStore.state, this.formGroup.valueChanges.pipe(startWith(null)))
-      .pipe(mergeMap(result => {
-        const repoState = result[0];
+      .pipe(mergeMap(([repoState]) => {
         const since = this.getIssuesDateSince();
         return this.github.getItemsCount(repoState.repository, since);
       }));

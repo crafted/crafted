@@ -23,14 +23,14 @@ interface MatcherContext {
 }
 
 function createFiltererContextProvider(
-    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
+    labels$: Observable<Label[]>, recommendations$: Observable<Recommendation[]>,
     getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
         Recommendation[]): FiltererContextProvider<MatcherContext> {
-  return combineLatest(recommendations, labels).pipe(map(results => {
-    const labelsMap = createLabelsMap(results[1]);
+  return combineLatest(recommendations$, labels$).pipe(map(([recommendations, labels]) => {
+    const labelsMap = createLabelsMap(labels);
     return {
       labelsMap,
-      getRecommendations: (item) => getRecommendations(item, results[0], labelsMap)
+      getRecommendations: (item) => getRecommendations(item, recommendations, labelsMap)
     };
   }));
 }

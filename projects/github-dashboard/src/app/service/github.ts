@@ -43,7 +43,7 @@ export class Github {
   }
 
   getItemsCount(repo: string, since?: string): Observable<number> {
-    let query = `q=type:issue repo:${repo}`;
+    let query = `q=repo:${repo}`;
     if (since) {
       query += ` updated:>${since}`;
     }

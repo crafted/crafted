@@ -14,11 +14,7 @@ export function renderItemGroups<T>(
     let issuesToDisplay = 0;
     return combineLatest(
       itemGroups$.pipe(debounceTime(50)), scroll.pipe(auditTime(200), startWith(null)))
-        .pipe(map(result => {
-          const itemGroups = result[0];
-
-          const scrollEvent = result[1];
-
+        .pipe(map(([itemGroups, scrollEvent]) => {
           if (!scrollEvent) {
             issuesToDisplay = resetCount;
           } else {

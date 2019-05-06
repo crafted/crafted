@@ -4,6 +4,7 @@ import {RepoState} from '../services/active-store';
 
 /** Whether the store contains repo data (labels, items, contributors) */
 export function isRepoStoreEmpty(repoState: RepoState) {
-  return combineLatest(repoState.labelsDao.list, repoState.itemsDao.list, repoState.contributorsDao.list)
-      .pipe(map(results => !results[0].length && !results[1].length && !results[2].length));
+  const lists = [repoState.labelsDao.list, repoState.itemsDao.list, repoState.contributorsDao.list];
+  return combineLatest(...lists).pipe(map(
+      ([labels, items, contributors]) => !labels.length && !items.length && !contributors.length));
 }

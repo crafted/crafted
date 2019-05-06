@@ -37,8 +37,8 @@ export interface StateFiltererMetadata<T = any, C = any> {
   states: string[];
 }
 
-export type FiltererMetadata<T = any, C = any> = TextFiltererMetadata<T, C>|
-    NumberFiltererMetadata<T, C>|DateFiltererMetadata<T, C>|StateFiltererMetadata<T, C>;
+export type FiltererMetadata<T = any, C = any> = TextFiltererMetadata<T, C> |
+  NumberFiltererMetadata<T, C> | DateFiltererMetadata<T, C> | StateFiltererMetadata<T, C>;
 
 export interface FiltererState {
   filters: Filter[];
@@ -62,15 +62,15 @@ export interface FiltererOptions<T, C> {
 
 /** Default and naive tokenize function that combines the item's property values into a string. */
 const DEFAULT_TOKENIZE_ITEM =
-    (data: any) => {
-      return Object.keys(data)
-          .reduce(
-              (currentTerm: string, key: string) => {
-                return currentTerm + (data as {[key: string]: any})[key] + '☺';
-              },
-              '')
-          .toLowerCase();
-    };
+  (data: any) => {
+    return Object.keys(data)
+      .reduce(
+        (currentTerm: string, key: string) => {
+          return currentTerm + (data as {[key: string]: any})[key] + '☺';
+        },
+        '')
+      .toLowerCase();
+  };
 
 export class Filterer<T = any, C = any> {
   private readonly metadata: Map<string, FiltererMetadata<T, C>>;
@@ -91,15 +91,13 @@ export class Filterer<T = any, C = any> {
   /** Gets a stream that returns the items and updates whenever the filters or search changes. */
   filter(): (items: Observable<T[]>) => Observable<T[]> {
     return (items$: Observable<T[]>) => {
-      return combineLatest(items$, this.state, this.contextProvider).pipe(map(results => {
-        const items = results[0];
-        const filters = results[1].filters;
-        const search = results[1].search;
-        const contextProvider = results[2];
-
-        const filteredItems = filterItems(items, filters, contextProvider, this.metadata);
-        return searchItems(filteredItems, search, this.tokenizeItem);
-      }));
+      return combineLatest(items$, this.state, this.contextProvider).pipe(
+        map(([items, state, contextProvider]) => {
+          const filters = state.filters;
+          const search = state.search;
+          const filteredItems = filterItems(items, filters, contextProvider, this.metadata);
+          return searchItems(filteredItems, search, this.tokenizeItem);
+        }));
     };
   }
 
@@ -114,7 +112,7 @@ export class Filterer<T = any, C = any> {
       }
 
       const filtersEquivalent =
-          JSON.stringify(state.filters.sort()) === JSON.stringify(otherState.filters.sort());
+        JSON.stringify(state.filters.sort()) === JSON.stringify(otherState.filters.sort());
       const searchEquivalent = state.search === otherState.search;
 
       return filtersEquivalent && searchEquivalent;
@@ -146,12 +144,12 @@ export class Filterer<T = any, C = any> {
       throw Error(`Cannot get text options for filters with type ${filtererMetadata.type}`);
     }
 
-    return (items: Observable<T[]>) => {
-      return combineLatest(items, this.contextProvider).pipe(map(results => {
+    return (items$: Observable<T[]>) => {
+      return combineLatest(items$, this.contextProvider).pipe(map(([items, context]) => {
         if (!filtererMetadata.autocomplete) {
           return [];
         }
-        return filtererMetadata.autocomplete(results[0], results[1]);
+        return filtererMetadata.autocomplete(items, context);
       }));
     };
   }
@@ -179,7 +177,7 @@ export class Filterer<T = any, C = any> {
 
 /** Utility function to filter the items. May be used to synchronously filter items. */
 export function filterItems<T, M>(
-    items: T[], filters: Filter[] = [], context: M, metadata: Map<string, FiltererMetadata<T, M>>) {
+  items: T[], filters: Filter[] = [], context: M, metadata: Map<string, FiltererMetadata<T, M>>) {
   return items.filter(item => {
     return filters.every(filter => {
       const filterMetadata = metadata.get(filter.id);

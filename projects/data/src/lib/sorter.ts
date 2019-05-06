@@ -50,16 +50,17 @@ export class Sorter<T = any, C = any> {
     this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(null));
   }
 
-  sort(): (items: Observable<T[]>) => Observable<T[]> {
-    return (items: Observable<T[]>) => {
-      return combineLatest(items, this.state, this.contextProvider).pipe(map(results => {
-        const sortMetadata = this.metadata.get(results[1].sort);
-        if (!sortMetadata) {
-          throw new Error(`No configuration set up for sort ${results[1].sort}`);
-        }
+  sort(): (items$: Observable<T[]>) => Observable<T[]> {
+    return (items$: Observable<T[]>) => {
+      return combineLatest(items$, this.state, this.contextProvider)
+          .pipe(map(([items, state, context]) => {
+            const sortMetadata = this.metadata.get(state.sort);
+            if (!sortMetadata) {
+              throw new Error(`No configuration set up for sort ${state.sort}`);
+            }
 
-        return sortItems(results[0], sortMetadata.comparator, results[1].reverse, results[2]);
-      }));
+            return sortItems(items, sortMetadata.comparator, state.reverse, context);
+          }));
     };
   }
 

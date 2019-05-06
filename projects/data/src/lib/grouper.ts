@@ -46,11 +46,11 @@ export class Grouper<T = any, C = any> {
     }
   }
 
-  group(): (items: Observable<T[]>) => Observable<Group<T>[]> {
-    return (items: Observable<T[]>) => {
-      return combineLatest(items, this.state)
+  group(): (items$: Observable<T[]>) => Observable<Group<T>[]> {
+    return (items$: Observable<T[]>) => {
+      return combineLatest(items$, this.state)
           .pipe(
-              mergeMap(results => this.performGrouping(results[0], results[1].group)),
+              mergeMap(([items, state]) => this.performGrouping(items, state.group)),
               map(itemGroups => itemGroups.sort((a, b) => a.title < b.title ? -1 : 1)));
     };
   }

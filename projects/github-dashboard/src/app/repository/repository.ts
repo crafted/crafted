@@ -125,11 +125,7 @@ export class Repository {
     const configDaoLists = [repoState.dashboardsDao.list, repoState.queriesDao.list, repoState.recommendationsDao.list];
     combineLatest(...configDaoLists)
       .pipe(debounceTime(500), takeUntil(this.destroyed))
-      .subscribe(result => {
-        const dashboards = result[0];
-        const queries = result[1];
-        const recommendations = result[2];
-
+      .subscribe(([dashboards, queries, recommendations]) => {
         this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
       });
   }

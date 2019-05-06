@@ -61,10 +61,8 @@ export class TextFilter implements AfterViewInit, OnChanges {
         .subscribe(value => this.changed.next(value));
 
     const inputChanges = this.form.valueChanges.pipe(startWith(null), debounceTime(100));
-    this.filteredOptions = combineLatest(this._options, inputChanges).pipe(map(result => {
-      const options = result[0];
+    this.filteredOptions = combineLatest(this._options, inputChanges).pipe(map(([options]) => {
       const value = this.form.value.value as string;
-
       return options.filter(o => o.toLowerCase().includes(value.toLowerCase())).sort();
     }));
   }

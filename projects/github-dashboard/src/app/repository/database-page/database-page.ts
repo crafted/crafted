@@ -20,7 +20,7 @@ export class DatabasePage {
   isEmpty = this.activeStore.state.pipe(mergeMap(store => isRepoStoreEmpty(store)));
 
   isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
-    .pipe(map(results => results[1].indexOf(results[0]) !== -1));
+    .pipe(map(([repository, repos]) => repos.indexOf(repository) !== -1));
 
   repoLabels = this.activeStore.state.pipe(
     mergeMap(repoState => repoState.labelsDao.list), map(labels => labels.map(l => l.id)));

@@ -12,7 +12,7 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
 import {RECOMMENDATION_GROUPER_METADATA} from './metadata/grouper-metadata';
 import {RECOMMENDATION_SORTER_METADATA} from './metadata/sorter-metadata';
 
-type RecommendationAction = 'editJson' | 'create';
+type RecommendationAction = 'editJson'|'create';
 
 const HEADER_ACTIONS: HeaderContentAction<RecommendationAction>[] = [
   {
@@ -37,10 +37,10 @@ export class RecommendationsPage {
   filter = new FormControl('');
 
   dataSource = new DataSource(
-    {data: this.activeStore.state.pipe(mergeMap(store => store.recommendationsDao.list))});
+      {data: this.activeStore.state.pipe(mergeMap(store => store.recommendationsDao.list))});
 
   headerActions: Observable<HeaderContentAction[]> = this.dataSource.data.pipe(
-    map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
+      map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
 
   filterer = new Filterer({tokenizeItem: tokenizeRecommendation});
 
@@ -54,26 +54,25 @@ export class RecommendationsPage {
   trackByGroupId = (_i: number, g: Group<Recommendation>) => g.id;
 
   constructor(
-    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-    private header: Header, private activeStore: ActiveStore,
-    private recommendationDialog: RecommendationDialog) {
-  }
+      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
+      private header: Header, private activeStore: ActiveStore,
+      private recommendationDialog: RecommendationDialog) {}
 
   create() {
-    this.activeStore.state
-      .pipe(take(1))
-      .subscribe(repoState => {
-        this.recommendationDialog.create(repoState, this.dataResourcesMap);
-      });
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.recommendationDialog.create(repoState, this.dataResourcesMap);
+    });
   }
 
   editJson() {
     const recommendationsList =
-      this.activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
+        this.activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
 
-    combineLatest(recommendationsList, this.activeStore.state).pipe(take(1)).subscribe(results => {
-      this.recommendationDialog.jsonEditor(results[0], results[1]);
-    });
+    combineLatest(recommendationsList, this.activeStore.state)
+        .pipe(take(1))
+        .subscribe(([recommendations, repoState]) => {
+          this.recommendationDialog.jsonEditor(recommendations, repoState);
+        });
   }
 
   handleHeaderAction(action: RecommendationAction) {

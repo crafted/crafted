@@ -79,16 +79,15 @@ export class TimeSeries<T> {
 
   ngOnInit() {
     const datasetData = this.data.options.datasets.map(datasetConfig => {
-      const dataSourceProvider =
-        this.data.config.dataResourcesMap.get(datasetConfig.dataType);
+      const dataSourceProvider = this.data.config.dataResourcesMap.get(datasetConfig.dataType);
       const filterer = dataSourceProvider.filterer(datasetConfig.filtererState);
       const dataSource = dataSourceProvider.dataSource();
       return dataSource.data.pipe(filterer.filter());
     });
 
-    combineLatest(datasetData).pipe(takeUntil(this.destroyed)).subscribe(results => {
-      return this.render(results);
-    });
+    combineLatest(datasetData)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(results => this.render(results));
   }
 
   ngOnDestroy() {
@@ -198,7 +197,7 @@ export class TimeSeries<T> {
     items.forEach(item => {
       datasetConfig.actions.forEach(action => {
         const dataSource =
-          this.data.config.dataResourcesMap.get(datasetConfig.dataType).dataSource();
+            this.data.config.dataResourcesMap.get(datasetConfig.dataType).dataSource();
         // TODO: Error handling if the property does not exist
         const date = dataSource.getDataProperty(action.datePropertyId, item);
         if (date) {
@@ -223,9 +222,9 @@ export class TimeSeries<T> {
 }
 
 export function getTimeSeriesWidgetConfig(
-  dataResourcesMap: TimeSeriesDataResourcesMap,
-  savedFiltererStates: Observable<SavedFiltererState[]> =
-    of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
+    dataResourcesMap: TimeSeriesDataResourcesMap,
+    savedFiltererStates: Observable<SavedFiltererState[]> =
+        of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
   return {
     id: 'timeSeries',
     label: 'Time Series',
