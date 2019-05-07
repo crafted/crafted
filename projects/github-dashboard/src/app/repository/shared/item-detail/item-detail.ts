@@ -93,7 +93,24 @@ export class ItemDetail {
 
     // Manually patch in the new label to the current item object until the next sync with GitHub.
     this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.item.labels.push(id);
+      this.item.labels = [...this.item.labels, id];
+      repoState.itemsDao.update(this.item);
+    });
+  }
+
+  removeLabel(id: string, label: string) {
+    this.activeStore.state
+      .pipe(
+        map(repoState => repoState.repository),
+        mergeMap(repository => this.github.removeLabel(repository, this.item.id, label)), take(1))
+      .subscribe();
+
+    // Manually patch in the new label to the current item object until the next sync with GitHub.
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      const index = this.item.labels.indexOf(id);
+      this.item.labels.splice(index, 1);
+      // Force change detection for label list
+      this.item.labels = [...this.item.labels];
       repoState.itemsDao.update(this.item);
     });
   }

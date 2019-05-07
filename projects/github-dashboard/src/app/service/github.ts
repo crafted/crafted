@@ -190,6 +190,11 @@ export class Github {
     return this.post(url, {labels: [label]});
   }
 
+  removeLabel(repo: string, issue: string, label: string): Observable<HttpResponse<any>|null> {
+    const url = this.constructUrl(`repos/${repo}/issues/${issue}/labels/${label}`);
+    return this.delete(url);
+  }
+
   addAssignee(repo: string, issue: string, assignee: string): Observable<HttpResponse<any>|null> {
     const url = this.constructUrl(`repos/${repo}/issues/${issue}/assignees`);
     return this.post(url, {assignees: [assignee]});
@@ -244,21 +249,39 @@ export class Github {
   }
 
   private post<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):
-      Observable<HttpResponse<T>|null> {
+    Observable<HttpResponse<T>|null> {
     if (needsAuth && !this.auth.token) {
       return of(null);
     }
 
     return this.waitForRateLimit(rateLimitType)
-        .pipe(
-            mergeMap(() => this.http.post<T>(url, body, {
-              observe: 'response',
-              headers: new HttpHeaders({
-                Authorization: this.auth.token ? `token ${this.auth.token}` : '',
-              })
-            })),
-            tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response)));
+      .pipe(
+        mergeMap(() => this.http.post<T>(url, body, {
+          observe: 'response',
+          headers: new HttpHeaders({
+            Authorization: this.auth.token ? `token ${this.auth.token}` : '',
+          })
+        })),
+        tap(response => this.updateRateLimit(rateLimitType, response)),
+        tap(response => this.updateScopes(response)));
+  }
+
+  private delete<T>(url: string, needsAuth = true, rateLimitType: RateLimitType = 'core'):
+    Observable<HttpResponse<T>|null> {
+    if (needsAuth && !this.auth.token) {
+      return of(null);
+    }
+
+    return this.waitForRateLimit(rateLimitType)
+      .pipe(
+        mergeMap(() => this.http.delete<T>(url, {
+          observe: 'response',
+          headers: new HttpHeaders({
+            Authorization: this.auth.token ? `token ${this.auth.token}` : '',
+          })
+        })),
+        tap(response => this.updateRateLimit(rateLimitType, response)),
+        tap(response => this.updateScopes(response)));
   }
 
   private patch<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):

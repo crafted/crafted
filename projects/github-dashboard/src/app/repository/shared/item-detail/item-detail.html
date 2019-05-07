@@ -17,7 +17,8 @@
 
 <div class="context">
   <div class="detail">
-    <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true">
+    <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true"
+                (removed)="removeLabel($event.id, $event.name)">
     </label-list>
     <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
             mat-stroked-button> + Add label

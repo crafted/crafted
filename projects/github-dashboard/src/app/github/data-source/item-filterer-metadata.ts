@@ -67,6 +67,15 @@ export const ITEM_FILTERER_METADATA = new Map<string, FiltererMetadata<Item, Mat
   ],
 
   [
+    'reporter', {
+      label: 'Reporter',
+      type: 'text',
+      matcher: (item, filter) => textMatchesEquality(item.reporter, filter.value, filter.equality),
+      autocomplete: items => items.map(issue => issue.reporter)
+    }
+  ],
+
+  [
     'body', {
       label: 'Body',
       type: 'text',
@@ -214,13 +223,13 @@ export const ITEM_FILTERER_METADATA = new Map<string, FiltererMetadata<Item, Mat
 ]);
 
 export function getFiltererProvider(
-  labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
-  getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
-    Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
+    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
+    getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
+        Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
   return (initialState?: FiltererState) => {
     const contextProvider =
-      createFiltererContextProvider(labels, recommendations, getRecommendations);
+        createFiltererContextProvider(labels, recommendations, getRecommendations);
     return new Filterer(
-      {metadata: ITEM_FILTERER_METADATA, contextProvider, initialState, tokenizeItem});
+        {metadata: ITEM_FILTERER_METADATA, contextProvider, initialState, tokenizeItem});
   };
 }

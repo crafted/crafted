@@ -55,6 +55,7 @@ export class LabelList {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
+    debugger;
     if (simpleChanges.labelIds && this.labelIds) {
       this.displayedLabels = this.labelsMap.pipe(map(labelsMap => {
         const displayedLabels = this.labelIds.map(id => labelsMap.get(id)).filter(l => !!l);
