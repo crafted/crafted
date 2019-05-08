@@ -3,7 +3,7 @@ import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
 import {Observable} from 'rxjs';
-import {map, take} from 'rxjs/operators';
+import {map, startWith, take} from 'rxjs/operators';
 import {Query} from '../../model/query';
 import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../../repository';
@@ -32,34 +32,30 @@ export class RecommendationView {
 
   filtererString: Observable<string>;
 
-  resultsCount: Observable<number>;
+  resultsCount: Observable<number|string>;
 
   @Input() recommendation: Recommendation;
 
   constructor(
-    private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
-    private router: Router, private activatedRoute: ActivatedRoute,
-    private pageNavigator: PageNavigator,
-    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {
-  }
+      private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
+      private router: Router, private activatedRoute: ActivatedRoute,
+      private pageNavigator: PageNavigator,
+      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.recommendation && this.recommendation) {
       const provider = this.dataResourcesMap.get(this.recommendation.dataType);
       const filterer = provider.filterer(this.recommendation.filtererState);
-      this.resultsCount =
-          provider.dataSource().data.pipe(filterer.filter(), map(items => items.length));
+      this.resultsCount = provider.dataSource().data.pipe(
+          filterer.filter(), map(items => items.length), startWith('...'));
       this.filtererString = getFiltererString(filterer);
     }
   }
 
   edit() {
-    this.activeStore.state
-      .pipe(take(1))
-      .subscribe(repoState => {
-        this.recommendationDialog.edit(
-          this.recommendation, repoState, this.dataResourcesMap);
-      });
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      this.recommendationDialog.edit(this.recommendation, repoState, this.dataResourcesMap);
+    });
   }
 
   duplicate() {

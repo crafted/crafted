@@ -5,9 +5,7 @@
   </mat-icon>
 
   <div class="message" (click)="open()">
-    {{recommendation.message}}
-
-    ({{(resultsCount | async) || '..'}})
+    {{recommendation.message}} ({{(resultsCount | async)}})
   </div>
 
   <button mat-icon-button [matMenuTriggerFor]="recommendationMenu">
@@ -36,15 +34,15 @@
 </div>
 
 <mat-menu #recommendationMenu="matMenu" xPosition="before">
-  <button mat-menu-item (click)="edit(recommendation)">
+  <button mat-menu-item (click)="edit()">
     <mat-icon> edit </mat-icon>
     Edit
   </button>
-  <button mat-menu-item (click)="duplicate(recommendation)">
+  <button mat-menu-item (click)="duplicate()">
     <mat-icon> file_copy </mat-icon>
     Duplicate
   </button>
-  <button mat-menu-item (click)="remove(recommendation)">
+  <button mat-menu-item (click)="remove()">
     <mat-icon> delete </mat-icon>
     Remove
   </button>
