@@ -12,7 +12,8 @@
     "build-components-sass-theming": "./node_modules/scss-bundle/dist/bundle-cli.js -c projects/components/sass-bundle-theming.json",
     "build-components": "ng build components; npm run build-components-sass-common; npm run build-components-sass-theming;",
     "build-chartjs-widgets-sass-theming": "./node_modules/scss-bundle/dist/bundle-cli.js -c projects/chartjs-widgets/sass-bundle-theming.json",
-    "build-chartjs-widgets": "ng build chartjs-widgets; npm run build-chartjs-widgets-sass-theming;"
+    "build-chartjs-widgets": "ng build chartjs-widgets; npm run build-chartjs-widgets-sass-theming;",
+    "build-all": "ng build data; npm run build-components; npm run build-chartjs-widgets"
   },
   "private": true,
   "dependencies": {
