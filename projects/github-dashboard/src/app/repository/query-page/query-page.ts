@@ -1,14 +1,13 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Widget} from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore, RepoState} from '../services/active-store';
+import {ActiveStore} from '../services/active-store';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -37,7 +36,7 @@ const NEW_QUERY_HEADER_ACTIONS: HeaderContentAction<QueryPageHeaderAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {'[class.is-mobile]': 'isMobile()'}
 })
-export class QueryPage<T> {
+export class QueryPage {
   isMobile = isMobile;
 
   dataResourceOptions: {id: string, label: string}[];
@@ -99,9 +98,9 @@ export class QueryPage<T> {
   listWidth = 500;
 
   constructor(
-      @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-      private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-      private activeStore: ActiveStore, private queryDialog: QueryDialog) {
+    @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
+    private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
+    private activeStore: ActiveStore, private queryDialog: QueryDialog) {
     this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
         dataResource =>
@@ -148,7 +147,7 @@ export class QueryPage<T> {
         });
   }
 
-  navigateToItem(itemId: number) {
+  navigateToItem(itemId: string) {
     if (!isMobile()) {
       this.router.navigate([], {
         relativeTo: this.activatedRoute.parent,

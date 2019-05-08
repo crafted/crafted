@@ -47,36 +47,41 @@ export class Github {
     if (since) {
       query += ` updated:>${since}`;
     }
-    const url = this.constructUrl('search/issues', query);
+    const url = constructUrl('search/issues', query);
     return this.get(url, false, 'search')
         .pipe(filter(v => !!v), map(result => (result.body as any).total_count));
   }
 
+  getItem(repo: string, id: string): Observable<Item> {
+    const url = constructUrl(`repos/${repo}/issues/${id}`);
+    return this.get<GithubIssue>(url).pipe(map(response => githubIssueToIssue(response.body)));
+  }
+
   getIssues(repo: string, since?: string): Observable<CombinedPagedResults<Item>> {
     const query = since ? `per_page=100&state=all&since=${since}` : 'per_page=100&state=all';
-    const url = this.constructUrl(`repos/${repo}/issues`, query);
+    const url = constructUrl(`repos/${repo}/issues`, query);
     return this.getPagedResults<GithubIssue, Item>(url, githubIssueToIssue);
   }
 
   getLabels(repo: string): Observable<CombinedPagedResults<Label>> {
-    const url = this.constructUrl(`repos/${repo}/labels`, `per_page=100`);
+    const url = constructUrl(`repos/${repo}/labels`, `per_page=100`);
     return this.getPagedResults<GithubLabel, Label>(url, githubLabelToLabel);
   }
 
   getTimeline(repo: string, id: string): Observable<CombinedPagedResults<TimelineEvent>> {
-    const url = this.constructUrl(`repos/${repo}/issues/${id}/events`, 'per_page=100');
+    const url = constructUrl(`repos/${repo}/issues/${id}/events`, 'per_page=100');
     return this.getPagedResults<GithubTimelineEvent, TimelineEvent>(
         url, githubTimelineEventtoTimelineEvent);
   }
 
   getContributors(repo: string): Observable<CombinedPagedResults<Contributor>> {
-    const url = this.constructUrl(`repos/${repo}/contributors`, `per_page=100`);
+    const url = constructUrl(`repos/${repo}/contributors`, `per_page=100`);
     return this.getPagedResults<GithubContributor, Contributor>(
         url, githubContributorToContributor);
   }
 
   getComments(repo: string, id: string): Observable<CombinedPagedResults<UserComment>> {
-    const url = this.constructUrl(`repos/${repo}/issues/${id}/comments`, 'per_page=100');
+    const url = constructUrl(`repos/${repo}/issues/${id}/comments`, 'per_page=100');
     return this.getPagedResults<GithubComment, UserComment>(url, githubCommentToUserComment);
   }
 
@@ -85,20 +90,20 @@ export class Github {
       return of({total: 0, completed: 0, current: [], accumulated: []});
     }
 
-    const url = this.constructUrl(`gists`, `per_page=100`);
+    const url = constructUrl(`gists`, `per_page=100`);
     return this.getPagedResults<Gist, Gist>(url, g => g, true);
   }
 
   getMostPopularRepos(): Observable<string|null> {
     const url =
-        this.constructUrl('search/repositories', 'q=language:typescript&sort=stars&order=desc');
+      constructUrl('search/repositories', 'q=language:typescript&sort=stars&order=desc');
     return this.get<any>(url).pipe(
         filter(v => !!v && v.body && v.body.items),
         map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
   getRateLimitsAndScopes(): void {
-    const url = this.constructUrl(`rate_limit`);
+    const url = constructUrl(`rate_limit`);
     const token = this.auth.token ? `token ${this.auth.token}` : '';
     this.http
         .get<GithubRateLimitResponse>(
@@ -117,7 +122,7 @@ export class Github {
   }
 
   getGist(id: string): Observable<Gist|null> {
-    const url = this.constructUrl(`gists/${id}`);
+    const url = constructUrl(`gists/${id}`);
     return this.get<Gist>(url, true).pipe(filter(v => !!v), map(result => {
                                             const gist = result.body;
 
@@ -166,7 +171,7 @@ export class Github {
 
     const files: {[key in string]: {filename: string, content: string}} = {};
     files[filename] = {filename, content};
-    const url = this.constructUrl(`gists/${id}`, 'random=' + Math.random());
+    const url = constructUrl(`gists/${id}`, 'random=' + Math.random());
     return this.patch(url, {files});
   }
 
@@ -186,17 +191,17 @@ export class Github {
   }
 
   addLabel(repo: string, issue: string, label: string): Observable<HttpResponse<any>|null> {
-    const url = this.constructUrl(`repos/${repo}/issues/${issue}/labels`);
+    const url = constructUrl(`repos/${repo}/issues/${issue}/labels`);
     return this.post(url, {labels: [label]});
   }
 
   removeLabel(repo: string, issue: string, label: string): Observable<HttpResponse<any>|null> {
-    const url = this.constructUrl(`repos/${repo}/issues/${issue}/labels/${label}`);
+    const url = constructUrl(`repos/${repo}/issues/${issue}/labels/${label}`);
     return this.delete(url);
   }
 
   addAssignee(repo: string, issue: string, assignee: string): Observable<HttpResponse<any>|null> {
-    const url = this.constructUrl(`repos/${repo}/issues/${issue}/assignees`);
+    const url = constructUrl(`repos/${repo}/issues/${issue}/assignees`);
     return this.post(url, {assignees: [assignee]});
   }
 
@@ -227,11 +232,6 @@ export class Github {
 
               return {completed, total, current, accumulated};
             }));
-  }
-
-  private constructUrl(path: string, query = '', avoidCache = true) {
-    const domain = 'https://api.github.com';
-    return `${domain}/${path}?${query}${avoidCache ? '&' + new Date().toISOString() : ''}`;
   }
 
   private getPaged<T>(url: string, needsAuth = false, rateLimitType: RateLimitType = 'core'):
@@ -437,4 +437,19 @@ export function getLinkMap(headers: any) {
   }
 
   return links;
+}
+
+/** Observable Pipe - Takes a stream of combinedPagedResults and emits the accumulated result when completed. */
+export function completedPagedResults<T>(): (results: Observable<CombinedPagedResults<T>>) =>
+  Observable<T[]> {
+  return (results$: Observable<CombinedPagedResults<T>>) => {
+    return results$.pipe(
+      filter(results => results.completed === results.total),
+      map(results => results.accumulated));
+  };
+}
+
+function constructUrl(path: string, query = '', avoidCache = true) {
+  const domain = 'https://api.github.com';
+  return `${domain}/${path}?${query}${avoidCache ? '&' + new Date().toISOString() : ''}`;
 }

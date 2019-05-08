@@ -5,7 +5,7 @@
 </header-content>
 
 <div [style.width.px]="listWidth" class="master">
-  <items-list (itemSelected)="navigateToItem($event.number)"
+  <items-list (itemSelected)="navigateToItem($event.id)"
               *ngIf="queryResources | async as resources; else selectType"
               [activeItem]="item$ | async"
               [dataSource]="resources.dataSource" [filterer]="resources.filterer"

@@ -41,6 +41,12 @@ export class Updater {
     }
   }
 
+  updateItem(repoState: RepoState, id: string) {
+    this.github.getItem(repoState.repository, id).pipe(take(1)).subscribe(item => {
+      repoState.itemsDao.update(item);
+    });
+  }
+
   private updateLabels(repoState: RepoState) {
     this.setTypeState('labels', 'updating');
 

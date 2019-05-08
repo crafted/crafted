@@ -66,7 +66,7 @@ export class ItemsList<T> {
         this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort(), this.grouper.group());
 
     this.itemCount = this.itemGroups.pipe(map(
-        itemGroups => itemGroups.map(g => g.items.length).reduce((prev, curr) => curr += prev)));
+      itemGroups => itemGroups.map(g => g.items.length).reduce((prev, curr) => (curr + prev))));
 
     this.itemGroups
         .pipe(
