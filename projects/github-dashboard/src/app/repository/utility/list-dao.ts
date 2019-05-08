@@ -48,7 +48,7 @@ export class ListDao<T extends IdentifiedObject> {
     return this.map.pipe(map(v => (v && v.get(id)) ? v.get(id) : null));
   }
 
-  update(itemOrItems: T|T[]): void {
+  update(itemOrItems: Partial<T> | Partial<T>[]): void {
     const items = (itemOrItems instanceof Array) ? itemOrItems : [itemOrItems];
     items.forEach(obj => {
       if (!obj.id) {

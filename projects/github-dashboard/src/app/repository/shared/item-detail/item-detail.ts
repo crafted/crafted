@@ -1,10 +1,17 @@
-import {ChangeDetectionStrategy, Component, ElementRef, Input, SimpleChanges} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
+import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
+import {
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
 import {completedPagedResults, Github, TimelineEvent, UserComment} from '../../../service/github';
-import {Recommendation} from '../../model/recommendation';
-import {ActiveStore, RepoState} from '../../services/active-store';
+import {ActiveStore} from '../../services/active-store';
 import {getRecommendations} from '../../utility/get-recommendations';
 
 export interface Activity {
@@ -19,13 +26,53 @@ export interface Activity {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemDetail {
-  recommendations: Observable<Recommendation[]>;
-
   comments: Observable<any[]>;
 
-  activities: Observable<Activity[]>;
+  itemId$ = new ReplaySubject<string>(1);
+  recommendations = this.activeStore.state.pipe(
+    switchMap(
+      repoState => combineLatest(
+        repoState.recommendationsDao.list, repoState.labelsDao.map, this.item$)),
+    map(([recommendationsList, labelsMap, item]) =>
+      getRecommendations(item, recommendationsList, labelsMap)));
+  isLoadingActivities = new ReplaySubject<boolean>(1);
+  private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
+  item$ = combineLatest(this.distinctItemId$, this.activeStore.state)
+    .pipe(switchMap(([itemId, repoState]) => repoState.itemsDao.get(itemId)));
+  activities = this.distinctItemId$.pipe(
+    tap(() => this.isLoadingActivities.next(true)),
+    switchMap(() => combineLatest(this.item$, this.activeStore.state)),
+    switchMap(([item, repoState]) => {
+      // If the created date and updated date are equal, there are no comments or
+      // activities.
+      if (!item.comments && item.created === item.updated) {
+        return of([[], []]);
+      }
 
-  @Input() item: Item;
+      const repository = repoState.repository;
+      return combineLatest(
+        this.github.getComments(repository, item.id).pipe(completedPagedResults<UserComment>()),
+        this.github.getTimeline(repository, item.id)
+          .pipe(completedPagedResults<TimelineEvent>(), filterExcludedTypes()));
+    }),
+    map(([comments, timeline]) => {
+      const activities: Activity[] = [
+        ...comments.map(c => ({type: 'comment', date: c.created, context: c}) as Activity),
+        ...timeline.map(e => ({type: 'timeline', date: e.created, context: e}) as Activity)
+      ];
+      activities.sort((a, b) => a.date < b.date ? -1 : 1);
+      return activities;
+    }),
+    tap(() => this.isLoadingActivities.next(false)), shareReplay(1));
+  private itemRepoStatePair = combineLatest(this.item$, this.activeStore.state);
+
+  @Input()
+  set itemId(itemId: string) {
+    this.itemId$.next(itemId);
+
+    // Scroll up in case the previous item was scrolled
+    this.elementRef.nativeElement.scrollTop = 0;
+  }
 
   addLabelOptions: Observable<{id: string, label: string}[]> = this.activeStore.state.pipe(
       mergeMap(repoState => repoState.labelsDao.list), map(labels => {
@@ -46,88 +93,48 @@ export class ItemDetail {
   constructor(
       private elementRef: ElementRef, public activeStore: ActiveStore, public github: Github) {}
 
-  ngOnChanges(simpleChanges: SimpleChanges) {
-    if (simpleChanges.item && this.item && this.item.id) {
-      this.elementRef.nativeElement.scrollTop = 0;  // Scroll up in case prev item was scrolled
-
-      this.recommendations = this.activeStore.state.pipe(recommendationsForItem(this.item));
-
-      this.activities = this.activeStore.state.pipe(
-          mergeMap(
-              repoState => combineLatest(
-                this.github.getComments(repoState.repository, this.item.id)
-                  .pipe(completedPagedResults<UserComment>()),
-                this.github.getTimeline(repoState.repository, this.item.id)
-                  .pipe(completedPagedResults<TimelineEvent>(), filterExcludedTypes()))),
-        map(([comments, timeline]) => {
-          const activities: Activity[] = [
-            ...comments.map(c => ({type: 'comment', date: c.created, context: c}) as Activity),
-            ...timeline.map(e => ({type: 'timeline', date: e.created, context: e}) as Activity)
-          ];
-            activities.sort((a, b) => a.date < b.date ? -1 : 1);
-            return activities;
-          }));
-    }
-  }
-
   addLabel(id: string, label: string) {
-    this.activeStore.state
+    this.itemRepoStatePair
         .pipe(
-            map(repoState => repoState.repository),
-            mergeMap(repository => this.github.addLabel(repository, this.item.id, label)), take(1))
-        .subscribe();
+          mergeMap(([item, repoState]) => {
+            const itemUpdate: Partial<Item> = {id: item.id, labels: [...item.labels, id]};
+            repoState.itemsDao.update(itemUpdate);
 
-    // Manually patch in the new label to the current item object until the next sync with GitHub.
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.item.labels = [...this.item.labels, id];
-      repoState.itemsDao.update(this.item);
-    });
+            return this.github.addLabel(repoState.repository, item.id, label);
+          }),
+          take(1))
+        .subscribe();
   }
 
   removeLabel(id: string, label: string) {
-    this.activeStore.state
+    this.itemRepoStatePair
       .pipe(
-        map(repoState => repoState.repository),
-        mergeMap(repository => this.github.removeLabel(repository, this.item.id, label)),
+        mergeMap(([item, repoState]) => {
+          const labelsCopy = [...item.labels];
+          const removedLabelIndex = labelsCopy.indexOf(id);
+          labelsCopy.splice(removedLabelIndex, 1);
+          const updatedItem: Partial<Item> = {id: item.id, labels: labelsCopy};
+          repoState.itemsDao.update(updatedItem);
+
+          return this.github.removeLabel(repoState.repository, item.id, label);
+        }),
         take(1))
       .subscribe();
-
-    // Manually patch in the new label to the current item object until the next sync with GitHub.
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      const index = this.item.labels.indexOf(id);
-      this.item.labels.splice(index, 1);
-      // Force change detection for label list
-      this.item.labels = [...this.item.labels];
-      repoState.itemsDao.update(this.item);
-    });
   }
 
   addAssignee(assignee: string) {
-    this.activeStore.state
+    this.itemRepoStatePair
         .pipe(
-            mergeMap(
-                repoState => this.github.addAssignee(repoState.repository, this.item.id, assignee)),
+          mergeMap(([item, repoState]) => {
+            const itemUpdate:
+              Partial<Item> = {id: item.id, assignees: [...item.assignees, assignee]};
+            repoState.itemsDao.update(itemUpdate);
+
+            return this.github.addAssignee(repoState.repository, item.id, assignee);
+          }),
             take(1))
         .subscribe();
-
-    // Manually patch in the new label to the current item object until the next sync with GitHub.
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.item.assignees.push(assignee);
-      repoState.itemsDao.update(this.item);
-    });
   }
-}
-
-/** Observable Pipe - Gets a list of recommendations for a particular item from the repo store. */
-function recommendationsForItem(item: Item): (repoState$: Observable<RepoState>) =>
-  Observable<Recommendation[]> {
-  return (repoState$: Observable<RepoState>) => {
-    return repoState$.pipe(
-      mergeMap(
-        repoState => combineLatest(repoState.recommendationsDao.list, repoState.labelsDao.map)),
-      map(([recommendations, labels]) =>
-        recommendations ? getRecommendations(item, recommendations, labels) : []));
-  };
 }
 
 function filterExcludedTypes(): (timelineEvents$: Observable<TimelineEvent[]>) =>

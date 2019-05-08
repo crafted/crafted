@@ -1,66 +1,76 @@
-<div class="header">
-  <div class="title">
-    {{item.title}}
+<ng-container *ngIf="item$ | async as item">
+  <div class="header">
+    <div class="title">
+      {{item.title}}
+    </div>
+
+    <div class="header-details">
+
+      <span class="item-number">
+          <a [href]="item.url" class="theme-primary">#{{item.number}}</a>
+        </span>
+
+      <span [class.theme-background-positive]="item.state === 'open'"
+            [class.theme-background-warn]="item.state === 'closed'"
+            class="state theme-border">{{item.state}}</span>
+    </div>
   </div>
 
-  <div class="header-details">
+  <div class="context">
+    <div class="detail">
+      <label-list (removed)="removeLabel($event.id, $event.name)" *ngIf="item.labels.length" [labelIds]="item.labels"
+                  [removable]="true">
+      </label-list>
+      <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
+              mat-stroked-button> + Add label
+      </button>
+    </div>
 
-    <span class="item-number">
-        <a [href]="item.url" class="theme-primary">#{{item.number}}</a>
-      </span>
+    <div class="detail">
+        <span *ngIf="item.assignees.length > 0" class="assignees">
+          Assigned to {{item.assignees.join(', ')}}
+        </span>
+      <button [matMenuTriggerFor]="addAssigneeMenu" class="add-assignee"
+              mat-stroked-button> + Add assignee
+      </button>
+    </div>
 
-    <span [class.theme-background-positive]="item.state === 'open'"
-          [class.theme-background-warn]="item.state === 'closed'"
-          class="state theme-border">{{item.state}}</span>
-  </div>
-</div>
-
-<div class="context">
-  <div class="detail">
-    <label-list *ngIf="item.labels.length" [labelIds]="item.labels" [removable]="true"
-                (removed)="removeLabel($event.id, $event.name)">
-    </label-list>
-    <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
-            mat-stroked-button> + Add label
-    </button>
-  </div>
-
-  <div class="detail">
-      <span *ngIf="item.assignees.length > 0" class="assignees">
-        Assigned to {{item.assignees.join(', ')}}
-      </span>
-    <button [matMenuTriggerFor]="addAssigneeMenu" class="add-assignee"
-            mat-stroked-button> + Add assignee
-    </button>
+    <div class="detail">
+      <recommendation-action *ngFor="let recommendation of recommendations | async"
+                             [item]="item" [recommendation]="recommendation">
+      </recommendation-action>
+    </div>
   </div>
 
-  <div class="detail">
-    <recommendation-action *ngFor="let recommendation of recommendations | async"
-                           [item]="item" [recommendation]="recommendation">
-    </recommendation-action>
-  </div>
-</div>
 
-
-<item-message [dateTime]="item.created"
-              class="body"
-              [message]="item.body"
-              [user]="item.reporter">
-</item-message>
-
-<ng-container *ngFor="let activity of activities | async"
-              [ngSwitch]="activity.type" class="activities">
-  <item-message *ngSwitchCase="'comment'" [dateTime]="activity.context.created"
-                class="comment"
-                [message]="activity.context.message"
-                [user]="activity.context.user"
-                type="comment">
+  <item-message [dateTime]="item.created"
+                [message]="item.body"
+                [user]="item.reporter"
+                class="body">
   </item-message>
-  <timeline-event-view *ngSwitchCase="'timeline'"
-                       [timelineEvent]="activity.context">
-  </timeline-event-view>
 </ng-container>
 
+<ng-container *ngIf="isLoadingActivities | async; else activitiesView">
+  <div class="loading-activities theme-secondary-text">
+    Loading comments and events
+    <mat-spinner diameter="24"></mat-spinner>
+  </div>
+</ng-container>
+
+<ng-template #activitiesView>
+  <ng-container *ngFor="let activity of activities | async"
+                [ngSwitch]="activity.type" class="activities">
+    <item-message *ngSwitchCase="'comment'" [dateTime]="activity.context.created"
+                  [message]="activity.context.message"
+                  [user]="activity.context.user"
+                  class="comment"
+                  type="comment">
+    </item-message>
+    <timeline-event-view *ngSwitchCase="'timeline'"
+                         [timelineEvent]="activity.context">
+    </timeline-event-view>
+  </ng-container>
+</ng-template>
 
 <mat-menu #addAssigneeMenu="matMenu" class="option-menu">
   <button mat-menu-item *ngFor="let option of addAssigneeOptions | async"

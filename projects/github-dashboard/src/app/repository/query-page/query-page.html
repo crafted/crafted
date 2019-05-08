@@ -18,7 +18,7 @@
 <drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
 
 <div *ngIf="!isMobile()" class="detail">
-  <item-detail *ngIf="item$ | async as item" [item]="item"></item-detail>
+  <item-detail *ngIf="itemId$ | async as itemId" [itemId]="itemId"></item-detail>
 </div>
 
 <ng-template #selectType>
