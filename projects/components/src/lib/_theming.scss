@@ -14,9 +14,6 @@
 @import "form/sort-state-option/sort-state-option-theme";
 @import "form/group-state-option/group-state-option-theme";
 @import "widget/count/count-theme";
-@import "widget/time-series/action-option/action-option-theme";
-@import "widget/time-series/dataset-option/dataset-option-theme";
-@import "widget/time-series/time-series-editor-theme";
 
 @import "./common";
 
@@ -34,9 +31,6 @@
   @include group-state-option-theme($theme);
   @include sort-state-option-theme($theme);
   @include count-theme($theme);
-  @include action-option-theme($theme);
-  @include dataset-option-theme($theme);
-  @include time-series-editor-theme($theme);
   @include filter-state-option-theme($theme);
   @include widget-view-theme($theme);
 }

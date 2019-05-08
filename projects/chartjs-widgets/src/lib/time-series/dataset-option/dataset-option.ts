@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer, FormArray} from '@angular/forms';
+import {SavedFiltererState} from '@crafted/components';
 import {DataSource, Filterer} from '@crafted/data';
 import {Subject} from 'rxjs';
 import {startWith, takeUntil} from 'rxjs/operators';
-import {SavedFiltererState} from '../../../form/filter-state-option/filter-state-option';
 import {TimeSeriesDataResourcesMap} from '../time-series';
 
 @Component({

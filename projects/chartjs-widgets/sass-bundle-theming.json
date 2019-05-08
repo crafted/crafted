@@ -1,0 +1,4 @@
+{
+  "entry": "projects/chartjs-widgets/src/lib/_theming.scss",
+  "dest": "./dist/chartjs-widgets/theming.scss"
+}

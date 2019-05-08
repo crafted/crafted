@@ -29,13 +29,13 @@ export interface BarChartOptions {
 @Component({
   selector: 'bar-chart',
   template: `
-    <ngx-charts-bar-vertical
+    <chartjs-bar-vertical
       [scheme]="colorScheme"
       [results]="data | async"
       [xAxis]="true"
       [yAxis]="true"
       [legend]="true">
-    </ngx-charts-bar-vertical>
+    </chartjs-bar-vertical>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

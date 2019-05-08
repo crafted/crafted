@@ -24,6 +24,9 @@
       ],
       "@crafted/components": [
         "dist/components"
+      ],
+      "@crafted/chartjs-widgets": [
+        "dist/chartjs-widgets"
       ]
     }
   }

@@ -3,13 +3,8 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule, MatIconModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
-import {
-  CountModule,
-  DashboardViewModule,
-  ListModule,
-  PieChartModule,
-  TimeSeriesModule
-} from '@crafted/components';
+import {PieChartModule, TimeSeriesModule} from '@crafted/chartjs-widgets';
+import {CountModule, DashboardViewModule, ListModule} from '@crafted/components';
 import {ItemDetailDialogModule} from '../shared/dialog/item-detail-dialog/item-detail-dialog.module';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {DashboardPage} from './dashboard-page';

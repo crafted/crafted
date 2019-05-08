@@ -332,6 +332,41 @@
           }
         }
       }
+    },
+    "chartjs-widgets": {
+      "root": "projects/chartjs-widgets",
+      "sourceRoot": "projects/chartjs-widgets/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/chartjs-widgets/tsconfig.lib.json",
+            "project": "projects/chartjs-widgets/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/chartjs-widgets/src/test.ts",
+            "tsConfig": "projects/chartjs-widgets/tsconfig.spec.json",
+            "karmaConfig": "projects/chartjs-widgets/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/chartjs-widgets/tsconfig.lib.json",
+              "projects/chartjs-widgets/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "github-dashboard"

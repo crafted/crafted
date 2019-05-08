@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup} from '@angular/forms';
 
-import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
+import {WIDGET_DATA, WidgetData, WidgetEditor} from '@crafted/components';
 
 import {TimeSeriesOptions, TimeSeriesWidgetDataConfig} from './time-series';
 

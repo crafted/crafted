@@ -1,12 +1,16 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject, ViewChild} from '@angular/core';
+
+import {
+  MATERIAL_COLORS,
+  SavedFiltererState,
+  WIDGET_DATA,
+  WidgetConfig,
+  WidgetData
+} from '@crafted/components';
 import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import * as Chart from 'chart.js';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-
-import {WIDGET_DATA, WidgetConfig, WidgetData} from '../../dashboard/dashboard';
-import {MATERIAL_COLORS} from '../../dashboard/widget-view';
-import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {TimeSeriesEditor} from './time-series-editor';
 

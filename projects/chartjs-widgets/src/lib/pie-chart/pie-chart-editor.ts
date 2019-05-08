@@ -1,10 +1,9 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+
+import {SavedFiltererState, WIDGET_DATA, WidgetData, WidgetEditor} from '@crafted/components';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
 import {Observable} from 'rxjs';
-
-import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
-import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
 
 import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
 

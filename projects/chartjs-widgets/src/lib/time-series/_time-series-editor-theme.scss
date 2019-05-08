@@ -1,4 +1,4 @@
-@import "../../common";
+@import "../../../../../dist/components/common";
 
 @mixin time-series-editor-theme($theme) {
   $foreground: map-get($theme, foreground);

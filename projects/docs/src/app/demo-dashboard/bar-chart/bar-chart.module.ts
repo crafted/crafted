@@ -7,7 +7,7 @@ import {
   FormFieldModule,
   GroupStateOptionModule,
 } from '@crafted/components';
-import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {NgxChartsModule} from '@swimlane/chartjs';
 import {BarChart} from './bar-chart';
 import {BarChartEdit} from './bar-chart-edit';
 
