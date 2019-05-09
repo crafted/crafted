@@ -27,7 +27,7 @@
       Select data to query
     </div>
     <div class="type-options">
-      <button (click)="createQueryWithType(option.id)"
+      <button type="button" (click)="createQueryWithType(option.id)"
               *ngFor="let option of dataResourceOptions"
               color="primary"
               mat-stroked-button>

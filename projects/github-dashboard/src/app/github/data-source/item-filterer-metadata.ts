@@ -179,12 +179,24 @@ export const ITEM_FILTERER_METADATA = new Map<string, FiltererMetadata<Item, Mat
 
   [
     'created', {
-      label: 'Date Created',
-      type: 'date',
-      matcher: (item, filter) => {
-        return dateMatchesEquality(item.created, filter.date, filter.equality);
-      }
+    label: 'Date Created',
+    type: 'date',
+    matcher: (item, filter) => {
+      return dateMatchesEquality(item.created, filter.date, filter.equality);
     }
+  }
+  ],
+
+  /** DateQuery Filters */
+
+  [
+    'closed', {
+    label: 'Date Closed',
+    type: 'date',
+    matcher: (item, filter) => {
+      return dateMatchesEquality(item.closed, filter.date, filter.equality);
+    }
+  }
   ],
 
   /** StateQuery */

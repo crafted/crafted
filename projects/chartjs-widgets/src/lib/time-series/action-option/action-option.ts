@@ -11,6 +11,8 @@ import {DataSource} from '@crafted/data';
 export class ActionOption {
   dataOptions: {id: string, label: string}[] = [];
 
+  countPropertyIdOptions: {id: string, label: string}[] = [];
+
   datePropertyIdOptions: {id: string, label: string}[] = [];
 
   actionTypeOptions: {id: string, label: string}[] = [
@@ -28,6 +30,7 @@ export class ActionOption {
 
   ngOnInit() {
     this.datePropertyIdOptions = this.dataSource.getDataLabelsWithType('date');
+    this.countPropertyIdOptions = this.dataSource.getDataLabelsWithType('number');
 
     const typeFormControl = this.controlContainer.control.get('type');
     if (!typeFormControl.value) {
@@ -37,6 +40,11 @@ export class ActionOption {
     const datePropertyIdFormControl = this.controlContainer.control.get('datePropertyId');
     if (!datePropertyIdFormControl.value) {
       datePropertyIdFormControl.setValue(this.datePropertyIdOptions[0].id);
+    }
+
+    const countPropertyIdFormControl = this.controlContainer.control.get('countPropertyId');
+    if (!countPropertyIdFormControl.value) {
+      countPropertyIdFormControl.setValue(this.countPropertyIdOptions[0].id);
     }
   }
 }

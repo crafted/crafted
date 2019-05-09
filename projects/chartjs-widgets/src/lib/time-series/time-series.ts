@@ -42,10 +42,12 @@ type ActionType = 'increment'|'decrement';
 interface DateActionPair {
   date: string;
   actionType: ActionType;
+  count: number;
 }
 
 export interface DatasetConfigAction {
   datePropertyId: string;
+  countPropertyId: string;
   type: ActionType;
 }
 
@@ -162,10 +164,10 @@ export class TimeSeries<T> {
 
       switch (actionType) {
         case 'increment':
-          dateCountsMap.set(date, dateCountsMap.get(date) + 1);
+          dateCountsMap.set(date, dateCountsMap.get(date) + pair.count);
           break;
         case 'decrement':
-          dateCountsMap.set(date, dateCountsMap.get(date) - 1);
+          dateCountsMap.set(date, dateCountsMap.get(date) - pair.count);
           break;
       }
     });
@@ -203,8 +205,9 @@ export class TimeSeries<T> {
             this.data.config.dataResourcesMap.get(datasetConfig.dataType).dataSource();
         // TODO: Error handling if the property does not exist
         const date = dataSource.getDataProperty(action.datePropertyId, item);
+        const count = dataSource.getDataProperty(action.countPropertyId, item);
         if (date) {
-          dateActions.push({date: this.roundDate(date), actionType: action.type});
+          dateActions.push({date: this.roundDate(date), actionType: action.type, count});
         }
       });
     });

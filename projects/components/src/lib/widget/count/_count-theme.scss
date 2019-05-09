@@ -5,4 +5,8 @@
   count {
     border-color: $divider;
   }
+
+  mat-select {
+    @include bottom-border($divider);
+  }
 }

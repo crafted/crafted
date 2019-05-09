@@ -64,6 +64,7 @@ export class TimeSeriesEditor implements WidgetEditor {
   addAction(dataset: FormGroup) {
     (dataset.get('actions') as FormArray).push(new FormGroup({
       datePropertyId: new FormControl(),
+      countPropertyId: new FormControl(),
       type: new FormControl(),
     }));
   }

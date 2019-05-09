@@ -10,8 +10,8 @@
 
       <div class="desc"> by value </div>
 
-      <mat-select value="count">
-        <mat-option *ngFor="let option of [{id: 'count', label: 'Count'}]"
+      <mat-select formControlName="countPropertyId">
+        <mat-option *ngFor="let option of countPropertyIdOptions"
                     [value]="option.id">
           {{option.label}}
         </mat-option>

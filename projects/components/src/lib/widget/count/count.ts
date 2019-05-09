@@ -45,7 +45,14 @@ export class Count {
       this.data.config.dataResourcesMap.get(this.data.options.dataType);
     const filterer = dataSourceProvider.filterer(this.data.options.filtererState);
     const dataSource = dataSourceProvider.dataSource();
-    this.count = dataSource.data.pipe(filterer.filter(), map(result => result.length));
+
+    this.count = dataSource.data.pipe(filterer.filter(), map(result => {
+      let count = 0;
+      result.forEach(item => {
+        count += dataSource.getDataProperty(this.data.options.valueProperty, item);
+      });
+      return count;
+    }));
   }
 }
 

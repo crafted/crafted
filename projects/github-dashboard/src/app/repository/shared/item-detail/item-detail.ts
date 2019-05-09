@@ -30,6 +30,8 @@ export class ItemDetail {
 
   itemId$ = new ReplaySubject<string>(1);
 
+  // TODO: Recommendations should match the data type
+  // TODO: Hide actions when not logged in
   recommendations = this.activeStore.state.pipe(
       switchMap(
           repoState => combineLatest(

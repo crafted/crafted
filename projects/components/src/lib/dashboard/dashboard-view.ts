@@ -59,7 +59,7 @@ export class DashboardView {
       configs: this.widgetConfigs,
     };
 
-    const config: MatDialogConfig<WidgetEditDialogData> = {data, width: '650px'};
+    const config: MatDialogConfig<WidgetEditDialogData> = {data, width: '750px'};
 
     this.dialog.open(WidgetEdit, config).afterClosed().pipe(take(1)).subscribe((result: Widget) => {
       if (result) {

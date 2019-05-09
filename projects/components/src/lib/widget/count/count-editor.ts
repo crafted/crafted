@@ -23,11 +23,14 @@ export class CountEditor implements WidgetEditor {
 
   form = new FormGroup({
     dataType: new FormControl(null),
+    valueProperty: new FormControl(null),
     fontSize: new FormControl(48),
     filtererState: new FormControl(null),
   });
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
+
+  countPropertyIdOptions: {id: string, label: string}[] = [];
 
   get options(): CountOptions {
     return this.form.value;
@@ -43,11 +46,16 @@ export class CountEditor implements WidgetEditor {
     const dataResource = data.config.dataResourcesMap.get(dataType);
     this.filterer = dataResource.filterer();
     this.dataSource = dataResource.dataSource();
+    this.countPropertyIdOptions = this.dataSource.getDataLabelsWithType('number');
+    this.form.get('valueProperty').setValue(this.countPropertyIdOptions[0].id);
 
     const value = data.options;
     if (value) {
       if (value.dataType) {
         this.form.get('dataType').setValue(value.dataType);
+      }
+      if (value.valueProperty) {
+        this.form.get('valueProperty').setValue(value.valueProperty);
       }
       if (value.fontSize) {
         this.form.get('fontSize').setValue(value.fontSize);

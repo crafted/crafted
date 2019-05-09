@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonToggleModule} from '@angular/material';
+import {MatButtonToggleModule, MatSelectModule} from '@angular/material';
 import {FiltererState} from '@crafted/data';
 import {FilterStateOptionModule} from '../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../form/form-field/form-field.module';
@@ -10,6 +10,7 @@ import {CountEditor} from './count-editor';
 
 export interface CountOptions {
   dataType: string;
+  valueProperty: string;
   fontSize: 'small'|'normal'|'large';
   filtererState: FiltererState;
 }
@@ -20,6 +21,7 @@ export interface CountOptions {
     ReactiveFormsModule,
     FormFieldModule,
     MatButtonToggleModule,
+    MatSelectModule,
     FilterStateOptionModule,
   ],
   declarations: [CountEditor, Count],

@@ -7,6 +7,16 @@
     </mat-button-toggle-group>
   </form-field>
 
+  <form-field label="Value">
+    <mat-select formControlName="valueProperty">
+      <mat-option *ngFor="let option of countPropertyIdOptions"
+                  [value]="option.id">
+        {{option.label}}
+      </mat-option>
+    </mat-select>
+  </form-field>
+
+
   <form-field label="Font size">
     <input formControlName="fontSize" type="number">
   </form-field>

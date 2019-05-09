@@ -15,12 +15,6 @@ import {TimeSeriesDataResourcesMap} from '../time-series';
 export class DatasetOption {
   dataTypeOptions: {id: string, label: string}[] = [];
 
-  // TODO: Should be determined by data source
-  datePropertyIdOptions: {id: string, label: string}[] = [
-    {id: 'opened', label: 'Opened'},
-    {id: 'closed', label: 'Closed'},
-  ];
-
   seriesTypeOptions: {id: string, label: string}[] = [
     {id: 'count', label: 'Count'},
     {id: 'accumulate', label: 'Accumulate'},
