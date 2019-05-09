@@ -133,8 +133,7 @@ export class TimeSeries<T> {
         legend: {display: datasets.length > 1},
         elements: {point: {radius: 2}, line: {tension: 0}},
         scales: {
-          xAxes: [{type: 'time', time, scaleLabel: {display: true, labelString: 'Date'}}],
-          yAxes: [{scaleLabel: {display: true, labelString: 'value'}}]
+          xAxes: [{type: 'time', time}],
         }
       }
     };

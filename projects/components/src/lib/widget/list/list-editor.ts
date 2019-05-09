@@ -42,6 +42,8 @@ export class ListEditor implements WidgetEditor {
       d => this.dataOptions.push({id: d.type, label: d.label}));
 
     const dataType = this.dataOptions[0].id;
+    this.form.get('dataType').setValue(dataType);
+
     const dataSourceProvider = data.config.dataResourcesMap.get(dataType);
     this.sorter = dataSourceProvider.sorter();
     this.viewer = dataSourceProvider.viewer();

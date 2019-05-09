@@ -1,5 +1,7 @@
-import {DB, deleteDb, openDb} from 'idb';
+import {DB, deleteDb, ObjectStore, openDb} from 'idb';
 import {Subject} from 'rxjs';
+import {DEMO_DASHBOARDS} from './demo-config/demo-dashboards';
+import {DEMO_RECOMMENDATIONS} from './demo-config/demo-recommendations';
 
 const DB_VERSION = 1;
 
@@ -63,7 +65,11 @@ export class AppIndexedDb {
     this.db = openDb(this.name, DB_VERSION, db => {
       STORE_IDS.forEach(collectionId => {
         if (!db.objectStoreNames.contains(collectionId)) {
-          db.createObjectStore(collectionId, {keyPath: 'id'});
+          const objectStore = db.createObjectStore(collectionId, {keyPath: 'id'});
+
+          if (this.name === 'angular/components') {
+            initializeDemoConfig(collectionId, objectStore);
+          }
         }
       });
     });
@@ -80,5 +86,20 @@ export class AppIndexedDb {
         initialValues.next(result);
       });
     });
+  }
+}
+
+function initializeDemoConfig(collectionId: string, objectStore: ObjectStore<any, any>) {
+  switch (collectionId) {
+    case 'dashboards':
+      DEMO_DASHBOARDS.forEach(d => objectStore.add(d));
+      break;
+    case 'queries':
+      // TODO: Add some demo queries
+      break;
+    case 'recommendations':
+      DEMO_RECOMMENDATIONS.forEach(d => objectStore.add(d));
+      break;
+
   }
 }

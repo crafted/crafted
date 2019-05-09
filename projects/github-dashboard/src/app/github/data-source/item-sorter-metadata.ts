@@ -29,6 +29,13 @@ const ITEM_SORTER_METADATA = new Map<string, SorterMetadata<Item>>([
       comparator: (a, b) => a.reactions['+1'] < b.reactions['+1'] ? -1 : 1,
     }
   ],
+
+  [
+    'comments', {
+      label: 'Comment Count',
+      comparator: (a, b) => a.comments < b.comments ? -1 : 1,
+    }
+  ],
 ]);
 
 export function getSorterProvider() {

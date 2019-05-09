@@ -97,6 +97,8 @@ export class Repository {
           this.initializeAutoIssueUpdates(repoState);
         }
 
+        repoState.recommendationsDao.list.pipe(take(1)).subscribe(console.log);
+
         // Sync and then start saving
         this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
           this.saveConfigChangesToGist(name, repoState);
