@@ -20,8 +20,8 @@ export const DEMO_RECOMMENDATIONS = [
     message: 'This uses the feature request issue template',
     type: 'suggestion',
     dataType: 'issue',
-    actionType: 'none',
-    action: null,
+    actionType: 'add-label',
+    action: {labels: ['feature']},
     filtererState: {
       filters: [
         {id: 'labels', type: 'text', value: 'feature', equality: 'notContains'},
