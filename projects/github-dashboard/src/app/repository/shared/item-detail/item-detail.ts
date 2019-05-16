@@ -103,7 +103,7 @@ export class ItemDetail {
   addLabel(id: string, label: string) {
     this.itemRepoStatePair
         .pipe(
-            mergeMap(([item, repoState]) => {
+            take(1), mergeMap(([item, repoState]) => {
               const itemUpdate: Partial<Item> = {id: item.id, labels: [...item.labels, id]};
               repoState.itemsDao.update(itemUpdate);
 
@@ -116,7 +116,7 @@ export class ItemDetail {
   removeLabel(id: string, label: string) {
     this.itemRepoStatePair
         .pipe(
-            mergeMap(([item, repoState]) => {
+            take(1), mergeMap(([item, repoState]) => {
               const labelsCopy = [...item.labels];
               const removedLabelIndex = labelsCopy.indexOf(id);
               labelsCopy.splice(removedLabelIndex, 1);
