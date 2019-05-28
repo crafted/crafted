@@ -131,7 +131,7 @@ export class ItemDetail {
 
   addAssignee(assignee: string) {
     this.itemRepoStatePair
-        .pipe(
+        .pipe(take(1),
             mergeMap(([item, repoState]) => {
               const itemUpdate:
                   Partial<Item> = {id: item.id, assignees: [...item.assignees, assignee]};
