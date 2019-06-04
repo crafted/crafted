@@ -79,7 +79,7 @@ export class RecommendationView {
       dataType: this.recommendation.dataType,
       filtererState: this.recommendation.filtererState,
     };
-    this.pageNavigator.navigateToQuery('new', {query: JSON.stringify(query)});
+    this.pageNavigator.navigateToQuery('new', {queryParams: {query: JSON.stringify(query)}});
   }
 }
 
