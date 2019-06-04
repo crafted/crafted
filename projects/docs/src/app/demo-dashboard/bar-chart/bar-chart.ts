@@ -8,7 +8,7 @@ import {BarChartEdit} from './bar-chart-edit';
 
 
 export type BarChartDataResourcesMap = Map<string, {
-  id: string,
+  type: string,
   label: string,
   filterer: (initialValue?: FiltererState) => Filterer,
   grouper: (initialValue?: GrouperState) => Grouper,
@@ -29,13 +29,13 @@ export interface BarChartOptions {
 @Component({
   selector: 'bar-chart',
   template: `
-    <chartjs-bar-vertical
+    <ngx-charts-bar-vertical
       [scheme]="colorScheme"
       [results]="data | async"
       [xAxis]="true"
       [yAxis]="true"
       [legend]="true">
-    </chartjs-bar-vertical>
+    </ngx-charts-bar-vertical>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -9,4 +9,18 @@ export const EXAMPLE_DATA_SOURCE_METADATA = new Map<string, DataSourceMetadata<E
       accessor: item => item.anniversary,
     }
   ],
+  [
+    'age', {
+      label: 'Age',
+      type: 'number',
+      accessor: item => item.age,
+    }
+  ],
+  [
+    'count', {
+    label: 'Count',
+    type: 'number',
+    accessor: () => 1,
+  }
+  ],
 ]);

@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
+import {getPieChartWidgetConfig, getTimeSeriesWidgetConfig} from '@crafted/chartjs-widgets';
 import {
   Dashboard,
   getCountWidgetConfig,
   getListWidgetConfig,
-  getPieChartWidgetConfig,
-  getTimeSeriesWidgetConfig,
   WidgetConfig
 } from '@crafted/components';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
@@ -39,7 +38,7 @@ export class DemoDashboard {
   dataResourcesMap = new Map<string, DataResources>([
     [
       'issue', {
-        id: 'issue',
+        type: 'issue',
         label: 'Issues',
         dataSource: () =>
           new DataSource({data: EXAMPLE_ITEMS, metadata: EXAMPLE_DATA_SOURCE_METADATA}),

@@ -4,7 +4,7 @@
   $divider: mat-color($foreground, divider);
 
   form-field {
-    input {
+    .option input {
       @include bottom-border($divider);
     }
   }

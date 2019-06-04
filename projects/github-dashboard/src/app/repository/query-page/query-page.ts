@@ -8,6 +8,7 @@ import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
+import {PageNavigator} from '../services/page-navigator';
 import {Updater} from '../services/updater';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
@@ -81,7 +82,7 @@ export class QueryPage {
   itemId$ = this.activatedRoute.queryParamMap.pipe(map(queryParamMap => queryParamMap.get('item')));
 
   item$ = combineLatest(this.itemId$, this.activeStore.state)
-    .pipe(mergeMap(([itemId, repoState]) => repoState.itemsDao.get(itemId)));
+              .pipe(mergeMap(([itemId, repoState]) => repoState.itemsDao.get(itemId)));
 
   headerActions: Observable<HeaderContentAction[]> =
       combineLatest(this.query, this.canSave).pipe(map(([query, canSave]) => {
@@ -100,10 +101,10 @@ export class QueryPage {
   listWidth = 500;
 
   constructor(
-    @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-    private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-    private activeStore: ActiveStore, private queryDialog: QueryDialog,
-    private updater: Updater) {
+      @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
+      private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
+      private activeStore: ActiveStore, private queryDialog: QueryDialog,
+      private pageNavigator: PageNavigator, private updater: Updater) {
     this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
         dataResource =>
@@ -140,18 +141,17 @@ export class QueryPage {
                 viewerState: state[3],
               };
               const newQuery = {...query, ...states, name, group};
-              return combineLatest(repoState.queriesDao.add(newQuery), repoState.repository);
+              return repoState.queriesDao.add(newQuery);
             }),
             take(1))
-        .subscribe(([query, repository]) => {
-          this.router.navigate(
-            [`${repository}/query/${query}`], {replaceUrl: true, queryParamsHandling: 'merge'});
-        });
+        .subscribe(
+            query => this.pageNavigator.navigateToQuery(
+                query, {replaceUrl: true, queryParamsHandling: 'merge'}));
   }
 
   navigateToItem(itemId: string) {
     this.activeStore.state.pipe(take(1)).subscribe(
-      repoState => this.updater.updateItem(repoState, itemId));
+        repoState => this.updater.updateItem(repoState, itemId));
 
     if (!isMobile()) {
       this.router.navigate([], {
@@ -187,14 +187,14 @@ export class QueryPage {
 
   newQuery(): Observable<Query> {
     return this.activatedRoute.queryParamMap.pipe(
-      mergeMap(queryParamMap => {
-        const query = queryParamMap.get('query');
-        if (query) {
-          return of(JSON.parse(query));
-        }
+        mergeMap(queryParamMap => {
+          const query = queryParamMap.get('query');
+          if (query) {
+            return of(JSON.parse(query));
+          }
 
-        return of();
-      }),
-      take(1));
+          return of();
+        }),
+        take(1));
   }
 }

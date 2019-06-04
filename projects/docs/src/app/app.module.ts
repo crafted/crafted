@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {MatDividerModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {PieChartModule, TimeSeriesModule} from '@crafted/chartjs-widgets';
 import {
   AdvancedSearchModule,
   CountModule,
@@ -11,8 +12,6 @@ import {
   ItemsListModule,
   ItemSummaryModule,
   ListModule,
-  PieChartModule,
-  TimeSeriesModule
 } from '@crafted/components';
 import {AppComponent} from './app.component';
 import {DemoAdvancedSearchOr} from './demo-advanced-search-or/demo-advanced-search-or';

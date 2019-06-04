@@ -5,7 +5,7 @@
   $divider: mat-color($foreground, divider);
 
   widget-edit {
-    input {
+    input.title {
       @include bottom-border($divider);
     }
   }

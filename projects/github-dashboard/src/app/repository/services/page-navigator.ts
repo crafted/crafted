@@ -1,10 +1,5 @@
 import {Injectable} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
-import {Query} from '../model/query';
-
-interface QueryQueryParams {
-  query?: string;
-}
 
 @Injectable()
 export class PageNavigator {
@@ -20,16 +15,15 @@ export class PageNavigator {
     this.navigate('database');
   }
 
-  navigateToQuery(id: string = 'new', queryParams?: QueryQueryParams) {
-    this.navigate(`query/${id}`, queryParams);
+  navigateToQuery(id: string = 'new', extras?: NavigationExtras) {
+    this.navigate(`query/${id}`, extras);
   }
 
   navigateToDashboard(id: string) {
     this.navigate(`dashboard/${id}`);
   }
 
-  private navigate(subPath: string, queryParams?: QueryQueryParams) {
-    const extras: NavigationExtras = {queryParams};
+  private navigate(subPath: string, extras?: NavigationExtras) {
     this.router.navigate([`${this.repository}/${subPath}`], extras);
   }
 }
