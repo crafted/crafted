@@ -1,14 +1,17 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
+import {select, Store} from '@ngrx/store';
 import {combineLatest, interval, Observable, Subject} from 'rxjs';
-import {debounceTime, filter, map, mergeMap, take, takeUntil} from 'rxjs/operators';
+import {debounceTime, filter, map, mergeMap, take, takeUntil, tap} from 'rxjs/operators';
 import {Item} from '../github/app-types/item';
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
+import {State} from '../reducers';
+import {AddAllItems, AddOneItem} from '../reducers/item/item.action';
 import {Auth} from '../service/auth';
 import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
@@ -26,7 +29,7 @@ export const DATA_RESOURCES_MAP =
 function dataStoreIssuesList(): (repoState$: Observable<RepoState>) => Observable<Item[]> {
   return (dataStore$: Observable<RepoState>) => {
     return dataStore$.pipe(
-      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !i.pr)));
+        mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !i.pr)));
   };
 }
 
@@ -34,13 +37,13 @@ function dataStoreIssuesList(): (repoState$: Observable<RepoState>) => Observabl
 function dataStorePrsList(): (dataStore$: Observable<RepoState>) => Observable<Item[]> {
   return (dataStore$: Observable<RepoState>) => {
     return dataStore$.pipe(
-      mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !!i.pr)));
+        mergeMap(dataStore => dataStore.itemsDao.list), map(items => items.filter(i => !!i.pr)));
   };
 }
 
 export const provideDataResourcesMap = (activeStore: ActiveStore) => {
   const recommendations =
-    activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
+      activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
   const labels = activeStore.state.pipe(mergeMap(repoState => repoState.labelsDao.list));
   const issues = activeStore.state.pipe(dataStoreIssuesList());
   const prs = activeStore.state.pipe(dataStorePrsList());
@@ -48,7 +51,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
   return new Map<string, DataResources>([
     [
       'issue', {
-      type: 'issue',
+        type: 'issue',
         label: 'Issues',
         dataSource: getDataSourceProvider(issues),
         viewer: getViewerProvider(labels, recommendations),
@@ -59,7 +62,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore) => {
     ],
     [
       'pr', {
-      type: 'pr',
+        type: 'pr',
         label: 'Pull Requests',
         dataSource: getDataSourceProvider(prs),
         viewer: getViewerProvider(labels, recommendations),
@@ -82,28 +85,36 @@ export class Repository {
   private destroyed = new Subject();
 
   constructor(
-    private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-    private remover: Remover, private activeStore: ActiveStore, private auth: Auth,
-    private pageNavigator: PageNavigator, private repoGist: RepoGist, private config: Config) {
-    this.activeStore.state
-      .pipe(take(1))
-      .subscribe(repoState => {
-        if (!this.loadedRepos.isLoaded(repoState.repository)) {
-          this.pageNavigator.navigateToDatabase();
-        } else if (this.auth.token) {
-          this.updater.update(repoState, 'items');
-          this.updater.update(repoState, 'contributors');
-          this.updater.update(repoState, 'labels');
-          this.initializeAutoIssueUpdates(repoState);
-        }
-
-        repoState.recommendationsDao.list.pipe(take(1)).subscribe(console.log);
-
-        // Sync and then start saving
-        this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
-          this.saveConfigChangesToGist(name, repoState);
-        });
+      private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
+      private remover: Remover, private activeStore: ActiveStore, private auth: Auth,
+      private pageNavigator: PageNavigator, private repoGist: RepoGist, private config: Config,
+      private store: Store<State>) {
+    this.store.pipe(select(state => state.items))
+      .subscribe(itemsState => {
+        console.log(itemsState);
       });
+
+    this.activeStore.state.pipe(map(state => state.itemsDao.list), tap(items => {
+      console.log(items);
+    }));
+
+    //this.store.dispatch(new AddOneItem({item: {id: '123'}}));
+
+    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
+      if (!this.loadedRepos.isLoaded(repoState.repository)) {
+        this.pageNavigator.navigateToDatabase();
+      } else if (this.auth.token) {
+        this.updater.update(repoState, 'items');
+        this.updater.update(repoState, 'contributors');
+        this.updater.update(repoState, 'labels');
+        this.initializeAutoIssueUpdates(repoState);
+      }
+
+      // Sync and then start saving
+      this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
+        this.saveConfigChangesToGist(name, repoState);
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -114,9 +125,9 @@ export class Repository {
   private initializeAutoIssueUpdates(repoState: RepoState) {
     // TODO: This never unsubscribes and does not check if we are already updating a repository
     interval(60 * 1000)
-      .pipe(
-        mergeMap(() => repoState.itemsDao.list.pipe(take(1))),
-        filter(items => items.length > 0))
+        .pipe(
+            mergeMap(() => repoState.itemsDao.list.pipe(take(1))),
+            filter(items => items.length > 0))
         .subscribe(() => {
           this.updater.update(repoState, 'items');
         });
@@ -124,11 +135,13 @@ export class Repository {
 
   /** Persist changes to config lists to gist */
   private saveConfigChangesToGist(repository: string, repoState: RepoState) {
-    const configDaoLists = [repoState.dashboardsDao.list, repoState.queriesDao.list, repoState.recommendationsDao.list];
+    const configDaoLists = [
+      repoState.dashboardsDao.list, repoState.queriesDao.list, repoState.recommendationsDao.list
+    ];
     combineLatest(...configDaoLists)
-      .pipe(debounceTime(500), takeUntil(this.destroyed))
-      .subscribe(([dashboards, queries, recommendations]) => {
-        this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
-      });
+        .pipe(debounceTime(500), takeUntil(this.destroyed))
+        .subscribe(([dashboards, queries, recommendations]) => {
+          this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
+        });
   }
 }

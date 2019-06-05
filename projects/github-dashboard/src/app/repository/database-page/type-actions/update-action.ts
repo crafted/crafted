@@ -20,7 +20,7 @@ export class UpdateAction {
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.type && this.type) {
-      this.updateState = this.updater.state.pipe(tap(console.log), map(state => state[this.type]));
+      this.updateState = this.updater.state.pipe(map(state => state[this.type]));
     }
   }
 

@@ -1,10 +1,15 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Dashboard} from '@crafted/components';
-import {map, shareReplay} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {map, shareReplay, take} from 'rxjs/operators';
 import {Contributor} from '../../github/app-types/contributor';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
+import {State} from '../../reducers';
+import {AddAllItems} from '../../reducers/item/item.action';
+import {LoadLocalDb, LocalDbActionTypes} from '../../reducers/local-db/local-db.actions';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {AppIndexedDb} from '../utility/app-indexed-db';
@@ -24,7 +29,7 @@ export interface RepoState {
 export class ActiveStore {
   private repoStateCache = new Map<string, RepoState>();
 
-  state = this.activatedRoute.firstChild.params.pipe(
+  state: Observable<RepoState> = this.activatedRoute.firstChild.params.pipe(
     map(params => `${params.org}/${params.name}`), map(repository => {
 
 
@@ -32,11 +37,12 @@ export class ActiveStore {
         this.repoStateCache.set(repository, createRepoState(repository));
       }
 
+      this.store.dispatch(new LoadLocalDb({repository}));
       return this.repoStateCache.get(repository);
     }),
     shareReplay(1));
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private store: Store<State>) {
   }
 }
 
