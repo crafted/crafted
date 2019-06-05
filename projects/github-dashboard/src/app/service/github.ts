@@ -102,6 +102,14 @@ export class Github {
         map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
+  searchRepoByFullName(query: string, perPage: number = 5): Observable<string[]> {
+    const url =
+      constructUrl('search/repositories', `fork=true&order=desc&per_page=${perPage}&q=language:typescript in:name ${query}`, false);
+    return this.get<any>(url).pipe(
+        filter(v => !!v && v.body && v.body.items),
+        map(response => response.body.items.map((item: any) => item.full_name)));
+  }
+
   getRateLimitsAndScopes(): void {
     const url = constructUrl(`rate_limit`);
     const token = this.auth.token ? `token ${this.auth.token}` : '';

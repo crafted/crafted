@@ -18,6 +18,26 @@
   font-weight: bold;
 }
 
+.autocomplete {
+  margin-bottom: 30px;
+  font-weight: bold;
+  text-align: center;
+  
+  mat-form-field {
+    width: 350px;
+    
+    .mat-input-element {
+      text-align: center;
+      font-size: 22px;
+    }
+  }
+
+  // Even the vertical spacing of the input inside the form field container.
+  ::ng-deep .mat-form-field-infix {
+    padding: 0.5em 0 1em 0;
+  }
+}
+
 .repos-title {
   font-size: 18px;
   text-align: center;
