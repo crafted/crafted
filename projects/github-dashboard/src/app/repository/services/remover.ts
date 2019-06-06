@@ -1,15 +1,21 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
+import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {mergeMap, take} from 'rxjs/operators';
+
 import {LoadedRepos} from '../../service/loaded-repos';
+import {AppState} from '../../store';
+import {ItemRemoveAll} from '../../store/item/item.action';
 import {DeleteConfirmation} from '../shared/dialog/delete-confirmation/delete-confirmation';
+
 import {RepoState} from './active-store';
 
 @Injectable()
 export class Remover {
   constructor(
-      private loadedRepos: LoadedRepos, private dialog: MatDialog, private snackbar: MatSnackBar) {}
+      private store: Store<AppState>, private loadedRepos: LoadedRepos, private dialog: MatDialog,
+      private snackbar: MatSnackBar) {}
 
   removeAllData(repoState: RepoState, showConfirmationDialog = true) {
     if (!showConfirmationDialog) {
@@ -17,11 +23,12 @@ export class Remover {
       return;
     }
 
-    const name = `locally stored data for ${repoState.repository}`;
-    const data = {name: of(name)};
-    this.dialog.open(DeleteConfirmation, {data})
-        .afterClosed()
-        .pipe(take(1))
+    this.store.select(state => state.repository.name)
+        .pipe(take(1), mergeMap(repository => {
+                const name = `locally stored data for ${repository}`;
+                const data = {name: of(name)};
+                return this.dialog.open(DeleteConfirmation, {data}).afterClosed().pipe(take(1));
+              }))
         .subscribe(confirmed => {
           if (confirmed) {
             this.remove(repoState);
@@ -31,7 +38,12 @@ export class Remover {
   }
 
   private remove(repoState: RepoState) {
-    [repoState.contributorsDao, repoState.itemsDao, repoState.labelsDao].forEach(dao => dao.removeAll());
-    this.loadedRepos.removeLoadedRepo(repoState.repository);
+    this.store.dispatch(new ItemRemoveAll());
+    [repoState.contributorsDao, repoState.labelsDao].forEach(dao => dao.removeAll());
+
+    // TODO: Removing loaded repo should be a dispatched action
+    this.store.select(state => state.repository.name).pipe(take(1)).subscribe(repository => {
+      this.loadedRepos.removeLoadedRepo(repository);
+    });
   }
 }

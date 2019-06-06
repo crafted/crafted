@@ -1,6 +1,4 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
 
 @Component({
   selector: 'app-root',

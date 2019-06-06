@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {mergeMap, take} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
 import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
-import {Github} from '../../../service/github';
+import {AppState} from '../../../store';
+import {ItemAddAssigneeAction, ItemAddLabelAction} from '../../../store/item/item.action';
 import {Recommendation} from '../../model/recommendation';
-import {ActiveStore} from '../../services/active-store';
 
 @Component({
   selector: 'recommendation-action',
@@ -17,24 +17,13 @@ export class RecommendationAction {
 
   @Input() recommendation: Recommendation;
 
-  constructor(private github: Github, private activeStore: ActiveStore) {
-  }
+  constructor(private store: Store<AppState>) {}
 
   addLabel(label: Label) {
-    this.activeStore.state.pipe(mergeMap(repoState => {
-      const newItem: Item = {...this.item};
-      newItem.labels = [...this.item.labels, label.id];
-      repoState.itemsDao.update(newItem);
-      return this.github.addLabel(repoState.repository, this.item.id, label.name);
-    }), take(1)).subscribe();
+    this.store.dispatch(new ItemAddLabelAction({id: this.item.id, label: label.id}));
   }
 
   addAssignee(assignee: string) {
-    this.activeStore.state.pipe(mergeMap(repoState => {
-      const newItem: Item = {...this.item};
-      newItem.assignees = [...this.item.assignees, assignee];
-      repoState.itemsDao.update(newItem);
-      return this.github.addAssignee(repoState.repository, this.item.id, assignee);
-    }), take(1)).subscribe();
+    this.store.dispatch(new ItemAddAssigneeAction({id: this.item.id, assignee}));
   }
 }

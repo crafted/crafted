@@ -1,7 +1,9 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {
   distinctUntilChanged,
+  filter,
   map,
   mergeMap,
   shareReplay,
@@ -9,8 +11,13 @@ import {
   take,
   tap
 } from 'rxjs/operators';
-import {Item} from '../../../github/app-types/item';
 import {completedPagedResults, Github, TimelineEvent, UserComment} from '../../../service/github';
+import {AppState} from '../../../store';
+import {
+  ItemAddAssigneeAction,
+  ItemAddLabelAction,
+  ItemRemoveLabelAction
+} from '../../../store/item/item.action';
 import {ActiveStore} from '../../services/active-store';
 import {getRecommendations} from '../../utility/get-recommendations';
 
@@ -43,20 +50,19 @@ export class ItemDetail {
 
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
-  item$ = combineLatest(this.distinctItemId$, this.activeStore.state)
-              .pipe(switchMap(([itemId, repoState]) => repoState.itemsDao.get(itemId)));
+  item$ = combineLatest(this.distinctItemId$, this.store)
+              .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
 
   activities = this.distinctItemId$.pipe(
       tap(() => this.isLoadingActivities.next(true)),
-      switchMap(() => combineLatest(this.item$, this.activeStore.state)),
-      switchMap(([item, repoState]) => {
+      switchMap(() => combineLatest(this.item$, this.store.select(state => state.repository.name))),
+      switchMap(([item, repository]) => {
         // If the created date and updated date are equal, there are no comments or
         // activities.
         if (!item.comments && item.created === item.updated) {
           return of([[], []]);
         }
 
-        const repository = repoState.repository;
         return combineLatest(
             this.github.getComments(repository, item.id).pipe(completedPagedResults<UserComment>()),
             this.github.getTimeline(repository, item.id)
@@ -71,7 +77,6 @@ export class ItemDetail {
         return activities;
       }),
       tap(() => this.isLoadingActivities.next(false)), shareReplay(1));
-  private itemRepoStatePair = combineLatest(this.item$, this.activeStore.state);
 
   @Input()
   set itemId(itemId: string) {
@@ -88,59 +93,36 @@ export class ItemDetail {
         return labelOptions;
       }));
 
-  addAssigneeOptions: Observable<string[]> = this.activeStore.state.pipe(
-      mergeMap(repoState => repoState.itemsDao.list), map(items => {
+  addAssigneeOptions: Observable<string[]> =
+      this.store.select(state => state.items).pipe(map(itemsState => {
         const assigneesSet = new Set<string>();
-        items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
+        itemsState.ids.forEach(
+            id => itemsState.entities[id].assignees.forEach(a => assigneesSet.add(a)));
         const assigneesList: string[] = [];
         assigneesSet.forEach(a => assigneesList.push(a));
         return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
       }));
 
   constructor(
-      private elementRef: ElementRef, public activeStore: ActiveStore, public github: Github) {}
+      private store: Store<AppState>, private elementRef: ElementRef,
+      public activeStore: ActiveStore, public github: Github) {}
 
   addLabel(id: string, label: string) {
-    this.itemRepoStatePair
-        .pipe(
-            take(1), mergeMap(([item, repoState]) => {
-              const itemUpdate: Partial<Item> = {id: item.id, labels: [...item.labels, id]};
-              repoState.itemsDao.update(itemUpdate);
-
-              return this.github.addLabel(repoState.repository, item.id, label);
-            }),
-            take(1))
-        .subscribe();
+    this.item$.pipe(take(1)).subscribe(item => {
+      this.store.dispatch(new ItemAddLabelAction({id: item.id, label}));
+    });
   }
 
   removeLabel(id: string, label: string) {
-    this.itemRepoStatePair
-        .pipe(
-            take(1), mergeMap(([item, repoState]) => {
-              const labelsCopy = [...item.labels];
-              const removedLabelIndex = labelsCopy.indexOf(id);
-              labelsCopy.splice(removedLabelIndex, 1);
-              const updatedItem: Partial<Item> = {id: item.id, labels: labelsCopy};
-              repoState.itemsDao.update(updatedItem);
-
-              return this.github.removeLabel(repoState.repository, item.id, label);
-            }),
-            take(1))
-        .subscribe();
+    this.item$.pipe(take(1)).subscribe(item => {
+      this.store.dispatch(new ItemRemoveLabelAction({id: item.id, label}));
+    });
   }
 
   addAssignee(assignee: string) {
-    this.itemRepoStatePair
-        .pipe(take(1),
-            mergeMap(([item, repoState]) => {
-              const itemUpdate:
-                  Partial<Item> = {id: item.id, assignees: [...item.assignees, assignee]};
-              repoState.itemsDao.update(itemUpdate);
-
-              return this.github.addAssignee(repoState.repository, item.id, assignee);
-            }),
-            take(1))
-        .subscribe();
+    this.item$.pipe(take(1)).subscribe(item => {
+      this.store.dispatch(new ItemAddAssigneeAction({id: item.id, assignee}));
+    });
   }
 }
 

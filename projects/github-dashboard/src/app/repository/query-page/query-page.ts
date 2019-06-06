@@ -2,14 +2,16 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
+import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
+import {AppState} from '../../store';
+import {GitHubUpdateItem} from '../../store/github/github.actions';
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
 import {PageNavigator} from '../services/page-navigator';
-import {Updater} from '../services/updater';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -81,8 +83,8 @@ export class QueryPage {
 
   itemId$ = this.activatedRoute.queryParamMap.pipe(map(queryParamMap => queryParamMap.get('item')));
 
-  item$ = combineLatest(this.itemId$, this.activeStore.state)
-              .pipe(mergeMap(([itemId, repoState]) => repoState.itemsDao.get(itemId)));
+  item$ = combineLatest(this.itemId$, this.store.select(s => s.items))
+              .pipe(map(([itemId, itemsState]) => itemsState.entities[itemId]));
 
   headerActions: Observable<HeaderContentAction[]> =
       combineLatest(this.query, this.canSave).pipe(map(([query, canSave]) => {
@@ -101,10 +103,11 @@ export class QueryPage {
   listWidth = 500;
 
   constructor(
+      private store: Store<AppState>,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
       private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
       private activeStore: ActiveStore, private queryDialog: QueryDialog,
-      private pageNavigator: PageNavigator, private updater: Updater) {
+      private pageNavigator: PageNavigator) {
     this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
         dataResource =>
@@ -149,19 +152,18 @@ export class QueryPage {
                 query, {replaceUrl: true, queryParamsHandling: 'merge'}));
   }
 
-  navigateToItem(itemId: string) {
-    this.activeStore.state.pipe(take(1)).subscribe(
-        repoState => this.updater.updateItem(repoState, itemId));
+  navigateToItem(id: string) {
+    this.store.dispatch(new GitHubUpdateItem({id}));
 
     if (!isMobile()) {
       this.router.navigate([], {
         relativeTo: this.activatedRoute.parent,
-        queryParams: {item: itemId},
+        queryParams: {item: id},
         replaceUrl: true,
         queryParamsHandling: 'merge',
       });
     } else {
-      this.dialog.open(ItemDetailDialog, {data: {itemId}});
+      this.dialog.open(ItemDetailDialog, {data: {itemId: id}});
     }
   }
 

@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
-import {mergeMap} from 'rxjs/operators';
-import {ActiveStore} from '../../../services/active-store';
+import {Store} from '@ngrx/store';
+import {map} from 'rxjs/operators';
+import {AppState} from '../../../../store';
 
 export interface ItemDetailDialogData {
   itemId: string;
@@ -13,11 +14,9 @@ export interface ItemDetailDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemDetailDialog {
-  item$ =
-    this.activeStore.state.pipe(mergeMap(repoState => repoState.itemsDao.get(`${this.data.itemId}`)));
+  item$ = this.store.select(state => state.items)
+              .pipe(map(itemsState => itemsState.entities[this.data.itemId]));
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData,
-    private activeStore: ActiveStore) {
-  }
+      private store: Store<AppState>, @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData) {}
 }

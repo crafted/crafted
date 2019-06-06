@@ -1,11 +1,13 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {MatSidenav} from '@angular/material';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {map, mergeMap, shareReplay} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+
 import {Auth} from '../../../service/auth';
 import {LoadedRepos} from '../../../service/loaded-repos';
-import {ActiveStore} from '../../services/active-store';
+import {AppState} from '../../../store';
 import {Theme} from '../../services/theme';
 
 export interface NavLink {
@@ -22,10 +24,9 @@ export interface NavLink {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Nav {
-  activeRepository = this.activeStore.state.pipe(map(repoState => repoState.repository));
+  activeRepository = this.store.select(state => state.repository.name);
 
-  isEmpty = this.activeStore.state.pipe(
-      mergeMap(repoState => repoState.itemsDao.list), map(list => !list.length), shareReplay(1));
+  isEmpty = this.store.select(store => store.items).pipe(map(items => !items.ids.length));
 
   links: NavLink[] = [
     {route: 'database', label: 'Database', icon: 'archive'},
@@ -47,7 +48,7 @@ export class Nav {
   private destroyed = new Subject();
 
   constructor(
-      public activeStore: ActiveStore, public loadedRepos: LoadedRepos, public theme: Theme,
+      private store: Store<AppState>, public loadedRepos: LoadedRepos, public theme: Theme,
       public router: Router, public auth: Auth) {}
 
   ngOnDestroy() {

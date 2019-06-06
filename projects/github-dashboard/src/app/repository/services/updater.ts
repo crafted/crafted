@@ -1,9 +1,14 @@
 import {Injectable} from '@angular/core';
+import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
+
 import {Item} from '../../github/app-types/item';
 import {Github} from '../../service/github';
+import {AppState} from '../../store';
+import {UpdateItemsFromGithub} from '../../store/item/item.action';
 import {compareLocalToRemote} from '../utility/list-dao';
+
 import {RepoState} from './active-store';
 
 export interface StaleIssuesState {
@@ -28,12 +33,12 @@ export class Updater {
     contributors: 'can-update',
   });
 
-  constructor(private github: Github) {}
+  constructor(private github: Github, private store: Store<AppState>) {}
 
   update(repoState: RepoState, type: UpdatableType) {
     switch (type) {
       case 'items':
-        return this.updateIssues(repoState);
+        return this.updateIssues();
       case 'labels':
         return this.updateLabels(repoState);
       case 'contributors':
@@ -41,37 +46,33 @@ export class Updater {
     }
   }
 
-  updateItem(repoState: RepoState, id: string) {
-    this.github.getItem(repoState.repository, id).pipe(take(1)).subscribe(item => {
-      repoState.itemsDao.update(item);
-    });
-  }
-
   private updateLabels(repoState: RepoState) {
     this.setTypeState('labels', 'updating');
 
-    const remoteLabels$ = this.github.getLabels(repoState.repository)
+    const remoteLabels$ = this.store.select(state => state.repository.name)
                               .pipe(
+                                  mergeMap(repository => this.github.getLabels(repository)),
                                   filter(result => result.completed === result.total),
                                   map(result => result.accumulated));
 
-    combineLatest(repoState.labelsDao.list, remoteLabels$)
-        .pipe(take(1))
-        .subscribe(([local, remote]) => {
-          const comparison = compareLocalToRemote(local, remote);
-          repoState.labelsDao.update(comparison.toUpdate);
-          this.setTypeState('labels', 'updated');
-        });
+    combineLatest(repoState.labelsDao.list, remoteLabels$).pipe(take(1)).subscribe(([
+                                                                                     local, remote
+                                                                                   ]) => {
+      const comparison = compareLocalToRemote(local, remote);
+      repoState.labelsDao.update(comparison.toUpdate);
+      this.setTypeState('labels', 'updated');
+    });
   }
 
   private updateContributors(repoState: RepoState) {
     this.setTypeState('contributors', 'updating');
 
     const localList$ = repoState.contributorsDao.list;
-    const remoteList$ = this.github.getContributors(repoState.repository)
-                             .pipe(
-                                 filter(result => result.completed === result.total),
-                                 map(result => result.accumulated));
+    const remoteList$ = this.store.select(state => state.repository.name)
+                            .pipe(
+                                mergeMap(repository => this.github.getContributors(repository)),
+                                filter(result => result.completed === result.total),
+                                map(result => result.accumulated));
 
     combineLatest(localList$, remoteList$).pipe(take(1)).subscribe(([local, remote]) => {
       const comparison = compareLocalToRemote(local, remote);
@@ -80,22 +81,23 @@ export class Updater {
     });
   }
 
-  private updateIssues(repoState: RepoState) {
+  private updateIssues() {
     this.setTypeState('items', 'updating');
 
-    this.getStaleIssuesState(repoState)
+    this.getStaleIssuesState()
         .pipe(
             mergeMap(result => {
               if (!result.count) {
                 return of([]);
               }
 
-              return this.getAllStaleIssues(repoState.repository, result.lastUpdated);
+              return this.getAllStaleIssues(result.repository, result.lastUpdated);
             }),
             take(1))
         .subscribe((result) => {
           if (result.length) {
-            repoState.itemsDao.update(result);
+            this.store.dispatch(
+                new UpdateItemsFromGithub({items: result}));
           }
           this.setTypeState('items', 'updated');
         });
@@ -108,21 +110,28 @@ export class Updater {
               }));
   }
 
-  private getStaleIssuesState(repoState: RepoState): Observable<StaleIssuesState> {
+  private getStaleIssuesState(): Observable<StaleIssuesState> {
     let lastUpdated = '';
 
-    return repoState.itemsDao.list.pipe(
-        map(items => {
-          items.forEach(item => {
-            if (!lastUpdated || lastUpdated < item.updated) {
-              lastUpdated = item.updated;
-            }
-          });
+    // TODO: Cleanup - should not stash repository
+    let repository = '';
+    return this.store
+        .pipe(
+            filter(state => !!state.items.ids.length),
+            take(1),
+            map(state => {
+              repository = state.repository.name;
+              state.items.ids.forEach(id => {
+                const item = state.items.entities[id];
+                if (!lastUpdated || lastUpdated < item.updated) {
+                  lastUpdated = item.updated;
+                }
+              });
 
-          return lastUpdated;
-        }),
-        mergeMap(() => this.github.getItemsCount(repoState.repository, lastUpdated)),
-        map(count => ({lastUpdated, count, repository: repoState.repository})));
+              return lastUpdated;
+            }),
+            mergeMap(() => this.github.getItemsCount(repository, lastUpdated)),
+            map(count => ({lastUpdated, count, repository})));
   }
 
   private setTypeState(type: UpdatableType, typeState: UpdateState) {

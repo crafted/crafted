@@ -1,5 +1,5 @@
 import {DB, deleteDb, ObjectStore, openDb} from 'idb';
-import {Subject} from 'rxjs';
+import {ReplaySubject, Subject} from 'rxjs';
 import {DEMO_DASHBOARDS} from './demo-config/demo-dashboards';
 import {DEMO_RECOMMENDATIONS} from './demo-config/demo-recommendations';
 
@@ -20,7 +20,7 @@ export class AppIndexedDb {
   private destroyed = new Subject();
 
   constructor(name: string) {
-    STORE_IDS.forEach(id => this.initialValues[id] = new Subject<any[]>());
+    STORE_IDS.forEach(id => this.initialValues[id] = new ReplaySubject<any[]>(1));
     this.name = name;
     this.openDb();
   }

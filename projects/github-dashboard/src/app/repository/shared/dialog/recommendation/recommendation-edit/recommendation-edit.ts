@@ -2,8 +2,10 @@ import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DataResources, DataSource, Filterer} from '@crafted/data';
+import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
+import {AppState} from '../../../../../store';
 
 import {
   ACTION_TYPES,
@@ -39,8 +41,7 @@ export class RecommendationEdit {
 
   typeOptions: {id: string,
                 icon: string,
-    label: string
-  }[] = Object.keys(RECOMMENDATION_TYPES).map(key => {
+                label: string}[] = Object.keys(RECOMMENDATION_TYPES).map(key => {
     return {id: key, icon: RECOMMENDATION_TYPES[key].icon, label: RECOMMENDATION_TYPES[key].label};
   });
 
@@ -54,9 +55,10 @@ export class RecommendationEdit {
     return labelNames.map(name => ({id: name, label: name}));
   }));
 
-  addAssigneesOptions = this.data.repoState.itemsDao.list.pipe(map(items => {
+  addAssigneesOptions = this.store.select(state => state.items).pipe(map(itemsState => {
     const assigneesSet = new Set<string>();
-    items.forEach(i => i.assignees.forEach(a => assigneesSet.add(a)));
+    itemsState.ids.forEach(
+        id => itemsState.entities[id].assignees.forEach(a => assigneesSet.add(a)));
     const assigneesList: string[] = [];
     assigneesSet.forEach(a => assigneesList.push(a));
     return assigneesList.sort().map(a => ({id: a, label: a}));
@@ -69,7 +71,7 @@ export class RecommendationEdit {
   private destroyed = new Subject();
 
   constructor(
-      public dialogRef: MatDialogRef<RecommendationEdit>,
+      public dialogRef: MatDialogRef<RecommendationEdit>, private store: Store<AppState>,
       @Inject(MAT_DIALOG_DATA) public data: RecommendationEditData) {
     if (!data && !data.recommendation) {
       throw Error('Recommendation required to show recommendation dialog');
@@ -78,8 +80,7 @@ export class RecommendationEdit {
     const actionForm = this.formGroup.get('action') as FormControl;
     actionForm.validator = actionValidator(this.formGroup);
 
-    this.data.dataResourcesMap.forEach(
-      d => this.dataOptions.push({id: d.type, label: d.label}));
+    this.data.dataResourcesMap.forEach(d => this.dataOptions.push({id: d.type, label: d.label}));
 
     const dataForm = this.formGroup.get('dataType');
     dataForm.valueChanges.subscribe((value: string) => {
@@ -99,8 +100,9 @@ export class RecommendationEdit {
       });
     }
 
-    this.formGroup.get('actionType').valueChanges.pipe(takeUntil(this.destroyed))
-      .subscribe(() => this.formGroup.get('action').setValue(null));
+    this.formGroup.get('actionType')
+        .valueChanges.pipe(takeUntil(this.destroyed))
+        .subscribe(() => this.formGroup.get('action').setValue(null));
   }
 
   ngOnDestroy() {
