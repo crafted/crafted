@@ -1,6 +1,17 @@
 <div class="center">
   <div class="app-title">GitHub Dashboard</div>
 
+  <div class="autocomplete">
+    <mat-form-field appearance="outline">
+      <input matInput [matAutocomplete]="auto" [formControl]="autocompleteControl" placeholder="Find your repo...">
+      <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true" (optionSelected)="autocompleteSelected($event)">
+        <mat-option *ngFor="let repo of (autocompleteResult$ | async)" [value]="repo">
+          {{repo}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
   <div class="list"
        *ngIf="(loadedRepos.repos$ | async).length; else suggestions">
     <div class="repos">
