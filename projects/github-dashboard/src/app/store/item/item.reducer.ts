@@ -25,7 +25,10 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
 
     case ItemActionTypes.ADD_LABEL: {
       const item = state.entities[action.payload.id];
-      item.labels.push(action.payload.label);
+      if (item.labels.indexOf(action.payload.label) === -1) {
+        item.labels.push(action.payload.label);
+      }
+
       return {...state};
     }
 

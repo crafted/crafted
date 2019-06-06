@@ -16,7 +16,7 @@ import {LoadedRepos} from '../../../service/loaded-repos';
 import {AppState} from '../../../store';
 import {UpdateContributorsFromGithub} from '../../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../../store/item/item.action';
-import {ActiveStore} from '../../services/active-store';
+import {UpdateLabelsFromGithub} from '../../../store/label/label.action';
 
 
 interface StorageState {
@@ -62,9 +62,8 @@ export class LoadData {
   private destroyed = new Subject();
 
   constructor(
-      private loadedRepos: LoadedRepos, private activeStore: ActiveStore,
-      private store: Store<AppState>, private snackbar: MatSnackBar, private github: Github,
-      private cd: ChangeDetectorRef) {
+      private loadedRepos: LoadedRepos, private store: Store<AppState>,
+      private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
     const lastMonth = new Date();
     lastMonth.setDate(new Date().getDate() - 30);
     this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
@@ -86,9 +85,9 @@ export class LoadData {
     };
 
     this.loadSubscription =
-        combineLatest(this.store.select(state => state.repository.name), this.activeStore.state)
+        this.store.select(state => state.repository.name)
             .pipe(
-                mergeMap(([repository, repoState]) => {
+                mergeMap((repository) => {
                   const getLabels = this.getValues(
                       repository, 'labels', r => this.github.getLabels(r),
                       values => loadedData.labels.push(...values));
@@ -104,7 +103,8 @@ export class LoadData {
 
                   return getLabels.pipe(mergeMap(() => getContributors), mergeMap(() => getIssues))
                       .pipe(tap(() => {
-                        repoState.labelsDao.update(loadedData.labels);
+                        this.store.dispatch(
+                            new UpdateLabelsFromGithub({labels: loadedData.labels}));
                         this.store.dispatch(new UpdateContributorsFromGithub(
                             {contributors: loadedData.contributors}));
                         this.store.dispatch(new UpdateItemsFromGithub({items: loadedData.items}));

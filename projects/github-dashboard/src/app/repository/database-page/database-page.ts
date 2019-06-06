@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {combineLatest} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {AppState} from '../../store';
 import {ActiveStore} from '../services/active-store';
@@ -19,17 +19,16 @@ export class DatabasePage {
 
   isLoading = false;
 
-  isEmpty = this.activeStore.state.pipe(mergeMap(store => isRepoStoreEmpty(store, this.store)));
+  isEmpty = isRepoStoreEmpty(this.store);
 
   isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
                  .pipe(map(([repository, repos]) => repos.indexOf(repository) !== -1));
 
-  repoLabels = this.activeStore.state.pipe(
-      mergeMap(repoState => repoState.labelsDao.list), map(labels => labels.map(l => l.id)));
+  repoLabels = this.store.select(state => state.labels.ids);
 
   counts = {
     items: this.store.pipe(select(state => state.items.ids.length)),
-    labels: this.activeStore.state.pipe(mergeMap(s => s.labelsDao.list), map(l => l.length)),
+    labels: this.store.pipe(select(state => state.labels.ids.length)),
     contributors: this.store.pipe(select(state => state.contributors.ids.length)),
   };
 
@@ -38,8 +37,6 @@ export class DatabasePage {
       private store: Store<AppState>) {}
 
   remove() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.remover.removeAllData(repoState, true);
-    });
+    this.remover.removeAllData(true);
   }
 }

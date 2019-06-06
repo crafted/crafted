@@ -1,16 +1,8 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-  take,
-  tap
-} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {Label} from '../../../github/app-types/label';
 import {completedPagedResults, Github, TimelineEvent, UserComment} from '../../../service/github';
 import {AppState} from '../../../store';
 import {
@@ -42,9 +34,13 @@ export class ItemDetail {
   recommendations = this.activeStore.state.pipe(
       switchMap(
           repoState => combineLatest(
-              repoState.recommendationsDao.list, repoState.labelsDao.map, this.item$)),
-      map(([recommendationsList, labelsMap, item]) =>
-              getRecommendations(item, recommendationsList, labelsMap)));
+              repoState.recommendationsDao.list, this.store.select(state => state.labels),
+              this.item$)),
+      map(([recommendationsList, labelsState, item]) => {
+        const labelsMap = new Map<string, Label>();
+        labelsState.ids.forEach(id => labelsMap.set(id, labelsState.entities[id]));
+        return getRecommendations(item, recommendationsList, labelsMap);
+      }));
 
   isLoadingActivities = new ReplaySubject<boolean>(1);
 
@@ -86,9 +82,9 @@ export class ItemDetail {
     this.elementRef.nativeElement.scrollTop = 0;
   }
 
-  addLabelOptions: Observable<{id: string, label: string}[]> = this.activeStore.state.pipe(
-      mergeMap(repoState => repoState.labelsDao.list), map(labels => {
-        const labelOptions = labels.map(l => ({id: l.id, label: l.name}));
+  addLabelOptions: Observable<{id: string, label: string}[]> = this.store.select(state => state.labels).pipe(
+      map(labelsState => {
+        const labelOptions = labelsState.ids.map(id => ({id, label: labelsState.entities[id].name}));
         labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
         return labelOptions;
       }));
@@ -107,15 +103,15 @@ export class ItemDetail {
       private store: Store<AppState>, private elementRef: ElementRef,
       public activeStore: ActiveStore, public github: Github) {}
 
-  addLabel(id: string, label: string) {
+  addLabel(id: string) {
     this.item$.pipe(take(1)).subscribe(item => {
-      this.store.dispatch(new ItemAddLabelAction({id: item.id, label}));
+      this.store.dispatch(new ItemAddLabelAction({id: item.id, label: id}));
     });
   }
 
-  removeLabel(id: string, label: string) {
+  removeLabel(id: string) {
     this.item$.pipe(take(1)).subscribe(item => {
-      this.store.dispatch(new ItemRemoveLabelAction({id: item.id, label}));
+      this.store.dispatch(new ItemRemoveLabelAction({id: item.id, label: id}));
     });
   }
 

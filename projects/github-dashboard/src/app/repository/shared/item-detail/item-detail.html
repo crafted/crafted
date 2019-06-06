@@ -18,7 +18,7 @@
 
   <div class="context">
     <div class="detail">
-      <label-list (removed)="removeLabel($event.id, $event.name)" *ngIf="item.labels.length" [labelIds]="item.labels"
+      <label-list (removed)="removeLabel($event.id)" *ngIf="item.labels.length" [labelIds]="item.labels"
                   [removable]="true">
       </label-list>
       <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
@@ -81,7 +81,7 @@
 
 <mat-menu #addLabelMenu="matMenu" class="option-menu">
   <button mat-menu-item *ngFor="let option of addLabelOptions | async"
-          (click)="addLabel(option.id, option.label)">
+          (click)="addLabel(option.id)">
     {{option.label}}
   </button>
 </mat-menu>

@@ -6,11 +6,12 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {Label} from '../../../github/app-types/label';
 import {getBorderColor, getTextColor} from '../../../github/utility/label-colors';
-import {ActiveStore} from '../../services/active-store';
+import {AppState} from '../../../store';
 
 interface DisplayedLabel {
   id: string;
@@ -39,9 +40,10 @@ export class LabelList {
 
   @Output() removed = new EventEmitter<{id: string, name: string}>();
 
-  labelsMap = this.activeStore.state.pipe(mergeMap(repoState => repoState.labelsDao.list), map(list => {
+  labelsMap = this.store.select(state => state.labels).pipe(map(labelsState => {
     const labelsMap = new Map<string, DisplayedLabel>();
-    list.forEach(label => {
+    labelsState.ids.forEach(id => {
+      const label = labelsState.entities[id];
       const displayedLabel = convertLabelToDisplayedLabel(label);
       labelsMap.set(label.id, displayedLabel);
       labelsMap.set(label.name, displayedLabel);
@@ -51,7 +53,7 @@ export class LabelList {
 
   displayedLabels: Observable<DisplayedLabel[]>;
 
-  constructor(private activeStore: ActiveStore) {
+  constructor(private store: Store<AppState>) {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {

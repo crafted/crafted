@@ -8,6 +8,7 @@ import {Github} from '../../service/github';
 import {AppState} from '../../store';
 import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../store/item/item.action';
+import {UpdateLabelsFromGithub} from '../../store/label/label.action';
 import {compareLocalToRemote} from '../utility/list-dao';
 
 import {RepoState} from './active-store';
@@ -41,26 +42,26 @@ export class Updater {
       case 'items':
         return this.updateIssues();
       case 'labels':
-        return this.updateLabels(repoState);
+        return this.updateLabels();
       case 'contributors':
         return this.updateContributors();
     }
   }
 
-  private updateLabels(repoState: RepoState) {
+  private updateLabels() {
     this.setTypeState('labels', 'updating');
 
+    const localList$ = this.store.select(
+        state => state.labels.ids.map(id => state.labels.entities[id]));
     const remoteLabels$ = this.store.select(state => state.repository.name)
                               .pipe(
                                   mergeMap(repository => this.github.getLabels(repository)),
                                   filter(result => result.completed === result.total),
                                   map(result => result.accumulated));
 
-    combineLatest(repoState.labelsDao.list, remoteLabels$).pipe(take(1)).subscribe(([
-                                                                                     local, remote
-                                                                                   ]) => {
+    combineLatest(localList$, remoteLabels$).pipe(take(1)).subscribe(([local, remote]) => {
       const comparison = compareLocalToRemote(local, remote);
-      repoState.labelsDao.update(comparison.toUpdate);
+      this.store.dispatch(new UpdateLabelsFromGithub({labels: comparison.toUpdate}));
       this.setTypeState('labels', 'updated');
     });
   }

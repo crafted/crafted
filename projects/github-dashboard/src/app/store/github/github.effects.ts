@@ -18,18 +18,18 @@ export class GithubEffects {
   @Effect({dispatch: false})
   addLabel = this.actions.pipe(
       ofType<GitHubAddLabel>(GitHubActionTypes.ADD_LABEL),
-      withLatestFrom(this.store.select(state => state.repository.name)),
+      withLatestFrom(this.store),
       switchMap(
-          ([action, repository]) =>
-              this.github.addLabel(repository, action.payload.id, action.payload.label)));
+          ([action, state]) =>
+              this.github.addLabel(state.repository.name, action.payload.id, state.labels.entities[action.payload.label].name)));
 
   @Effect({dispatch: false})
   removeLabel = this.actions.pipe(
       ofType<GitHubRemoveLabel>(GitHubActionTypes.REMOVE_LABEL),
-      withLatestFrom(this.store.select(state => state.repository.name)),
+      withLatestFrom(this.store),
       switchMap(
-          ([action, repository]) =>
-              this.github.removeLabel(repository, action.payload.id, action.payload.label)));
+          ([action, state]) =>
+              this.github.removeLabel(state.repository.name, action.payload.id, state.labels.entities[action.payload.label].name)));
 
   @Effect({dispatch: false})
   addAssignee = this.actions.pipe(

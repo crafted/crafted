@@ -49,8 +49,8 @@ export class RecommendationEdit {
     return {id: key, label: ACTION_TYPES[key].label};
   });
 
-  addLabelsOptions = this.data.repoState.labelsDao.list.pipe(map(labels => {
-    const labelNames = labels.map(l => l.name);
+  addLabelsOptions = this.store.select(state => state.labels).pipe(map(labelsState => {
+    const labelNames = labelsState.ids.map(id => labelsState.entities[id].name);
     labelNames.sort();
     return labelNames.map(name => ({id: name, label: name}));
   }));

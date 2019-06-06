@@ -8,9 +8,8 @@ import {LoadedRepos} from '../../service/loaded-repos';
 import {AppState} from '../../store';
 import {RemoveAllContributors} from '../../store/contributor/contributor.action';
 import {RemoveAllItems} from '../../store/item/item.action';
+import {RemoveAllLabels} from '../../store/label/label.action';
 import {DeleteConfirmation} from '../shared/dialog/delete-confirmation/delete-confirmation';
-
-import {RepoState} from './active-store';
 
 @Injectable()
 export class Remover {
@@ -18,9 +17,9 @@ export class Remover {
       private store: Store<AppState>, private loadedRepos: LoadedRepos, private dialog: MatDialog,
       private snackbar: MatSnackBar) {}
 
-  removeAllData(repoState: RepoState, showConfirmationDialog = true) {
+  removeAllData(showConfirmationDialog = true) {
     if (!showConfirmationDialog) {
-      this.remove(repoState);
+      this.remove();
       return;
     }
 
@@ -32,16 +31,16 @@ export class Remover {
               }))
         .subscribe(confirmed => {
           if (confirmed) {
-            this.remove(repoState);
+            this.remove();
             this.snackbar.open(`${name} deleted`, '', {duration: 2000});
           }
         });
   }
 
-  private remove(repoState: RepoState) {
+  private remove() {
     this.store.dispatch(new RemoveAllItems());
     this.store.dispatch(new RemoveAllContributors());
-    repoState.labelsDao.removeAll();
+    this.store.dispatch(new RemoveAllLabels());
 
     // TODO: Removing loaded repo should be a dispatched action
     this.store.select(state => state.repository.name).pipe(take(1)).subscribe(repository => {

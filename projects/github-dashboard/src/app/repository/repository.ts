@@ -28,7 +28,7 @@ export const DATA_RESOURCES_MAP =
 export const provideDataResourcesMap = (activeStore: ActiveStore, store: Store<AppState>) => {
   const recommendations =
       activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
-  const labels = activeStore.state.pipe(mergeMap(repoState => repoState.labelsDao.list));
+  const labels = store.select(state => state.labels.ids.map(id => state.labels.entities[id]));
   const issues =
       store.select(s => s.items)
           .pipe(

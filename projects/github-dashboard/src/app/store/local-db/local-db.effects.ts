@@ -8,6 +8,7 @@ import {AppIndexedDb} from '../../repository/utility/app-indexed-db';
 import {LoadContributorsFromLocalDb} from '../contributor/contributor.action';
 import {AppState} from '../index';
 import {LoadItemsFromLocalDb} from '../item/item.action';
+import {LoadLabelsFromLocalDb} from '../label/label.action';
 
 import {LocalDbActionTypes, UpdateLocalDbEntities} from './local-db.actions';
 
@@ -36,6 +37,7 @@ export class LocalDbEffects {
     switchMap(result => {
       return [
         new LoadItemsFromLocalDb({items: result[0]}),
+        new LoadLabelsFromLocalDb({labels: result[1]}),
         new LoadContributorsFromLocalDb({contributors: result[2]})
       ];
     }));
