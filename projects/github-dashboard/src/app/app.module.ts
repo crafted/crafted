@@ -17,11 +17,7 @@ import {LoginModule} from './home-page/home-page.module';
 import {Theme} from './repository/services/theme';
 import {LoginDialogModule} from './service/login-dialog/login-dialog.module';
 import {RateLimitReachedModule} from './service/rate-limit-reached/rate-limit-reached.module';
-import {metaReducers, reducers} from './store';
-import {GithubEffects} from './store/github/github.effects';
-import {ItemEffects} from './store/item/item.effects';
-import {LocalDbEffects} from './store/local-db/local-db.effects';
-import {RepositoryEffects} from './store/repository/repository.effects';
+import {effects, metaReducers, reducers} from './store';
 
 
 @NgModule({
@@ -43,7 +39,7 @@ export class TimeAgoPipeModule {
     LoginModule,
     HttpClientModule,
     StoreModule.forRoot(reducers, {metaReducers}),
-    EffectsModule.forRoot([ItemEffects, LocalDbEffects, GithubEffects, RepositoryEffects]),
+    EffectsModule.forRoot(effects),
     RouterModule.forRoot(
         [
           {path: '', component: HomePage},

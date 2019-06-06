@@ -3,26 +3,25 @@ import {Item} from '../../github/app-types/item';
 import {ItemAction, ItemActionTypes} from './item.action';
 import {ItemState} from './item.state';
 
-export const itemAdapter: EntityAdapter<Item> =
+export const entityAdapter: EntityAdapter<Item> =
   createEntityAdapter<Item>();
 
 const initialState: ItemState = {
-  ids: itemAdapter.getInitialState().ids as string[],
-  entities: itemAdapter.getInitialState().entities,
-  repository: '',
+  ids: entityAdapter.getInitialState().ids as string[],
+  entities: entityAdapter.getInitialState().entities,
 };
 
 export function itemActionReducer(state: ItemState = initialState, action: ItemAction): ItemState {
   switch (action.type) {
 
     case ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB:
-      return itemAdapter.upsertMany(action.payload.items, state);
+      return entityAdapter.upsertMany(action.payload.items, state);
 
     case ItemActionTypes.LOAD_FROM_LOCAL_DB:
-      return itemAdapter.addAll(action.payload.items, state);
+      return entityAdapter.addAll(action.payload.items, state);
 
     case ItemActionTypes.REMOVE_ALL:
-      return itemAdapter.removeAll(state);
+      return entityAdapter.removeAll(state);
 
     case ItemActionTypes.ADD_LABEL: {
       const item = state.entities[action.payload.id];

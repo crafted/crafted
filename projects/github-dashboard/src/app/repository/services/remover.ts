@@ -6,7 +6,8 @@ import {mergeMap, take} from 'rxjs/operators';
 
 import {LoadedRepos} from '../../service/loaded-repos';
 import {AppState} from '../../store';
-import {ItemRemoveAll} from '../../store/item/item.action';
+import {RemoveAllContributors} from '../../store/contributor/contributor.action';
+import {RemoveAllItems} from '../../store/item/item.action';
 import {DeleteConfirmation} from '../shared/dialog/delete-confirmation/delete-confirmation';
 
 import {RepoState} from './active-store';
@@ -38,8 +39,9 @@ export class Remover {
   }
 
   private remove(repoState: RepoState) {
-    this.store.dispatch(new ItemRemoveAll());
-    [repoState.contributorsDao, repoState.labelsDao].forEach(dao => dao.removeAll());
+    this.store.dispatch(new RemoveAllItems());
+    this.store.dispatch(new RemoveAllContributors());
+    repoState.labelsDao.removeAll();
 
     // TODO: Removing loaded repo should be a dispatched action
     this.store.select(state => state.repository.name).pipe(take(1)).subscribe(repository => {

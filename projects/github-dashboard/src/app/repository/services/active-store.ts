@@ -16,7 +16,6 @@ import {ListDao} from '../utility/list-dao';
 
 export interface RepoState {
   labelsDao: ListDao<Label>;
-  contributorsDao: ListDao<Contributor>;
   dashboardsDao?: ListDao<Dashboard>;
   queriesDao?: ListDao<Query>;
   recommendationsDao?: ListDao<Recommendation>;
@@ -46,7 +45,6 @@ function createRepoState(repository: string): RepoState {
   const appIndexedDb = new AppIndexedDb(repository);
   return {
     labelsDao: new ListDao<Label>('labels', appIndexedDb),
-    contributorsDao: new ListDao<Contributor>('contributors', appIndexedDb),
     dashboardsDao: new ListDao<Item>('dashboards', appIndexedDb),
     recommendationsDao: new ListDao<Label>('recommendations', appIndexedDb),
     queriesDao: new ListDao<Contributor>('queries', appIndexedDb),

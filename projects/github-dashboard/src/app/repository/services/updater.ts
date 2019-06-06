@@ -6,6 +6,7 @@ import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {Github} from '../../service/github';
 import {AppState} from '../../store';
+import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../store/item/item.action';
 import {compareLocalToRemote} from '../utility/list-dao';
 
@@ -42,7 +43,7 @@ export class Updater {
       case 'labels':
         return this.updateLabels(repoState);
       case 'contributors':
-        return this.updateContributors(repoState);
+        return this.updateContributors();
     }
   }
 
@@ -64,10 +65,11 @@ export class Updater {
     });
   }
 
-  private updateContributors(repoState: RepoState) {
+  private updateContributors() {
     this.setTypeState('contributors', 'updating');
 
-    const localList$ = repoState.contributorsDao.list;
+    const localList$ = this.store.select(
+        state => state.contributors.ids.map(id => state.contributors.entities[id]));
     const remoteList$ = this.store.select(state => state.repository.name)
                             .pipe(
                                 mergeMap(repository => this.github.getContributors(repository)),
@@ -76,7 +78,7 @@ export class Updater {
 
     combineLatest(localList$, remoteList$).pipe(take(1)).subscribe(([local, remote]) => {
       const comparison = compareLocalToRemote(local, remote);
-      repoState.contributorsDao.update(comparison.toUpdate);
+      this.store.dispatch(new UpdateContributorsFromGithub({contributors: comparison.toUpdate}));
       this.setTypeState('contributors', 'updated');
     });
   }
@@ -96,8 +98,7 @@ export class Updater {
             take(1))
         .subscribe((result) => {
           if (result.length) {
-            this.store.dispatch(
-                new UpdateItemsFromGithub({items: result}));
+            this.store.dispatch(new UpdateItemsFromGithub({items: result}));
           }
           this.setTypeState('items', 'updated');
         });
@@ -115,23 +116,20 @@ export class Updater {
 
     // TODO: Cleanup - should not stash repository
     let repository = '';
-    return this.store
-        .pipe(
-            filter(state => !!state.items.ids.length),
-            take(1),
-            map(state => {
-              repository = state.repository.name;
-              state.items.ids.forEach(id => {
-                const item = state.items.entities[id];
-                if (!lastUpdated || lastUpdated < item.updated) {
-                  lastUpdated = item.updated;
-                }
-              });
+    return this.store.pipe(
+        filter(state => !!state.items.ids.length), take(1), map(state => {
+          repository = state.repository.name;
+          state.items.ids.forEach(id => {
+            const item = state.items.entities[id];
+            if (!lastUpdated || lastUpdated < item.updated) {
+              lastUpdated = item.updated;
+            }
+          });
 
-              return lastUpdated;
-            }),
-            mergeMap(() => this.github.getItemsCount(repository, lastUpdated)),
-            map(count => ({lastUpdated, count, repository})));
+          return lastUpdated;
+        }),
+        mergeMap(() => this.github.getItemsCount(repository, lastUpdated)),
+        map(count => ({lastUpdated, count, repository})));
   }
 
   private setTypeState(type: UpdatableType, typeState: UpdateState) {

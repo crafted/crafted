@@ -16,7 +16,7 @@ export class UpdateItemsFromGithub implements Action {
   constructor(public payload: {items: Item[]}) {}
 }
 
-export class LoadFromLocalDb implements Action {
+export class LoadItemsFromLocalDb implements Action {
   readonly type = ItemActionTypes.LOAD_FROM_LOCAL_DB;
   constructor(public payload: {items: Item[]}) {}
 }
@@ -41,9 +41,9 @@ export class ItemRemoveAssigneeAction implements Action {
   constructor(public payload: {id: string, assignee: string}) {}
 }
 
-export class ItemRemoveAll implements Action {
+export class RemoveAllItems implements Action {
   readonly type = ItemActionTypes.REMOVE_ALL;
 }
 
-export type ItemAction = UpdateItemsFromGithub|ItemAddLabelAction|ItemRemoveLabelAction|LoadFromLocalDb|
-    ItemAddAssigneeAction|ItemRemoveAssigneeAction|ItemRemoveAll;
+export type ItemAction = UpdateItemsFromGithub|ItemAddLabelAction|ItemRemoveLabelAction|LoadItemsFromLocalDb|
+    ItemAddAssigneeAction|ItemRemoveAssigneeAction|RemoveAllItems;

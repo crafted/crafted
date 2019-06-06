@@ -14,6 +14,7 @@ import {filter, map, mergeMap, startWith, takeUntil, tap} from 'rxjs/operators';
 import {Github} from '../../../service/github';
 import {LoadedRepos} from '../../../service/loaded-repos';
 import {AppState} from '../../../store';
+import {UpdateContributorsFromGithub} from '../../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../../store/item/item.action';
 import {ActiveStore} from '../../services/active-store';
 
@@ -104,7 +105,8 @@ export class LoadData {
                   return getLabels.pipe(mergeMap(() => getContributors), mergeMap(() => getIssues))
                       .pipe(tap(() => {
                         repoState.labelsDao.update(loadedData.labels);
-                        repoState.contributorsDao.update(loadedData.contributors);
+                        this.store.dispatch(new UpdateContributorsFromGithub(
+                            {contributors: loadedData.contributors}));
                         this.store.dispatch(new UpdateItemsFromGithub({items: loadedData.items}));
                         this.loadedRepos.addLoadedRepo(repository);
                       }));

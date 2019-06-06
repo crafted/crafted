@@ -5,8 +5,9 @@ import {combineLatest} from 'rxjs';
 import {mergeMap, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 
 import {AppIndexedDb} from '../../repository/utility/app-indexed-db';
+import {LoadContributorsFromLocalDb} from '../contributor/contributor.action';
 import {AppState} from '../index';
-import {LoadFromLocalDb} from '../item/item.action';
+import {LoadItemsFromLocalDb} from '../item/item.action';
 
 import {LocalDbActionTypes, UpdateLocalDbEntities} from './local-db.actions';
 
@@ -34,7 +35,8 @@ export class LocalDbEffects {
     }),
     switchMap(result => {
       return [
-        new LoadFromLocalDb({items: result[0]})
+        new LoadItemsFromLocalDb({items: result[0]}),
+        new LoadContributorsFromLocalDb({contributors: result[2]})
       ];
     }));
 
