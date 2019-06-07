@@ -20,7 +20,6 @@ import {selectAllLabels} from '../store/label/label.reducer';
 import {selectAllQueries} from '../store/query/query.reducer';
 import {selectAllRecommendations} from '../store/recommendation/recommendation.reducer';
 
-import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
@@ -67,23 +66,20 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
   templateUrl: 'repository.html',
   styleUrls: ['repository.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [Store]}
-  ]
+  providers: [{provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [Store]}]
 })
 export class Repository {
   private destroyed = new Subject();
 
   constructor(
       private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-      private remover: Remover, private auth: Auth,
-      private pageNavigator: PageNavigator, private repoGist: RepoGist, private config: Config,
-      private store: Store<AppState>) {
+      private remover: Remover, private auth: Auth, private repoGist: RepoGist,
+      private config: Config, private store: Store<AppState>) {
     this.store.select(s => s.repository.name)
-        .pipe(take(1))
+        .pipe(filter(repository => !!repository))
         .subscribe(repository => {
           if (!this.loadedRepos.isLoaded(repository)) {
-            this.pageNavigator.navigateToDatabase();
+            this.router.navigate([`${repository}/database`]);
           } else if (this.auth.token) {
             this.updater.update('items');
             this.updater.update('contributors');

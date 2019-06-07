@@ -1,14 +1,13 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {delay, map} from 'rxjs/operators';
 import {AppState} from '../../store';
+import {NavigateToQuery, NavigateToQueryType} from '../../store/query/query.action';
 import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {PageNavigator} from '../services/page-navigator';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 
 interface QueryListItem {
@@ -46,8 +45,7 @@ export class QueriesPage {
 
   constructor(
       private store: Store<AppState>,
-      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-      private router: Router, private pageNavigator: PageNavigator) {
+      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {
     this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 
@@ -56,11 +54,11 @@ export class QueriesPage {
   queryKeyTrackBy = (_i: number, itemQuery: Query) => itemQuery.id;
 
   createQuery() {
-    this.pageNavigator.navigateToQuery();
+    this.store.dispatch(new NavigateToQuery({type: NavigateToQueryType.NEW}));
   }
 
   navigateToQuery(id: string) {
-    this.pageNavigator.navigateToQuery(id);
+    this.store.dispatch(new NavigateToQuery({type: NavigateToQueryType.BY_ID, id}));
   }
 
   handleHeaderAction(action: QueriesPageAction) {

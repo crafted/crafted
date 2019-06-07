@@ -15,6 +15,7 @@ import {LabelEffects} from './label/label.effects';
 import {labelActionReducer} from './label/label.reducer';
 import {LabelState} from './label/label.state';
 import {LocalDbEffects} from './local-db/local-db.effects';
+import {QueryEffects} from './query/query.effects';
 import {queryActionReducer} from './query/query.reducer';
 import {QueryState} from './query/query.state';
 import {RecommendationEffects} from './recommendation/recommendation.effects';
@@ -55,4 +56,5 @@ export const effects: Type<any>[] = [
   LabelEffects,
   DashboardEffects,
   RecommendationEffects,
+  QueryEffects,
 ];

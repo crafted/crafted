@@ -12,6 +12,24 @@ export enum QueryActionTypes {
   SYNC = '[Query] sync',
 }
 
+export enum NavigateToQueryType {
+  NEW = 'new',
+  BY_ID = 'by ID',
+  BY_JSON = 'by JSON',
+}
+
+export type NavigateToQueryPayload = {
+  type: NavigateToQueryType.NEW,
+}|{
+  type: NavigateToQueryType.BY_ID,
+  id: string,
+  replaceUrl?: boolean,
+}|{
+  type: NavigateToQueryType.BY_JSON,
+  query: Partial<Query>,
+};
+
+
 export class CreateQuery implements Action {
   readonly type = QueryActionTypes.CREATE_QUERY;
   constructor(public payload: {query: Partial<Query>}) {}
@@ -29,7 +47,7 @@ export class UpsertQueries implements Action {
 
 export class NavigateToQuery implements Action {
   readonly type = QueryActionTypes.NAVIGATE_TO_QUERY;
-  constructor(public payload: {id: string}) {}
+  constructor(public payload: NavigateToQueryPayload) {}
 }
 
 export class LoadQueriesFromLocalDb implements Action {
@@ -47,5 +65,4 @@ export class SyncQueries implements Action {
   constructor(public payload: {update: Update<Query>[], remove: string[]}) {}
 }
 
-export type QueryAction = CreateQuery|
-    UpdateQuery|UpsertQueries|LoadQueriesFromLocalDb|RemoveQuery;
+export type QueryAction = CreateQuery|UpdateQuery|UpsertQueries|LoadQueriesFromLocalDb|RemoveQuery;

@@ -8,7 +8,6 @@ import {AppState} from '../../store';
 import {CreateDashboard, NavigateToDashboard} from '../../store/dashboard/dashboard.action';
 import {selectAllDashboards} from '../../store/dashboard/dashboard.reducer';
 import {Header} from '../services/header';
-import {PageNavigator} from '../services/page-navigator';
 import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 
@@ -36,7 +35,7 @@ export class DashboardsPage {
 
   constructor(
       private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
-      private pageNavigator: PageNavigator, private store: Store<AppState>) {}
+      private store: Store<AppState>) {}
 
   trackById = (_i: number, dashboard: Dashboard) => dashboard.id;
 

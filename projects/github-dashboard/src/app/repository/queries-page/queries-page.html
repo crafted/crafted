@@ -4,7 +4,7 @@
 </header-content>
 
 <ng-container *ngIf="queryGroups | async as queryGroups">
-  <collection-page-empty-state (action)="createQuery()"
+  <collection-page-empty-state (action)="navigateToQuery('new')"
                                *ngIf="!queryGroups.length"
                                actionText="Create New Query"
                                icon="find_in_page"
