@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {DataResources, DataSource, Filterer} from '@crafted/data';
+import {DataSource, Filterer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
@@ -14,11 +14,12 @@ import {
   RECOMMENDATION_TYPES
 } from '../../../../model/recommendation';
 import {RepoState} from '../../../../services/active-store';
+import {RecommendationsDataResourcesMap} from '../recommendation-dialog';
 
 export interface RecommendationEditData {
   recommendation: Recommendation;
   repoState: RepoState;
-  dataResourcesMap: Map<string, DataResources>;
+  dataResourcesMap: RecommendationsDataResourcesMap;
 }
 
 @Component({
@@ -71,7 +72,7 @@ export class RecommendationEdit {
   private destroyed = new Subject();
 
   constructor(
-      public dialogRef: MatDialogRef<RecommendationEdit>, private store: Store<AppState>,
+      public dialogRef: MatDialogRef<RecommendationEdit, Recommendation>, private store: Store<AppState>,
       @Inject(MAT_DIALOG_DATA) public data: RecommendationEditData) {
     if (!data && !data.recommendation) {
       throw Error('Recommendation required to show recommendation dialog');

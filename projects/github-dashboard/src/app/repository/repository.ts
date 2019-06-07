@@ -15,7 +15,10 @@ import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
 import {AppState} from '../store';
 import {selectAllDashboards} from '../store/dashboard/dashboard.reducer';
+import {selectAllItems} from '../store/item/item.reducer';
+import {selectAllLabels} from '../store/label/label.reducer';
 import {selectAllQueries} from '../store/query/query.reducer';
+import {selectAllRecommendations} from '../store/recommendation/recommendation.reducer';
 
 import {ActiveStore, RepoState} from './services/active-store';
 import {PageNavigator} from './services/page-navigator';
@@ -27,20 +30,13 @@ import {getRecommendations} from './utility/get-recommendations';
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
-export const provideDataResourcesMap = (activeStore: ActiveStore, store: Store<AppState>) => {
-  const recommendations =
-      activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
-  const labels = store.select(state => state.labels.ids.map(id => state.labels.entities[id]));
-  const issues =
-      store.select(s => s.items)
-          .pipe(
-              map(itemState =>
-                      itemState.ids.map(id => itemState.entities[id]).filter(item => !item.pr)));
-  const prs =
-      store.select(s => s.items)
-          .pipe(
-              map(itemState =>
-                      itemState.ids.map(id => itemState.entities[id]).filter(item => !!item.pr)));
+export const provideDataResourcesMap = (store: Store<AppState>) => {
+  const recommendations = store.select(state => selectAllRecommendations(state.recommendations));
+  const labels = store.select(state => selectAllLabels(state.labels));
+
+  const allItems = store.select(state => selectAllItems(state.items));
+  const issues = allItems.pipe(map(items => items.filter(i => !i.pr)));
+  const prs = allItems.pipe(map(items => items.filter(i => !!i.pr)));
 
   return new Map<string, DataResources>([
     [
@@ -73,7 +69,7 @@ export const provideDataResourcesMap = (activeStore: ActiveStore, store: Store<A
   styleUrls: ['repository.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    {provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [ActiveStore, Store]}
+    {provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [Store]}
   ]
 })
 export class Repository {
@@ -98,7 +94,7 @@ export class Repository {
 
           // Sync and then start saving
           this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
-            this.saveConfigChangesToGist(name, repoState, this.store);
+            this.saveConfigChangesToGist(name, this.store);
           });
         });
   }
@@ -119,11 +115,12 @@ export class Repository {
         });
   }
 
-  /** Persist changes to config lists to gist */ private saveConfigChangesToGist(
-      repository: string, repoState: RepoState, store: Store<AppState>) {
+  /** Persist changes to config lists to gist */
+  private saveConfigChangesToGist(repository: string, store: Store<AppState>) {
     const configDaoLists = [
       store.select(state => selectAllDashboards(state.dashboards)),
-      store.select(state => selectAllQueries(state.queries)), repoState.recommendationsDao.list
+      store.select(state => selectAllQueries(state.queries)),
+      store.select(state => selectAllRecommendations(state.recommendations))
     ];
     combineLatest(...configDaoLists)
         .pipe(debounceTime(500), takeUntil(this.destroyed))

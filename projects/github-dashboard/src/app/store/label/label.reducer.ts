@@ -27,3 +27,5 @@ export function labelActionReducer(state: LabelState = initialState, action: Lab
       return state;
   }
 }
+
+export const selectAllLabels = entityAdapter.getSelectors().selectAll;

@@ -10,6 +10,8 @@ import {
   ItemAddLabelAction,
   ItemRemoveLabelAction
 } from '../../../store/item/item.action';
+import {selectAllLabels} from '../../../store/label/label.reducer';
+import {selectAllRecommendations} from '../../../store/recommendation/recommendation.reducer';
 import {ActiveStore} from '../../services/active-store';
 import {getRecommendations} from '../../utility/get-recommendations';
 
@@ -29,25 +31,23 @@ export class ItemDetail {
 
   itemId$ = new ReplaySubject<string>(1);
 
-  // TODO: Recommendations should match the data type
-  // TODO: Hide actions when not logged in
-  recommendations = this.activeStore.state.pipe(
-      switchMap(
-          repoState => combineLatest(
-              repoState.recommendationsDao.list, this.store.select(state => state.labels),
-              this.item$)),
-      map(([recommendationsList, labelsState, item]) => {
-        const labelsMap = new Map<string, Label>();
-        labelsState.ids.forEach(id => labelsMap.set(id, labelsState.entities[id]));
-        return getRecommendations(item, recommendationsList, labelsMap);
-      }));
-
-  isLoadingActivities = new ReplaySubject<boolean>(1);
-
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
   item$ = combineLatest(this.distinctItemId$, this.store)
-              .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
+    .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
+
+  // TODO: Recommendations should match the data type
+  // TODO: Hide actions when not logged in
+  recommendations = combineLatest(
+                        this.store.select(state => selectAllRecommendations(state.recommendations)),
+                        this.store.select(state => selectAllLabels(state.labels)), this.item$)
+                        .pipe(map(([recommendations, labels, item]) => {
+                          const labelsMap = new Map<string, Label>();
+                          labels.forEach(label => labelsMap.set(label.id, label));
+                          return getRecommendations(item, recommendations, labelsMap);
+                        }));
+
+  isLoadingActivities = new ReplaySubject<boolean>(1);
 
   activities = this.distinctItemId$.pipe(
       tap(() => this.isLoadingActivities.next(true)),
@@ -82,9 +82,10 @@ export class ItemDetail {
     this.elementRef.nativeElement.scrollTop = 0;
   }
 
-  addLabelOptions: Observable<{id: string, label: string}[]> = this.store.select(state => state.labels).pipe(
-      map(labelsState => {
-        const labelOptions = labelsState.ids.map(id => ({id, label: labelsState.entities[id].name}));
+  addLabelOptions: Observable<{id: string, label: string}[]> =
+      this.store.select(state => state.labels).pipe(map(labelsState => {
+        const labelOptions =
+            labelsState.ids.map(id => ({id, label: labelsState.entities[id].name}));
         labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
         return labelOptions;
       }));

@@ -1,8 +1,11 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
-import {combineLatest, Observable} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {map, take} from 'rxjs/operators';
+import {AppState} from '../../store';
+import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
@@ -37,7 +40,7 @@ export class RecommendationsPage {
   filter = new FormControl('');
 
   dataSource = new DataSource(
-      {data: this.activeStore.state.pipe(mergeMap(store => store.recommendationsDao.list))});
+      {data: this.store.select(state => selectAllRecommendations(state.recommendations))});
 
   headerActions: Observable<HeaderContentAction[]> = this.dataSource.data.pipe(
       map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
@@ -56,7 +59,7 @@ export class RecommendationsPage {
   constructor(
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
       private header: Header, private activeStore: ActiveStore,
-      private recommendationDialog: RecommendationDialog) {}
+      private recommendationDialog: RecommendationDialog, private store: Store<AppState>) {}
 
   create() {
     this.activeStore.state.pipe(take(1)).subscribe(repoState => {
@@ -65,13 +68,10 @@ export class RecommendationsPage {
   }
 
   editJson() {
-    const recommendationsList =
-        this.activeStore.state.pipe(mergeMap(repoState => repoState.recommendationsDao.list));
-
-    combineLatest(recommendationsList, this.activeStore.state)
+    this.store.select(state => selectAllRecommendations(state.recommendations))
         .pipe(take(1))
-        .subscribe(([recommendations, repoState]) => {
-          this.recommendationDialog.jsonEditor(recommendations, repoState);
+        .subscribe(recommendations => {
+          this.recommendationDialog.jsonEditor(recommendations);
         });
   }
 

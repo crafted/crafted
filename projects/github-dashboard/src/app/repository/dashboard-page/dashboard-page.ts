@@ -15,15 +15,15 @@ import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {filter, map, mergeMap, take} from 'rxjs/operators';
+import {filter, map, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {AppState} from '../../store';
 import {UpsertDashboards} from '../../store/dashboard/dashboard.action';
 import {selectAllQueries} from '../../store/query/query.reducer';
+import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore} from '../services/active-store';
 import {Theme} from '../services/theme';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -35,12 +35,12 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPage {
-  savedFiltererStates = this.activeStore.state.pipe(
-      mergeMap(
-          config => combineLatest(
-              this.store.select(state => selectAllQueries(state.queries)),
-              config.recommendationsDao.list)),
-      map(([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
+  savedFiltererStates =
+      combineLatest(
+          this.store.select(state => selectAllQueries(state.queries)),
+          this.store.select(state => selectAllRecommendations(state.recommendations)))
+          .pipe(map(
+              ([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
 
   dashboard: Observable<Dashboard> =
       combineLatest(
@@ -72,8 +72,7 @@ export class DashboardPage {
   constructor(
       private store: Store<AppState>, private dialog: MatDialog, private elementRef: ElementRef,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-      private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
-      private activeStore: ActiveStore) {
+      private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme) {
     // TODO: Needs to listen for theme changes to know when this should change
     Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
 

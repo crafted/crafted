@@ -60,3 +60,5 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
       return state;
   }
 }
+
+export const selectAllItems = entityAdapter.getSelectors().selectAll;

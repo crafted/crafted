@@ -2,8 +2,11 @@ import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
+import {AppState} from '../../../store';
+import {CreateRecommendation} from '../../../store/recommendation/recommendation.action';
 import {Query} from '../../model/query';
 import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../../repository';
@@ -37,9 +40,9 @@ export class RecommendationView {
   @Input() recommendation: Recommendation;
 
   constructor(
-      private recommendationDialog: RecommendationDialog, private activeStore: ActiveStore,
-      private router: Router, private activatedRoute: ActivatedRoute,
-      private pageNavigator: PageNavigator,
+      private store: Store<AppState>, private recommendationDialog: RecommendationDialog,
+      private activeStore: ActiveStore, private router: Router,
+      private activatedRoute: ActivatedRoute, private pageNavigator: PageNavigator,
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
@@ -61,16 +64,11 @@ export class RecommendationView {
   duplicate() {
     const newRecommendation = {...this.recommendation};
     delete newRecommendation.id;
-
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      repoState.recommendationsDao.add(newRecommendation).pipe(take(1)).subscribe();
-    });
+    this.store.dispatch(new CreateRecommendation({recommendation: newRecommendation}));
   }
 
   remove() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.recommendationDialog.remove(this.recommendation, repoState);
-    });
+    this.recommendationDialog.remove(this.recommendation);
   }
 
   open() {
