@@ -1,8 +1,11 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {delay, map, mergeMap} from 'rxjs/operators';
+import {delay, map} from 'rxjs/operators';
+import {AppState} from '../../store';
+import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
@@ -37,14 +40,16 @@ const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
-  queries = this.activeStore.state.pipe(mergeMap(repoState => repoState.queriesDao.list));
+  queries = this.store.select(state => selectAllQueries(state.queries));
   dataTypes: string[] = [];
   headerActions: Observable<HeaderContentAction[]> =
-    this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));
+      this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));
 
   constructor(
-    @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-    private router: Router, private activeStore: ActiveStore, private pageNavigator: PageNavigator) {
+      private store: Store<AppState>,
+      @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
+      private router: Router, private activeStore: ActiveStore,
+      private pageNavigator: PageNavigator) {
     this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 

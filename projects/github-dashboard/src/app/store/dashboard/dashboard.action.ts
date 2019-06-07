@@ -18,7 +18,7 @@ export class CreateDashboard implements Action {
 
 export class UpdateDashboard implements Action {
   readonly type = DashboardActionTypes.UPDATE_DASHBOARD;
-  constructor(public payload: {dashboard: Update<Dashboard>}) {}
+  constructor(public payload: {update: Update<Dashboard>}) {}
 }
 
 export class UpsertDashboards implements Action {

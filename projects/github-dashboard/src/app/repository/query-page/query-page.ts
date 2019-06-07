@@ -7,11 +7,11 @@ import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
 import {AppState} from '../../store';
 import {GitHubUpdateItem} from '../../store/github/github.actions';
+import {CreateQuery} from '../../store/query/query.action';
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ActiveStore} from '../services/active-store';
-import {PageNavigator} from '../services/page-navigator';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -45,16 +45,15 @@ export class QueryPage {
 
   dataResourceOptions: {id: string, label: string}[];
 
-  query: Observable<Query> = combineLatest(this.activatedRoute.params, this.activeStore.state)
-                                 .pipe(
-                                     mergeMap(([params, repoState]) => {
-                                       if (params.id !== 'new') {
-                                         return repoState.queriesDao.get(params.id);
-                                       }
+  query: Observable<Query> = this.activatedRoute.params.pipe(
+      mergeMap(params => {
+        if (params.id !== 'new') {
+          return this.store.select(state => state.queries.entities[params.id]);
+        }
 
-                                       return this.newQuery();
-                                     }),
-                                     shareReplay(1));
+        return this.newQuery();
+      }),
+      shareReplay(1));
 
   queryResources: Observable<QueryResources> = this.query.pipe(
       map(query => {
@@ -106,8 +105,7 @@ export class QueryPage {
       private store: Store<AppState>,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
       private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-      private activeStore: ActiveStore, private queryDialog: QueryDialog,
-      private pageNavigator: PageNavigator) {
+      private activeStore: ActiveStore, private queryDialog: QueryDialog) {
     this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
         dataResource =>
@@ -134,22 +132,15 @@ export class QueryPage {
                 resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.activeStore.state)
-        .pipe(
-            mergeMap(([query, state, repoState]) => {
-              const states = {
-                filtererState: state[0],
-                grouperState: state[1],
-                sorterState: state[2],
-                viewerState: state[3],
-              };
-              const newQuery = {...query, ...states, name, group};
-              return repoState.queriesDao.add(newQuery);
-            }),
-            take(1))
-        .subscribe(
-            query => this.pageNavigator.navigateToQuery(
-                query, {replaceUrl: true, queryParamsHandling: 'merge'}));
+    combineLatest(this.query, currentState).pipe(take(1)).subscribe(([query, state]) => {
+      const states = {
+        filtererState: state[0],
+        grouperState: state[1],
+        sorterState: state[2],
+        viewerState: state[3],
+      };
+      this.store.dispatch(new CreateQuery({query: {...query, ...states, name, group}}));
+    });
   }
 
   navigateToItem(id: string) {

@@ -1,19 +1,22 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
+import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {AppState} from '../../../../store';
+import {RemoveQuery, UpdateQuery} from '../../../../store/query/query.action';
 import {Query} from '../../../model/query';
-import {RepoState} from '../../../services/active-store';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {QueryEdit, QueryEditResult} from './query-edit/query-edit';
 
 
 @Injectable()
 export class QueryDialog {
-  constructor(private dialog: MatDialog, private snackbar: MatSnackBar) {}
+  constructor(
+      private dialog: MatDialog, private snackbar: MatSnackBar, private store: Store<AppState>) {}
 
   /** Shows the edit query dialog to change the name/group. */
-  editQuery(query: Query, repoState: RepoState) {
+  editQuery(query: Query) {
     const data = {
       name: query.name,
       group: query.group,
@@ -21,7 +24,8 @@ export class QueryDialog {
 
     this.dialog.open(QueryEdit, {data}).afterClosed().pipe(take(1)).subscribe(result => {
       if (result) {
-        repoState.queriesDao.update({id: query.id, name: result.name, group: result.group});
+        const update = {id: query.id, changes: {name: result.name, group: result.group}};
+        this.store.dispatch(new UpdateQuery({update}));
       }
     });
   }
@@ -30,7 +34,7 @@ export class QueryDialog {
    * Shows delete query dialog. If user confirms deletion, remove the
    * query and navigate to the queries page.
    */
-  deleteQuery(query: Query, repoState: RepoState) {
+  deleteQuery(query: Query) {
     const data = {name: of(query.name)};
 
     this.dialog.open(DeleteConfirmation, {data})
@@ -38,7 +42,7 @@ export class QueryDialog {
         .pipe(take(1))
         .subscribe(confirmed => {
           if (confirmed) {
-            repoState.queriesDao.remove(query.id);
+            this.store.dispatch(new RemoveQuery({id: query.id}));
             this.snackbar.open(`Query "${query.name}" deleted`, '', {duration: 2000});
           }
         });

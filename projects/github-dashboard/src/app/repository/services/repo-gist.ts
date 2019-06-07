@@ -7,6 +7,9 @@ import {map, mergeMap, take, tap} from 'rxjs/operators';
 import {Config, RepoConfig} from '../../service/config';
 import {AppState} from '../../store';
 import {SyncDashboards} from '../../store/dashboard/dashboard.action';
+import {selectAllDashboards} from '../../store/dashboard/dashboard.reducer';
+import {SyncQueries} from '../../store/query/query.action';
+import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
@@ -34,15 +37,21 @@ export class RepoGist {
               }
 
               const dashboardsSync = syncResults[0] as LocalToRemoteComparison<Dashboard>;
-              const add = dashboardsSync.toAdd.map(d => ({id: d.id, changes: {...d}}));
-              const update = dashboardsSync.toUpdate.map(d => ({id: d.id, changes: {...d}}));
-              this.store.dispatch(new SyncDashboards(
-                  {update: update.concat(add), remove: dashboardsSync.toRemove.map(d => d.id)}));
+              const addDashboards = dashboardsSync.toAdd.map(d => ({id: d.id, changes: {...d}}));
+              const updateDashboards =
+                  dashboardsSync.toUpdate.map(d => ({id: d.id, changes: {...d}}));
+              this.store.dispatch(new SyncDashboards({
+                update: updateDashboards.concat(addDashboards),
+                remove: dashboardsSync.toRemove.map(d => d.id),
+              }));
 
-              const querySync = syncResults[1] as LocalToRemoteComparison<Query>;
-              repoState.queriesDao.add(querySync.toAdd);
-              repoState.queriesDao.update(querySync.toUpdate);
-              repoState.queriesDao.remove(querySync.toRemove.map(v => v.id));
+              const queriesSync = syncResults[0] as LocalToRemoteComparison<Query>;
+              const add = queriesSync.toAdd.map(q => ({id: q.id, changes: {...q}}));
+              const update = queriesSync.toUpdate.map(q => ({id: q.id, changes: {...q}}));
+              this.store.dispatch(new SyncQueries({
+                update: update.concat(add),
+                remove: queriesSync.toRemove.map(d => d.id),
+              }));
 
               const recommendationsSync = syncResults[2] as LocalToRemoteComparison<Recommendation>;
               repoState.recommendationsDao.add(recommendationsSync.toAdd);
@@ -87,8 +96,9 @@ function getSyncResults(
   }
 
   return combineLatest(
-             store.select(state => state.dashboards.ids.map(id => state.dashboards.entities[id])),
-             repoState.queriesDao.list, repoState.recommendationsDao.list)
+             store.select(state => selectAllDashboards(state.dashboards)),
+             store.select(state => selectAllQueries(state.queries)),
+             repoState.recommendationsDao.list)
       .pipe(
           map(([dashboards, queries, recommendations]) =>
                   [compareLocalToRemote(dashboards, remoteConfig.dashboards),

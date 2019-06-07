@@ -15,6 +15,8 @@ import {LabelEffects} from './label/label.effects';
 import {labelActionReducer} from './label/label.reducer';
 import {LabelState} from './label/label.state';
 import {LocalDbEffects} from './local-db/local-db.effects';
+import {queryActionReducer} from './query/query.reducer';
+import {QueryState} from './query/query.state';
 import {RepositoryEffects} from './repository/repository.effects';
 import {repositoryActionReducer} from './repository/repository.reducer';
 import {RepositoryState} from './repository/repository.state';
@@ -25,6 +27,7 @@ export interface AppState {
   contributors: ContributorState;
   labels: LabelState;
   dashboards: DashboardState;
+  queries: QueryState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
@@ -33,6 +36,7 @@ export const reducers: ActionReducerMap<AppState> = {
   contributors: contributorActionReducer,
   labels: labelActionReducer,
   dashboards: dashboardActionReducer,
+  queries: queryActionReducer,
 };
 
 export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];

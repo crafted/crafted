@@ -26,7 +26,7 @@ export class DashboardDialog {
       .pipe(take(1))
       .subscribe((dialogResult: QueryEditData) => {
         if (dialogResult) {
-          this.store.dispatch(new UpdateDashboard({dashboard: {
+          this.store.dispatch(new UpdateDashboard({update: {
               id: dashboard.id,
               changes: {
                 name: dialogResult.name,

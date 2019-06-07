@@ -19,6 +19,7 @@ import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
 import {AppState} from '../../store';
 import {UpsertDashboards} from '../../store/dashboard/dashboard.action';
+import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
@@ -35,7 +36,10 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
 })
 export class DashboardPage {
   savedFiltererStates = this.activeStore.state.pipe(
-      mergeMap(config => combineLatest(config.queriesDao.list, config.recommendationsDao.list)),
+      mergeMap(
+          config => combineLatest(
+              this.store.select(state => selectAllQueries(state.queries)),
+              config.recommendationsDao.list)),
       map(([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
 
   dashboard: Observable<Dashboard> =

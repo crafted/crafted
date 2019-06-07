@@ -3,17 +3,14 @@ import {ActivatedRoute} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
-import {Contributor} from '../../github/app-types/contributor';
 import {Label} from '../../github/app-types/label';
 import {AppState} from '../../store';
 import {LoadRepository} from '../../store/repository/repository.action';
-import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {AppIndexedDb} from '../utility/app-indexed-db';
 import {ListDao} from '../utility/list-dao';
 
 export interface RepoState {
-  queriesDao?: ListDao<Query>;
   recommendationsDao?: ListDao<Recommendation>;
 }
 
@@ -41,6 +38,5 @@ function createRepoState(repository: string): RepoState {
   const appIndexedDb = new AppIndexedDb(repository);
   return {
     recommendationsDao: new ListDao<Label>('recommendations', appIndexedDb),
-    queriesDao: new ListDao<Contributor>('queries', appIndexedDb),
   };
 }

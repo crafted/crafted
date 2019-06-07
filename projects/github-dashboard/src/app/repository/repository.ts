@@ -15,6 +15,7 @@ import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
 import {AppState} from '../store';
 import {selectAllDashboards} from '../store/dashboard/dashboard.reducer';
+import {selectAllQueries} from '../store/query/query.reducer';
 
 import {ActiveStore, RepoState} from './services/active-store';
 import {PageNavigator} from './services/page-navigator';
@@ -118,10 +119,11 @@ export class Repository {
         });
   }
 
-  /** Persist changes to config lists to gist */
-  private saveConfigChangesToGist(repository: string, repoState: RepoState, store: Store<AppState>) {
+  /** Persist changes to config lists to gist */ private saveConfigChangesToGist(
+      repository: string, repoState: RepoState, store: Store<AppState>) {
     const configDaoLists = [
-      store.select(state => selectAllDashboards(state.dashboards)), repoState.queriesDao.list, repoState.recommendationsDao.list
+      store.select(state => selectAllDashboards(state.dashboards)),
+      store.select(state => selectAllQueries(state.queries)), repoState.recommendationsDao.list
     ];
     combineLatest(...configDaoLists)
         .pipe(debounceTime(500), takeUntil(this.destroyed))

@@ -49,8 +49,8 @@ export class DashboardEffects {
       withLatestFrom(this.store.select(state => state.dashboards.entities)),
       map(([action, dashboards]) => {
         const dashboard = {
-          ...dashboards[action.payload.dashboard.id],
-          ...action.payload.dashboard.changes,
+          ...dashboards[action.payload.update.id],
+          ...action.payload.update.changes,
         };
 
         return new UpsertDashboards({dashboards: [dashboard]});

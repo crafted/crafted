@@ -10,6 +10,7 @@ import {LoadDashboardsFromLocalDb} from '../dashboard/dashboard.action';
 import {AppState} from '../index';
 import {LoadItemsFromLocalDb} from '../item/item.action';
 import {LoadLabelsFromLocalDb} from '../label/label.action';
+import {LoadQueriesFromLocalDb} from '../query/query.action';
 
 import {LocalDbActionTypes, RemoveLocalDbEntities, UpdateLocalDbEntities} from './local-db.actions';
 
@@ -41,6 +42,7 @@ export class LocalDbEffects {
         new LoadLabelsFromLocalDb({labels: result[1]}),
         new LoadContributorsFromLocalDb({contributors: result[2]}),
         new LoadDashboardsFromLocalDb({dashboards: result[3]}),
+        new LoadQueriesFromLocalDb({queries: result[4]}),
       ];
     }));
 

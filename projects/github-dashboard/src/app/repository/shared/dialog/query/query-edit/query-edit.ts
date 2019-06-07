@@ -1,10 +1,11 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {Store} from '@ngrx/store';
 import {combineLatest} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
-
-import {ActiveStore} from '../../../../services/active-store';
+import {map} from 'rxjs/operators';
+import {AppState} from '../../../../../store';
+import {selectAllQueries} from '../../../../../store/query/query.reducer';
 
 
 export interface QueryEditData {
@@ -27,24 +28,25 @@ export class QueryEdit {
   formGroup =
       new FormGroup({name: new FormControl('', Validators.required), group: new FormControl('')});
 
-  filteredGroupOptions = this.activeStore.state.pipe(
-    mergeMap(repoState => combineLatest(repoState.queriesDao.list, this.formGroup.valueChanges)),
-    map(([queries, formValue]) => {
-      const groupOptionsSet = new Set<string>();
-      queries.forEach(query => {
-        if (query.group) {
-          groupOptionsSet.add(query.group);
-        }
-      });
+  filteredGroupOptions =
+      combineLatest(
+          this.store.select(state => selectAllQueries(state.queries)), this.formGroup.valueChanges)
+          .pipe(map(([queries, formValue]) => {
+            const groupOptionsSet = new Set<string>();
+            queries.forEach(query => {
+              if (query.group) {
+                groupOptionsSet.add(query.group);
+              }
+            });
 
-      const groupOptions: string[] = [];
-      groupOptionsSet.forEach(groupOption => groupOptions.push(groupOption));
-      return this._filter(formValue.group, groupOptions);
-    }));
+            const groupOptions: string[] = [];
+            groupOptionsSet.forEach(groupOption => groupOptions.push(groupOption));
+            return this._filter(formValue.group, groupOptions);
+          }));
 
   constructor(
-    public dialogRef: MatDialogRef<QueryEdit>, private activeStore: ActiveStore,
-    @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
+      private store: Store<AppState>, public dialogRef: MatDialogRef<QueryEdit>,
+      @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
     if (data && data.name) {
       this.formGroup.get('name').setValue(data.name);
     }
@@ -58,7 +60,7 @@ export class QueryEdit {
   save() {
     if (this.formGroup.valid) {
       this.dialogRef.close(
-        {name: this.formGroup.get('name').value, group: this.formGroup.get('group').value});
+          {name: this.formGroup.get('name').value, group: this.formGroup.get('group').value});
     }
   }
 

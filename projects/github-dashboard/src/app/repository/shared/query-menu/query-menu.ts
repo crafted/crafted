@@ -1,7 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {take} from 'rxjs/operators';
 import {Query} from '../../model/query';
-import {ActiveStore} from '../../services/active-store';
 import {QueryDialog} from '../dialog/query/query-dialog';
 
 @Component({
@@ -14,18 +12,13 @@ export class QueryMenu {
 
   @Input() icon: 'settings'|'more_vert';
 
-  constructor(private queryDialog: QueryDialog, private activeStore: ActiveStore) {
-  }
+  constructor(private queryDialog: QueryDialog) {}
 
   openEditNameDialog() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.queryDialog.editQuery(this.query, repoState);
-    });
+    this.queryDialog.editQuery(this.query);
   }
 
   deleteQuery() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.queryDialog.deleteQuery(this.query, repoState);
-    });
+    this.queryDialog.deleteQuery(this.query);
   }
 }
