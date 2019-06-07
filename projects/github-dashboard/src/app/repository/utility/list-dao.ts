@@ -8,6 +8,7 @@ export interface IdentifiedObject {
   dbModified?: string;
 }
 
+// Combine toAdd and toUpdate
 export interface LocalToRemoteComparison<T> {
   toAdd: T[];
   toUpdate: T[];

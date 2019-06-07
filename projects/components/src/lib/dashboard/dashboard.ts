@@ -35,7 +35,7 @@ export interface ColumnGroup {
 }
 
 export interface Dashboard {
-  id?: string;
+  id: string;
   name?: string;
   description?: string;
   columnGroups?: ColumnGroup[];

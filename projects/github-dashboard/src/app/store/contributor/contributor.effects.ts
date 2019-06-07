@@ -1,8 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {map} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import {map, withLatestFrom} from 'rxjs/operators';
 import {StoreId} from '../../repository/utility/app-indexed-db';
-import {UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {AppState} from '../index';
+import {RemoveAllItems} from '../item/item.action';
+import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
 import {ContributorActionTypes, UpdateContributorsFromGithub} from './contributor.action';
 
 @Injectable()
@@ -18,5 +21,13 @@ export class ContributorEffects {
         return new UpdateLocalDbEntities(updatePayload);
       }));
 
-  constructor(private actions: Actions) {}
+  @Effect()
+  persistRemoveAllToLocalDb = this.actions.pipe(
+    ofType<RemoveAllItems>(ContributorActionTypes.REMOVE_ALL),
+    withLatestFrom(this.store.select(state => state.contributors.ids)),
+    map(([action, ids]) =>
+      new RemoveLocalDbEntities({ids, type: 'contributors' as StoreId})));
+
+
+  constructor(private actions: Actions, private store: Store<AppState>) {}
 }

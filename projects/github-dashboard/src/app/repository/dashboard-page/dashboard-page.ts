@@ -12,10 +12,13 @@ import {
   WidgetConfig
 } from '@crafted/components';
 import {DataResources} from '@crafted/data';
+import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {map, mergeMap, shareReplay, take} from 'rxjs/operators';
+import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Item} from '../../github/app-types/item';
+import {AppState} from '../../store';
+import {UpsertDashboards} from '../../store/dashboard/dashboard.action';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
@@ -36,10 +39,9 @@ export class DashboardPage {
       map(([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
 
   dashboard: Observable<Dashboard> =
-      combineLatest(this.activeStore.state, this.activatedRoute.params)
-          .pipe(
-              mergeMap(([repoState, params]) => repoState.dashboardsDao.get(params.id)),
-              shareReplay(1));
+      combineLatest(
+          this.store.select(state => state.dashboards.entities), this.activatedRoute.params)
+          .pipe(map(([dashboards, params]) => dashboards[params.id]), filter(d => !!d));
 
   edit = new BehaviorSubject<boolean>(false);
 
@@ -64,7 +66,7 @@ export class DashboardPage {
   };
 
   constructor(
-      private dialog: MatDialog, private elementRef: ElementRef,
+      private store: Store<AppState>, private dialog: MatDialog, private elementRef: ElementRef,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
       private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme,
       private activeStore: ActiveStore) {
@@ -77,9 +79,7 @@ export class DashboardPage {
   trackByIndex = (i: number) => i;
 
   saveDashboard(dashboard: Dashboard) {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      repoState.dashboardsDao.update(dashboard);
-    });
+    this.store.dispatch(new UpsertDashboards({dashboards: [dashboard]}));
   }
 
   openQuery(widget: Widget) {

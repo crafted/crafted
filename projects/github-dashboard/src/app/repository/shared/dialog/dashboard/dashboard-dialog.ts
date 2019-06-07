@@ -1,16 +1,18 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Dashboard} from '@crafted/components';
-import {combineLatest, of} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {ActiveStore} from '../../../services/active-store';
+import {AppState} from '../../../../store';
+import {RemoveDashboard, UpdateDashboard} from '../../../../store/dashboard/dashboard.action';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
-import {DashboardEdit} from './dashboard-edit/dashboard-edit';
+import {DashboardEdit, QueryEditData} from './dashboard-edit/dashboard-edit';
 
 @Injectable()
 export class DashboardDialog {
   constructor(
-    private dialog: MatDialog, private snackbar: MatSnackBar, private activeStore: ActiveStore) {
+    private dialog: MatDialog, private snackbar: MatSnackBar, private store: Store<AppState>) {
   }
 
   editDashboard(dashboard: Dashboard) {
@@ -20,11 +22,17 @@ export class DashboardDialog {
         description: dashboard.description,
       }
     });
-    combineLatest(this.activeStore.state, dialogRef.afterClosed())
+    dialogRef.afterClosed()
       .pipe(take(1))
-      .subscribe(([repoState, dialogResult]) => {
+      .subscribe((dialogResult: QueryEditData) => {
         if (dialogResult) {
-          repoState.dashboardsDao.update({id: dashboard.id, ...dialogResult});
+          this.store.dispatch(new UpdateDashboard({dashboard: {
+              id: dashboard.id,
+              changes: {
+                name: dialogResult.name,
+                description: dialogResult.description,
+              }
+            }}));
         }
       });
   }
@@ -35,11 +43,13 @@ export class DashboardDialog {
    */
   removeDashboard(dashboard: Dashboard) {
     const dialogRef = this.dialog.open(DeleteConfirmation, {data: {name: of(dashboard.name)}});
-    combineLatest(this.activeStore.state, dialogRef.afterClosed())
+    dialogRef.afterClosed()
       .pipe(take(1))
-      .subscribe(([repoState, dialogResult]) => {
+      .subscribe(dialogResult => {
         if (dialogResult) {
-          repoState.dashboardsDao.remove(dashboard.id);
+          this.store.dispatch(new RemoveDashboard({id: dashboard.id}));
+
+          // TODO: Make an effect for this
           this.snackbar.open(`Dashboard "${dashboard.name}" deleted`, '', {duration: 2000});
         }
       });

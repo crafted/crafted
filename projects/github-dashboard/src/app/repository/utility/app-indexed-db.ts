@@ -5,6 +5,7 @@ import {DEMO_RECOMMENDATIONS} from './demo-config/demo-recommendations';
 
 const DB_VERSION = 1;
 
+// TODO: Use enum
 export type StoreId = 'items'|'labels'|'contributors'|'dashboards'|'queries'|'recommendations';
 
 export const STORE_IDS: StoreId[] =

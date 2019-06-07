@@ -5,32 +5,36 @@ import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {StoreId} from '../../repository/utility/app-indexed-db';
 import {GitHubAddAssignee, GitHubAddLabel, GitHubRemoveLabel} from '../github/github.actions';
 import {AppState} from '../index';
-import {UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
 import {
   ItemActionTypes,
   ItemAddAssigneeAction,
   ItemAddLabelAction,
   ItemRemoveLabelAction,
+  RemoveAllItems,
   UpdateItemsFromGithub
 } from './item.action';
 
 @Injectable()
 export class ItemEffects {
   @Effect()
-  persistGithubUpdatesToLocalDb =
-    this.actions.pipe(ofType<UpdateItemsFromGithub>(ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB), map(action => {
-      const updatePayload = {
-        entities: action.payload.items,
-        type: 'items' as StoreId
-      };
-      return new UpdateLocalDbEntities(updatePayload);
-    }));
+  persistGithubUpdatesToLocalDb = this.actions.pipe(
+      ofType<UpdateItemsFromGithub>(ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB), map(action => {
+        const updatePayload = {entities: action.payload.items, type: 'items' as StoreId};
+        return new UpdateLocalDbEntities(updatePayload);
+      }));
 
   @Effect()
-  persistAddLabel =
-    this.actions.pipe(ofType<ItemAddLabelAction>(ItemActionTypes.ADD_LABEL),
-      withLatestFrom(this.store.select(state => state.items)),
-      switchMap(([action, items]) => {
+  persistRemoveAllToLocalDb = this.actions.pipe(
+      ofType<RemoveAllItems>(ItemActionTypes.REMOVE_ALL),
+      withLatestFrom(this.store.select(state => state.items.ids)),
+      map(([action, ids]) =>
+              new RemoveLocalDbEntities({ids, type: 'items' as StoreId})));
+
+  @Effect()
+  persistAddLabel = this.actions.pipe(
+      ofType<ItemAddLabelAction>(ItemActionTypes.ADD_LABEL),
+      withLatestFrom(this.store.select(state => state.items)), switchMap(([action, items]) => {
         // Update in local database
         const updatePayload = {
           entities: [items.entities[action.payload.id]],
@@ -50,10 +54,9 @@ export class ItemEffects {
 
 
   @Effect()
-  persistRemoveLabel =
-    this.actions.pipe(ofType<ItemRemoveLabelAction>(ItemActionTypes.REMOVE_LABEL),
-      withLatestFrom(this.store.select(state => state.items)),
-      switchMap(([action, items]) => {
+  persistRemoveLabel = this.actions.pipe(
+      ofType<ItemRemoveLabelAction>(ItemActionTypes.REMOVE_LABEL),
+      withLatestFrom(this.store.select(state => state.items)), switchMap(([action, items]) => {
         // Update in local database
         const updatePayload = {
           entities: [items.entities[action.payload.id]],
@@ -72,10 +75,9 @@ export class ItemEffects {
       }));
 
   @Effect()
-  persistAddAssignee =
-    this.actions.pipe(ofType<ItemAddAssigneeAction>(ItemActionTypes.ADD_ASSIGNEE),
-      withLatestFrom(this.store.select(state => state.items)),
-      switchMap(([action, items]) => {
+  persistAddAssignee = this.actions.pipe(
+      ofType<ItemAddAssigneeAction>(ItemActionTypes.ADD_ASSIGNEE),
+      withLatestFrom(this.store.select(state => state.items)), switchMap(([action, items]) => {
         // Update in local database
         const updatePayload = {
           entities: [items.entities[action.payload.id]],

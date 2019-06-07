@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Dashboard} from '@crafted/components';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {Contributor} from '../../github/app-types/contributor';
-import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {AppState} from '../../store';
 import {LoadRepository} from '../../store/repository/repository.action';
@@ -15,7 +13,6 @@ import {AppIndexedDb} from '../utility/app-indexed-db';
 import {ListDao} from '../utility/list-dao';
 
 export interface RepoState {
-  dashboardsDao?: ListDao<Dashboard>;
   queriesDao?: ListDao<Query>;
   recommendationsDao?: ListDao<Recommendation>;
 }
@@ -43,7 +40,6 @@ export class ActiveStore {
 function createRepoState(repository: string): RepoState {
   const appIndexedDb = new AppIndexedDb(repository);
   return {
-    dashboardsDao: new ListDao<Item>('dashboards', appIndexedDb),
     recommendationsDao: new ListDao<Label>('recommendations', appIndexedDb),
     queriesDao: new ListDao<Contributor>('queries', appIndexedDb),
   };

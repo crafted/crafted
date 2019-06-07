@@ -19,7 +19,7 @@ export class AddLocalDbEntities implements Action {
 
 export class RemoveLocalDbEntities implements Action {
   readonly type = LocalDbActionTypes.REMOVE_ENTITIES;
-  constructor(public payload: {type: StoreId, entities: any[]}) {}
+  constructor(public payload: {type: StoreId, ids: any[]}) {}
 }
 
 export class UpdateLocalDbEntities implements Action {

@@ -19,10 +19,6 @@ export class PageNavigator {
     this.navigate(`query/${id}`, extras);
   }
 
-  navigateToDashboard(id: string) {
-    this.navigate(`dashboard/${id}`);
-  }
-
   private navigate(subPath: string, extras?: NavigationExtras) {
     this.router.navigate([`${this.repository}/${subPath}`], extras);
   }

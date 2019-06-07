@@ -1,15 +1,18 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {Column, Dashboard} from '@crafted/components';
+import {Dashboard} from '@crafted/components';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
-import {ActiveStore} from '../services/active-store';
+import {map} from 'rxjs/operators';
+import {AppState} from '../../store';
+import {CreateDashboard, NavigateToDashboard} from '../../store/dashboard/dashboard.action';
+import {selectAllDashboards} from '../../store/dashboard/dashboard.reducer';
 import {Header} from '../services/header';
 import {PageNavigator} from '../services/page-navigator';
 import {DashboardDialog} from '../shared/dialog/dashboard/dashboard-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 
-type DashboardsPageAction = 'editJson' | 'create';
+type DashboardsPageAction = 'editJson'|'create';
 
 const HEADER_ACTIONS: HeaderContentAction<DashboardsPageAction>[] = [
   {
@@ -26,29 +29,23 @@ const HEADER_ACTIONS: HeaderContentAction<DashboardsPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardsPage {
-  dashboards$ = this.activeStore.state.pipe(mergeMap(store => store.dashboardsDao.list));
+  dashboards$ = this.store.select(state => selectAllDashboards(state.dashboards));
 
   headerActions: Observable<HeaderContentAction[]> =
-    this.dashboards$.pipe(map(dashboards => dashboards.length ? HEADER_ACTIONS : []));
+      this.dashboards$.pipe(map(dashboards => dashboards.length ? HEADER_ACTIONS : []));
 
   constructor(
-    private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
-    private activeStore: ActiveStore, private pageNavigator: PageNavigator) {
-  }
+      private header: Header, private router: Router, public dashboardDialog: DashboardDialog,
+      private pageNavigator: PageNavigator, private store: Store<AppState>) {}
 
   trackById = (_i: number, dashboard: Dashboard) => dashboard.id;
 
   create() {
-    const columns: Column[] = [{widgets: []}, {widgets: []}, {widgets: []}];
-    const newDashboard: Dashboard = {name: 'New Dashboard', columnGroups: [{columns}]};
-
-    this.activeStore.state
-      .pipe(mergeMap(repoState => repoState.dashboardsDao.add(newDashboard)), take(1))
-      .subscribe(id => this.navigateToDashboard(id));
+    this.store.dispatch(new CreateDashboard());
   }
 
   navigateToDashboard(id: string) {
-    this.pageNavigator.navigateToDashboard(id);
+    this.store.dispatch(new NavigateToDashboard({id}));
   }
 
   handleHeaderAction(action: DashboardsPageAction) {

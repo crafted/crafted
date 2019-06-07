@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {Dashboard} from '@crafted/components';
+import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
 import {Config, RepoConfig} from '../../service/config';
+import {AppState} from '../../store';
+import {SyncDashboards} from '../../store/dashboard/dashboard.action';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
@@ -14,13 +17,13 @@ import {RepoState} from './active-store';
 export class RepoGist {
   private destroyed = new Subject();
 
-  constructor(private config: Config, private dialog: MatDialog) {}
+  constructor(private config: Config, private dialog: MatDialog, private store: Store<AppState>) {}
 
   sync(repository: string, repoState: RepoState): Observable<void> {
     let syncResults: LocalToRemoteComparison<IdentifiedObject>[]|null;
     return this.config.getRepoConfig(repository)
         .pipe(
-          mergeMap(repoConfig => getSyncResults(repoState, repoConfig)),
+            mergeMap(repoConfig => getSyncResults(repoState, repoConfig, this.store)),
             tap(results => syncResults = results), mergeMap(results => this.confirmSync(results)),
             map(confirmed => {
               if (!confirmed) {
@@ -31,9 +34,10 @@ export class RepoGist {
               }
 
               const dashboardsSync = syncResults[0] as LocalToRemoteComparison<Dashboard>;
-              repoState.dashboardsDao.add(dashboardsSync.toAdd);
-              repoState.dashboardsDao.update(dashboardsSync.toUpdate);
-              repoState.dashboardsDao.remove(dashboardsSync.toRemove.map(v => v.id));
+              const add = dashboardsSync.toAdd.map(d => ({id: d.id, changes: {...d}}));
+              const update = dashboardsSync.toUpdate.map(d => ({id: d.id, changes: {...d}}));
+              this.store.dispatch(new SyncDashboards(
+                  {update: update.concat(add), remove: dashboardsSync.toRemove.map(d => d.id)}));
 
               const querySync = syncResults[1] as LocalToRemoteComparison<Query>;
               repoState.queriesDao.add(querySync.toAdd);
@@ -75,19 +79,20 @@ function hasSyncChanges(syncResponse: LocalToRemoteComparison<any>): boolean {
 }
 
 /** Gets the comparison results between the local store and remote config */
-function getSyncResults(repoState: RepoState, remoteConfig: RepoConfig | null):
-    Observable<LocalToRemoteComparison<any>[]|null> {
+function getSyncResults(
+    repoState: RepoState, remoteConfig: RepoConfig|null,
+    store: Store<AppState>): Observable<LocalToRemoteComparison<any>[]|null> {
   if (!remoteConfig) {
     return of(null);
   }
 
   return combineLatest(
-    repoState.dashboardsDao.list, repoState.queriesDao.list,
-    repoState.recommendationsDao.list)
+             store.select(state => state.dashboards.ids.map(id => state.dashboards.entities[id])),
+             repoState.queriesDao.list, repoState.recommendationsDao.list)
       .pipe(
           map(([dashboards, queries, recommendations]) =>
-            [compareLocalToRemote(dashboards, remoteConfig.dashboards),
-              compareLocalToRemote(queries, remoteConfig.queries),
-              compareLocalToRemote(recommendations, remoteConfig.recommendations)]),
+                  [compareLocalToRemote(dashboards, remoteConfig.dashboards),
+                   compareLocalToRemote(queries, remoteConfig.queries),
+                   compareLocalToRemote(recommendations, remoteConfig.recommendations)]),
           take(1));
 }

@@ -6,11 +6,12 @@ import {mergeMap, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 
 import {AppIndexedDb} from '../../repository/utility/app-indexed-db';
 import {LoadContributorsFromLocalDb} from '../contributor/contributor.action';
+import {LoadDashboardsFromLocalDb} from '../dashboard/dashboard.action';
 import {AppState} from '../index';
 import {LoadItemsFromLocalDb} from '../item/item.action';
 import {LoadLabelsFromLocalDb} from '../label/label.action';
 
-import {LocalDbActionTypes, UpdateLocalDbEntities} from './local-db.actions';
+import {LocalDbActionTypes, RemoveLocalDbEntities, UpdateLocalDbEntities} from './local-db.actions';
 
 @Injectable()
 export class LocalDbEffects {
@@ -38,17 +39,28 @@ export class LocalDbEffects {
       return [
         new LoadItemsFromLocalDb({items: result[0]}),
         new LoadLabelsFromLocalDb({labels: result[1]}),
-        new LoadContributorsFromLocalDb({contributors: result[2]})
+        new LoadContributorsFromLocalDb({contributors: result[2]}),
+        new LoadDashboardsFromLocalDb({dashboards: result[3]}),
       ];
     }));
 
   @Effect({dispatch: false})
-  update = this.actions.pipe(
+  updateEntities = this.actions.pipe(
     ofType<UpdateLocalDbEntities>(LocalDbActionTypes.UPDATE_ENTITIES),
     withLatestFrom(this.store.select(state => state.repository.name)),
     tap(([action, repository]) => {
       const localDb = this.getLocalDatabase(repository);
       localDb.updateValues(action.payload.entities, action.payload.type);
+    }));
+
+
+  @Effect({dispatch: false})
+  removeEntities = this.actions.pipe(
+    ofType<RemoveLocalDbEntities>(LocalDbActionTypes.REMOVE_ENTITIES),
+    withLatestFrom(this.store.select(state => state.repository.name)),
+    tap(([action, repository]) => {
+      const localDb = this.getLocalDatabase(repository);
+      localDb.removeValues(action.payload.ids, action.payload.type);
     }));
 
   constructor(private actions: Actions, private store: Store<AppState>) {}
