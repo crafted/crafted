@@ -11,7 +11,6 @@ import {CreateQuery} from '../../store/query/query.action';
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore} from '../services/active-store';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -105,7 +104,7 @@ export class QueryPage {
       private store: Store<AppState>,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
       private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
-      private activeStore: ActiveStore, private queryDialog: QueryDialog) {
+      private queryDialog: QueryDialog) {
     this.dataResourceOptions = [];
     this.dataResourcesMap.forEach(
         dataResource =>

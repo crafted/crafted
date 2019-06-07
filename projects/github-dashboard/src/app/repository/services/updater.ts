@@ -11,8 +11,6 @@ import {UpdateItemsFromGithub} from '../../store/item/item.action';
 import {UpdateLabelsFromGithub} from '../../store/label/label.action';
 import {compareLocalToRemote} from '../utility/list-dao';
 
-import {RepoState} from './active-store';
-
 export interface StaleIssuesState {
   repository: string;
   lastUpdated: string;
@@ -37,7 +35,7 @@ export class Updater {
 
   constructor(private github: Github, private store: Store<AppState>) {}
 
-  update(repoState: RepoState, type: UpdatableType) {
+  update(type: UpdatableType) {
     switch (type) {
       case 'items':
         return this.updateIssues();

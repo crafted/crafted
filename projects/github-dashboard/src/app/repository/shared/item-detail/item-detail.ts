@@ -12,7 +12,6 @@ import {
 } from '../../../store/item/item.action';
 import {selectAllLabels} from '../../../store/label/label.reducer';
 import {selectAllRecommendations} from '../../../store/recommendation/recommendation.reducer';
-import {ActiveStore} from '../../services/active-store';
 import {getRecommendations} from '../../utility/get-recommendations';
 
 export interface Activity {
@@ -34,7 +33,7 @@ export class ItemDetail {
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
   item$ = combineLatest(this.distinctItemId$, this.store)
-    .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
+              .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
 
   // TODO: Recommendations should match the data type
   // TODO: Hide actions when not logged in
@@ -101,8 +100,7 @@ export class ItemDetail {
       }));
 
   constructor(
-      private store: Store<AppState>, private elementRef: ElementRef,
-      public activeStore: ActiveStore, public github: Github) {}
+      private store: Store<AppState>, private elementRef: ElementRef, public github: Github) {}
 
   addLabel(id: string) {
     this.item$.pipe(take(1)).subscribe(item => {

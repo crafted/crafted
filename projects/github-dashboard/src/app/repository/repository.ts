@@ -20,7 +20,6 @@ import {selectAllLabels} from '../store/label/label.reducer';
 import {selectAllQueries} from '../store/query/query.reducer';
 import {selectAllRecommendations} from '../store/recommendation/recommendation.reducer';
 
-import {ActiveStore, RepoState} from './services/active-store';
 import {PageNavigator} from './services/page-navigator';
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
@@ -77,23 +76,23 @@ export class Repository {
 
   constructor(
       private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-      private remover: Remover, private activeStore: ActiveStore, private auth: Auth,
+      private remover: Remover, private auth: Auth,
       private pageNavigator: PageNavigator, private repoGist: RepoGist, private config: Config,
       private store: Store<AppState>) {
-    combineLatest(this.store.select(s => s.repository.name), this.activeStore.state)
+    this.store.select(s => s.repository.name)
         .pipe(take(1))
-        .subscribe(([repository, repoState]) => {
+        .subscribe(repository => {
           if (!this.loadedRepos.isLoaded(repository)) {
             this.pageNavigator.navigateToDatabase();
           } else if (this.auth.token) {
-            this.updater.update(repoState, 'items');
-            this.updater.update(repoState, 'contributors');
-            this.updater.update(repoState, 'labels');
-            this.initializeAutoIssueUpdates(repoState);
+            this.updater.update('items');
+            this.updater.update('contributors');
+            this.updater.update('labels');
+            this.initializeAutoIssueUpdates();
           }
 
           // Sync and then start saving
-          this.repoGist.sync(name, repoState).pipe(take(1)).subscribe(() => {
+          this.repoGist.sync(name).pipe(take(1)).subscribe(() => {
             this.saveConfigChangesToGist(name, this.store);
           });
         });
@@ -104,14 +103,14 @@ export class Repository {
     this.destroyed.complete();
   }
 
-  private initializeAutoIssueUpdates(repoState: RepoState) {
+  private initializeAutoIssueUpdates() {
     // TODO: This never unsubscribes and does not check if we are already updating a repository
     interval(60 * 1000)
         .pipe(
             mergeMap(() => this.store.select(state => state.items)),
             filter(itemsState => itemsState.ids.length > 0), take(1))
         .subscribe(() => {
-          this.updater.update(repoState, 'items');
+          this.updater.update('items');
         });
   }
 

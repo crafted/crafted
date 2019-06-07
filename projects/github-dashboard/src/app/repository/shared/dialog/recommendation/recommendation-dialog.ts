@@ -12,7 +12,6 @@ import {
   UpdateRecommendation
 } from '../../../../store/recommendation/recommendation.action';
 import {Recommendation} from '../../../model/recommendation';
-import {RepoState} from '../../../services/active-store';
 import {compareLocalToRemote} from '../../../utility/list-dao';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {
@@ -34,8 +33,8 @@ export class RecommendationDialog {
       private dialog: MatDialog, private snackbar: MatSnackBar, private store: Store<AppState>) {}
 
   /** Opens a dialog for the user to create a new recommendation. */
-  create(repoState: RepoState, dataResourcesMap: RecommendationsDataResourcesMap) {
-    const data = {recommendation: {}, dataResourcesMap, repoState};
+  create(dataResourcesMap: RecommendationsDataResourcesMap) {
+    const data = {recommendation: {}, dataResourcesMap};
     this.dialog.open(RecommendationEdit, {data, width: '600px', disableClose: true})
         .afterClosed()
         .pipe(take(1))
@@ -47,10 +46,8 @@ export class RecommendationDialog {
   }
 
   /** Opens a dialog for the user to edit an existing recommendation. */
-  edit(
-      recommendation: Recommendation, repoState: RepoState,
-      dataResourcesMap: RecommendationsDataResourcesMap) {
-    const data = {recommendation, dataResourcesMap, repoState};
+  edit(recommendation: Recommendation, dataResourcesMap: RecommendationsDataResourcesMap) {
+    const data = {recommendation, dataResourcesMap};
     this.dialog
         .open<RecommendationEdit, RecommendationEditData, Recommendation>(
             RecommendationEdit, {data, width: '600px'})

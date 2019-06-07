@@ -16,7 +16,6 @@ import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
 import {compareLocalToRemote, IdentifiedObject, LocalToRemoteComparison} from '../utility/list-dao';
-import {RepoState} from './active-store';
 
 @Injectable()
 export class RepoGist {
@@ -24,11 +23,11 @@ export class RepoGist {
 
   constructor(private config: Config, private dialog: MatDialog, private store: Store<AppState>) {}
 
-  sync(repository: string, repoState: RepoState): Observable<void> {
+  sync(repository: string): Observable<void> {
     let syncResults: LocalToRemoteComparison<IdentifiedObject>[]|null;
     return this.config.getRepoConfig(repository)
         .pipe(
-            mergeMap(repoConfig => getSyncResults(repoState, repoConfig, this.store)),
+            mergeMap(repoConfig => getSyncResults(repoConfig, this.store)),
             tap(results => syncResults = results), mergeMap(results => this.confirmSync(results)),
             map(confirmed => {
               if (!confirmed) {
@@ -96,9 +95,8 @@ function hasSyncChanges(syncResponse: LocalToRemoteComparison<any>): boolean {
 }
 
 /** Gets the comparison results between the local store and remote config */
-function getSyncResults(
-    repoState: RepoState, remoteConfig: RepoConfig|null,
-    store: Store<AppState>): Observable<LocalToRemoteComparison<any>[]|null> {
+function getSyncResults(remoteConfig: RepoConfig|null, store: Store<AppState>):
+    Observable<LocalToRemoteComparison<any>[]|null> {
   if (!remoteConfig) {
     return of(null);
   }

@@ -8,7 +8,6 @@ import {AppState} from '../../store';
 import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore} from '../services/active-store';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -58,13 +57,11 @@ export class RecommendationsPage {
 
   constructor(
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-      private header: Header, private activeStore: ActiveStore,
-      private recommendationDialog: RecommendationDialog, private store: Store<AppState>) {}
+      private header: Header, private recommendationDialog: RecommendationDialog,
+      private store: Store<AppState>) {}
 
   create() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.recommendationDialog.create(repoState, this.dataResourcesMap);
-    });
+    this.recommendationDialog.create(this.dataResourcesMap);
   }
 
   editJson() {

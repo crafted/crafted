@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {Observable} from 'rxjs';
-import {map, take, tap} from 'rxjs/operators';
-import {ActiveStore} from '../../services/active-store';
+import {map} from 'rxjs/operators';
 import {UpdatableType, Updater, UpdateState} from '../../services/updater';
 
 @Component({
@@ -15,7 +14,7 @@ export class UpdateAction {
 
   updateState: Observable<UpdateState>;
 
-  constructor(private updater: Updater, private activeStore: ActiveStore) {
+  constructor(private updater: Updater) {
   }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
@@ -25,6 +24,6 @@ export class UpdateAction {
   }
 
   update() {
-    this.activeStore.state.pipe(take(1)).subscribe(state => this.updater.update(state, this.type));
+    this.updater.update(this.type);
   }
 }

@@ -8,7 +8,6 @@ import {AppState} from '../../store';
 import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
-import {ActiveStore} from '../services/active-store';
 import {PageNavigator} from '../services/page-navigator';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 
@@ -48,8 +47,7 @@ export class QueriesPage {
   constructor(
       private store: Store<AppState>,
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>,
-      private router: Router, private activeStore: ActiveStore,
-      private pageNavigator: PageNavigator) {
+      private router: Router, private pageNavigator: PageNavigator) {
     this.dataResourcesMap.forEach(d => this.dataTypes.push(d.type));
   }
 

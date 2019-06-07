@@ -4,13 +4,12 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, Filterer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {map, startWith, take} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import {AppState} from '../../../store';
 import {CreateRecommendation} from '../../../store/recommendation/recommendation.action';
 import {Query} from '../../model/query';
 import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../../repository';
-import {ActiveStore} from '../../services/active-store';
 import {PageNavigator} from '../../services/page-navigator';
 import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
 
@@ -41,8 +40,8 @@ export class RecommendationView {
 
   constructor(
       private store: Store<AppState>, private recommendationDialog: RecommendationDialog,
-      private activeStore: ActiveStore, private router: Router,
-      private activatedRoute: ActivatedRoute, private pageNavigator: PageNavigator,
+      private router: Router, private activatedRoute: ActivatedRoute,
+      private pageNavigator: PageNavigator,
       @Inject(DATA_RESOURCES_MAP) private dataResourcesMap: Map<string, DataResources>) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
@@ -56,9 +55,7 @@ export class RecommendationView {
   }
 
   edit() {
-    this.activeStore.state.pipe(take(1)).subscribe(repoState => {
-      this.recommendationDialog.edit(this.recommendation, repoState, this.dataResourcesMap);
-    });
+    this.recommendationDialog.edit(this.recommendation, this.dataResourcesMap);
   }
 
   duplicate() {

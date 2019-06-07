@@ -1,11 +1,16 @@
 import {Action} from '@ngrx/store';
 
 export enum RepositoryActionTypes {
-  LOAD_REPOSITORY = '[Repository] load',
+  UNLOAD = '[Repository] unload',
+  LOAD = '[Repository] load',
+}
+
+export class UnloadRepository implements Action {
+  readonly type = RepositoryActionTypes.UNLOAD;
 }
 
 export class LoadRepository implements Action {
-  readonly type = RepositoryActionTypes.LOAD_REPOSITORY;
+  readonly type = RepositoryActionTypes.LOAD;
   constructor(public payload: {name: string}) {}
 }
 

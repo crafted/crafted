@@ -8,7 +8,7 @@ const initialState: RepositoryState = {
 export function repositoryActionReducer(state: RepositoryState = initialState, action: RepositoryAction): RepositoryState {
   switch (action.type) {
 
-    case RepositoryActionTypes.LOAD_REPOSITORY:
+    case RepositoryActionTypes.LOAD:
       return {...state, name: action.payload.name};
 
     default:

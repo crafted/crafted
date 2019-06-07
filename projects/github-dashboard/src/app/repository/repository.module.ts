@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {Repository} from './repository';
-import {ActiveStore} from './services/active-store';
 import {Header} from './services/header';
 import {Markdown} from './services/markdown';
 import {PageNavigator} from './services/page-navigator';
@@ -68,7 +67,7 @@ export class RepositoryRoutingModule {
   ],
   declarations: [Repository],
   exports: [Repository],
-  providers: [Header, Updater, Remover, Markdown, ActiveStore, RepoGist, PageNavigator]
+  providers: [Header, Updater, Remover, Markdown, RepoGist, PageNavigator]
 })
 export class RepositoryModule {
 }

@@ -4,7 +4,6 @@ import {combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {LoadedRepos} from '../../service/loaded-repos';
 import {AppState} from '../../store';
-import {ActiveStore} from '../services/active-store';
 import {Remover} from '../services/remover';
 import {isRepoStoreEmpty} from '../utility/is-repo-store-empty';
 
@@ -33,8 +32,7 @@ export class DatabasePage {
   };
 
   constructor(
-      public activeStore: ActiveStore, private loadedRepos: LoadedRepos, public remover: Remover,
-      private store: Store<AppState>) {}
+      private loadedRepos: LoadedRepos, public remover: Remover, private store: Store<AppState>) {}
 
   remove() {
     this.remover.removeAllData(true);

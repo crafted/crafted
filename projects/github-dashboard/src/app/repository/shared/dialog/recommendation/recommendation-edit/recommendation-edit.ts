@@ -13,12 +13,10 @@ import {
   Recommendation,
   RECOMMENDATION_TYPES
 } from '../../../../model/recommendation';
-import {RepoState} from '../../../../services/active-store';
 import {RecommendationsDataResourcesMap} from '../recommendation-dialog';
 
 export interface RecommendationEditData {
   recommendation: Recommendation;
-  repoState: RepoState;
   dataResourcesMap: RecommendationsDataResourcesMap;
 }
 
