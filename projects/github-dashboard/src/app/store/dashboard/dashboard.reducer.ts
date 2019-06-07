@@ -15,6 +15,7 @@ const initialState: DashboardState = {
 export function dashboardActionReducer(state: DashboardState = initialState, action: DashboardAction): DashboardState {
   switch (action.type) {
     case DashboardActionTypes.UPSERT_DASHBOARDS:
+      action.payload.dashboards.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.dashboards, state);
 
     case DashboardActionTypes.LOAD_FROM_LOCAL_DB:

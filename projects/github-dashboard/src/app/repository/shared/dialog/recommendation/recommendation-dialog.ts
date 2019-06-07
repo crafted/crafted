@@ -12,7 +12,7 @@ import {
   UpdateRecommendation
 } from '../../../../store/recommendation/recommendation.action';
 import {Recommendation} from '../../../model/recommendation';
-import {compareLocalToRemote} from '../../../utility/list-dao';
+import {compareLocalToRemote} from '../../../utility/compare-local-to-remote';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {
   RecommendationEdit,

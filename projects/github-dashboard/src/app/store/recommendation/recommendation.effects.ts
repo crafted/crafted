@@ -22,7 +22,11 @@ export class RecommendationEffects {
   @Effect()
   createNewRecommendation = this.actions.pipe(
       ofType<CreateRecommendation>(RecommendationActionTypes.CREATE_RECOMMENDATION), map(action => {
-        const newRecommendation = {id: createId(), ...action.payload.recommendation};
+        const newRecommendation = {
+          id: createId(),
+          dbAdded: new Date().toISOString(),
+          ...action.payload.recommendation,
+        };
 
         return new UpsertRecommendations({recommendations: [newRecommendation]});
       }));

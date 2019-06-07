@@ -15,7 +15,11 @@ import {selectAllRecommendations} from '../../store/recommendation/recommendatio
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
-import {compareLocalToRemote, IdentifiedObject, LocalToRemoteComparison} from '../utility/list-dao';
+import {
+  compareLocalToRemote,
+  IdentifiedObject,
+  LocalToRemoteComparison
+} from '../utility/compare-local-to-remote';
 
 @Injectable()
 export class RepoGist {

@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, Inject, Query} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Dashboard} from '@crafted/components';
 import {Recommendation} from '../../../model/recommendation';
-import {LocalToRemoteComparison} from '../../../utility/list-dao';
+import {LocalToRemoteComparison} from '../../../utility/compare-local-to-remote';
 
 export interface ConfirmConfigUpdatesData {
   dashboards: LocalToRemoteComparison<Dashboard>;

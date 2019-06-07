@@ -15,6 +15,7 @@ const initialState: QueryState = {
 export function queryActionReducer(state: QueryState = initialState, action: QueryAction): QueryState {
   switch (action.type) {
     case QueryActionTypes.UPSERT_QUERIES:
+      action.payload.queries.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.queries, state);
 
     case QueryActionTypes.LOAD_FROM_LOCAL_DB:

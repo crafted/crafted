@@ -24,6 +24,7 @@ export class DashboardEffects {
       ofType<CreateDashboard>(DashboardActionTypes.CREATE_DASHBOARD), switchMap(() => {
         const newDashboard = {
           id: createId(),
+          dbAdded: new Date().toISOString(),
           name: 'New Dashboard',
           columnGroups: [
             {columns: [{widgets: []}, {widgets: []}, {widgets: []}]},

@@ -26,6 +26,7 @@ export class QueryEffects {
       ofType<CreateQuery>(QueryActionTypes.CREATE_QUERY), switchMap(action => {
         const newQuery = {
           id: createId(),
+          dbAdded: new Date().toISOString(),
           ...action.payload.query
         };
 

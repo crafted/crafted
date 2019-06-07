@@ -9,7 +9,7 @@ import {AppState} from '../../store';
 import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../store/item/item.action';
 import {UpdateLabelsFromGithub} from '../../store/label/label.action';
-import {compareLocalToRemote} from '../utility/list-dao';
+import {compareLocalToRemote} from '../utility/compare-local-to-remote';
 
 export interface StaleIssuesState {
   repository: string;

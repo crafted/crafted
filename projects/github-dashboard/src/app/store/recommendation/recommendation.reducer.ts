@@ -15,6 +15,7 @@ const initialState: RecommendationState = {
 export function recommendationActionReducer(state: RecommendationState = initialState, action: RecommendationAction): RecommendationState {
   switch (action.type) {
     case RecommendationActionTypes.UPSERT_RECOMMENDATIONS:
+      action.payload.recommendations.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.recommendations, state);
 
     case RecommendationActionTypes.LOAD_FROM_LOCAL_DB:
