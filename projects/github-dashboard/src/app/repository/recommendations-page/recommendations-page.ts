@@ -4,13 +4,13 @@ import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@craf
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {AppState} from '../../store';
-import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
+import {AppState} from '../store';
+import {selectRecommendations} from '../store/recommendation/recommendation.reducer';
 import {RECOMMENDATION_GROUPER_METADATA} from './metadata/grouper-metadata';
 import {RECOMMENDATION_SORTER_METADATA} from './metadata/sorter-metadata';
 
@@ -39,7 +39,7 @@ export class RecommendationsPage {
   filter = new FormControl('');
 
   dataSource = new DataSource(
-      {data: this.store.select(state => selectAllRecommendations(state.recommendations))});
+      {data: this.store.select(selectRecommendations)});
 
   headerActions: Observable<HeaderContentAction[]> = this.dataSource.data.pipe(
       map(recommendations => recommendations.length ? HEADER_ACTIONS : []));
@@ -65,7 +65,7 @@ export class RecommendationsPage {
   }
 
   editJson() {
-    this.store.select(state => selectAllRecommendations(state.recommendations))
+    this.store.select(selectRecommendations)
         .pipe(take(1))
         .subscribe(recommendations => {
           this.recommendationDialog.jsonEditor(recommendations);

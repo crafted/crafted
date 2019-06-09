@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {Store} from '@ngrx/store';
-import {map} from 'rxjs/operators';
-import {AppState} from '../../../../store';
+import {AppState} from '../../../store';
+import {selectItemById} from '../../../store/item/item.reducer';
 
 export interface ItemDetailDialogData {
   itemId: string;
@@ -14,9 +14,8 @@ export interface ItemDetailDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemDetailDialog {
-  item$ = this.store.select(state => state.items)
-              .pipe(map(itemsState => itemsState.entities[this.data.itemId]));
+  item$ = this.store.select(selectItemById(this.data.itemId));
 
   constructor(
-      private store: Store<AppState>, @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData) {}
+    private store: Store<AppState>, @Inject(MAT_DIALOG_DATA) public data: ItemDetailDialogData) {}
 }

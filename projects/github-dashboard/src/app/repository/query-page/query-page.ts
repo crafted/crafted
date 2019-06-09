@@ -5,15 +5,18 @@ import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@cra
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
-import {AppState} from '../../store';
-import {GitHubUpdateItem} from '../../store/github/github.actions';
-import {CreateQuery} from '../../store/query/query.action';
+
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
+import {AppState} from '../store';
+import {GitHubUpdateItem} from '../store/github/github.actions';
+import {selectItemById} from '../store/item/item.reducer';
+import {CreateQuery} from '../store/query/query.action';
+import {selectQueryById} from '../store/query/query.reducer';
 
 interface QueryResources {
   viewer: Viewer;
@@ -45,13 +48,9 @@ export class QueryPage {
   dataResourceOptions: {id: string, label: string}[];
 
   query: Observable<Query> = this.activatedRoute.params.pipe(
-      mergeMap(params => {
-        if (params.id !== 'new') {
-          return this.store.select(state => state.queries.entities[params.id]);
-        }
-
-        return this.newQuery();
-      }),
+      mergeMap(
+          params => (params.id !== 'new') ? this.store.select(selectQueryById(params.id)) :
+                                            this.newQuery()),
       shareReplay(1));
 
   queryResources: Observable<QueryResources> = this.query.pipe(
@@ -81,8 +80,7 @@ export class QueryPage {
 
   itemId$ = this.activatedRoute.queryParamMap.pipe(map(queryParamMap => queryParamMap.get('item')));
 
-  item$ = combineLatest(this.itemId$, this.store.select(s => s.items))
-              .pipe(map(([itemId, itemsState]) => itemsState.entities[itemId]));
+  item$ = this.itemId$.pipe(mergeMap(itemId => this.store.select(selectItemById(itemId))));
 
   headerActions: Observable<HeaderContentAction[]> =
       combineLatest(this.query, this.canSave).pipe(map(([query, canSave]) => {

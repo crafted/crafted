@@ -11,7 +11,8 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Label} from '../../../github/app-types/label';
 import {getBorderColor, getTextColor} from '../../../github/utility/label-colors';
-import {AppState} from '../../../store';
+import {AppState} from '../../store';
+import {selectLabels} from '../../store/label/label.reducer';
 
 interface DisplayedLabel {
   id: string;
@@ -40,10 +41,9 @@ export class LabelList {
 
   @Output() removed = new EventEmitter<{id: string, name: string}>();
 
-  labelsMap = this.store.select(state => state.labels).pipe(map(labelsState => {
+  labelsMap = this.store.select(selectLabels).pipe(map(labels => {
     const labelsMap = new Map<string, DisplayedLabel>();
-    labelsState.ids.forEach(id => {
-      const label = labelsState.entities[id];
+    labels.forEach(label => {
       const displayedLabel = convertLabelToDisplayedLabel(label);
       labelsMap.set(label.id, displayedLabel);
       labelsMap.set(label.name, displayedLabel);

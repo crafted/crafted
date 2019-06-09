@@ -3,9 +3,9 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {AppState} from '../../../../store';
-import {RemoveQuery, UpdateQuery} from '../../../../store/query/query.action';
 import {Query} from '../../../model/query';
+import {AppState} from '../../../store';
+import {RemoveQuery, UpdateQuery} from '../../../store/query/query.action';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {QueryEdit, QueryEditResult} from './query-edit/query-edit';
 

@@ -5,10 +5,14 @@ import {filter, map, mergeMap, take} from 'rxjs/operators';
 
 import {Item} from '../../github/app-types/item';
 import {Github} from '../../service/github';
-import {AppState} from '../../store';
-import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
-import {UpdateItemsFromGithub} from '../../store/item/item.action';
-import {UpdateLabelsFromGithub} from '../../store/label/label.action';
+import {AppState} from '../store';
+import {UpdateContributorsFromGithub} from '../store/contributor/contributor.action';
+import {selectContributors} from '../store/contributor/contributor.reducer';
+import {UpdateItemsFromGithub} from '../store/item/item.action';
+import {selectItems} from '../store/item/item.reducer';
+import {UpdateLabelsFromGithub} from '../store/label/label.action';
+import {selectLabels} from '../store/label/label.reducer';
+import {selectRepositoryName} from '../store/repository/repository.reducer';
 import {compareLocalToRemote} from '../utility/compare-local-to-remote';
 
 export interface StaleIssuesState {
@@ -49,9 +53,8 @@ export class Updater {
   private updateLabels() {
     this.setTypeState('labels', 'updating');
 
-    const localList$ = this.store.select(
-        state => state.labels.ids.map(id => state.labels.entities[id]));
-    const remoteLabels$ = this.store.select(state => state.repository.name)
+    const localList$ = this.store.select(selectLabels);
+    const remoteLabels$ = this.store.select(selectRepositoryName)
                               .pipe(
                                   mergeMap(repository => this.github.getLabels(repository)),
                                   filter(result => result.completed === result.total),
@@ -67,9 +70,8 @@ export class Updater {
   private updateContributors() {
     this.setTypeState('contributors', 'updating');
 
-    const localList$ = this.store.select(
-        state => state.contributors.ids.map(id => state.contributors.entities[id]));
-    const remoteList$ = this.store.select(state => state.repository.name)
+    const localList$ = this.store.select(selectContributors);
+    const remoteList$ = this.store.select(selectRepositoryName)
                             .pipe(
                                 mergeMap(repository => this.github.getContributors(repository)),
                                 filter(result => result.completed === result.total),
@@ -115,17 +117,16 @@ export class Updater {
 
     // TODO: Cleanup - should not stash repository
     let repository = '';
-    return this.store.pipe(
-        filter(state => !!state.items.ids.length), take(1), map(state => {
-          repository = state.repository.name;
-          state.items.ids.forEach(id => {
-            const item = state.items.entities[id];
+    return combineLatest(this.store.select(selectRepositoryName), this.store.select(selectItems)).pipe(
+        filter(([name, items]) => !!items.length), take(1), map(([name, items]) => {
+          repository = name;
+          items.forEach(item => {
             if (!lastUpdated || lastUpdated < item.updated) {
               lastUpdated = item.updated;
             }
           });
 
-          return lastUpdated;
+          return [name, lastUpdated];
         }),
         mergeMap(() => this.github.getItemsCount(repository, lastUpdated)),
         map(count => ({lastUpdated, count, repository})));

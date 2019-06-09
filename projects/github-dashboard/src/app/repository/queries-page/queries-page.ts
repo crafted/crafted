@@ -3,12 +3,12 @@ import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {delay, map} from 'rxjs/operators';
-import {AppState} from '../../store';
-import {NavigateToQuery, NavigateToQueryType} from '../../store/query/query.action';
-import {selectAllQueries} from '../../store/query/query.reducer';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP} from '../repository';
 import {HeaderContentAction} from '../shared/header-content/header-content';
+import {AppState} from '../store';
+import {NavigateToQuery, NavigateToQueryType} from '../store/query/query.action';
+import {selectQueryList} from '../store/query/query.reducer';
 
 interface QueryListItem {
   id: string;
@@ -38,7 +38,7 @@ const HEADER_ACTIONS: HeaderContentAction<QueriesPageAction>[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesPage {
-  queries = this.store.select(state => selectAllQueries(state.queries));
+  queries = this.store.select(selectQueryList);
   dataTypes: string[] = [];
   headerActions: Observable<HeaderContentAction[]> =
       this.queries.pipe(map(queries => queries.length ? HEADER_ACTIONS : []));

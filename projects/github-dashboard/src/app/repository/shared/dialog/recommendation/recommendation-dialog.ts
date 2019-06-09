@@ -4,14 +4,14 @@ import {DataSource, Filterer, FiltererState} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {AppState} from '../../../../store';
+import {Recommendation} from '../../../model/recommendation';
+import {AppState} from '../../../store';
 import {
   CreateRecommendation,
   RemoveRecommendation,
   SyncRecommendations,
   UpdateRecommendation
-} from '../../../../store/recommendation/recommendation.action';
-import {Recommendation} from '../../../model/recommendation';
+} from '../../../store/recommendation/recommendation.action';
 import {compareLocalToRemote} from '../../../utility/compare-local-to-remote';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {

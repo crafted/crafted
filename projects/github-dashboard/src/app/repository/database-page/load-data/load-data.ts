@@ -13,10 +13,11 @@ import {filter, map, mergeMap, startWith, takeUntil, tap} from 'rxjs/operators';
 
 import {Github} from '../../../service/github';
 import {LoadedRepos} from '../../../service/loaded-repos';
-import {AppState} from '../../../store';
-import {UpdateContributorsFromGithub} from '../../../store/contributor/contributor.action';
-import {UpdateItemsFromGithub} from '../../../store/item/item.action';
-import {UpdateLabelsFromGithub} from '../../../store/label/label.action';
+import {AppState} from '../../store';
+import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
+import {UpdateItemsFromGithub} from '../../store/item/item.action';
+import {UpdateLabelsFromGithub} from '../../store/label/label.action';
+import {selectRepositoryName} from '../../store/repository/repository.reducer';
 
 
 interface StorageState {
@@ -42,7 +43,7 @@ export class LoadData {
       {issueDateType: new FormControl('last updated since'), issueDate: new FormControl('')});
 
   totalLabelsCount =
-      this.store.select(state => state.repository.name)
+      this.store.select(selectRepositoryName)
           .pipe(mergeMap(
               repository => this.github.getLabels(repository)
                                 .pipe(
@@ -50,7 +51,7 @@ export class LoadData {
                                     map(result => result.accumulated.length))));
 
   totalItemCount = combineLatest(
-                       this.store.select(state => state.repository.name),
+                       this.store.select(selectRepositoryName),
                        this.formGroup.valueChanges.pipe(startWith(null)))
                        .pipe(mergeMap(([repository]) => {
                          const since = this.getIssuesDateSince();
@@ -85,7 +86,7 @@ export class LoadData {
     };
 
     this.loadSubscription =
-        this.store.select(state => state.repository.name)
+        this.store.select(selectRepositoryName)
             .pipe(
                 mergeMap((repository) => {
                   const getLabels = this.getValues(

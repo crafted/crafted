@@ -2,6 +2,8 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
+import {EffectsModule} from '@ngrx/effects';
+import {StoreModule} from '@ngrx/store';
 import {Repository} from './repository';
 import {Header} from './services/header';
 import {Markdown} from './services/markdown';
@@ -12,6 +14,7 @@ import {ConfirmConfigUpdatesModule} from './shared/dialog/confirm-config-updates
 import {DeleteConfirmationModule} from './shared/dialog/delete-confirmation/delete-confirmation.module';
 import {HeaderModule} from './shared/header/header.module';
 import {NavModule} from './shared/nav/nav.module';
+import {effects, reducers} from './store';
 
 
 const routes: Routes = [{
@@ -63,6 +66,8 @@ export class RepositoryRoutingModule {
     RepositoryRoutingModule,
     DeleteConfirmationModule,
     ConfirmConfigUpdatesModule,
+    StoreModule.forFeature('repository', reducers),
+    EffectsModule.forFeature(effects),
   ],
   declarations: [Repository],
   exports: [Repository],

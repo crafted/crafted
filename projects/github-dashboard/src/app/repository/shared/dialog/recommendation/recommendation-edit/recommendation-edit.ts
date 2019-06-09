@@ -5,7 +5,6 @@ import {DataSource, Filterer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
-import {AppState} from '../../../../../store';
 
 import {
   ACTION_TYPES,
@@ -13,6 +12,9 @@ import {
   Recommendation,
   RECOMMENDATION_TYPES
 } from '../../../../model/recommendation';
+import {AppState} from '../../../../store';
+import {selectItems} from '../../../../store/item/item.reducer';
+import {selectLabels} from '../../../../store/label/label.reducer';
 import {RecommendationsDataResourcesMap} from '../recommendation-dialog';
 
 export interface RecommendationEditData {
@@ -48,16 +50,14 @@ export class RecommendationEdit {
     return {id: key, label: ACTION_TYPES[key].label};
   });
 
-  addLabelsOptions = this.store.select(state => state.labels).pipe(map(labelsState => {
-    const labelNames = labelsState.ids.map(id => labelsState.entities[id].name);
-    labelNames.sort();
+  addLabelsOptions = this.store.select(selectLabels).pipe(map(labels => {
+    const labelNames = labels.map(label => label.name).sort();
     return labelNames.map(name => ({id: name, label: name}));
   }));
 
-  addAssigneesOptions = this.store.select(state => state.items).pipe(map(itemsState => {
+  addAssigneesOptions = this.store.select(selectItems).pipe(map(items => {
     const assigneesSet = new Set<string>();
-    itemsState.ids.forEach(
-        id => itemsState.entities[id].assignees.forEach(a => assigneesSet.add(a)));
+    items.forEach(item => item.assignees.forEach(a => assigneesSet.add(a)));
     const assigneesList: string[] = [];
     assigneesSet.forEach(a => assigneesList.push(a));
     return assigneesList.sort().map(a => ({id: a, label: a}));
@@ -70,7 +70,8 @@ export class RecommendationEdit {
   private destroyed = new Subject();
 
   constructor(
-      public dialogRef: MatDialogRef<RecommendationEdit, Recommendation>, private store: Store<AppState>,
+      public dialogRef: MatDialogRef<RecommendationEdit, Recommendation>,
+      private store: Store<AppState>,
       @Inject(MAT_DIALOG_DATA) public data: RecommendationEditData) {
     if (!data && !data.recommendation) {
       throw Error('Recommendation required to show recommendation dialog');

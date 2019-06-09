@@ -1,60 +1,20 @@
 import {Type} from '@angular/core';
 import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {environment} from '../../environments/environment';
-import {ContributorEffects} from './contributor/contributor.effects';
-import {contributorActionReducer} from './contributor/contributor.reducer';
-import {ContributorState} from './contributor/contributor.state';
-import {DashboardEffects} from './dashboard/dashboard.effects';
-import {dashboardActionReducer} from './dashboard/dashboard.reducer';
-import {DashboardState} from './dashboard/dashboard.state';
-import {GithubEffects} from './github/github.effects';
-import {ItemEffects} from './item/item.effects';
-import {itemActionReducer} from './item/item.reducer';
-import {ItemState} from './item/item.state';
-import {LabelEffects} from './label/label.effects';
-import {labelActionReducer} from './label/label.reducer';
-import {LabelState} from './label/label.state';
-import {LocalDbEffects} from './local-db/local-db.effects';
-import {QueryEffects} from './query/query.effects';
-import {queryActionReducer} from './query/query.reducer';
-import {QueryState} from './query/query.state';
-import {RecommendationEffects} from './recommendation/recommendation.effects';
-import {recommendationActionReducer} from './recommendation/recommendation.reducer';
-import {RecommendationState} from './recommendation/recommendation.state';
-import {RepositoryEffects} from './repository/repository.effects';
-import {repositoryActionReducer} from './repository/repository.reducer';
-import {RepositoryState} from './repository/repository.state';
+import {AuthEffects} from './auth/auth.effects';
+import {authActionReducer} from './auth/auth.reducer';
+import {AuthState} from './auth/auth.state';
 
 export interface AppState {
-  repository: RepositoryState;
-  items: ItemState;
-  contributors: ContributorState;
-  labels: LabelState;
-  dashboards: DashboardState;
-  queries: QueryState;
-  recommendations: RecommendationState;
+  auth: AuthState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
-  repository: repositoryActionReducer,
-  items: itemActionReducer,
-  contributors: contributorActionReducer,
-  labels: labelActionReducer,
-  dashboards: dashboardActionReducer,
-  queries: queryActionReducer,
-  recommendations: recommendationActionReducer,
+  auth: authActionReducer,
 };
 
 export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [] : [];
 
 export const effects: Type<any>[] = [
-  ItemEffects,
-  LocalDbEffects,
-  GithubEffects,
-  RepositoryEffects,
-  ContributorEffects,
-  LabelEffects,
-  DashboardEffects,
-  RecommendationEffects,
-  QueryEffects,
+  AuthEffects
 ];

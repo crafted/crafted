@@ -4,8 +4,8 @@ import {Dashboard} from '@crafted/components';
 import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {AppState} from '../../../../store';
-import {RemoveDashboard, UpdateDashboard} from '../../../../store/dashboard/dashboard.action';
+import {AppState} from '../../../store';
+import {RemoveDashboard, UpdateDashboard} from '../../../store/dashboard/dashboard.action';
 import {DeleteConfirmation} from '../delete-confirmation/delete-confirmation';
 import {DashboardEdit, QueryEditData} from './dashboard-edit/dashboard-edit';
 

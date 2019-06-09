@@ -13,26 +13,27 @@ import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Auth} from '../service/auth';
 import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
-import {AppState} from '../store';
-import {selectAllDashboards} from '../store/dashboard/dashboard.reducer';
-import {selectAllItems} from '../store/item/item.reducer';
-import {selectAllLabels} from '../store/label/label.reducer';
-import {selectAllQueries} from '../store/query/query.reducer';
-import {selectAllRecommendations} from '../store/recommendation/recommendation.reducer';
 
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
+import {AppState} from './store';
+import {selectDashboards} from './store/dashboard/dashboard.reducer';
+import {selectItems, selectItemTotal} from './store/item/item.reducer';
+import {selectLabels} from './store/label/label.reducer';
+import {selectQueryList} from './store/query/query.reducer';
+import {selectRecommendations} from './store/recommendation/recommendation.reducer';
+import {selectRepositoryName} from './store/repository/repository.reducer';
 import {getRecommendations} from './utility/get-recommendations';
 
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
 export const provideDataResourcesMap = (store: Store<AppState>) => {
-  const recommendations = store.select(state => selectAllRecommendations(state.recommendations));
-  const labels = store.select(state => selectAllLabels(state.labels));
+  const recommendations = store.select(selectRecommendations);
+  const labels = store.select(selectLabels);
 
-  const allItems = store.select(state => selectAllItems(state.items));
+  const allItems = store.select(selectItems);
   const issues = allItems.pipe(map(items => items.filter(i => !i.pr)));
   const prs = allItems.pipe(map(items => items.filter(i => !!i.pr)));
 
@@ -75,7 +76,7 @@ export class Repository {
       private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
       private remover: Remover, private auth: Auth, private repoGist: RepoGist,
       private config: Config, private store: Store<AppState>) {
-    this.store.select(s => s.repository.name)
+    this.store.select(selectRepositoryName)
         .pipe(filter(repository => !!repository))
         .subscribe(repository => {
           if (!this.loadedRepos.isLoaded(repository)) {
@@ -103,8 +104,8 @@ export class Repository {
     // TODO: This never unsubscribes and does not check if we are already updating a repository
     interval(60 * 1000)
         .pipe(
-            mergeMap(() => this.store.select(state => state.items)),
-            filter(itemsState => itemsState.ids.length > 0), take(1))
+            mergeMap(() => this.store.select(selectItemTotal)),
+            filter(total => !!total), take(1))
         .subscribe(() => {
           this.updater.update('items');
         });
@@ -113,9 +114,9 @@ export class Repository {
   /** Persist changes to config lists to gist */
   private saveConfigChangesToGist(repository: string, store: Store<AppState>) {
     const configDaoLists = [
-      store.select(state => selectAllDashboards(state.dashboards)),
-      store.select(state => selectAllQueries(state.queries)),
-      store.select(state => selectAllRecommendations(state.recommendations))
+      store.select(selectDashboards),
+      store.select(selectQueryList),
+      store.select(selectRecommendations)
     ];
     combineLatest(...configDaoLists)
         .pipe(debounceTime(500), takeUntil(this.destroyed))

@@ -15,18 +15,20 @@ import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {filter, map, take} from 'rxjs/operators';
+import {map, mergeMap, take} from 'rxjs/operators';
+
 import {Item} from '../../github/app-types/item';
-import {AppState} from '../../store';
-import {UpsertDashboards} from '../../store/dashboard/dashboard.action';
-import {selectAllQueries} from '../../store/query/query.reducer';
-import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
 import {Theme} from '../services/theme';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
+import {AppState} from '../store';
+import {UpsertDashboards} from '../store/dashboard/dashboard.action';
+import {selectDashboardById} from '../store/dashboard/dashboard.reducer';
+import {selectQueryList} from '../store/query/query.reducer';
+import {selectRecommendations} from '../store/recommendation/recommendation.reducer';
 
 @Component({
   selector: 'dashboard-page',
@@ -36,16 +38,12 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
 })
 export class DashboardPage {
   savedFiltererStates =
-      combineLatest(
-          this.store.select(state => selectAllQueries(state.queries)),
-          this.store.select(state => selectAllRecommendations(state.recommendations)))
+      combineLatest(this.store.select(selectQueryList), this.store.select(selectRecommendations))
           .pipe(map(
               ([queries, recommendations]) => getSavedFiltererStates(queries, recommendations)));
 
-  dashboard: Observable<Dashboard> =
-      combineLatest(
-          this.store.select(state => state.dashboards.entities), this.activatedRoute.params)
-          .pipe(map(([dashboards, params]) => dashboards[params.id]), filter(d => !!d));
+  dashboard: Observable<Dashboard> = this.activatedRoute.params.pipe(
+      map(params => params.id), mergeMap(id => this.store.select(selectDashboardById(id))));
 
   edit = new BehaviorSubject<boolean>(false);
 

@@ -4,17 +4,18 @@ import {Dashboard} from '@crafted/components';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
+
 import {Config, RepoConfig} from '../../service/config';
-import {AppState} from '../../store';
-import {SyncDashboards} from '../../store/dashboard/dashboard.action';
-import {selectAllDashboards} from '../../store/dashboard/dashboard.reducer';
-import {SyncQueries} from '../../store/query/query.action';
-import {selectAllQueries} from '../../store/query/query.reducer';
-import {SyncRecommendations} from '../../store/recommendation/recommendation.action';
-import {selectAllRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {ConfirmConfigUpdates} from '../shared/dialog/confirm-config-updates/confirm-config-updates';
+import {AppState} from '../store';
+import {SyncDashboards} from '../store/dashboard/dashboard.action';
+import {selectDashboards} from '../store/dashboard/dashboard.reducer';
+import {SyncQueries} from '../store/query/query.action';
+import {selectQueryList} from '../store/query/query.reducer';
+import {SyncRecommendations} from '../store/recommendation/recommendation.action';
+import {selectRecommendations} from '../store/recommendation/recommendation.reducer';
 import {
   compareLocalToRemote,
   IdentifiedObject,
@@ -106,9 +107,8 @@ function getSyncResults(remoteConfig: RepoConfig|null, store: Store<AppState>):
   }
 
   return combineLatest(
-             store.select(state => selectAllDashboards(state.dashboards)),
-             store.select(state => selectAllQueries(state.queries)),
-             store.select(state => selectAllRecommendations(state.recommendations)))
+             store.select(selectDashboards), store.select(selectQueryList),
+             store.select(selectRecommendations))
       .pipe(
           map(([dashboards, queries, recommendations]) =>
                   [compareLocalToRemote(dashboards, remoteConfig.dashboards),

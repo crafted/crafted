@@ -1,17 +1,28 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
-import {distinctUntilChanged, filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import {Label} from '../../../github/app-types/label';
 import {completedPagedResults, Github, TimelineEvent, UserComment} from '../../../service/github';
-import {AppState} from '../../../store';
+import {AppState} from '../../store';
 import {
   ItemAddAssigneeAction,
   ItemAddLabelAction,
   ItemRemoveLabelAction
-} from '../../../store/item/item.action';
-import {selectAllLabels} from '../../../store/label/label.reducer';
-import {selectAllRecommendations} from '../../../store/recommendation/recommendation.reducer';
+} from '../../store/item/item.action';
+import {selectItemById, selectItems} from '../../store/item/item.reducer';
+import {selectLabels} from '../../store/label/label.reducer';
+import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
+import {selectRepositoryName} from '../../store/repository/repository.reducer';
 import {getRecommendations} from '../../utility/get-recommendations';
 
 export interface Activity {
@@ -32,25 +43,25 @@ export class ItemDetail {
 
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
-  item$ = combineLatest(this.distinctItemId$, this.store)
-              .pipe(map(([itemId, store]) => store.items.entities[itemId]), filter(item => !!item));
+  item$ = this.distinctItemId$.pipe(
+      mergeMap(itemId => this.store.select(selectItemById(itemId))), filter(item => !!item));
 
   // TODO: Recommendations should match the data type
   // TODO: Hide actions when not logged in
-  recommendations = combineLatest(
-                        this.store.select(state => selectAllRecommendations(state.recommendations)),
-                        this.store.select(state => selectAllLabels(state.labels)), this.item$)
-                        .pipe(map(([recommendations, labels, item]) => {
-                          const labelsMap = new Map<string, Label>();
-                          labels.forEach(label => labelsMap.set(label.id, label));
-                          return getRecommendations(item, recommendations, labelsMap);
-                        }));
+  recommendations =
+      combineLatest(
+          this.store.select(selectRecommendations), this.store.select(selectLabels), this.item$)
+          .pipe(map(([recommendations, labels, item]) => {
+            const labelsMap = new Map<string, Label>();
+            labels.forEach(label => labelsMap.set(label.id, label));
+            return getRecommendations(item, recommendations, labelsMap);
+          }));
 
   isLoadingActivities = new ReplaySubject<boolean>(1);
 
   activities = this.distinctItemId$.pipe(
       tap(() => this.isLoadingActivities.next(true)),
-      switchMap(() => combineLatest(this.item$, this.store.select(state => state.repository.name))),
+      switchMap(() => combineLatest(this.item$, this.store.select(selectRepositoryName))),
       switchMap(([item, repository]) => {
         // If the created date and updated date are equal, there are no comments or
         // activities.
@@ -82,22 +93,19 @@ export class ItemDetail {
   }
 
   addLabelOptions: Observable<{id: string, label: string}[]> =
-      this.store.select(state => state.labels).pipe(map(labelsState => {
-        const labelOptions =
-            labelsState.ids.map(id => ({id, label: labelsState.entities[id].name}));
+      this.store.select(selectLabels).pipe(map(labels => {
+        const labelOptions = labels.map(label => ({id: label.id, label: label.name}));
         labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
         return labelOptions;
       }));
 
-  addAssigneeOptions: Observable<string[]> =
-      this.store.select(state => state.items).pipe(map(itemsState => {
-        const assigneesSet = new Set<string>();
-        itemsState.ids.forEach(
-            id => itemsState.entities[id].assignees.forEach(a => assigneesSet.add(a)));
-        const assigneesList: string[] = [];
-        assigneesSet.forEach(a => assigneesList.push(a));
-        return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
-      }));
+  addAssigneeOptions: Observable<string[]> = this.store.select(selectItems).pipe(map(items => {
+    const assigneesSet = new Set<string>();
+    items.forEach(item => item.assignees.forEach(a => assigneesSet.add(a)));
+    const assigneesList: string[] = [];
+    assigneesSet.forEach(a => assigneesList.push(a));
+    return assigneesList.sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1);
+  }));
 
   constructor(
       private store: Store<AppState>, private elementRef: ElementRef, public github: Github) {}

@@ -4,8 +4,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Store} from '@ngrx/store';
 import {combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AppState} from '../../../../../store';
-import {selectAllQueries} from '../../../../../store/query/query.reducer';
+import {AppState} from '../../../../store';
+import {selectQueryList} from '../../../../store/query/query.reducer';
 
 
 export interface QueryEditData {
@@ -30,7 +30,7 @@ export class QueryEdit {
 
   filteredGroupOptions =
       combineLatest(
-          this.store.select(state => selectAllQueries(state.queries)), this.formGroup.valueChanges)
+          this.store.select(selectQueryList), this.formGroup.valueChanges)
           .pipe(map(([queries, formValue]) => {
             const groupOptionsSet = new Set<string>();
             queries.forEach(query => {
@@ -45,8 +45,8 @@ export class QueryEdit {
           }));
 
   constructor(
-      private store: Store<AppState>, public dialogRef: MatDialogRef<QueryEdit>,
-      @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
+    private store: Store<AppState>, public dialogRef: MatDialogRef<QueryEdit>,
+    @Inject(MAT_DIALOG_DATA) public data: QueryEditData) {
     if (data && data.name) {
       this.formGroup.get('name').setValue(data.name);
     }
