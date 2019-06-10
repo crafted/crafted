@@ -14,14 +14,14 @@ import {
 import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {map, mergeMap, take, takeUntil} from 'rxjs/operators';
 
 import {Item} from '../../github/app-types/item';
+import {selectIsDarkTheme} from '../../store/theme/theme.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
 import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
-import {Theme} from '../services/theme';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 import {AppState} from '../store';
@@ -67,14 +67,22 @@ export class DashboardPage {
     timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
   };
 
+  destroyed = new Subject();
+
   constructor(
       private store: Store<AppState>, private dialog: MatDialog, private elementRef: ElementRef,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
-      private router: Router, private activatedRoute: ActivatedRoute, private theme: Theme) {
-    // TODO: Needs to listen for theme changes to know when this should change
-    Chart.defaults.global.defaultFontColor = this.theme.isLight ? 'black' : 'white';
+      private router: Router, private activatedRoute: ActivatedRoute) {
+    this.store.select(selectIsDarkTheme).pipe(takeUntil(this.destroyed)).subscribe(isDarkTheme => {
+      Chart.defaults.global.defaultFontColor = isDarkTheme ? 'white' : 'black';
+    });
 
     this.dashboard.pipe(take(1)).subscribe(dashboard => this.edit.next(!hasWidgets(dashboard)));
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   trackByIndex = (i: number) => i;

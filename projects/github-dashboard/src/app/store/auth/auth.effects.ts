@@ -4,7 +4,7 @@ import {MatDialog} from '@angular/material';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {from} from 'rxjs';
-import {map, mergeMap, switchMap, take} from 'rxjs/operators';
+import {map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {LoginDialog, LoginDialogResult} from '../../service/login-dialog/login-dialog';
 import {AppState} from '../index';
 import {
@@ -40,7 +40,7 @@ export class AuthEffects {
           AuthActionTypes.SIGN_IN_SUCCESS, AuthActionTypes.UPDATE_SCOPES,
           AuthActionTypes.SIGN_OUT_SUCCESS),
       mergeMap(() => this.store.select(selectAuthState).pipe(take(1))),
-      map(authState => saveAuthStateToStorage(authState)));
+      tap(saveAuthStateToStorage));
 
   @Effect()
   signOutFromFirebase = this.actions.pipe(

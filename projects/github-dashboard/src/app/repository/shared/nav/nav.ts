@@ -8,7 +8,8 @@ import {map} from 'rxjs/operators';
 import {LoadedRepos} from '../../../service/loaded-repos';
 import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
 import {selectAuthState} from '../../../store/auth/auth.reducer';
-import {Theme} from '../../services/theme';
+import {ThemeToggle} from '../../../store/theme/theme.action';
+import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
 import {AppState} from '../../store';
 import {selectItemTotal} from '../../store/item/item.reducer';
 import {selectRepositoryName} from '../../store/repository/repository.reducer';
@@ -27,6 +28,8 @@ export interface NavLink {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Nav {
+  isDarkTheme = this.store.select(selectIsDarkTheme);
+
   user = this.store.select(selectAuthState).pipe(map(authState => authState.userName));
 
   accessToken = this.store.select(selectAuthState).pipe(map(authState => authState.accessToken));
@@ -55,7 +58,7 @@ export class Nav {
   private destroyed = new Subject();
 
   constructor(
-      private store: Store<AppState>, public loadedRepos: LoadedRepos, public theme: Theme,
+      private store: Store<AppState>, public loadedRepos: LoadedRepos,
       public router: Router) {}
 
   ngOnDestroy() {
@@ -73,5 +76,9 @@ export class Nav {
 
   signOut() {
     this.store.dispatch(new AuthSignOut());
+  }
+
+  toggleTheme() {
+    this.store.dispatch(new ThemeToggle());
   }
 }

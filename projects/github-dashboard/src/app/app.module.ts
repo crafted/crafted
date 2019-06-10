@@ -14,7 +14,6 @@ import {App} from './app';
 import {FIREBASE_CONFIG} from './firebase.config';
 import {HomePage} from './home-page/home-page';
 import {LoginModule} from './home-page/home-page.module';
-import {Theme} from './repository/services/theme';
 import {LoginDialogModule} from './service/login-dialog/login-dialog.module';
 import {RateLimitReachedModule} from './service/rate-limit-reached/rate-limit-reached.module';
 import {effects, metaReducers, reducers} from './store';
@@ -50,7 +49,7 @@ export class TimeAgoPipeModule {
         ],
         {preloadingStrategy: PreloadAllModules}),
   ],
-  providers: [MatIconRegistry, Theme],
+  providers: [MatIconRegistry],
   bootstrap: [App]
 })
 export class AppModule {
