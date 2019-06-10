@@ -13,10 +13,10 @@
   </div>
 
   <div class="list"
-       *ngIf="(loadedRepos.repos$ | async).length; else suggestions">
+       *ngIf="hasLoadedRepos | async; else suggestions">
     <div class="repos">
       <a mat-stroked-button [routerLink]="repo"
-         *ngFor="let repo of loadedRepos.repos$ | async">
+         *ngFor="let repo of loadedRepos | async">
         {{repo}} </a>
     </div>
   </div>

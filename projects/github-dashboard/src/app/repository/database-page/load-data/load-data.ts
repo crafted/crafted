@@ -12,7 +12,7 @@ import {combineLatest, Observable, of, Subject, Subscription} from 'rxjs';
 import {filter, map, mergeMap, startWith, takeUntil, tap} from 'rxjs/operators';
 
 import {Github} from '../../../service/github';
-import {LoadedRepos} from '../../../service/loaded-repos';
+import {LoadedReposAdd} from '../../../store/loaded-repos/loaded-repos.action';
 import {AppState} from '../../store';
 import {UpdateContributorsFromGithub} from '../../store/contributor/contributor.action';
 import {UpdateItemsFromGithub} from '../../store/item/item.action';
@@ -63,8 +63,8 @@ export class LoadData {
   private destroyed = new Subject();
 
   constructor(
-      private loadedRepos: LoadedRepos, private store: Store<AppState>,
-      private snackbar: MatSnackBar, private github: Github, private cd: ChangeDetectorRef) {
+      private store: Store<AppState>, private snackbar: MatSnackBar, private github: Github,
+      private cd: ChangeDetectorRef) {
     const lastMonth = new Date();
     lastMonth.setDate(new Date().getDate() - 30);
     this.formGroup.get('issueDate').setValue(lastMonth, {emitEvent: false});
@@ -109,7 +109,7 @@ export class LoadData {
                         this.store.dispatch(new UpdateContributorsFromGithub(
                             {contributors: loadedData.contributors}));
                         this.store.dispatch(new UpdateItemsFromGithub({items: loadedData.items}));
-                        this.loadedRepos.addLoadedRepo(repository);
+                        this.store.dispatch(new LoadedReposAdd({repo: repository}));
                       }));
                 }),
                 takeUntil(this.destroyed))

@@ -4,10 +4,9 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
-
-import {LoadedRepos} from '../../../service/loaded-repos';
 import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
 import {selectAuthState} from '../../../store/auth/auth.reducer';
+import {selectLoadedRepos} from '../../../store/loaded-repos/loaded-repos.reducer';
 import {ThemeToggle} from '../../../store/theme/theme.action';
 import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
 import {AppState} from '../../store';
@@ -45,7 +44,7 @@ export class Nav {
     {route: 'recommendations', label: 'Recommendations', icon: 'label', disabled: this.isEmpty},
   ];
 
-  repositories$ = combineLatest(this.activeRepository, this.loadedRepos.repos$)
+  repositories$ = combineLatest(this.activeRepository, this.store.select(selectLoadedRepos))
                       .pipe(map(([repository, loadedRepos]) => {
                         const repositoriesSet = new Set([repository, ...loadedRepos]);
                         const repositories = [];
@@ -58,7 +57,7 @@ export class Nav {
   private destroyed = new Subject();
 
   constructor(
-      private store: Store<AppState>, public loadedRepos: LoadedRepos,
+      private store: Store<AppState>,
       public router: Router) {}
 
   ngOnDestroy() {

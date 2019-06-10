@@ -11,8 +11,8 @@ import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Config} from '../service/config';
-import {LoadedRepos} from '../service/loaded-repos';
 import {selectAuthState} from '../store/auth/auth.reducer';
+import {selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
 
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
@@ -73,13 +73,14 @@ export class Repository {
   private destroyed = new Subject();
 
   constructor(
-      private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-      private remover: Remover, private repoGist: RepoGist,
-      private config: Config, private store: Store<AppState>) {
-    combineLatest(this.store.select(selectRepositoryName), this.store.select(selectAuthState))
-        .pipe(filter(([repository, authState]) => !!repository), take(1))
-        .subscribe(([repository, authState]) => {
-          if (!this.loadedRepos.isLoaded(repository)) {
+      private router: Router, private updater: Updater, private remover: Remover,
+      private repoGist: RepoGist, private config: Config, private store: Store<AppState>) {
+    combineLatest(
+        this.store.select(selectRepositoryName), this.store.select(selectAuthState),
+        this.store.select(selectLoadedRepos))
+        .pipe(filter(([repository]) => !!repository), take(1))
+        .subscribe(([repository, authState, loadedRepos]) => {
+          if (loadedRepos.indexOf(repository) === -1) {
             this.router.navigate([`${repository}/database`]);
           } else if (authState.accessToken) {
             this.updater.update('items');
@@ -103,9 +104,7 @@ export class Repository {
   private initializeAutoIssueUpdates() {
     // TODO: This never unsubscribes and does not check if we are already updating a repository
     interval(60 * 1000)
-        .pipe(
-            mergeMap(() => this.store.select(selectItemTotal)),
-            filter(total => !!total), take(1))
+        .pipe(mergeMap(() => this.store.select(selectItemTotal)), filter(total => !!total), take(1))
         .subscribe(() => {
           this.updater.update('items');
         });
@@ -114,8 +113,7 @@ export class Repository {
   /** Persist changes to config lists to gist */
   private saveConfigChangesToGist(repository: string, store: Store<AppState>) {
     const configDaoLists = [
-      store.select(selectDashboards),
-      store.select(selectQueryList),
+      store.select(selectDashboards), store.select(selectQueryList),
       store.select(selectRecommendations)
     ];
     combineLatest(...configDaoLists)

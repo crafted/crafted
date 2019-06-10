@@ -1,8 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {combineLatest} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {LoadedRepos} from '../../service/loaded-repos';
+import {switchMap} from 'rxjs/operators';
+import {selectIsRepoLoaded} from '../../store/loaded-repos/loaded-repos.reducer';
 import {Remover} from '../services/remover';
 import {AppState, selectIsRepoStateEmpty} from '../store';
 import {selectContributorTotal} from '../store/contributor/contributor.reducer';
@@ -23,8 +22,8 @@ export class DatabasePage {
 
   isEmpty = this.store.select(selectIsRepoStateEmpty);
 
-  isLoaded = combineLatest(this.activeRepository, this.loadedRepos.repos$)
-                 .pipe(map(([repository, repos]) => repos.indexOf(repository) !== -1));
+  isLoaded =
+      this.activeRepository.pipe(switchMap(repo => this.store.select(selectIsRepoLoaded(repo))));
 
   repoLabels = this.store.select(selectLabelIds);
 
@@ -34,8 +33,7 @@ export class DatabasePage {
     contributors: this.store.select(selectContributorTotal),
   };
 
-  constructor(
-      private loadedRepos: LoadedRepos, public remover: Remover, private store: Store<AppState>) {}
+  constructor(public remover: Remover, private store: Store<AppState>) {}
 
   remove() {
     this.remover.removeAllData(true);

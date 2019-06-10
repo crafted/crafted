@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
 import {mergeMap, take} from 'rxjs/operators';
 
-import {LoadedRepos} from '../../service/loaded-repos';
+import {LoadedReposRemove} from '../../store/loaded-repos/loaded-repos.action';
 import {DeleteConfirmation} from '../shared/dialog/delete-confirmation/delete-confirmation';
 import {AppState} from '../store';
 import {RemoveAllContributors} from '../store/contributor/contributor.action';
@@ -15,8 +15,7 @@ import {selectRepositoryName} from '../store/repository/repository.reducer';
 @Injectable()
 export class Remover {
   constructor(
-    private store: Store<AppState>, private loadedRepos: LoadedRepos, private dialog: MatDialog,
-    private snackbar: MatSnackBar) {}
+      private store: Store<AppState>, private dialog: MatDialog, private snackbar: MatSnackBar) {}
 
   removeAllData(showConfirmationDialog = true) {
     if (!showConfirmationDialog) {
@@ -43,9 +42,8 @@ export class Remover {
     this.store.dispatch(new RemoveAllContributors());
     this.store.dispatch(new RemoveAllLabels());
 
-    // TODO: Removing loaded repo should be a dispatched action
-    this.store.select(selectRepositoryName).pipe(take(1)).subscribe(repository => {
-      this.loadedRepos.removeLoadedRepo(repository);
+    this.store.select(selectRepositoryName).pipe(take(1)).subscribe(repo => {
+      this.store.dispatch(new LoadedReposRemove({repo}));
     });
   }
 }
