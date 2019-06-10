@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Dashboard} from '@crafted/components';
+import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
-import {map, mergeMap, take} from 'rxjs/operators';
+import {filter, map, mergeMap, take} from 'rxjs/operators';
 import {Query} from '../repository/model/query';
 import {Recommendation} from '../repository/model/recommendation';
+import {AppState} from '../store';
+import {ThemeSet} from '../store/theme/theme.action';
 import {Github} from './github';
 
 
@@ -21,14 +24,10 @@ const DASHBOARD_CONFIG_FILENAME = 'dashboardConfig';
 
 @Injectable({providedIn: 'root'})
 export class Config {
-  constructor(private github: Github) {}
+  constructor(private github: Github, private store: Store<AppState>) {}
 
   saveDashboardConfig(dashboardConfig: DashboardConfig) {
     this.saveToGist(DASHBOARD_CONFIG_FILENAME, dashboardConfig);
-  }
-
-  getDashboardConfig(): Observable<DashboardConfig|null> {
-    return this.syncFromGist<DashboardConfig>(DASHBOARD_CONFIG_FILENAME);
   }
 
   saveRepoConfigToGist(repository: string, repoConfig: RepoConfig): Promise<void> {
@@ -37,6 +36,14 @@ export class Config {
 
   getRepoConfig(repository: string): Observable<RepoConfig|null> {
     return this.syncFromGist<RepoConfig>(repository);
+  }
+
+  syncFromDashboardConfig() {
+    this.syncFromGist<DashboardConfig>(DASHBOARD_CONFIG_FILENAME)
+        .pipe(take(1), filter(config => !!config))
+        .subscribe(config => {
+          this.store.dispatch(new ThemeSet({isDark: config.useDarkTheme}));
+        });
   }
 
   private saveToGist(filename: string, content: DashboardConfig|RepoConfig): Promise<void> {
