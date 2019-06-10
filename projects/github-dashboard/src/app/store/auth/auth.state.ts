@@ -1,3 +1,5 @@
 export interface AuthState {
-  name: string;
+  userName: string;
+  accessToken: string;
+  scopes: string[];
 }

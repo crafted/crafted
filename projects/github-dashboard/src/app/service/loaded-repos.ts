@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 
-export type GithubAuthScope = 'gist'|'repo';
-
 @Injectable({providedIn: 'root'})
 export class LoadedRepos {
   set repos(loadedRepos: string[]) {

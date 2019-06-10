@@ -1,9 +1,11 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material';
-import {Observable, timer} from 'rxjs';
-import {map, take, tap} from 'rxjs/operators';
-
-import {Auth} from '../auth';
+import {Store} from '@ngrx/store';
+import {Observable, Subject, timer} from 'rxjs';
+import {filter, map, take, takeUntil, tap} from 'rxjs/operators';
+import {AppState} from '../../store';
+import {AuthSignIn} from '../../store/auth/auth.action';
+import {selectAuthState} from '../../store/auth/auth.reducer';
 
 
 @Component({
@@ -15,8 +17,10 @@ export class RateLimitReached {
 
   secondsLeftMessage: Observable<string>;
 
+  destroyed = new Subject();
+
   constructor(
-      public auth: Auth,
+      private store: Store<AppState>,
       @Inject(MAT_SNACK_BAR_DATA) public data: any,
       public snackBarRef: MatSnackBarRef<RateLimitReached>,
   ) {
@@ -34,9 +38,17 @@ export class RateLimitReached {
     }));
   }
 
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
   signIn() {
-    this.auth.signIn().then(() => {
-      this.snackBarRef.dismiss();
-    });
+    this.store.dispatch(new AuthSignIn());
+    this.store.select(selectAuthState)
+        .pipe(filter(authState => !!authState.accessToken), takeUntil(this.destroyed))
+        .subscribe(() => {
+          this.snackBarRef.dismiss();
+        });
   }
 }

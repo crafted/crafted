@@ -3,7 +3,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {FormControl} from '@angular/forms';
 import {MatDialogRef} from '@angular/material';
 import {auth} from 'firebase/app';
-import {GithubAuthScope} from '../auth';
+import {GithubAuthScope} from '../../store/auth/auth.reducer';
 
 export interface LoginDialogResult {
   user: string;

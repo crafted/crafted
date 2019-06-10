@@ -5,8 +5,9 @@ import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {Auth} from '../../../service/auth';
 import {LoadedRepos} from '../../../service/loaded-repos';
+import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
+import {selectAuthState} from '../../../store/auth/auth.reducer';
 import {Theme} from '../../services/theme';
 import {AppState} from '../../store';
 import {selectItemTotal} from '../../store/item/item.reducer';
@@ -26,6 +27,10 @@ export interface NavLink {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Nav {
+  user = this.store.select(selectAuthState).pipe(map(authState => authState.userName));
+
+  accessToken = this.store.select(selectAuthState).pipe(map(authState => authState.accessToken));
+
   activeRepository = this.store.select(selectRepositoryName);
 
   isEmpty = this.store.select(selectItemTotal).pipe(map(total => total === 0));
@@ -50,8 +55,8 @@ export class Nav {
   private destroyed = new Subject();
 
   constructor(
-    private store: Store<AppState>, public loadedRepos: LoadedRepos, public theme: Theme,
-    public router: Router, public auth: Auth) {}
+      private store: Store<AppState>, public loadedRepos: LoadedRepos, public theme: Theme,
+      public router: Router) {}
 
   ngOnDestroy() {
     this.destroyed.next();
@@ -60,5 +65,13 @@ export class Nav {
 
   navigateHome() {
     this.router.navigate(['../..']);
+  }
+
+  signIn() {
+    this.store.dispatch(new AuthSignIn());
+  }
+
+  signOut() {
+    this.store.dispatch(new AuthSignOut());
   }
 }

@@ -37,8 +37,8 @@
 <mat-divider></mat-divider>
 
 <div class="settings">
-  <ng-container *ngIf="auth.token$ | async; let token; else settingsLabel">
-    <ng-container *ngIf="auth.user$ | async; let user">
+  <ng-container *ngIf="accessToken | async; let token; else settingsLabel">
+    <ng-container *ngIf="user | async; let user">
       <div class="pic"
            [style.backgroundImage]="'url(https://github.com/' + user + '.png)'">
       </div>
@@ -46,7 +46,7 @@
     </ng-container>
   </ng-container>
   <ng-template #settingsLabel>
-    <button mat-button (click)="auth.signIn()" class="sign-in">
+    <button mat-button (click)="signIn()" class="sign-in">
       Login to GitHub
     </button>
   </ng-template>
@@ -61,7 +61,7 @@
     Use {{theme.isLight ? 'Dark' : 'Light' }} Theme
   </button>
 
-  <button mat-menu-item (click)="auth.signOut()" *ngIf="auth.token$ | async">
+  <button mat-menu-item (click)="signOut()" *ngIf="accessToken | async">
     <mat-icon> exit_to_app </mat-icon>
     Logout
   </button>

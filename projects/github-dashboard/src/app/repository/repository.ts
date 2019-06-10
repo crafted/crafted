@@ -10,9 +10,9 @@ import {getFiltererProvider} from '../github/data-source/item-filterer-metadata'
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
-import {Auth} from '../service/auth';
 import {Config} from '../service/config';
 import {LoadedRepos} from '../service/loaded-repos';
+import {selectAuthState} from '../store/auth/auth.reducer';
 
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
@@ -74,14 +74,14 @@ export class Repository {
 
   constructor(
       private router: Router, private updater: Updater, private loadedRepos: LoadedRepos,
-      private remover: Remover, private auth: Auth, private repoGist: RepoGist,
+      private remover: Remover, private repoGist: RepoGist,
       private config: Config, private store: Store<AppState>) {
-    this.store.select(selectRepositoryName)
-        .pipe(filter(repository => !!repository))
-        .subscribe(repository => {
+    combineLatest(this.store.select(selectRepositoryName), this.store.select(selectAuthState))
+        .pipe(filter(([repository, authState]) => !!repository), take(1))
+        .subscribe(([repository, authState]) => {
           if (!this.loadedRepos.isLoaded(repository)) {
             this.router.navigate([`${repository}/database`]);
-          } else if (this.auth.token) {
+          } else if (authState.accessToken) {
             this.updater.update('items');
             this.updater.update('contributors');
             this.updater.update('labels');

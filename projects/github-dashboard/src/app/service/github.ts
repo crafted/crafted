@@ -1,8 +1,9 @@
 import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
+import {Store} from '@ngrx/store';
 import {BehaviorSubject, EMPTY, merge, Observable, of, timer} from 'rxjs';
-import {expand, filter, map, mergeMap, take, tap} from 'rxjs/operators';
+import {expand, filter, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {Contributor, githubContributorToContributor} from '../github/app-types/contributor';
 import {githubIssueToIssue, Item} from '../github/app-types/item';
 import {githubLabelToLabel, Label} from '../github/app-types/label';
@@ -13,7 +14,9 @@ import {GithubIssue} from '../github/github-types/issue';
 import {GithubLabel} from '../github/github-types/label';
 import {GithubRateLimit, GithubRateLimitResponse} from '../github/github-types/rate-limit';
 import {GithubTimelineEvent} from '../github/github-types/timeline';
-import {Auth} from './auth';
+import {AppState} from '../store';
+import {AuthUpdateScopes} from '../store/auth/auth.action';
+import {selectAuthState, selectHasScope} from '../store/auth/auth.reducer';
 import {RateLimitReached} from './rate-limit-reached/rate-limit.reached';
 
 export interface CombinedPagedResults<T> {
@@ -38,7 +41,8 @@ export class Github {
 
   rateLimitMessageOpen = false;
 
-  constructor(private http: HttpClient, private auth: Auth, private snackbar: MatSnackBar) {
+  constructor(
+      private http: HttpClient, private store: Store<AppState>, private snackbar: MatSnackBar) {
     this.getRateLimitsAndScopes();
   }
 
@@ -86,25 +90,28 @@ export class Github {
   }
 
   getGists(): Observable<CombinedPagedResults<Gist>> {
-    if (!this.auth.hasScope('gist')) {
-      return of({total: 0, completed: 0, current: [], accumulated: []});
-    }
+    return this.store.select(selectHasScope('gist'))
+        .pipe(take(1), mergeMap(hasGistScope => {
+                if (!hasGistScope) {
+                  return of({total: 0, completed: 0, current: [], accumulated: []});
+                }
 
-    const url = constructUrl(`gists`, `per_page=100`);
-    return this.getPagedResults<Gist, Gist>(url, g => g, true);
+                const url = constructUrl(`gists`, `per_page=100`);
+                return this.getPagedResults<Gist, Gist>(url, g => g, true);
+              }));
   }
 
   getMostPopularRepos(): Observable<string|null> {
-    const url =
-      constructUrl('search/repositories', 'q=language:typescript&sort=stars&order=desc');
+    const url = constructUrl('search/repositories', 'q=language:typescript&sort=stars&order=desc');
     return this.get<any>(url).pipe(
         filter(v => !!v && v.body && v.body.items),
         map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
   searchRepoByFullName(query: string, perPage: number = 5): Observable<string[]> {
-    const url =
-      constructUrl('search/repositories', `fork=true&order=desc&per_page=${perPage}&q=language:typescript in:name ${query}`, false);
+    const url = constructUrl(
+        'search/repositories',
+        `fork=true&order=desc&per_page=${perPage}&q=language:typescript in:name ${query}`, false);
     return this.get<any>(url).pipe(
         filter(v => !!v && v.body && v.body.items),
         map(response => response.body.items.map((item: any) => item.full_name)));
@@ -112,11 +119,13 @@ export class Github {
 
   getRateLimitsAndScopes(): void {
     const url = constructUrl(`rate_limit`);
-    const token = this.auth.token ? `token ${this.auth.token}` : '';
-    this.http
-        .get<GithubRateLimitResponse>(
-            url, {observe: 'response', headers: new HttpHeaders({Authorization: token})})
+    this.store.select(selectAuthState)
         .pipe(
+            take(1), switchMap(authState => {
+              const token = authState.accessToken ? `token ${authState.accessToken}` : '';
+              return this.http.get<GithubRateLimitResponse>(
+                  url, {observe: 'response', headers: new HttpHeaders({Authorization: token})});
+            }),
             filter(v => !!v), tap(response => this.updateScopes(response)), filter(v => !!v.body),
             map(result => {
               const resources = result.body.resources;
@@ -152,50 +161,59 @@ export class Github {
   }
 
   getDashboardGist(): Observable<Gist|null> {
-    if (!this.auth.hasScope('gist')) {
-      return of(null);
-    }
+    return this.store.select(selectHasScope('gist'))
+        .pipe(take(1), mergeMap(hasGistScope => {
+                if (!hasGistScope) {
+                  return of(null);
+                }
 
-    return this.getGists().pipe(
-        filter(result => result.completed === result.total), mergeMap(result => {
-          const gists = result.accumulated;
+                return this.getGists().pipe(
+                    filter(result => result.completed === result.total), mergeMap(result => {
+                      const gists = result.accumulated;
 
-          for (let i = 0; i < gists.length; i++) {
-            if (gists[i].description.indexOf(GIST_DESCRIPTION) === 0) {
-              return this.getGist(gists[i].id);
-            }
-          }
+                      for (let i = 0; i < gists.length; i++) {
+                        if (gists[i].description.indexOf(GIST_DESCRIPTION) === 0) {
+                          return this.getGist(gists[i].id);
+                        }
+                      }
 
-          return of(null);
-        }));
+                      return of(null);
+                    }));
+              }));
   }
 
   editGist(id: string, filename: string, content: string) {
-    if (!this.auth.hasScope('gist')) {
-      return of(null);
-    }
+    return this.store.select(selectHasScope('gist'))
+        .pipe(take(1), mergeMap(hasGistScope => {
+                if (!hasGistScope) {
+                  return of(null);
+                }
 
-    filename = filename.replace('/', '_');
-
-    const files: {[key in string]: {filename: string, content: string}} = {};
-    files[filename] = {filename, content};
-    const url = constructUrl(`gists/${id}`, 'random=' + Math.random());
-    return this.patch(url, {files});
+                filename = filename.replace('/', '_');
+                const files: {[key in string]: {filename: string, content: string}} = {};
+                files[filename] = {filename, content};
+                const url = constructUrl(`gists/${id}`, 'random=' + Math.random());
+                return this.patch(url, {files});
+              }));
   }
 
   createDashboardGist(): Observable<Gist|null> {
-    if (!this.auth.hasScope('gist')) {
-      return of(null);
-    }
+    return this.store.select(selectHasScope('gist'))
+        .pipe(take(1), mergeMap(hasGistScope => {
+                if (!hasGistScope) {
+                  return of(null);
+                }
 
-    const url = 'https://api.github.com/gists';
-    const body = {
-      files: {dashboardConfig: {content: '{}'}},
-      description: 'Dashboard Config',
-      public: false,
-    };
+                const url = 'https://api.github.com/gists';
+                const body = {
+                  files: {dashboardConfig: {content: '{}'}},
+                  description: 'Dashboard Config',
+                  public: false,
+                };
 
-    return this.post<Gist>(url, body, true).pipe(filter(v => !!v), map(response => response.body));
+                return this.post<Gist>(url, body, true)
+                    .pipe(filter(v => !!v), map(response => response.body));
+              }));
   }
 
   addLabel(repo: string, issue: string, label: string): Observable<HttpResponse<any>|null> {
@@ -257,85 +275,105 @@ export class Github {
   }
 
   private post<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):
-    Observable<HttpResponse<T>|null> {
-    if (needsAuth && !this.auth.token) {
-      return of(null);
-    }
+      Observable<HttpResponse<T>|null> {
+    return this.store.select(selectAuthState)
+        .pipe(take(1), mergeMap(authState => {
+                const token = authState.accessToken;
 
-    return this.waitForRateLimit(rateLimitType)
-      .pipe(
-        mergeMap(() => this.http.post<T>(url, body, {
-          observe: 'response',
-          headers: new HttpHeaders({
-            Authorization: this.auth.token ? `token ${this.auth.token}` : '',
-          })
-        })),
-        tap(response => this.updateRateLimit(rateLimitType, response)),
-        tap(response => this.updateScopes(response)));
+                if (needsAuth && !token) {
+                  return of(null);
+                }
+
+                return this.waitForRateLimit(rateLimitType)
+                    .pipe(
+                        mergeMap(() => this.http.post<T>(url, body, {
+                          observe: 'response',
+                          headers: new HttpHeaders({
+                            Authorization: token ? `token ${token}` : '',
+                          })
+                        })),
+                        tap(response => this.updateRateLimit(rateLimitType, response)),
+                        tap(response => this.updateScopes(response)));
+              }));
   }
 
   private delete<T>(url: string, needsAuth = true, rateLimitType: RateLimitType = 'core'):
-    Observable<HttpResponse<T>|null> {
-    if (needsAuth && !this.auth.token) {
-      return of(null);
-    }
+      Observable<HttpResponse<T>|null> {
+    return this.store.select(selectAuthState)
+        .pipe(take(1), mergeMap(authState => {
+                const token = authState.accessToken;
 
-    return this.waitForRateLimit(rateLimitType)
-      .pipe(
-        mergeMap(() => this.http.delete<T>(url, {
-          observe: 'response',
-          headers: new HttpHeaders({
-            Authorization: this.auth.token ? `token ${this.auth.token}` : '',
-          })
-        })),
-        tap(response => this.updateRateLimit(rateLimitType, response)),
-        tap(response => this.updateScopes(response)));
+                if (needsAuth && !token) {
+                  return of(null);
+                }
+
+                return this.waitForRateLimit(rateLimitType)
+                    .pipe(
+                        mergeMap(() => this.http.delete<T>(url, {
+                          observe: 'response',
+                          headers: new HttpHeaders({
+                            Authorization: token ? `token ${token}` : '',
+                          })
+                        })),
+                        tap(response => this.updateRateLimit(rateLimitType, response)),
+                        tap(response => this.updateScopes(response)));
+              }));
   }
 
   private patch<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):
       Observable<HttpResponse<T>|null> {
-    if (needsAuth && !this.auth.token) {
-      return of(null);
-    }
+    return this.store.select(selectAuthState)
+        .pipe(take(1), mergeMap(authState => {
+                const token = authState.accessToken;
 
-    return this.waitForRateLimit(rateLimitType)
-        .pipe(
-            mergeMap(() => this.http.patch<T>(url, body, {
-              observe: 'response',
-              headers: new HttpHeaders({
-                Authorization: this.auth.token ? `token ${this.auth.token}` : '',
-              })
-            })),
-            tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response)));
+                if (needsAuth && !token) {
+                  return of(null);
+                }
+
+                return this.waitForRateLimit(rateLimitType)
+                    .pipe(
+                        mergeMap(() => this.http.patch<T>(url, body, {
+                          observe: 'response',
+                          headers: new HttpHeaders({
+                            Authorization: token ? `token ${token}` : '',
+                          })
+                        })),
+                        tap(response => this.updateRateLimit(rateLimitType, response)),
+                        tap(response => this.updateScopes(response)));
+              }));
   }
 
   private get<T>(url: string, needsAuth = false, rateLimitType: RateLimitType = 'core'):
       Observable<HttpResponse<T>|null> {
-    if (needsAuth && !this.auth.token) {
-      return of(null);
-    }
+    return this.store.select(selectAuthState)
+        .pipe(take(1), mergeMap(authState => {
+                const token = authState.accessToken;
 
-    const accept: string[] = [];
+                if (needsAuth && !token) {
+                  return of(null);
+                }
 
-    // Label descriptions
-    accept.push('application/vnd.github.symmetra-preview+json');
+                const accept: string[] = [];
 
-    // Issue reactions
-    accept.push('application/vnd.github.squirrel-girl-preview');
+                // Label descriptions
+                accept.push('application/vnd.github.symmetra-preview+json');
+
+                // Issue reactions
+                accept.push('application/vnd.github.squirrel-girl-preview');
 
 
-    return this.waitForRateLimit(rateLimitType)
-        .pipe(
-            mergeMap(() => this.http.get<T>(url, {
-              observe: 'response',
-              headers: new HttpHeaders({
-                Authorization: this.auth.token ? `token ${this.auth.token}` : '',
-                Accept: accept,
-              })
-            })),
-            tap(response => this.updateRateLimit(rateLimitType, response)),
-            tap(response => this.updateScopes(response)));
+                return this.waitForRateLimit(rateLimitType)
+                    .pipe(
+                        mergeMap(() => this.http.get<T>(url, {
+                          observe: 'response',
+                          headers: new HttpHeaders({
+                            Authorization: token ? `token ${token}` : '',
+                            Accept: accept,
+                          })
+                        })),
+                        tap(response => this.updateRateLimit(rateLimitType, response)),
+                        tap(response => this.updateScopes(response)));
+              }));
   }
 
   private waitForRateLimit(rateLimitType: RateLimitType): Observable<any> {
@@ -357,7 +395,10 @@ export class Github {
               this.rateLimitMessageOpen = true;
             }
 
-            return merge(this.auth.token$.pipe(filter(v => !!v)), timer(refreshedDate));
+            return merge(
+                this.store.select(selectAuthState)
+                    .pipe(map(authState => authState.accessToken), filter(v => !!v)),
+                timer(refreshedDate));
           } else {
             return of(null);
           }
@@ -379,7 +420,9 @@ export class Github {
   }
 
   private updateScopes(response: HttpResponse<any>) {
-    this.auth.scopes = response.headers.get('X-OAuth-Scopes') || '';
+    const scopesStr = response.headers.get('X-OAuth-Scopes') || '';
+    const scopes = scopesStr.split(',').map(v => v.trim());
+    this.store.dispatch(new AuthUpdateScopes({scopes}));
   }
 }
 
@@ -447,13 +490,16 @@ export function getLinkMap(headers: any) {
   return links;
 }
 
-/** Observable Pipe - Takes a stream of combinedPagedResults and emits the accumulated result when completed. */
+/**
+ * Observable Pipe - Takes a stream of combinedPagedResults and emits the accumulated result when
+ * completed.
+ */
 export function completedPagedResults<T>(): (results: Observable<CombinedPagedResults<T>>) =>
-  Observable<T[]> {
+    Observable<T[]> {
   return (results$: Observable<CombinedPagedResults<T>>) => {
     return results$.pipe(
-      filter(results => results.completed === results.total),
-      map(results => results.accumulated));
+        filter(results => results.completed === results.total),
+        map(results => results.accumulated));
   };
 }
 
