@@ -3,11 +3,11 @@ import {NavigationExtras, Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
-import {createId} from '../../../utility/create-id';
 
-import {StoreId} from '../../utility/app-indexed-db';
+import {RepositoryDatabase} from '../../../service/local-database';
+import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
-import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {selectRepositoryName} from '../repository/repository.reducer';
 
 import {
   CreateQuery,
@@ -32,11 +32,8 @@ export class QueryEffects {
           ...action.payload.query
         };
 
-        const navigationToQueryAction = new NavigateToQuery({
-          type: NavigateToQueryType.BY_ID,
-          id: newQuery.id,
-          replaceUrl: true
-        });
+        const navigationToQueryAction = new NavigateToQuery(
+            {type: NavigateToQueryType.BY_ID, id: newQuery.id, replaceUrl: true});
         return [new UpsertQueries({queries: [newQuery]}), navigationToQueryAction];
       }));
 
@@ -55,7 +52,7 @@ export class QueryEffects {
           case NavigateToQueryType.BY_ID:
             id = action.payload.id;
             if (action.payload.replaceUrl) {
-              navigationExtras = { replaceUrl: true, queryParamsHandling: 'merge' };
+              navigationExtras = {replaceUrl: true, queryParamsHandling: 'merge'};
             }
             break;
 
@@ -71,8 +68,7 @@ export class QueryEffects {
   @Effect()
   update = this.actions.pipe(
       ofType<UpdateQuery>(QueryActionTypes.UPDATE_QUERY),
-      withLatestFrom(this.store.select(selectQueryEntities)),
-      map(([action, queries]) => {
+      withLatestFrom(this.store.select(selectQueryEntities)), map(([action, queries]) => {
         const query = {
           ...queries[action.payload.update.id],
           ...action.payload.update.changes,
@@ -81,27 +77,34 @@ export class QueryEffects {
         return new UpsertQueries({queries: [query]});
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistUpsert = this.actions.pipe(
-      ofType<UpsertQueries>(QueryActionTypes.UPSERT_QUERIES), map(action => {
-        const updatePayload = {entities: action.payload.queries, type: 'queries' as StoreId};
-        return new UpdateLocalDbEntities(updatePayload);
+      ofType<UpsertQueries>(QueryActionTypes.UPSERT_QUERIES),
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.update(repository, 'queries', action.payload.queries);
+      }));
+
+  @Effect({dispatch: false})
+  persistRemove = this.actions.pipe(
+      ofType<RemoveQuery>(QueryActionTypes.REMOVE),
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.remove(repository, 'queries', [action.payload.id]);
       }));
 
   @Effect()
-  persistRemove = this.actions.pipe(
-      ofType<RemoveQuery>(QueryActionTypes.REMOVE),
-      map(action =>
-              new RemoveLocalDbEntities({ids: [action.payload.id], type: 'queries' as StoreId})));
+  sync = this.actions.pipe(
+      ofType<SyncQueries>(QueryActionTypes.SYNC),
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        if (action.payload.remove.length) {
+          this.repositoryDatabase.remove(repository, 'queries', action.payload.remove);
+        }
 
-  @Effect()
-  sync = this.actions.pipe(ofType<SyncQueries>(QueryActionTypes.SYNC), switchMap(action => {
-                             const removeAction = new RemoveLocalDbEntities(
-                                 {ids: [action.payload.remove], type: 'queries' as StoreId});
-                             const updateAction = new UpdateLocalDbEntities(
-                                 {entities: [action.payload.update], type: 'queries' as StoreId});
-                             return [removeAction, updateAction];
-                           }));
+        if (action.payload.update.length) {
+          this.repositoryDatabase.update(repository, 'queries', action.payload.update);
+        }
+      }));
 
-  constructor(private actions: Actions, private store: Store<AppState>, private router: Router) {}
+  constructor(
+      private actions: Actions, private store: Store<AppState>, private router: Router,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

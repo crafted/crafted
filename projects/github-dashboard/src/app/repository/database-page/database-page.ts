@@ -1,9 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {switchMap} from 'rxjs/operators';
-import {selectIsRepoLoaded} from '../../store/loaded-repos/loaded-repos.reducer';
 import {Remover} from '../services/remover';
-import {AppState, selectIsRepoStateEmpty} from '../store';
+import {AppState} from '../store';
 import {selectContributorTotal} from '../store/contributor/contributor.reducer';
 import {selectItemTotal} from '../store/item/item.reducer';
 import {selectLabelIds, selectLabelTotal} from '../store/label/label.reducer';
@@ -17,13 +15,6 @@ import {selectRepositoryName} from '../store/repository/repository.reducer';
 })
 export class DatabasePage {
   activeRepository = this.store.select(selectRepositoryName);
-
-  isLoading = false;
-
-  isEmpty = this.store.select(selectIsRepoStateEmpty);
-
-  isLoaded =
-      this.activeRepository.pipe(switchMap(repo => this.store.select(selectIsRepoLoaded(repo))));
 
   repoLabels = this.store.select(selectLabelIds);
 

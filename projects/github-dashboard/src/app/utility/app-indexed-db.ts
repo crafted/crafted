@@ -1,7 +1,7 @@
 import {DB, deleteDb, ObjectStore, openDb} from 'idb';
 import {ReplaySubject, Subject} from 'rxjs';
-import {DEMO_DASHBOARDS} from './demo-config/demo-dashboards';
-import {DEMO_RECOMMENDATIONS} from './demo-config/demo-recommendations';
+import {DEMO_DASHBOARDS} from '../repository/utility/demo-config/demo-dashboards';
+import {DEMO_RECOMMENDATIONS} from '../repository/utility/demo-config/demo-recommendations';
 
 const DB_VERSION = 1;
 

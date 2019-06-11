@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, switchMap, withLatestFrom} from 'rxjs/operators';
-import {createId} from '../../../utility/create-id';
+import {map, tap, withLatestFrom} from 'rxjs/operators';
 
-import {StoreId} from '../../utility/app-indexed-db';
+import {RepositoryDatabase} from '../../../service/local-database';
+import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
-import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {selectRepositoryName} from '../repository/repository.reducer';
 
 import {
   CreateRecommendation,
@@ -45,40 +45,37 @@ export class RecommendationEffects {
         return new UpsertRecommendations({recommendations: [recommendation]});
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistUpsert = this.actions.pipe(
       ofType<UpsertRecommendations>(RecommendationActionTypes.UPSERT_RECOMMENDATIONS),
-      map(action => {
-        const updatePayload = {
-          entities: action.payload.recommendations,
-          type: 'recommendations' as StoreId
-        };
-        return new UpdateLocalDbEntities(updatePayload);
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.update(
+            repository, 'recommendations', action.payload.recommendations);
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistRemove = this.actions.pipe(
       ofType<RemoveRecommendation>(RecommendationActionTypes.REMOVE),
-      map(action => new RemoveLocalDbEntities(
-              {ids: [action.payload.id], type: 'recommendations' as StoreId})));
+      withLatestFrom(this.store.select(selectRepositoryName)),
+      tap(([action, repository]) => {
+        this.repositoryDatabase.remove(repository, 'recommendations', [action.payload.id]);
+      }));
 
-  @Effect()
+  @Effect({dispatch: false})
   sync = this.actions.pipe(
-      ofType<SyncRecommendations>(RecommendationActionTypes.SYNC), switchMap(action => {
-        const actions = [];
-
+      ofType<SyncRecommendations>(RecommendationActionTypes.SYNC),
+      withLatestFrom(this.store.select(selectRepositoryName)),
+      tap(([action, repository]) => {
         if (action.payload.remove.length) {
-          actions.push(new RemoveLocalDbEntities(
-              {ids: [action.payload.remove], type: 'recommendations' as StoreId}));
+          this.repositoryDatabase.remove(repository, 'recommendations', action.payload.remove);
         }
 
         if (action.payload.update.length) {
-          actions.push(new UpdateLocalDbEntities(
-              {entities: [action.payload.update], type: 'recommendations' as StoreId}));
+          this.repositoryDatabase.update(repository, 'recommendations', action.payload.update);
         }
-
-        return actions;
       }));
 
-  constructor(private actions: Actions, private store: Store<AppState>) {}
+  constructor(
+      private actions: Actions, private store: Store<AppState>,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

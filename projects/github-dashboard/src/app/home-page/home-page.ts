@@ -1,11 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatDialog, MatDialogConfig} from '@angular/material';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {map, sampleTime, shareReplay, switchMap} from 'rxjs/operators';
+import {map, sampleTime, shareReplay, switchMap, tap} from 'rxjs/operators';
 
 import {Github} from '../service/github';
+import {LoadRepository, LoadRepositoryData} from '../service/load-repository/load-repository';
 import {AppState} from '../store';
 import {selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
 
@@ -41,10 +42,17 @@ export class HomePage {
       shareReplay(1));
 
   constructor(
-      private store: Store<AppState>, private github: Github, private router: Router) {}
+      private store: Store<AppState>, private github: Github, private router: Router, private dialog: MatDialog) {}
 
   /** Navigate to the select location from the autocomplete options. */
   autocompleteSelected(event: MatAutocompleteSelectedEvent) {
-    this.router.navigateByUrl(event.option.value);
+    this.loadRepository(event.option.value);
+  }
+
+  loadRepository(repository: string) {
+    this.dialog.open<LoadRepository, LoadRepositoryData>(LoadRepository, {
+      data: {name: repository},
+      width: '500px'
+     });
   }
 }

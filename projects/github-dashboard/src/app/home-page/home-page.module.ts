@@ -8,6 +8,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 
 import {RouterModule} from '@angular/router';
 import {LoadingModule} from '../repository/shared/loading/loading.module';
+import {LoadRepositoryModule} from '../service/load-repository/load-repository.module';
 import {HomePage} from './home-page';
 
 @NgModule({
@@ -20,6 +21,7 @@ import {HomePage} from './home-page';
     ReactiveFormsModule,
     RouterModule,
     LoadingModule,
+    LoadRepositoryModule,
   ],
   declarations: [HomePage],
   exports: [HomePage],

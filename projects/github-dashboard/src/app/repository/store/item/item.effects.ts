@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, switchMap, withLatestFrom} from 'rxjs/operators';
-import {StoreId} from '../../utility/app-indexed-db';
+import {combineLatest} from 'rxjs';
+import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {RepositoryDatabase} from '../../../service/local-database';
+import {StoreId} from '../../../utility/app-indexed-db';
 import {GitHubAddAssignee, GitHubAddLabel, GitHubRemoveLabel} from '../github/github.actions';
 import {AppState} from '../index';
-import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {selectRepositoryName} from '../repository/repository.reducer';
 import {
   ItemActionTypes,
   ItemAddAssigneeAction,
@@ -18,83 +20,61 @@ import {selectItemEntities, selectItemIds} from './item.reducer';
 
 @Injectable()
 export class ItemEffects {
-  @Effect()
+  @Effect({dispatch: false})
   persistGithubUpdatesToLocalDb = this.actions.pipe(
-      ofType<UpdateItemsFromGithub>(ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB), map(action => {
-        const updatePayload = {entities: action.payload.items, type: 'items' as StoreId};
-        return new UpdateLocalDbEntities(updatePayload);
+      ofType<UpdateItemsFromGithub>(ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB),
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.update(repository, 'items', action.payload.items);
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistRemoveAllToLocalDb = this.actions.pipe(
       ofType<RemoveAllItems>(ItemActionTypes.REMOVE_ALL),
-      withLatestFrom(this.store.select(selectItemIds)),
-      map(([action, ids]) =>
-              new RemoveLocalDbEntities({ids, type: 'items' as StoreId})));
+      switchMap(() => combineLatest([
+                        this.store.select(selectItemIds), this.store.select(selectRepositoryName)
+                      ]).pipe(take(1))),
+      tap(([ids, repository]) => this.repositoryDatabase.remove(repository, 'items', ids)));
 
   @Effect()
   persistAddLabel = this.actions.pipe(
       ofType<ItemAddLabelAction>(ItemActionTypes.ADD_LABEL),
-      withLatestFrom(this.store.select(selectItemEntities)), switchMap(([action, items]) => {
-        // Update in local database
-        const updatePayload = {
-          entities: [items[action.payload.id]],
-          type: 'items' as StoreId
-        };
-        const updateLocalDbEntitiesAction = new UpdateLocalDbEntities(updatePayload);
-
-        // Update in github
-        const githubAddLabelPayload = {
+      withLatestFrom(combineLatest(
+          this.store.select(selectItemEntities), this.store.select(selectRepositoryName))),
+      map(([action, [items, repository]]) => {
+        this.repositoryDatabase.update(repository, 'items', [items[action.payload.id]]);
+        return new GitHubAddLabel({
           id: action.payload.id,
           label: action.payload.label,
-        };
-        const githubAddLabelAction = new GitHubAddLabel(githubAddLabelPayload);
-
-        return [updateLocalDbEntitiesAction, githubAddLabelAction];
+        });
       }));
 
 
   @Effect()
   persistRemoveLabel = this.actions.pipe(
       ofType<ItemRemoveLabelAction>(ItemActionTypes.REMOVE_LABEL),
-      withLatestFrom(this.store.select(selectItemEntities)), switchMap(([action, items]) => {
-        // Update in local database
-        const updatePayload = {
-          entities: [items[action.payload.id]],
-          type: 'items' as StoreId
-        };
-        const updateLocalDbEntitiesAction = new UpdateLocalDbEntities(updatePayload);
+      withLatestFrom(combineLatest(
+          this.store.select(selectItemEntities), this.store.select(selectRepositoryName))),
+      map(([action, [items, repository]]) => {
+        this.repositoryDatabase.update(repository, 'items', [items[action.payload.id]]);
 
-        // Update in github
-        const githubRemoveLabelPayload = {
+        return new GitHubRemoveLabel({
           id: action.payload.id,
           label: action.payload.label,
-        };
-        const githubRemoveLabelAction = new GitHubRemoveLabel(githubRemoveLabelPayload);
-
-        return [updateLocalDbEntitiesAction, githubRemoveLabelAction];
+        });
       }));
 
   @Effect()
   persistAddAssignee = this.actions.pipe(
       ofType<ItemAddAssigneeAction>(ItemActionTypes.ADD_ASSIGNEE),
-      withLatestFrom(this.store.select(selectItemEntities)), switchMap(([action, items]) => {
-        // Update in local database
-        const updatePayload = {
-          entities: [items[action.payload.id]],
-          type: 'item' as StoreId
-        };
-        const updateLocalDbEntitiesAction = new UpdateLocalDbEntities(updatePayload);
-
-        // Update in github
-        const githubAddAssigneePayload = {
+      withLatestFrom(combineLatest(
+          this.store.select(selectItemEntities), this.store.select(selectRepositoryName))),
+      map(([action, [items, repository]]) => {
+        this.repositoryDatabase.update(repository, 'items', [items[action.payload.id]]);
+        return new GitHubAddAssignee({
           id: action.payload.id,
           assignee: action.payload.assignee,
-        };
-        const githubAddAssigneeAction = new GitHubAddAssignee(githubAddAssigneePayload);
-
-        return [updateLocalDbEntitiesAction, githubAddAssigneeAction];
+        });
       }));
 
-  constructor(private actions: Actions, private store: Store<AppState>) {}
+  constructor(private actions: Actions, private store: Store<AppState>, private repositoryDatabase: RepositoryDatabase) {}
 }

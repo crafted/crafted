@@ -2,44 +2,38 @@
 
 <div class="title"> {{activeRepository | async}} </div>
 
-<load-data (loading)="isLoading = $event"
-           *ngIf="!(isLoaded | async)">
-</load-data>
+<div class="type theme-border theme-background-card">
+  <div class="type-title">
+    <a class="theme-text"
+       matTooltip="Create a new query"
+       matTooltipShowDelay="1000"
+       routerLink="../../../query/new">
+      {{(counts.items | async) || '...'}} Issues and pull requests
+    </a>
 
-<ng-container *ngIf="isLoaded | async">
-  <div class="type theme-border theme-background-card">
-    <div class="type-title">
-      <a class="theme-text"
-         matTooltip="Create a new query"
-         matTooltipShowDelay="1000"
-         routerLink="../../../query/new">
-        {{(counts.items | async) || '...'}} Issues and pull requests
-      </a>
+    <update-action type="items"></update-action>
+  </div>
+</div>
 
-      <update-action type="items"></update-action>
-    </div>
+<div class="type theme-border theme-background-card">
+  <div class="type-title">
+    {{(counts.labels | async) || '...'}} labels
+
+    <update-action type="labels"></update-action>
   </div>
 
-  <div class="type theme-border theme-background-card">
-    <div class="type-title">
-      {{(counts.labels | async) || '...'}} labels
+  <label-list [labelIds]="(repoLabels | async) || []"></label-list>
+</div>
 
-      <update-action type="labels"></update-action>
-    </div>
+<div class="type theme-border theme-background-card">
+  <div class="type-title">
+    {{(counts.contributors | async) || '...'}} Contributors
 
-    <label-list [labelIds]="(repoLabels | async) || []"></label-list>
+    <update-action type="contributors"></update-action>
   </div>
+</div>
 
-  <div class="type theme-border theme-background-card">
-    <div class="type-title">
-      {{(counts.contributors | async) || '...'}} Contributors
-
-      <update-action type="contributors"></update-action>
-    </div>
-  </div>
-
-  <button (click)="remove()" *ngIf="(isEmpty | async) === false" class="remove"
-          color="warn" mat-stroked-button>
-    Remove locally stored data
-  </button>
-</ng-container>
+<button (click)="remove()" class="remove"
+        color="warn" mat-stroked-button>
+  Remove locally stored data
+</button>

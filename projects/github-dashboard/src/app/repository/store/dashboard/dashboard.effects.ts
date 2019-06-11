@@ -3,11 +3,12 @@ import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+
+import {RepositoryDatabase} from '../../../service/local-database';
 import {createId} from '../../../utility/create-id';
-import {StoreId} from '../../utility/app-indexed-db';
 import {AppState} from '../index';
-import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
 import {selectRepositoryName} from '../repository/repository.reducer';
+
 import {
   CreateDashboard,
   DashboardActionTypes,
@@ -49,8 +50,7 @@ export class DashboardEffects {
   @Effect()
   update = this.actions.pipe(
       ofType<UpdateDashboard>(DashboardActionTypes.UPDATE_DASHBOARD),
-      withLatestFrom(this.store.select(selectDashboardEntities)),
-      map(([action, dashboards]) => {
+      withLatestFrom(this.store.select(selectDashboardEntities)), map(([action, dashboards]) => {
         const dashboard = {
           ...dashboards[action.payload.update.id],
           ...action.payload.update.changes,
@@ -59,28 +59,36 @@ export class DashboardEffects {
         return new UpsertDashboards({dashboards: [dashboard]});
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistUpsert = this.actions.pipe(
-      ofType<UpsertDashboards>(DashboardActionTypes.UPSERT_DASHBOARDS), map(action => {
-        const updatePayload = {entities: action.payload.dashboards, type: 'dashboards' as StoreId};
-        return new UpdateLocalDbEntities(updatePayload);
+      ofType<UpsertDashboards>(DashboardActionTypes.UPSERT_DASHBOARDS),
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.update(repository, 'dashboards', action.payload.dashboards);
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistRemove = this.actions.pipe(
       ofType<RemoveDashboard>(DashboardActionTypes.REMOVE),
-      map(action => new RemoveLocalDbEntities(
-              {ids: [action.payload.id], type: 'dashboards' as StoreId})));
+      withLatestFrom(this.store.select(selectRepositoryName)),
+      tap(([action, repository]) =>
+              this.repositoryDatabase.remove(repository, 'dashboards', [action.payload.id])));
 
-  @Effect()
-  sync =
-      this.actions.pipe(ofType<SyncDashboards>(DashboardActionTypes.SYNC), switchMap(action => {
-                          const removeAction = new RemoveLocalDbEntities(
-                              {ids: [action.payload.remove], type: 'dashboards' as StoreId});
-                          const updateAction = new UpdateLocalDbEntities(
-                              {entities: [action.payload.update], type: 'dashboards' as StoreId});
-                          return [removeAction, updateAction];
-                        }));
+  @Effect({dispatch: false})
+  sync = this.actions.pipe(
+      ofType<SyncDashboards>(DashboardActionTypes.SYNC),
+      withLatestFrom(this.store.select(selectRepositoryName)),
 
-  constructor(private actions: Actions, private store: Store<AppState>, private router: Router) {}
+      tap(([action, repository]) => {
+        if (action.payload.remove.length) {
+          this.repositoryDatabase.remove(repository, 'dashboards', action.payload.remove);
+        }
+
+        if (action.payload.update.length) {
+          this.repositoryDatabase.update(repository, 'dashboards', action.payload.update);
+        }
+      }));
+
+  constructor(
+      private actions: Actions, private store: Store<AppState>, private router: Router,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

@@ -1,34 +1,36 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, withLatestFrom} from 'rxjs/operators';
-import {StoreId} from '../../utility/app-indexed-db';
+import {combineLatest} from 'rxjs';
+import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {RepositoryDatabase} from '../../../service/local-database';
 import {AppState} from '../index';
 import {RemoveAllItems} from '../item/item.action';
-import {RemoveLocalDbEntities, UpdateLocalDbEntities} from '../local-db/local-db.actions';
+import {selectRepositoryName} from '../repository/repository.reducer';
 import {LabelActionTypes, UpdateLabelsFromGithub} from './label.action';
 import {selectLabelIds} from './label.reducer';
 
 @Injectable()
 export class LabelEffects {
-  @Effect()
+  @Effect({dispatch: false})
   persistGithubUpdatesToLocalDb = this.actions.pipe(
       ofType<UpdateLabelsFromGithub>(LabelActionTypes.UPDATE_FROM_GITHUB),
-      map(action => {
-        const updatePayload = {
-          entities: action.payload.labels,
-          type: 'labels' as StoreId
-        };
-        return new UpdateLocalDbEntities(updatePayload);
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
+        this.repositoryDatabase.update(repository, 'labels', action.payload.labels);
       }));
 
-  @Effect()
+  @Effect({dispatch: false})
   persistRemoveAllToLocalDb = this.actions.pipe(
-    ofType<RemoveAllItems>(LabelActionTypes.REMOVE_ALL),
-    withLatestFrom(this.store.select(selectLabelIds)),
-    map(([action, ids]) =>
-      new RemoveLocalDbEntities({ids, type: 'labels' as StoreId})));
+      ofType<RemoveAllItems>(LabelActionTypes.REMOVE_ALL),
+      switchMap(() => combineLatest([
+                        this.store.select(selectLabelIds), this.store.select(selectRepositoryName)
+                      ]).pipe(take(1))),
+      tap(([ids, repository]) => {
+        this.repositoryDatabase.remove(repository, 'labels', ids);
+      }));
 
 
-  constructor(private actions: Actions, private store: Store<AppState>) {}
+  constructor(
+      private actions: Actions, private store: Store<AppState>,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

@@ -1,5 +1,5 @@
 import {Type} from '@angular/core';
-import {ActionReducerMap, createSelector} from '@ngrx/store';
+import {ActionReducerMap} from '@ngrx/store';
 import {AppState as RootAppState} from '../../store';
 import {ContributorEffects} from './contributor/contributor.effects';
 import {contributorActionReducer} from './contributor/contributor.reducer';
@@ -14,14 +14,12 @@ import {ItemState} from './item/item.state';
 import {LabelEffects} from './label/label.effects';
 import {labelActionReducer} from './label/label.reducer';
 import {LabelState} from './label/label.state';
-import {LocalDbEffects} from './local-db/local-db.effects';
 import {QueryEffects} from './query/query.effects';
 import {queryActionReducer} from './query/query.reducer';
 import {QueryState} from './query/query.state';
 import {RecommendationEffects} from './recommendation/recommendation.effects';
 import {recommendationActionReducer} from './recommendation/recommendation.reducer';
 import {RecommendationState} from './recommendation/recommendation.state';
-import {getRepoState} from './repo-state.selector';
 import {RepositoryEffects} from './repository/repository.effects';
 import {repositoryActionReducer} from './repository/repository.reducer';
 import {RepositoryState} from './repository/repository.state';
@@ -52,7 +50,6 @@ export interface AppState extends RootAppState {
 
 export const effects: Type<any>[] = [
   ItemEffects,
-  LocalDbEffects,
   GithubEffects,
   RepositoryEffects,
   ContributorEffects,
@@ -61,7 +58,3 @@ export const effects: Type<any>[] = [
   RecommendationEffects,
   QueryEffects,
 ];
-
-export const selectIsRepoStateEmpty = createSelector(getRepoState, (state: RepoState) => {
-  return !state.contributors.ids.length && !state.labels.ids.length && !state.items.ids.length;
-});
