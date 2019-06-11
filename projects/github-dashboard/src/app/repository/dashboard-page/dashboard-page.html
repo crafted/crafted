@@ -1,7 +1,6 @@
 <header-content (actionSelected)="handleHeaderAction($event)"
                 [actions]="headerActions | async"
-                [name]="(dashboard | async)?.name"
-                [showBack]="true">
+                [name]="(dashboard | async)?.name">
 </header-content>
 
 <dashboard-view *ngIf="dashboard" [dashboard]="dashboard | async" [edit]="edit | async"

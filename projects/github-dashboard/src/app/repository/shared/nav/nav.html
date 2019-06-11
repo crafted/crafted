@@ -19,41 +19,54 @@
 </div>
 
 <mat-divider></mat-divider>
-
-<div class="link-list">
+<mat-nav-list> 
   <ng-container *ngFor="let link of links">
-    <div (click)="sidenav.close()" class="link theme-text"
-         *ngIf="!(link.disabled | async)"
-         routerLinkActive="active" [routerLink]="link.route">
-      <div class="link-highlight"></div>
+    <a  mat-list-item (click)="sidenav.close()" class="link theme-text"
+        *ngIf="!(link.disabled | async)"
+        routerLinkActive="active" [routerLink]="link.route">
       <div class="link-text">
         <mat-icon>{{link.icon}}</mat-icon>
         {{link.label}}
       </div>
-    </div>
+    </a>
+    <a  mat-list-item *ngFor="let subLink of link.subItems | async"
+        (click)="sidenav.close()" class="sublink link theme-text"
+        routerLinkActive="active" [routerLink]="[link.subRoute, subLink.id]">
+      <div class="link-text">{{subLink.name}}</div>
+  </a>
   </ng-container>
-</div>
 
-<mat-divider></mat-divider>
-
-<div class="settings">
-  <ng-container *ngIf="accessToken | async; let token; else settingsLabel">
-    <ng-container *ngIf="user | async; let user">
-      <div class="pic"
-           [style.backgroundImage]="'url(https://github.com/' + user + '.png)'">
+  <div class="spacer"></div>
+  <mat-divider></mat-divider>
+  <ng-container *ngFor="let link of configLinks">
+    <a mat-list-item (click)="sidenav.close()" class="link theme-text"
+        *ngIf="!(link.disabled | async)"
+        routerLinkActive="active" [routerLink]="link.route">
+      <div class="link-text">
+        <mat-icon>{{link.icon}}</mat-icon>
+        {{link.label}}
       </div>
-      <div class="username"> {{user}} </div>
+    </a>
+  </ng-container>    
+  <div class="settings">
+    <ng-container *ngIf="accessToken | async; let token; else settingsLabel">
+      <ng-container *ngIf="user | async; let user">
+        <div class="pic"
+             [style.backgroundImage]="'url(https://github.com/' + user + '.png)'">
+        </div>
+        <div class="username"> {{user}} </div>
+      </ng-container>
     </ng-container>
-  </ng-container>
-  <ng-template #settingsLabel>
-    <button mat-button (click)="signIn()" class="sign-in">
-      Login to GitHub
+    <ng-template #settingsLabel>
+      <button mat-button (click)="$event.stopPropagation(); signIn()" class="sign-in">
+        Login to GitHub
+      </button>
+    </ng-template>
+    <button mat-icon-button [mat-menu-trigger-for]="settings">
+      <mat-icon> settings </mat-icon>
     </button>
-  </ng-template>
-  <button mat-icon-button [mat-menu-trigger-for]="settings">
-    <mat-icon> settings </mat-icon>
-  </button>
-</div>
+  </div>
+</mat-nav-list>
 
 <mat-menu #settings="matMenu">
   <button mat-menu-item (click)="toggleTheme()">

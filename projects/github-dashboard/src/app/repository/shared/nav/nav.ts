@@ -3,10 +3,13 @@ import {MatSidenav} from '@angular/material';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
 import {selectAuthState} from '../../../store/auth/auth.reducer';
 import {selectLoadedRepos} from '../../../store/loaded-repos/loaded-repos.reducer';
+import {selectQueryList} from '../../store/query/query.reducer';
+import {selectDashboards} from '../../store/dashboard/dashboard.reducer';
+import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {ThemeToggle} from '../../../store/theme/theme.action';
 import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
 import {AppState} from '../../store';
@@ -17,6 +20,8 @@ export interface NavLink {
   route: string;
   label: string;
   icon: string;
+  subRoute?: string;
+  subItems?: Observable<any[]>;
   disabled?: Observable<boolean>;
 }
 
@@ -38,10 +43,33 @@ export class Nav {
   isEmpty = this.store.select(selectItemTotal).pipe(map(total => total === 0));
 
   links: NavLink[] = [
+    {
+      route: 'dashboards',
+      subRoute: 'dashboard',
+      label: 'Dashboards',
+      icon: 'dashboard',
+      disabled: this.isEmpty,
+      subItems: this.store.select(selectDashboards).pipe(take(5))
+    },
+    {
+      route: 'queries',
+      subRoute: 'query',
+      label: 'Queries',
+      icon: 'find_in_page',
+      disabled: this.isEmpty,
+      subItems: this.store.select(selectQueryList).pipe(take(5))
+    },
+  ];
+
+  configLinks: NavLink[] = [
+    {
+      route: 'recommendations',
+      label: 'Recommendations',
+      icon: 'label',
+      disabled: this.isEmpty,
+      subItems: this.store.select(selectRecommendations)
+    },
     {route: 'database', label: 'Database', icon: 'archive'},
-    {route: 'dashboards', label: 'Dashboards', icon: 'dashboard', disabled: this.isEmpty},
-    {route: 'queries', label: 'Queries', icon: 'find_in_page', disabled: this.isEmpty},
-    {route: 'recommendations', label: 'Recommendations', icon: 'label', disabled: this.isEmpty},
   ];
 
   repositories$ = combineLatest(this.activeRepository, this.store.select(selectLoadedRepos))

@@ -8,6 +8,17 @@
   width: 250px;
 }
 
+
+mat-nav-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.spacer {
+  flex: 1;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -54,7 +65,6 @@ button.home {
 }
 
 .link-list {
-  flex: 1;
   overflow: auto;
   padding-top: 4px;
 }
@@ -72,6 +82,7 @@ button.sign-in {
 .link {
   height: 48px;
   width: 100%;
+  box-sizing: border-box;
   cursor: pointer;
   position: relative;
   outline: none;
@@ -84,7 +95,7 @@ button.sign-in {
   }
 
   mat-icon {
-    margin: 0 16px;
+    margin-right: 16px;
   }
 
   &.active {
@@ -94,6 +105,10 @@ button.sign-in {
   &.disabled {
     pointer-events: none;
   }
+
+  &.sublink {
+    padding-left: 40px;
+  }
 }
 
 .link-text {
@@ -101,13 +116,8 @@ button.sign-in {
   display: flex;
   align-items: center;
   z-index: 1;
-}
 
-.link-highlight {
-  position: absolute;
-  top: 0;
-  left: -32px;
-  right: 4px;
-  bottom: 0;
-  border-radius: 32px;
+  .sublink & {
+    font-size: 14px;
+  }
 }

@@ -7,9 +7,9 @@ export enum LOADED_REPOS_STORAGE_KEY {
   LOADED_REPOS = 'loadedRepos',
 }
 
+const rawLoadedRepos = window.localStorage.getItem(LOADED_REPOS_STORAGE_KEY.LOADED_REPOS);
 const initialState: LoadedReposState = {
-  loadedRepos: (
-    window.localStorage.getItem(LOADED_REPOS_STORAGE_KEY.LOADED_REPOS) || '').split(','),
+  loadedRepos: rawLoadedRepos ? rawLoadedRepos.split(',') : [],
 };
 
 export function loadedReposActionReducer(
