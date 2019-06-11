@@ -6,6 +6,8 @@ import {
   MatDividerModule,
   MatIconModule,
   MatMenuModule,
+  MatListModule,
+  MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
 import {RouterModule} from '@angular/router';
@@ -15,8 +17,10 @@ import {Nav} from './nav';
 @NgModule({
   imports: [
     CommonModule,
+    MatListModule,
     MatSelectModule,
     MatDividerModule,
+    MatTooltipModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

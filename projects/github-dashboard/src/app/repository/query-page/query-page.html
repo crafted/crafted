@@ -1,7 +1,6 @@
 <header-content (actionSelected)="handleHeaderAction($event)"
                 [actions]="headerActions | async"
-                [name]="(query | async)?.name || 'Loading'"
-                [showBack]="true">
+                [name]="(query | async)?.name || 'Loading'">
 </header-content>
 
 <div [style.width.px]="listWidth" class="master">
