@@ -26,7 +26,7 @@
          *ngIf="popularTypescriptRepos | async; let repos; else loading">
       <div class="repos-title mat-secondary-text"> Suggestions </div>
       <div class="repos">
-        <a mat-stroked-button *ngFor="let repo of repos" (click)="loadRepository(repo)">
+        <a mat-stroked-button *ngFor="let repo of repos" (click)="load(repo)">
           {{repo}} </a>
       </div>
     </div>

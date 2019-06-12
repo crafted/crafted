@@ -3,8 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {combineLatest} from 'rxjs';
 import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
-import {RepositoryDatabase} from '../../../service/local-database';
-import {StoreId} from '../../../utility/app-indexed-db';
+import {RepositoryDatabase} from '../../../service/repository-database';
 import {GitHubAddAssignee, GitHubAddLabel, GitHubRemoveLabel} from '../github/github.actions';
 import {AppState} from '../index';
 import {selectRepositoryName} from '../repository/repository.reducer';
@@ -16,7 +15,7 @@ import {
   RemoveAllItems,
   UpdateItemsFromGithub
 } from './item.action';
-import {selectItemEntities, selectItemIds} from './item.reducer';
+import {selectItemEntities} from './item.reducer';
 
 @Injectable()
 export class ItemEffects {
@@ -30,10 +29,8 @@ export class ItemEffects {
   @Effect({dispatch: false})
   persistRemoveAllToLocalDb = this.actions.pipe(
       ofType<RemoveAllItems>(ItemActionTypes.REMOVE_ALL),
-      switchMap(() => combineLatest([
-                        this.store.select(selectItemIds), this.store.select(selectRepositoryName)
-                      ]).pipe(take(1))),
-      tap(([ids, repository]) => this.repositoryDatabase.remove(repository, 'items', ids)));
+      switchMap(() => this.store.select(selectRepositoryName).pipe(take(1))),
+      tap(repository => this.repositoryDatabase.removeAll(repository, 'items')));
 
   @Effect()
   persistAddLabel = this.actions.pipe(

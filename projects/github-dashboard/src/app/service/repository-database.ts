@@ -20,12 +20,16 @@ export class RepositoryDatabase {
     return combineLatest(...initialValues);
   }
 
-  update(repository: string, type: StoreId, entities: any[]) {
-    this.getDatabase(repository).updateValues(entities, type);
+  update(repository: string, type: StoreId, entities: any[]): Promise<void> {
+    return this.getDatabase(repository).updateValues(entities, type);
   }
 
-  remove(repository: string, type: StoreId, ids: string[]) {
-    this.getDatabase(repository).removeValues(ids, type);
+  remove(repository: string, type: StoreId, ids: string[]): Promise<void> {
+    return this.getDatabase(repository).removeValues(ids, type);
+  }
+
+  removeAll(repository: string, type: StoreId) {
+    return this.getDatabase(repository).removeAllValues(type);
   }
 
   private getDatabase(repository: string) {

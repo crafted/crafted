@@ -3,7 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {map, tap, withLatestFrom} from 'rxjs/operators';
 
-import {RepositoryDatabase} from '../../../service/local-database';
+import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
 import {selectRepositoryName} from '../repository/repository.reducer';

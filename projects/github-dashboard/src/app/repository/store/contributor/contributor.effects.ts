@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {combineLatest} from 'rxjs';
 import {map, switchMap, take, withLatestFrom} from 'rxjs/operators';
-import {RepositoryDatabase} from '../../../service/local-database';
+import {RepositoryDatabase} from '../../../service/repository-database';
 import {AppState} from '../index';
 import {RemoveAllItems} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
 import {ContributorActionTypes, UpdateContributorsFromGithub} from './contributor.action';
-import {selectContributorIds} from './contributor.reducer';
 
 @Injectable()
 export class ContributorEffects {
@@ -23,12 +21,8 @@ export class ContributorEffects {
   @Effect({dispatch: false})
   persistRemoveAllToLocalDb = this.actions.pipe(
     ofType<RemoveAllItems>(ContributorActionTypes.REMOVE_ALL),
-    switchMap(() => combineLatest([
-      this.store.select(selectContributorIds), this.store.select(selectRepositoryName)
-    ]).pipe(take(1))),
-    map(([ids, repository]) => {
-      this.repositoryDatabase.remove(repository, 'contributors', ids);
-    }));
+    switchMap(() => this.store.select(selectRepositoryName).pipe(take(1))),
+    map(repository => this.repositoryDatabase.removeAll(repository, 'contributors')));
 
   constructor(private actions: Actions, private store: Store<AppState>, private repositoryDatabase: RepositoryDatabase) {}
 }

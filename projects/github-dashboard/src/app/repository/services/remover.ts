@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MatDialog, MatSnackBar} from '@angular/material';
+import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
 import {mergeMap, take} from 'rxjs/operators';
@@ -15,7 +16,8 @@ import {selectRepositoryName} from '../store/repository/repository.reducer';
 @Injectable()
 export class Remover {
   constructor(
-      private store: Store<AppState>, private dialog: MatDialog, private snackbar: MatSnackBar) {}
+      private store: Store<AppState>, private dialog: MatDialog, private router: Router,
+      private snackbar: MatSnackBar) {}
 
   removeAllData(showConfirmationDialog = true) {
     if (!showConfirmationDialog) {
@@ -32,7 +34,6 @@ export class Remover {
         .subscribe(confirmed => {
           if (confirmed) {
             this.remove();
-            this.snackbar.open(`${name} deleted`, '', {duration: 2000});
           }
         });
   }
@@ -42,8 +43,11 @@ export class Remover {
     this.store.dispatch(new RemoveAllContributors());
     this.store.dispatch(new RemoveAllLabels());
 
+    this.router.navigate(['']);
+
     this.store.select(selectRepositoryName).pipe(take(1)).subscribe(repo => {
       this.store.dispatch(new LoadedReposRemove({repo}));
+      this.snackbar.open(`${repo} deleted`, '', {duration: 2000});
     });
   }
 }

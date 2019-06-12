@@ -1,13 +1,23 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatDialog, MatDialogConfig} from '@angular/material';
+import {MatAutocompleteSelectedEvent, MatDialog, MatSnackBar} from '@angular/material';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
-import {map, sampleTime, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {combineLatest, from} from 'rxjs';
+import {map, sampleTime, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {Contributor} from '../github/app-types/contributor';
+import {Item} from '../github/app-types/item';
+import {Label} from '../github/app-types/label';
 
 import {Github} from '../service/github';
-import {LoadRepository, LoadRepositoryData} from '../service/load-repository/load-repository';
+import {
+  LoadRepository,
+  LoadRepositoryData,
+  LoadRepositoryResult
+} from '../service/load-repository/load-repository';
+import {RepositoryDatabase} from '../service/repository-database';
 import {AppState} from '../store';
+import {LoadedReposAdd} from '../store/loaded-repos/loaded-repos.action';
 import {selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
 
 @Component({
@@ -31,28 +41,57 @@ export class HomePage {
       switchMap(
           currentQuery =>
               this.github.searchRepoByFullName(currentQuery.replace(/[^a-z0-9]/g, ' '))),
-      map(reposList => {
+      withLatestFrom(this.loadedRepos), map(([reposList, loadedRepos]) => {
         const currentQuery = this.autocompleteControl.value;
         if (!currentQuery ||
             reposList.find(repo => repo.toUpperCase() === currentQuery.toUpperCase())) {
           return reposList;
         }
+
+        loadedRepos.forEach(loadedRepo => {
+          const index = reposList.indexOf(loadedRepo);
+          if (index !== -1) {
+            reposList.splice(index, 1);
+          }
+        });
+
         return [currentQuery].concat(reposList.slice(0, 4));
       }),
       shareReplay(1));
 
   constructor(
-      private store: Store<AppState>, private github: Github, private router: Router, private dialog: MatDialog) {}
+      private store: Store<AppState>, private snackbar: MatSnackBar, private github: Github,
+      private router: Router, private dialog: MatDialog,
+      private repositoryDatabase: RepositoryDatabase) {}
 
   /** Navigate to the select location from the autocomplete options. */
   autocompleteSelected(event: MatAutocompleteSelectedEvent) {
-    this.loadRepository(event.option.value);
+    this.load(event.option.value);
   }
 
-  loadRepository(repository: string) {
-    this.dialog.open<LoadRepository, LoadRepositoryData>(LoadRepository, {
-      data: {name: repository},
-      width: '500px'
-     });
+  load(repository: string) {
+    this.dialog
+        .open<LoadRepository, LoadRepositoryData, LoadRepositoryResult>(
+            LoadRepository, {data: {name: repository}, width: '500px'})
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe(result => {
+          this.persistLoadedData(
+              repository, result.items, result.labels, result.contributors);
+        });
+  }
+
+  persistLoadedData(
+      repository: string, items: Item[], labels: Label[], contributors: Contributor[]) {
+    combineLatest(
+        from(this.repositoryDatabase.update(repository, 'labels', labels)),
+        from(this.repositoryDatabase.update(repository, 'contributors', contributors)),
+        from(this.repositoryDatabase.update(repository, 'items', items)))
+        .pipe(take(1))
+        .subscribe(() => {
+          this.store.dispatch(new LoadedReposAdd({repo: repository}));
+          this.snackbar.open(`Successfully loaded data`, '', {duration: 2000});
+          this.router.navigate([`${repository}`]);
+        });
   }
 }

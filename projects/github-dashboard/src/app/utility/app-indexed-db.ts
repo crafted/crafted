@@ -62,6 +62,14 @@ export class AppIndexedDb {
     });
   }
 
+  removeAllValues(collectionId: string) {
+    return this.db.then(db => {
+      const transaction = db.transaction(collectionId, 'readwrite');
+      const store = transaction.objectStore(collectionId);
+      return store.clear();
+    });
+  }
+
   private openDb() {
     this.db = openDb(this.name, DB_VERSION, db => {
       STORE_IDS.forEach(collectionId => {

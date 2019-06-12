@@ -8,7 +8,6 @@ import {HeaderContentModule} from '../shared/header-content/header-content.modul
 import {LabelListModule} from '../shared/label-list/label-list.module';
 import {LoadingModule} from '../shared/loading/loading.module';
 import {DatabasePage} from './database-page';
-import {LoadDataModule} from './load-data/load-data.module';
 import {UpdateActionModule} from './type-actions/update-action.module';
 
 const routes: Routes = [{path: '', component: DatabasePage}];
@@ -30,7 +29,6 @@ export class DatabasePageRoutingModule {
     UpdateActionModule,
     DatabasePageRoutingModule,
     LabelListModule,
-    LoadDataModule,
     MatTooltipModule,
   ],
   declarations: [DatabasePage],

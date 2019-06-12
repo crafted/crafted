@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {combineLatest} from 'rxjs';
-import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
-import {RepositoryDatabase} from '../../../service/local-database';
+import {switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {RepositoryDatabase} from '../../../service/repository-database';
 import {AppState} from '../index';
 import {RemoveAllItems} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
 import {LabelActionTypes, UpdateLabelsFromGithub} from './label.action';
-import {selectLabelIds} from './label.reducer';
 
 @Injectable()
 export class LabelEffects {
@@ -22,13 +20,8 @@ export class LabelEffects {
   @Effect({dispatch: false})
   persistRemoveAllToLocalDb = this.actions.pipe(
       ofType<RemoveAllItems>(LabelActionTypes.REMOVE_ALL),
-      switchMap(() => combineLatest([
-                        this.store.select(selectLabelIds), this.store.select(selectRepositoryName)
-                      ]).pipe(take(1))),
-      tap(([ids, repository]) => {
-        this.repositoryDatabase.remove(repository, 'labels', ids);
-      }));
-
+      switchMap(() => this.store.select(selectRepositoryName).pipe(take(1))),
+      tap(repository => this.repositoryDatabase.removeAll(repository, 'labels')));
 
   constructor(
       private actions: Actions, private store: Store<AppState>,

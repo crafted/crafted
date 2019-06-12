@@ -108,7 +108,7 @@ export class Github {
         map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
-  searchRepoByFullName(query: string, perPage: number = 5): Observable<string[]> {
+  searchRepoByFullName(query: string, perPage: number = 10): Observable<string[]> {
     const url = constructUrl(
         'search/repositories',
         `fork=true&order=desc&per_page=${perPage}&q=language:typescript in:name ${query}`, false);

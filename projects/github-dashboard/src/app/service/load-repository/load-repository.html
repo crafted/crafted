@@ -1,5 +1,43 @@
 <div mat-dialog-title> {{data.name}} </div>
 
 <div mat-dialog-content>
-  <load-data [repository]="data.name"></load-data>
+  <div class="load" *ngIf="!loadingState; else loadingView">
+    <div class="action">
+      <button mat-raised-button color="accent" class="load-data" (click)="load()">
+        Load Data
+      </button>
+
+      <div class="items-form" [formGroup]="formGroup">
+        <mat-select formControlName="issueDateType">
+          <mat-option *ngFor="let option of ['all data', 'last updated since']"
+                      [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-select>
+
+        <div class="datepicker"
+             *ngIf="formGroup.value.issueDateType === 'last updated since'">
+          <input formControlName="issueDate" [matDatepicker]="picker"
+                 class="theme-border" (click)="picker.open()"
+                 placeholder="Choose a date">
+          <mat-datepicker #picker></mat-datepicker>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-to-load theme-secondary-text">
+      ({{(totalItemsCount | async) || '...'}} issues and pull requests,
+      {{(totalLabelsCount | async) || '...'}} labels)
+    </div>
+  </div>
+
+  <ng-template #loadingView>
+    <div class="loading theme-secondary-text">
+      {{loadingState.label}}
+      {{'(' + (loadingState.progress | number:'1.0-0') + '% complete)'}}
+    </div>
+    <mat-progress-bar mode="determinate" color="accent"
+                      [value]="loadingState.progress">
+    </mat-progress-bar>
+  </ng-template>
 </div>

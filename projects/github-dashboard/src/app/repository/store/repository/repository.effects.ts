@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {distinctUntilChanged, filter, map, mergeMap, switchMap} from 'rxjs/operators';
-import {RepositoryDatabase} from '../../../service/local-database';
+import {RepositoryDatabase} from '../../../service/repository-database';
 import {LoadContributorsFromLocalDb} from '../contributor/contributor.action';
 import {LoadDashboardsFromLocalDb} from '../dashboard/dashboard.action';
 import {LoadItemsFromLocalDb} from '../item/item.action';
