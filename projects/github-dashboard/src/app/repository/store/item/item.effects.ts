@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {combineLatest} from 'rxjs';
-import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {combineLatest, interval} from 'rxjs';
+import {map, startWith, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import {RepositoryDatabase} from '../../../service/repository-database';
+import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
+import {Updater} from '../../services/updater';
 import {GitHubAddAssignee, GitHubAddLabel, GitHubRemoveLabel} from '../github/github.actions';
 import {AppState} from '../index';
 import {selectRepositoryName} from '../repository/repository.reducer';
@@ -19,6 +21,21 @@ import {selectItemEntities} from './item.reducer';
 
 @Injectable()
 export class ItemEffects {
+  /**
+   * After the items are loaded from the local database, request updates from GitHub periodically
+   * if the user is authenticated.
+   */
+  @Effect({dispatch: false})
+  periodicallyUpdate = this.actions.pipe(
+      ofType(ItemActionTypes.LOAD_FROM_LOCAL_DB),
+      switchMap(() => interval(10 * 1000).pipe(startWith(null))),
+      switchMap(() => this.store.select(selectIsAuthenticated).pipe(take(1))),
+      tap(isAuthenticated => {
+        if (isAuthenticated) {
+          this.updater.update('items');
+        }
+      }));
+
   @Effect({dispatch: false})
   persistGithubUpdatesToLocalDb = this.actions.pipe(
       ofType<UpdateItemsFromGithub>(ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB),
@@ -44,7 +61,6 @@ export class ItemEffects {
           label: action.payload.label,
         });
       }));
-
 
   @Effect()
   persistRemoveLabel = this.actions.pipe(
@@ -73,5 +89,7 @@ export class ItemEffects {
         });
       }));
 
-  constructor(private actions: Actions, private store: Store<AppState>, private repositoryDatabase: RepositoryDatabase) {}
+  constructor(
+      private actions: Actions, private store: Store<AppState>, private updater: Updater,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

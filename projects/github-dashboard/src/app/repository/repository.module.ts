@@ -16,7 +16,6 @@ import {HeaderModule} from './shared/header/header.module';
 import {NavModule} from './shared/nav/nav.module';
 import {effects, reducers} from './store';
 
-
 const routes: Routes = [{
   path: '',
   component: Repository,

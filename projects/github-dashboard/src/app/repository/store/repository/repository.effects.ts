@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import {distinctUntilChanged, filter, map, mergeMap, switchMap} from 'rxjs/operators';
+import {mergeMap, switchMap} from 'rxjs/operators';
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {LoadContributorsFromLocalDb} from '../contributor/contributor.action';
 import {LoadDashboardsFromLocalDb} from '../dashboard/dashboard.action';
@@ -10,25 +10,10 @@ import {LoadLabelsFromLocalDb} from '../label/label.action';
 import {LoadQueriesFromLocalDb} from '../query/query.action';
 import {LoadRecommendationsFromLocalDb} from '../recommendation/recommendation.action';
 
-import {LoadRepository, RepositoryActionTypes, UnloadRepository} from './repository.action';
+import {LoadRepository, RepositoryActionTypes} from './repository.action';
 
 @Injectable()
 export class RepositoryEffects {
-  @Effect()
-  activeRepository = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd), map((navigationEnd: NavigationEnd) => {
-        const url = navigationEnd.urlAfterRedirects;
-
-        if (url === '/') {
-          return '';
-        }
-
-        const urlParts = url.split('/');
-        return `${urlParts[1]}/${urlParts[2]}`;
-      }),
-      distinctUntilChanged(),
-      map(name => name ? new LoadRepository({name}) : new UnloadRepository()));
-
   @Effect()
   load = this.actions.pipe(
       ofType<LoadRepository>(RepositoryActionTypes.LOAD),
@@ -44,5 +29,7 @@ export class RepositoryEffects {
         ];
       }));
 
-  constructor(private actions: Actions, private router: Router, private repositoryDatabase: RepositoryDatabase) {}
+  constructor(
+      private actions: Actions, private router: Router,
+      private repositoryDatabase: RepositoryDatabase) {}
 }

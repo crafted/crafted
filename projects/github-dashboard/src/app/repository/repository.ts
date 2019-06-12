@@ -1,9 +1,18 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
-import {Router} from '@angular/router';
+import {Event, NavigationEnd, Router} from '@angular/router';
 import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
-import {combineLatest, interval, Subject} from 'rxjs';
-import {debounceTime, filter, map, mergeMap, take, takeUntil} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
@@ -11,19 +20,18 @@ import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Config} from '../service/config';
-import {selectAuthState} from '../store/auth/auth.reducer';
-import {selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
+import {selectIsRepoLoaded} from '../store/loaded-repos/loaded-repos.reducer';
 
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
 import {AppState} from './store';
 import {selectDashboards} from './store/dashboard/dashboard.reducer';
-import {selectItems, selectItemTotal} from './store/item/item.reducer';
+import {selectItems} from './store/item/item.reducer';
 import {selectLabels} from './store/label/label.reducer';
 import {selectQueryList} from './store/query/query.reducer';
 import {selectRecommendations} from './store/recommendation/recommendation.reducer';
-import {selectRepositoryName} from './store/repository/repository.reducer';
+import {LoadRepository} from './store/repository/repository.action';
 import {getRecommendations} from './utility/get-recommendations';
 
 export const DATA_RESOURCES_MAP =
@@ -72,42 +80,30 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
 export class Repository {
   private destroyed = new Subject();
 
+  private activeRepository = this.router.events.pipe(toActiveRepositoryName);
+
   constructor(
       private router: Router, private updater: Updater, private remover: Remover,
       private repoGist: RepoGist, private config: Config, private store: Store<AppState>) {
-    combineLatest(
-        this.store.select(selectRepositoryName), this.store.select(selectAuthState),
-        this.store.select(selectLoadedRepos))
-        .pipe(filter(([repository]) => !!repository), take(1))
-        .subscribe(([repository, authState, loadedRepos]) => {
-          if (loadedRepos.indexOf(repository) === -1) {
-            this.router.navigate([`${repository}/database`]);
-          } else if (authState.accessToken) {
-            this.updater.update('items');
-            this.updater.update('contributors');
-            this.updater.update('labels');
-            this.initializeAutoIssueUpdates();
-          }
+    this.activeRepository.pipe(takeUntil(this.destroyed)).subscribe(repository => {
+      this.store.select(selectIsRepoLoaded(repository)).pipe(take(1)).subscribe(isRepoLoaded => {
+        if (!isRepoLoaded) {
+          this.router.navigate(['']);
+        }
 
-          // Sync and then start saving
-          this.repoGist.sync(name).pipe(take(1)).subscribe(() => {
-            this.saveConfigChangesToGist(name, this.store);
-          });
-        });
+        this.store.dispatch(new LoadRepository({name: repository}));
+      });
+    });
+
+    this.activeRepository.pipe(switchMap(
+        repository =>
+            this.repoGist.sync(repository)
+                .pipe(take(1), tap(() => this.saveConfigChangesToGist(repository, this.store)))));
   }
 
   ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  private initializeAutoIssueUpdates() {
-    // TODO: This never unsubscribes and does not check if we are already updating a repository
-    interval(60 * 1000)
-        .pipe(mergeMap(() => this.store.select(selectItemTotal)), filter(total => !!total), take(1))
-        .subscribe(() => {
-          this.updater.update('items');
-        });
   }
 
   /** Persist changes to config lists to gist */
@@ -122,4 +118,22 @@ export class Repository {
           this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
         });
   }
+}
+
+/**
+ * Transforms a stream of router events into a stream of the current repository name.
+ */
+function toActiveRepositoryName(event$: Observable<Event>): Observable<string> {
+  return event$.pipe(
+      filter(event => event instanceof NavigationEnd), map((navigationEnd: NavigationEnd) => {
+        const url = navigationEnd.urlAfterRedirects;
+
+        if (url === '/') {
+          return '';
+        }
+
+        const urlParts = url.split('/');
+        return `${urlParts[1]}/${urlParts[2]}`;
+      }),
+      distinctUntilChanged());
 }

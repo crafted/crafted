@@ -7,6 +7,7 @@ export enum RepositoryActionTypes {
 
 export class UnloadRepository implements Action {
   readonly type = RepositoryActionTypes.UNLOAD;
+  constructor(public payload: {name: string}) {}
 }
 
 export class LoadRepository implements Action {
