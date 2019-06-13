@@ -1,14 +1,6 @@
 <mat-toolbar>
-  <button (click)="leftButtonClicked()" class="left-button" mat-button>
-    <ng-container *ngIf="header.goBack; else menu">
-      <mat-icon> arrow_back </mat-icon>
-    </ng-container>
-
-    <ng-template #menu>
-      <mat-icon>
-        menu
-      </mat-icon>
-    </ng-template>
+  <button (click)="sidenav.open()" class="left-button" mat-button>
+    <mat-icon> menu </mat-icon>
   </button>
 
   <ng-template *ngIf="header.toolbarOutlet | async as toolbarOutlet"

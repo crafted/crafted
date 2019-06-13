@@ -30,8 +30,6 @@ export class HeaderContent<T> {
 
   @Input() actions: HeaderContentAction[];
 
-  @Input() showBack: boolean;
-
   @Output() actionSelected = new EventEmitter<T>();
 
   @ViewChild(CdkPortal) headerPortal: CdkPortal;
@@ -47,7 +45,6 @@ export class HeaderContent<T> {
 
   ngOnChanges() {
     this.windowTitle.setTitle(this.name);
-    this.header.goBack = this.showBack;
   }
 
   ngOnDestroy() {

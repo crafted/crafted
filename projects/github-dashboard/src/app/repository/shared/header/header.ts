@@ -11,14 +11,5 @@ import {Header} from '../../services/header';
 export class SeasonHeader {
   @Input() sidenav: MatSidenav;
 
-  constructor(public header: Header) {
-  }
-
-  leftButtonClicked() {
-    if (this.header.goBack) {
-      window.history.back();
-    } else {
-      this.sidenav.open();
-    }
-  }
+  constructor(public header: Header) {}
 }
