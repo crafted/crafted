@@ -20,7 +20,7 @@ export function queryActionReducer(state: QueryState = initialState, action: Que
       action.payload.queries.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.queries, state);
 
-    case QueryActionTypes.LOAD_FROM_LOCAL_DB:
+    case QueryActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.queries, state);
 
     case QueryActionTypes.REMOVE:

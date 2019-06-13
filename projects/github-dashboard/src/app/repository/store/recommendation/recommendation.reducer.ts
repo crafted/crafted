@@ -5,8 +5,7 @@ import {getRepoState} from '../repo-state.selector';
 import {RecommendationAction, RecommendationActionTypes} from './recommendation.action';
 import {RecommendationState} from './recommendation.state';
 
-export const entityAdapter: EntityAdapter<Recommendation> =
-  createEntityAdapter<Recommendation>();
+export const entityAdapter: EntityAdapter<Recommendation> = createEntityAdapter<Recommendation>();
 
 const initialState: RecommendationState = {
   ids: entityAdapter.getInitialState().ids as string[],
@@ -14,13 +13,14 @@ const initialState: RecommendationState = {
 };
 
 // TODO: Add created and modified date
-export function recommendationActionReducer(state: RecommendationState = initialState, action: RecommendationAction): RecommendationState {
+export function recommendationActionReducer(
+    state: RecommendationState = initialState, action: RecommendationAction): RecommendationState {
   switch (action.type) {
     case RecommendationActionTypes.UPSERT_RECOMMENDATIONS:
       action.payload.recommendations.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.recommendations, state);
 
-    case RecommendationActionTypes.LOAD_FROM_LOCAL_DB:
+    case RecommendationActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.recommendations, state);
 
     case RecommendationActionTypes.REMOVE:
@@ -31,12 +31,11 @@ export function recommendationActionReducer(state: RecommendationState = initial
   }
 }
 
-const {
-  selectEntities,
-  selectAll
-} = entityAdapter.getSelectors();
+const {selectEntities, selectAll} = entityAdapter.getSelectors();
 
-const selectRecommendationState = createSelector(getRepoState, repoState => repoState.recommendations);
+const selectRecommendationState =
+    createSelector(getRepoState, repoState => repoState.recommendations);
 
-export const selectRecommendationEntities = createSelector(selectRecommendationState, selectEntities);
+export const selectRecommendationEntities =
+    createSelector(selectRecommendationState, selectEntities);
 export const selectRecommendations = createSelector(selectRecommendationState, selectAll);

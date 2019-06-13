@@ -26,12 +26,18 @@ import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
 import {AppState} from './store';
+import {LoadContributors} from './store/contributor/contributor.action';
+import {LoadDashboards} from './store/dashboard/dashboard.action';
 import {selectDashboards} from './store/dashboard/dashboard.reducer';
+import {LoadItems} from './store/item/item.action';
 import {selectItems} from './store/item/item.reducer';
+import {LoadLabels} from './store/label/label.action';
 import {selectLabels} from './store/label/label.reducer';
+import {LoadQueries} from './store/query/query.action';
 import {selectQueryList} from './store/query/query.reducer';
+import {LoadRecommendations} from './store/recommendation/recommendation.action';
 import {selectRecommendations} from './store/recommendation/recommendation.reducer';
-import {LoadRepository} from './store/repository/repository.action';
+import {SetName} from './store/repository/repository.action';
 import {getRecommendations} from './utility/get-recommendations';
 
 export const DATA_RESOURCES_MAP =
@@ -91,7 +97,7 @@ export class Repository {
           this.router.navigate(['']);
         }
 
-        this.store.dispatch(new LoadRepository({name: repository}));
+        this.loadRepository(repository);
       });
     });
 
@@ -117,6 +123,16 @@ export class Repository {
         .subscribe(([dashboards, queries, recommendations]) => {
           this.config.saveRepoConfigToGist(repository, {dashboards, queries, recommendations});
         });
+  }
+
+  private loadRepository(repository: string) {
+    this.store.dispatch(new SetName({repository}));
+    this.store.dispatch(new LoadContributors({repository}));
+    this.store.dispatch(new LoadDashboards({repository}));
+    this.store.dispatch(new LoadItems({repository}));
+    this.store.dispatch(new LoadLabels({repository}));
+    this.store.dispatch(new LoadQueries({repository}));
+    this.store.dispatch(new LoadRecommendations({repository}));
   }
 }
 

@@ -1,15 +1,18 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
+import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
 
 import {
   CreateRecommendation,
+  LoadRecommendations,
+  LoadRecommendationsComplete,
   RecommendationActionTypes,
   RemoveRecommendation,
   SyncRecommendations,
@@ -20,6 +23,17 @@ import {selectRecommendationEntities} from './recommendation.reducer';
 
 @Injectable()
 export class RecommendationEffects {
+  @Effect()
+  load = this.actions.pipe(
+      ofType<LoadRecommendations>(ItemActionTypes.LOAD),
+      switchMap(action => {
+        return this.repositoryDatabase.getValues(action.payload.repository)
+            .recommendations.pipe(
+                take(1),
+                map(recommendations =>
+                        new LoadRecommendationsComplete({recommendations})));
+      }));
+
   @Effect()
   createNewRecommendation = this.actions.pipe(
       ofType<CreateRecommendation>(RecommendationActionTypes.CREATE_RECOMMENDATION), map(action => {
@@ -56,16 +70,14 @@ export class RecommendationEffects {
   @Effect({dispatch: false})
   persistRemove = this.actions.pipe(
       ofType<RemoveRecommendation>(RecommendationActionTypes.REMOVE),
-      withLatestFrom(this.store.select(selectRepositoryName)),
-      tap(([action, repository]) => {
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
         this.repositoryDatabase.remove(repository, 'recommendations', [action.payload.id]);
       }));
 
   @Effect({dispatch: false})
   sync = this.actions.pipe(
       ofType<SyncRecommendations>(RecommendationActionTypes.SYNC),
-      withLatestFrom(this.store.select(selectRepositoryName)),
-      tap(([action, repository]) => {
+      withLatestFrom(this.store.select(selectRepositoryName)), tap(([action, repository]) => {
         if (action.payload.remove.length) {
           this.repositoryDatabase.remove(repository, 'recommendations', action.payload.remove);
         }

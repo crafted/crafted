@@ -19,7 +19,7 @@ export function contributorActionReducer(state: ContributorState = initialState,
     case ContributorActionTypes.UPDATE_FROM_GITHUB:
       return entityAdapter.upsertMany(action.payload.contributors, state);
 
-    case ContributorActionTypes.LOAD_FROM_LOCAL_DB:
+    case ContributorActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.contributors, state);
 
     case ContributorActionTypes.REMOVE_ALL:

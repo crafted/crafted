@@ -7,7 +7,8 @@ export enum DashboardActionTypes {
   UPDATE_DASHBOARD = '[Dashboard] update dashboard',
   UPSERT_DASHBOARDS = '[Dashboard] upsert dashboards',
   NAVIGATE_TO_DASHBOARD = '[Dashboard] navigate to dashboard',
-  LOAD_FROM_LOCAL_DB = '[Dashboard] load from local db',
+  LOAD = '[Dashboard] load',
+  LOAD_COMPLETE = '[Dashboard] load complete',
   REMOVE = '[Dashboard] remove',
   SYNC = '[Dashboard] sync',
 }
@@ -31,8 +32,13 @@ export class NavigateToDashboard implements Action {
   constructor(public payload: {id: string}) {}
 }
 
-export class LoadDashboardsFromLocalDb implements Action {
-  readonly type = DashboardActionTypes.LOAD_FROM_LOCAL_DB;
+export class LoadDashboards implements Action {
+  readonly type = DashboardActionTypes.LOAD;
+  constructor(public payload: {repository: string}) {}
+}
+
+export class LoadDashboardsComplete implements Action {
+  readonly type = DashboardActionTypes.LOAD_COMPLETE;
   constructor(public payload: {dashboards: Dashboard[]}) {}
 }
 
@@ -46,5 +52,5 @@ export class SyncDashboards implements Action {
   constructor(public payload: {update: Update<Dashboard>[], remove: string[]}) {}
 }
 
-export type DashboardAction = CreateDashboard|
-    UpdateDashboard|UpsertDashboards|LoadDashboardsFromLocalDb|RemoveDashboard;
+export type DashboardAction = CreateDashboard|UpdateDashboard|UpsertDashboards|
+    LoadDashboards|RemoveDashboard|LoadDashboardsComplete;

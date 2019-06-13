@@ -20,7 +20,7 @@ export function dashboardActionReducer(
       action.payload.dashboards.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.dashboards, state);
 
-    case DashboardActionTypes.LOAD_FROM_LOCAL_DB:
+    case DashboardActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.dashboards, state);
 
     case DashboardActionTypes.REMOVE:

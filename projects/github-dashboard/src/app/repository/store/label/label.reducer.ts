@@ -19,7 +19,7 @@ export function labelActionReducer(state: LabelState = initialState, action: Lab
     case LabelActionTypes.UPDATE_FROM_GITHUB:
       return entityAdapter.upsertMany(action.payload.labels, state);
 
-    case LabelActionTypes.LOAD_FROM_LOCAL_DB:
+    case LabelActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.labels, state);
 
     case LabelActionTypes.REMOVE_ALL:

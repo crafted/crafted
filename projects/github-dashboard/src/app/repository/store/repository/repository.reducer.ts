@@ -2,22 +2,15 @@ import {createSelector} from '@ngrx/store';
 import {RepoState} from '../index';
 import {getRepoState} from '../repo-state.selector';
 import {RepositoryAction, RepositoryActionTypes} from './repository.action';
-import {RepositoryState} from './repository.state';
 
-const initialState: RepositoryState = {
-  name: '',
-};
-
-export function repositoryActionReducer(
-    state: RepositoryState = initialState, action: RepositoryAction): RepositoryState {
+export function nameActionReducer(state = '', action: RepositoryAction): string {
   switch (action.type) {
-    case RepositoryActionTypes.LOAD:
-      return {...state, name: action.payload.name};
+    case RepositoryActionTypes.SET_NAME:
+      return action.payload.repository;
 
     default:
       return state;
   }
 }
 
-export const selectRepositoryName =
-    createSelector(getRepoState, (state: RepoState) => state.repository.name);
+export const selectRepositoryName = createSelector(getRepoState, (state: RepoState) => state.name);

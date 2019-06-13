@@ -6,18 +6,33 @@ import {RepositoryDatabase} from '../../../service/repository-database';
 import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
 import {Updater} from '../../services/updater';
 import {AppState} from '../index';
+import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
-import {ContributorActionTypes, UpdateContributorsFromGithub} from './contributor.action';
+import {
+  ContributorActionTypes,
+  LoadContributors,
+  LoadContributorsComplete,
+  UpdateContributorsFromGithub
+} from './contributor.action';
 
 @Injectable()
 export class ContributorEffects {
+  @Effect()
+  load = this.actions.pipe(
+      ofType<LoadContributors>(ItemActionTypes.LOAD), switchMap(action => {
+        return this.repositoryDatabase.getValues(action.payload.repository)
+            .contributors.pipe(
+                take(1),
+                map(contributors => new LoadContributorsComplete({contributors})));
+      }));
+
   /**
    * After the items are loaded from the local database, request updates from GitHub periodically
    * if the user is authenticated.
    */
   @Effect({dispatch: false})
   update = this.actions.pipe(
-      ofType(ContributorActionTypes.LOAD_FROM_LOCAL_DB),
+      ofType(ContributorActionTypes.LOAD),
       switchMap(() => this.store.select(selectIsAuthenticated).pipe(take(1))),
       tap(isAuthenticated => {
         if (isAuthenticated) {

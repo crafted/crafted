@@ -7,7 +7,8 @@ export enum QueryActionTypes {
   UPDATE_QUERY = '[Query] update query',
   UPSERT_QUERIES = '[Query] upsert queries',
   NAVIGATE_TO_QUERY = '[Query] navigate to query',
-  LOAD_FROM_LOCAL_DB = '[Query] load from local db',
+  LOAD = '[Query] load ',
+  LOAD_COMPLETE = '[Query] load complete',
   REMOVE = '[Query] remove',
   SYNC = '[Query] sync',
 }
@@ -50,8 +51,13 @@ export class NavigateToQuery implements Action {
   constructor(public payload: NavigateToQueryPayload) {}
 }
 
-export class LoadQueriesFromLocalDb implements Action {
-  readonly type = QueryActionTypes.LOAD_FROM_LOCAL_DB;
+export class LoadQueries implements Action {
+  readonly type = QueryActionTypes.LOAD;
+  constructor(public payload: {repository: string}) {}
+}
+
+export class LoadQueriesComplete implements Action {
+  readonly type = QueryActionTypes.LOAD_COMPLETE;
   constructor(public payload: {queries: Query[]}) {}
 }
 
@@ -65,4 +71,4 @@ export class SyncQueries implements Action {
   constructor(public payload: {update: Update<Query>[], remove: string[]}) {}
 }
 
-export type QueryAction = CreateQuery|UpdateQuery|UpsertQueries|LoadQueriesFromLocalDb|RemoveQuery;
+export type QueryAction = CreateQuery|UpdateQuery|UpsertQueries|LoadQueries|RemoveQuery|LoadQueriesComplete;

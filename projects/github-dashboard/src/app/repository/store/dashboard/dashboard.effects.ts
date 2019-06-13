@@ -2,16 +2,19 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
+import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
 
 import {
   CreateDashboard,
   DashboardActionTypes,
+  LoadDashboards,
+  LoadDashboardsComplete,
   NavigateToDashboard,
   RemoveDashboard,
   SyncDashboards,
@@ -22,6 +25,15 @@ import {selectDashboardEntities} from './dashboard.reducer';
 
 @Injectable()
 export class DashboardEffects {
+  @Effect()
+  load = this.actions.pipe(
+    ofType<LoadDashboards>(ItemActionTypes.LOAD), switchMap(action => {
+      return this.repositoryDatabase.getValues(action.payload.repository)
+        .dashboards.pipe(
+          take(1),
+          map(dashboards => new LoadDashboardsComplete({dashboards})));
+    }));
+
   @Effect()
   createNewDashboard = this.actions.pipe(
       ofType<CreateDashboard>(DashboardActionTypes.CREATE_DASHBOARD), switchMap(() => {

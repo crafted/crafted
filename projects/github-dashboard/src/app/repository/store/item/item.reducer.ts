@@ -19,7 +19,7 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
     case ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB:
       return entityAdapter.upsertMany(action.payload.items, state);
 
-    case ItemActionTypes.LOAD_FROM_LOCAL_DB:
+    case ItemActionTypes.LOAD_COMPLETE:
       return entityAdapter.addAll(action.payload.items, state);
 
     case ItemActionTypes.REMOVE_ALL:

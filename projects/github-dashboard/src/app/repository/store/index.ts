@@ -19,12 +19,10 @@ import {QueryState} from './query/query.state';
 import {RecommendationEffects} from './recommendation/recommendation.effects';
 import {recommendationActionReducer} from './recommendation/recommendation.reducer';
 import {RecommendationState} from './recommendation/recommendation.state';
-import {RepositoryEffects} from './repository/repository.effects';
-import {repositoryActionReducer} from './repository/repository.reducer';
-import {RepositoryState} from './repository/repository.state';
+import {nameActionReducer} from './repository/repository.reducer';
 
 export interface RepoState {
-  repository: RepositoryState; // rename to name
+  name: string;
   items: ItemState;
   contributors: ContributorState;
   labels: LabelState;
@@ -34,7 +32,7 @@ export interface RepoState {
 }
 
 export const reducers: ActionReducerMap<RepoState> = {
-  repository: repositoryActionReducer,
+  name: nameActionReducer,
   items: itemActionReducer,
   contributors: contributorActionReducer,
   labels: labelActionReducer,
@@ -49,7 +47,6 @@ export interface AppState extends RootAppState {
 
 export const effects: Type<any>[] = [
   ItemEffects,
-  RepositoryEffects,
   ContributorEffects,
   LabelEffects,
   DashboardEffects,

@@ -6,7 +6,8 @@ export enum RecommendationActionTypes {
   CREATE_RECOMMENDATION = '[Recommendation] create recommendation',
   UPDATE_RECOMMENDATION = '[Recommendation] update recommendation',
   UPSERT_RECOMMENDATIONS = '[Recommendation] upsert recommendations',
-  LOAD_FROM_LOCAL_DB = '[Recommendation] load from local db',
+  LOAD = '[Recommendation] load',
+  LOAD_COMPLETE = '[Recommendation] load complete',
   REMOVE = '[Recommendation] remove',
   SYNC = '[Recommendation] sync',
 }
@@ -26,8 +27,13 @@ export class UpsertRecommendations implements Action {
   constructor(public payload: {recommendations: Recommendation[]}) {}
 }
 
-export class LoadRecommendationsFromLocalDb implements Action {
-  readonly type = RecommendationActionTypes.LOAD_FROM_LOCAL_DB;
+export class LoadRecommendations implements Action {
+  readonly type = RecommendationActionTypes.LOAD;
+  constructor(public payload: {repository: string}) {}
+}
+
+export class LoadRecommendationsComplete implements Action {
+  readonly type = RecommendationActionTypes.LOAD_COMPLETE;
   constructor(public payload: {recommendations: Recommendation[]}) {}
 }
 
@@ -42,4 +48,4 @@ export class SyncRecommendations implements Action {
 }
 
 export type RecommendationAction = CreateRecommendation|UpdateRecommendation|UpsertRecommendations|
-    LoadRecommendationsFromLocalDb|RemoveRecommendation;
+    LoadRecommendations|RemoveRecommendation|LoadRecommendationsComplete;

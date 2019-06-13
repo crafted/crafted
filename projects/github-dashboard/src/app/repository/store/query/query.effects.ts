@@ -2,15 +2,18 @@ import {Injectable} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
+import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../repository/repository.reducer';
 
 import {
   CreateQuery,
+  LoadQueries,
+  LoadQueriesComplete,
   NavigateToQuery,
   NavigateToQueryType,
   QueryActionTypes,
@@ -23,6 +26,15 @@ import {selectQueryEntities} from './query.reducer';
 
 @Injectable()
 export class QueryEffects {
+  @Effect()
+  load = this.actions.pipe(
+    ofType<LoadQueries>(ItemActionTypes.LOAD), switchMap(action => {
+      return this.repositoryDatabase.getValues(action.payload.repository)
+        .queries.pipe(
+          take(1),
+          map(queries => new LoadQueriesComplete({queries})));
+    }));
+
   @Effect()
   createNewQuery = this.actions.pipe(
       ofType<CreateQuery>(QueryActionTypes.CREATE_QUERY), switchMap(action => {
@@ -62,7 +74,7 @@ export class QueryEffects {
             break;
         }
 
-        this.router.navigate([`${state.repository.repository.name}/query/${id}`], navigationExtras);
+        this.router.navigate([`${state.repository.name}/query/${id}`], navigationExtras);
       }));
 
   @Effect()

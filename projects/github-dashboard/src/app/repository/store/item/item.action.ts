@@ -3,7 +3,8 @@ import {Item} from '../../../github/app-types/item';
 
 export enum ItemActionTypes {
   UPDATE_ITEMS_FROM_GITHUB = '[Item] update items from github',
-  LOAD_FROM_LOCAL_DB = '[Item] load from local db',
+  LOAD = '[Item] load ',
+  LOAD_COMPLETE = '[Item] load complete',
   ADD_LABEL = '[Item] add label',
   ADD_LABEL_FAILED = '[Item] add label failed',
   REMOVE_LABEL = '[Item] remove label',
@@ -20,8 +21,13 @@ export class UpdateItemsFromGithub implements Action {
   constructor(public payload: {items: Item[]}) {}
 }
 
-export class LoadItemsFromLocalDb implements Action {
-  readonly type = ItemActionTypes.LOAD_FROM_LOCAL_DB;
+export class LoadItems implements Action {
+  readonly type = ItemActionTypes.LOAD;
+  constructor(public payload: {repository: string}) {}
+}
+
+export class LoadItemsComplete implements Action {
+  readonly type = ItemActionTypes.LOAD_COMPLETE;
   constructor(public payload: {items: Item[]}) {}
 }
 
@@ -69,5 +75,6 @@ export class RemoveAllItems implements Action {
   readonly type = ItemActionTypes.REMOVE_ALL;
 }
 
-export type ItemAction = UpdateItemsFromGithub|ItemAddLabelAction|ItemRemoveLabelAction|
-    LoadItemsFromLocalDb|ItemAddAssigneeAction|ItemRemoveAssigneeAction|RemoveAllItems;
+export type ItemAction =
+    UpdateItemsFromGithub|ItemAddLabelAction|ItemRemoveLabelAction|LoadItems|
+    ItemAddAssigneeAction|ItemRemoveAssigneeAction|RemoveAllItems|LoadItemsComplete;

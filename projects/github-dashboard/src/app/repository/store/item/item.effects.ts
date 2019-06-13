@@ -17,6 +17,8 @@ import {
   ItemAddLabelFailedAction,
   ItemRemoveLabelAction,
   ItemRemoveLabelFailedAction,
+  LoadItems,
+  LoadItemsComplete,
   RemoveAllItems,
   UpdateItemsFromGithub
 } from './item.action';
@@ -24,13 +26,20 @@ import {selectItemEntities} from './item.reducer';
 
 @Injectable()
 export class ItemEffects {
+  @Effect()
+  load = this.actions.pipe(
+      ofType<LoadItems>(ItemActionTypes.LOAD), switchMap(action => {
+        return this.repositoryDatabase.getValues(action.payload.repository)
+            .items.pipe(take(1), map(items => new LoadItemsComplete({items})));
+      }));
+
   /**
    * After the items are loaded from the local database, request updates from GitHub periodically
    * if the user is authenticated.
    */
   @Effect({dispatch: false})
   periodicallyUpdate = this.actions.pipe(
-      ofType(ItemActionTypes.LOAD_FROM_LOCAL_DB),
+      ofType(ItemActionTypes.LOAD_COMPLETE),
       switchMap(() => interval(10 * 1000 * 60).pipe(startWith(null))),
       switchMap(() => this.store.select(selectIsAuthenticated).pipe(take(1))),
       tap(isAuthenticated => {
@@ -78,14 +87,14 @@ export class ItemEffects {
       map(([action, [items, repository]]) => {
         this.repositoryDatabase.update(repository, 'items', [items[action.payload.itemId]]);
         this.github.removeLabel(repository, action.payload.itemId, action.payload.labelName)
-          .pipe(
-            catchError(error => {
-              console.log('Error from Github: ', error);
-              this.store.dispatch(new ItemRemoveLabelFailedAction(action.payload));
-              return of();
-            }),
-            take(1))
-          .subscribe();
+            .pipe(
+                catchError(error => {
+                  console.log('Error from Github: ', error);
+                  this.store.dispatch(new ItemRemoveLabelFailedAction(action.payload));
+                  return of();
+                }),
+                take(1))
+            .subscribe();
       }));
 
   @Effect({dispatch: false})
@@ -96,14 +105,14 @@ export class ItemEffects {
       map(([action, [items, repository]]) => {
         this.repositoryDatabase.update(repository, 'items', [items[action.payload.itemId]]);
         this.github.addAssignee(repository, action.payload.itemId, action.payload.assignee)
-          .pipe(
-            catchError(error => {
-              console.log('Error from Github: ', error);
-              this.store.dispatch(new ItemAddAssigneeFailedAction(action.payload));
-              return of();
-            }),
-            take(1))
-          .subscribe();
+            .pipe(
+                catchError(error => {
+                  console.log('Error from Github: ', error);
+                  this.store.dispatch(new ItemAddAssigneeFailedAction(action.payload));
+                  return of();
+                }),
+                take(1))
+            .subscribe();
       }));
 
   constructor(
