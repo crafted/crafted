@@ -26,31 +26,33 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
       return entityAdapter.removeAll(state);
 
     case ItemActionTypes.ADD_LABEL: {
-      const item = state.entities[action.payload.id];
-      if (item.labels.indexOf(action.payload.label) === -1) {
-        item.labels.push(action.payload.label);
+      const item = state.entities[action.payload.itemId];
+      const labels = [...item.labels];
+      if (labels.indexOf(action.payload.labelId) === -1) {
+        labels.push(action.payload.labelId);
       }
+      item.labels = labels;
 
       return {...state};
     }
 
     case ItemActionTypes.REMOVE_LABEL: {
-      const item = state.entities[action.payload.id];
-      const labels = item.labels;
-      const index = labels.indexOf(action.payload.label);
+      const item = state.entities[action.payload.itemId];
+      const labels = [...item.labels];
+      const index = labels.indexOf(action.payload.labelId);
       labels.splice(index, 1);
       item.labels = labels;
       return {...state};
     }
 
     case ItemActionTypes.ADD_ASSIGNEE: {
-      const item = state.entities[action.payload.id];
+      const item = state.entities[action.payload.itemId];
       item.assignees.push(action.payload.assignee);
       return {...state};
     }
 
     case ItemActionTypes.REMOVE_ASSIGNEE: {
-      const item = state.entities[action.payload.id];
+      const item = state.entities[action.payload.itemId];
       const assignees = item.assignees;
       const index = assignees.indexOf(action.payload.assignee);
       assignees.splice(index, 1);

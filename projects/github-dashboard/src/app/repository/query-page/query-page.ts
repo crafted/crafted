@@ -4,7 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of} from 'rxjs';
-import {filter, map, mergeMap, shareReplay, take} from 'rxjs/operators';
+import {filter, map, mergeMap, shareReplay, switchMap, take} from 'rxjs/operators';
+import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
@@ -13,10 +14,11 @@ import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 import {AppState} from '../store';
-import {GitHubUpdateItem} from '../store/github/github.actions';
+import {UpdateItemsFromGithub} from '../store/item/item.action';
 import {selectItemById} from '../store/item/item.reducer';
 import {CreateQuery} from '../store/query/query.action';
 import {selectQueryById} from '../store/query/query.reducer';
+import {selectRepositoryName} from '../store/repository/repository.reducer';
 
 interface QueryResources {
   viewer: Viewer;
@@ -99,7 +101,7 @@ export class QueryPage {
   listWidth = 500;
 
   constructor(
-      private store: Store<AppState>,
+      private store: Store<AppState>, private github: Github,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
       private dialog: MatDialog, private router: Router, private activatedRoute: ActivatedRoute,
       private queryDialog: QueryDialog) {
@@ -141,7 +143,13 @@ export class QueryPage {
   }
 
   navigateToItem(id: string) {
-    this.store.dispatch(new GitHubUpdateItem({id}));
+    this.store.select(selectRepositoryName).pipe(take(1),
+      switchMap(repository => this.github.getItem(repository, id)))
+      .subscribe(item => {
+        this.store.dispatch(new UpdateItemsFromGithub({items: [item]}));
+      });
+
+
 
     if (!isMobile()) {
       this.router.navigate([], {

@@ -46,7 +46,7 @@ export class ItemDetail {
   item$ = this.distinctItemId$.pipe(
       mergeMap(itemId => this.store.select(selectItemById(itemId))), filter(item => !!item));
 
-  // TODO: Recommendations should match the data type
+    // TODO: Recommendations should match the data type
   // TODO: Hide actions when not logged in
   recommendations =
       combineLatest(
@@ -92,10 +92,10 @@ export class ItemDetail {
     this.elementRef.nativeElement.scrollTop = 0;
   }
 
-  addLabelOptions: Observable<{id: string, label: string}[]> =
+  addLabelOptions: Observable<{id: string, name: string}[]> =
       this.store.select(selectLabels).pipe(map(labels => {
-        const labelOptions = labels.map(label => ({id: label.id, label: label.name}));
-        labelOptions.sort((a, b) => a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1);
+        const labelOptions = labels.map(label => ({id: label.id, name: label.name}));
+        labelOptions.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
         return labelOptions;
       }));
 
@@ -110,21 +110,21 @@ export class ItemDetail {
   constructor(
       private store: Store<AppState>, private elementRef: ElementRef, public github: Github) {}
 
-  addLabel(id: string) {
+  addLabel(labelId: string, labelName: string) {
     this.item$.pipe(take(1)).subscribe(item => {
-      this.store.dispatch(new ItemAddLabelAction({id: item.id, label: id}));
+      this.store.dispatch(new ItemAddLabelAction({itemId: item.id, labelId, labelName}));
     });
   }
 
-  removeLabel(id: string) {
+  removeLabel(labelId: string, labelName: string) {
     this.item$.pipe(take(1)).subscribe(item => {
-      this.store.dispatch(new ItemRemoveLabelAction({id: item.id, label: id}));
+      this.store.dispatch(new ItemRemoveLabelAction({itemId: item.id, labelId, labelName}));
     });
   }
 
   addAssignee(assignee: string) {
     this.item$.pipe(take(1)).subscribe(item => {
-      this.store.dispatch(new ItemAddAssigneeAction({id: item.id, assignee}));
+      this.store.dispatch(new ItemAddAssigneeAction({itemId: item.id, assignee}));
     });
   }
 }

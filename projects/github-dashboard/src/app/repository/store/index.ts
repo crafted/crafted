@@ -7,7 +7,6 @@ import {ContributorState} from './contributor/contributor.state';
 import {DashboardEffects} from './dashboard/dashboard.effects';
 import {dashboardActionReducer} from './dashboard/dashboard.reducer';
 import {DashboardState} from './dashboard/dashboard.state';
-import {GithubEffects} from './github/github.effects';
 import {ItemEffects} from './item/item.effects';
 import {itemActionReducer} from './item/item.reducer';
 import {ItemState} from './item/item.state';
@@ -50,7 +49,6 @@ export interface AppState extends RootAppState {
 
 export const effects: Type<any>[] = [
   ItemEffects,
-  GithubEffects,
   RepositoryEffects,
   ContributorEffects,
   LabelEffects,

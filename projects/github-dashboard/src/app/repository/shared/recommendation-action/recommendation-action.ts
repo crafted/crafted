@@ -20,10 +20,10 @@ export class RecommendationAction {
   constructor(private store: Store<AppState>) {}
 
   addLabel(label: Label) {
-    this.store.dispatch(new ItemAddLabelAction({id: this.item.id, label: label.id}));
+    this.store.dispatch(new ItemAddLabelAction({itemId: this.item.id, labelId: label.id, labelName: label.name}));
   }
 
   addAssignee(assignee: string) {
-    this.store.dispatch(new ItemAddAssigneeAction({id: this.item.id, assignee}));
+    this.store.dispatch(new ItemAddAssigneeAction({itemId: this.item.id, assignee}));
   }
 }
