@@ -65,12 +65,17 @@ export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
 export const provideDataResourcesMap = (store: Store<AppState>) => {
-  const recommendations = store.select(selectRecommendations);
   const labels = store.select(selectLabels);
 
   const allItems = store.select(selectItems);
   const issues = allItems.pipe(map(items => items.filter(i => !i.pr)));
   const prs = allItems.pipe(map(items => items.filter(i => !!i.pr)));
+
+  const allRecommendations = store.select(selectRecommendations);
+  const issueRecommendations =
+      allRecommendations.pipe(map(list => list.filter(r => r.dataType === 'issue')));
+  const prRecommendations =
+      allRecommendations.pipe(map(list => list.filter(r => r.dataType === 'pr')));
 
   return new Map<string, DataResources>([
     [
@@ -79,8 +84,8 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
         label: 'Issues',
         loading: store.select(selectItemsLoading),
         dataSource: getDataSourceProvider(issues) as (() => DataSource<any>),
-        viewer: getViewerProvider(labels, recommendations),
-        filterer: getFiltererProvider(labels, recommendations, getRecommendations),
+        viewer: getViewerProvider(labels, issueRecommendations),
+        filterer: getFiltererProvider(labels, issueRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),
       }
@@ -89,10 +94,10 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
       'pr', {
         type: 'pr',
         label: 'Pull Requests',
-      loading: store.select(selectItemsLoading),
+        loading: store.select(selectItemsLoading),
         dataSource: getDataSourceProvider(prs),
-        viewer: getViewerProvider(labels, recommendations),
-        filterer: getFiltererProvider(labels, recommendations, getRecommendations),
+        viewer: getViewerProvider(labels, prRecommendations),
+        filterer: getFiltererProvider(labels, prRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),
       }
