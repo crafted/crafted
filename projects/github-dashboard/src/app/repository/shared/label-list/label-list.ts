@@ -13,6 +13,7 @@ import {Label} from '../../../github/app-types/label';
 import {getBorderColor, getTextColor} from '../../../github/utility/label-colors';
 import {AppState} from '../../store';
 import {selectLabels} from '../../store/label/label.reducer';
+import {selectHasWritePermissions} from '../../store/permission/permission.reducer';
 
 interface DisplayedLabel {
   id: string;
@@ -40,6 +41,8 @@ export class LabelList {
   @Output() selected = new EventEmitter<{id: string, name: string}>();
 
   @Output() removed = new EventEmitter<{id: string, name: string}>();
+
+  hasWritePermissions = this.store.select(selectHasWritePermissions);
 
   labelsMap = this.store.select(selectLabels).pipe(map(labels => {
     const labelsMap = new Map<string, DisplayedLabel>();

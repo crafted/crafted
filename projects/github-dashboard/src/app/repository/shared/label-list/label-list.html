@@ -6,7 +6,7 @@
                 backgroundColor: label.backgroundColor
               }">
       {{label.name}}
-      <mat-icon (click)="remove(label)" *ngIf="removable"
+      <mat-icon (click)="remove(label)" *ngIf="removable && (hasWritePermissions | async)"
                 [style.color]="label.textColor"
                 matChipRemove>cancel
       </mat-icon>

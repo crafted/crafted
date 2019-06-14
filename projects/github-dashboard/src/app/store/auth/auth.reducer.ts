@@ -29,7 +29,9 @@ export function authActionReducer(state: AuthState = initialState, action: AuthA
 }
 
 export const selectAuthState = (state: AppState) => state.auth;
-export const selectIsAuthenticated = (state: AppState) => !!state.auth.accessToken;
+export const selectIsAuthenticated =
+    createSelector(selectAuthState, authState => !!authState.accessToken);
+export const selectUserName = createSelector(selectAuthState, authState => authState.userName);
 
 export const selectHasScope = (scope: string) =>
     createSelector(selectAuthState, authState => authState.scopes.indexOf(scope) !== -1);

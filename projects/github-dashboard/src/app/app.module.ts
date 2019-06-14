@@ -7,8 +7,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {PreloadAllModules, RouterModule} from '@angular/router';
 import {EffectsModule} from '@ngrx/effects';
 import {StoreModule} from '@ngrx/store';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import 'hammerjs';
 import {TimeAgoPipe} from 'time-ago-pipe';
+import {environment} from '../environments/environment';
 
 import {App} from './app';
 import {FIREBASE_CONFIG} from './firebase.config';
@@ -38,6 +40,10 @@ export class TimeAgoPipeModule {
     LoginModule,
     HttpClientModule,
     StoreModule.forRoot(reducers, {metaReducers}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
     EffectsModule.forRoot(effects),
     RouterModule.forRoot(
         [

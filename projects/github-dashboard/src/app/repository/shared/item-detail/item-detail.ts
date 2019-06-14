@@ -22,6 +22,7 @@ import {
 import {selectItemById, selectItems} from '../../store/item/item.reducer';
 import {selectLabels} from '../../store/label/label.reducer';
 import {selectRepositoryName} from '../../store/name/name.reducer';
+import {selectHasWritePermissions} from '../../store/permission/permission.reducer';
 import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {getRecommendations} from '../../utility/get-recommendations';
 
@@ -43,15 +44,19 @@ export class ItemDetail {
 
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
+  hasWritePermissions = this.store.select(selectHasWritePermissions);
+
   item$ = this.distinctItemId$.pipe(
       mergeMap(itemId => this.store.select(selectItemById(itemId))), filter(item => !!item));
 
-    // TODO: Recommendations should match the data type
+  // TODO: Recommendations should match the data type
   // TODO: Hide actions when not logged in
   recommendations =
       combineLatest(
           this.store.select(selectRecommendations), this.store.select(selectLabels), this.item$)
           .pipe(map(([recommendations, labels, item]) => {
+            recommendations = recommendations.filter(
+                r => (r.dataType === 'issue' && !item.pr) || (r.dataType === 'pr' && !!item.pr));
             const labelsMap = new Map<string, Label>();
             labels.forEach(label => labelsMap.set(label.id, label));
             return getRecommendations(item, recommendations, labelsMap);

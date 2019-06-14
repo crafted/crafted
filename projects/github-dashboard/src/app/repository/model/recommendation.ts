@@ -1,4 +1,5 @@
 import {FiltererState} from 'projects/data/src/lib/filterer';
+import {DataType} from '../repository';
 
 export interface AddLabelAction {
   labels: string[];
@@ -29,7 +30,7 @@ export interface Recommendation {
   id?: string;
   message?: string;
   type?: RecommendationType;
-  dataType?: string;
+  dataType?: DataType;
   actionType?: ActionType;
   action?: Action;
   filtererState?: FiltererState;

@@ -6,7 +6,7 @@ export enum AuthActionTypes {
   SIGN_IN_CANCELLED = '[Auth] sign in cancelled',
   SIGN_OUT = '[Auth] sign out',
   SIGN_OUT_SUCCESS = '[Auth] sign out success',
-  UPDATE_SCOPES = '[Auth] updte scopes',
+  UPDATE_SCOPES = '[Auth] update scopes',
   LOAD = '[Auth] load',
 }
 

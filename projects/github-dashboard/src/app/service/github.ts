@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, EMPTY, merge, Observable, of, timer} from 'rxjs';
-import {expand, filter, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, expand, filter, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {Contributor, githubContributorToContributor} from '../github/app-types/contributor';
 import {githubIssueToIssue, Item} from '../github/app-types/item';
 import {githubLabelToLabel, Label} from '../github/app-types/label';
@@ -12,6 +12,7 @@ import {GithubContributor} from '../github/github-types/contributor';
 import {Gist} from '../github/github-types/gist';
 import {GithubIssue} from '../github/github-types/issue';
 import {GithubLabel} from '../github/github-types/label';
+import {PermissionResponse, RepositoryPermission} from '../github/github-types/permission';
 import {GithubRateLimit, GithubRateLimitResponse} from '../github/github-types/rate-limit';
 import {GithubTimelineEvent} from '../github/github-types/timeline';
 import {AppState} from '../store';
@@ -59,6 +60,13 @@ export class Github {
   getItem(repo: string, id: string): Observable<Item> {
     const url = constructUrl(`repos/${repo}/issues/${id}`);
     return this.get<GithubIssue>(url).pipe(map(response => githubIssueToIssue(response.body)));
+  }
+
+  getRepositoryPermission(repo: string, user: string): Observable<RepositoryPermission> {
+    const url = constructUrl(`repos/${repo}/collaborators/${user}/permission`);
+    return this.get<PermissionResponse>(url).pipe(
+        map(response => response.body.permission),
+        catchError(error => of('none' as RepositoryPermission)));
   }
 
   getIssues(repo: string, since?: string): Observable<CombinedPagedResults<Item>> {

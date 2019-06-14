@@ -21,7 +21,7 @@
       <label-list (removed)="removeLabel($event.id, $event.name)" *ngIf="item.labels.length" [labelIds]="item.labels"
                   [removable]="true">
       </label-list>
-      <button [matMenuTriggerFor]="addLabelMenu" class="add-label"
+      <button [matMenuTriggerFor]="addLabelMenu" class="add-label" *ngIf="hasWritePermissions | async"
               mat-stroked-button> + Add label
       </button>
     </div>
@@ -30,7 +30,7 @@
         <span *ngIf="item.assignees.length > 0" class="assignees">
           Assigned to {{item.assignees.join(', ')}}
         </span>
-      <button [matMenuTriggerFor]="addAssigneeMenu" class="add-assignee"
+      <button [matMenuTriggerFor]="addAssigneeMenu" class="add-assignee"  *ngIf="hasWritePermissions | async"
               mat-stroked-button> + Add assignee
       </button>
     </div>

@@ -18,7 +18,7 @@ import {UpdateItemsFromGithub} from '../store/item/item.action';
 import {selectItemById} from '../store/item/item.reducer';
 import {selectRepositoryName} from '../store/name/name.reducer';
 import {CreateQuery} from '../store/query/query.action';
-import {selectQueryById} from '../store/query/query.reducer';
+import {selectQueriesLoading, selectQueryById} from '../store/query/query.reducer';
 
 interface QueryResources {
   loading: Observable<boolean>;
@@ -50,10 +50,12 @@ export class QueryPage {
 
   dataResourceOptions: {id: string, label: string}[];
 
+  // TODO: Make subject and improve UX of loading an existing query (currently shows select datatype)
   query: Observable<Query> = this.activatedRoute.params.pipe(
       mergeMap(
-          params => (params.id !== 'new') ? this.store.select(selectQueryById(params.id)) :
-                                            this.newQuery()),
+          params => (params.id !== 'new') ?
+              this.store.select(selectQueryById(params.id)).pipe(filter(query => !!query)) :
+              this.newQuery()),
       shareReplay(1));
 
   queryResources: Observable<QueryResources> = this.query.pipe(
@@ -71,6 +73,8 @@ export class QueryPage {
         }
       }),
       filter(v => !!v), shareReplay(1));
+
+  queriesLoading = this.store.select(selectQueriesLoading);
 
   canSave =
       combineLatest(this.query, this.queryResources).pipe(mergeMap(([query, queryResources]) => {
@@ -145,12 +149,11 @@ export class QueryPage {
   }
 
   navigateToItem(id: string) {
-    this.store.select(selectRepositoryName).pipe(take(1),
-      switchMap(repository => this.github.getItem(repository, id)))
-      .subscribe(item => {
-        this.store.dispatch(new UpdateItemsFromGithub({items: [item]}));
-      });
-
+    this.store.select(selectRepositoryName)
+        .pipe(take(1), switchMap(repository => this.github.getItem(repository, id)))
+        .subscribe(item => {
+          this.store.dispatch(new UpdateItemsFromGithub({items: [item]}));
+        });
 
 
     if (!isMobile()) {

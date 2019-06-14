@@ -30,6 +30,7 @@ import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Config} from '../service/config';
+import {selectUserName} from '../store/auth/auth.reducer';
 import {selectIsRepoLoaded} from '../store/loaded-repos/loaded-repos.reducer';
 
 import {Remover} from './services/remover';
@@ -44,6 +45,8 @@ import {selectItems, selectItemsLoading} from './store/item/item.reducer';
 import {LoadLabels} from './store/label/label.action';
 import {selectLabels} from './store/label/label.reducer';
 import {SetName} from './store/name/name.action';
+import {selectRepositoryName} from './store/name/name.reducer';
+import {LoadRepositoryPermission} from './store/permission/permission.action';
 import {LoadQueries} from './store/query/query.action';
 import {selectQueryList} from './store/query/query.reducer';
 import {LoadRecommendations} from './store/recommendation/recommendation.action';
@@ -61,6 +64,9 @@ export interface DataResources {
   dataSource: () => DataSource;
 }
 
+// TODO: Move this to a model folder
+export type DataType = 'issue'|'pr';
+
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
 
@@ -77,7 +83,7 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
   const prRecommendations =
       allRecommendations.pipe(map(list => list.filter(r => r.dataType === 'pr')));
 
-  return new Map<string, DataResources>([
+  return new Map<DataType, DataResources>([
     [
       'issue', {
         type: 'issue',
@@ -119,13 +125,23 @@ export class Repository {
   constructor(
       private router: Router, private updater: Updater, private remover: Remover,
       private repoGist: RepoGist, private config: Config, private store: Store<AppState>) {
+    // Load repository data when a new active repository is set.
     this.activeRepository.pipe(takeUntil(this.destroyed))
         .subscribe(repository => this.loadRepository(repository));
 
+    // Sync config from gists and then start saving config changes
     this.activeRepository.pipe(switchMap(
         repository =>
             this.repoGist.sync(repository)
                 .pipe(take(1), tap(() => this.saveConfigChangesToGist(repository, this.store)))));
+
+    // Load repository permissions when the repository name or user name changes.
+    combineLatest(this.store.select(selectRepositoryName), this.store.select(selectUserName))
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(
+            ([repository, user]) => {
+              this.store.dispatch(new LoadRepositoryPermission({repository, user}));
+            });
   }
 
   ngOnDestroy() {

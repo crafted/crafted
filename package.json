@@ -34,6 +34,7 @@
     "@ngrx/effects": "^7.4.0",
     "@ngrx/entity": "^7.4.0",
     "@ngrx/store": "^7.4.0",
+    "@ngrx/store-devtools": "^8.0.1",
     "@swimlane/ngx-charts": "^10.1.0",
     "chart.js": "^2.7.3",
     "core-js": "^2.5.4",
