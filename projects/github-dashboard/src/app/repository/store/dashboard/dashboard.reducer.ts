@@ -10,6 +10,7 @@ export const entityAdapter: EntityAdapter<Dashboard> = createEntityAdapter<Dashb
 const initialState: DashboardState = {
   ids: entityAdapter.getInitialState().ids as string[],
   entities: entityAdapter.getInitialState().entities,
+  loading: false,
 };
 
 // TODO: Add created and modified date
@@ -20,7 +21,11 @@ export function dashboardActionReducer(
       action.payload.dashboards.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.dashboards, state);
 
+    case DashboardActionTypes.LOAD:
+      return {...state, loading: true};
+
     case DashboardActionTypes.LOAD_COMPLETE:
+      state = {...state, loading: false};
       return entityAdapter.addAll(action.payload.dashboards, state);
 
     case DashboardActionTypes.REMOVE:
@@ -42,3 +47,6 @@ export const selectDashboardEntities = createSelector(selectDashboardState, sele
 export const selectDashboards = createSelector(selectDashboardState, selectAll);
 export const selectDashboardById = (id) =>
     createSelector(selectDashboardEntities, entities => entities[id]);
+export const selectDashboardsLoading =
+  createSelector(selectDashboardState, state => state.loading);
+

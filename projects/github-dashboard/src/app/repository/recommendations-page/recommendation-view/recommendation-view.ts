@@ -1,12 +1,12 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataResources, Filterer} from '@crafted/data';
+import {Filterer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
-import {DATA_RESOURCES_MAP} from '../../repository';
+import {DATA_RESOURCES_MAP, DataResources} from '../../repository';
 import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
 import {AppState} from '../../store';
 import {NavigateToQuery, NavigateToQueryType} from '../../store/query/query.action';

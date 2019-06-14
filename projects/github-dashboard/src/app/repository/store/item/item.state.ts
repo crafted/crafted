@@ -3,4 +3,5 @@ import {Item} from '../../../github/app-types/item';
 
 export interface ItemState extends EntityState<Item> {
   ids: string[];
+  loading: boolean;
 }

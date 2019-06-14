@@ -1,6 +1,16 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Event, NavigationEnd, Router} from '@angular/router';
-import {DataResources} from '@crafted/data';
+import {
+  DataSource,
+  Filterer,
+  FiltererState,
+  Grouper,
+  GrouperState,
+  Sorter,
+  SorterState,
+  Viewer,
+  ViewerState,
+} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {
@@ -30,7 +40,7 @@ import {LoadContributors} from './store/contributor/contributor.action';
 import {LoadDashboards} from './store/dashboard/dashboard.action';
 import {selectDashboards} from './store/dashboard/dashboard.reducer';
 import {LoadItems} from './store/item/item.action';
-import {selectItems} from './store/item/item.reducer';
+import {selectItems, selectItemsLoading} from './store/item/item.reducer';
 import {LoadLabels} from './store/label/label.action';
 import {selectLabels} from './store/label/label.reducer';
 import {LoadQueries} from './store/query/query.action';
@@ -39,6 +49,17 @@ import {LoadRecommendations} from './store/recommendation/recommendation.action'
 import {selectRecommendations} from './store/recommendation/recommendation.reducer';
 import {SetName} from './store/repository/repository.action';
 import {getRecommendations} from './utility/get-recommendations';
+
+export interface DataResources {
+  type: string;
+  label: string;
+  loading: Observable<boolean>;
+  viewer: (initialState?: ViewerState) => Viewer;
+  filterer: (initialState?: FiltererState) => Filterer;
+  grouper: (initialState?: GrouperState) => Grouper;
+  sorter: (initialState?: SorterState) => Sorter;
+  dataSource: () => DataSource;
+}
 
 export const DATA_RESOURCES_MAP =
     new InjectionToken<Map<string, DataResources>>('data-resources-map');
@@ -56,7 +77,8 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
       'issue', {
         type: 'issue',
         label: 'Issues',
-        dataSource: getDataSourceProvider(issues),
+        loading: store.select(selectItemsLoading),
+        dataSource: getDataSourceProvider(issues) as (() => DataSource<any>),
         viewer: getViewerProvider(labels, recommendations),
         filterer: getFiltererProvider(labels, recommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
@@ -67,6 +89,7 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
       'pr', {
         type: 'pr',
         label: 'Pull Requests',
+      loading: store.select(selectItemsLoading),
         dataSource: getDataSourceProvider(prs),
         viewer: getViewerProvider(labels, recommendations),
         filterer: getFiltererProvider(labels, recommendations, getRecommendations),

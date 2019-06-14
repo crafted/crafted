@@ -3,7 +3,7 @@
   </advanced-search>
 
   <div class="options">
-    <div class="item-count">
+    <div class="item-count" *ngIf="!loading">
       {{itemCount | async}} Results
     </div>
     <div class="item-count">
@@ -32,7 +32,7 @@
     </ng-container>
   </div>
 
-  <div *ngIf="!(renderState | async) || (hasMore | async)" class="loading-more">
+  <div *ngIf="!(renderState | async) || (hasMore | async) || loading" class="loading-more">
     <mat-spinner diameter="48"></mat-spinner>
   </div>
 </div>

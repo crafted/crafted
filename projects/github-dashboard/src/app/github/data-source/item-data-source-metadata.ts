@@ -35,6 +35,6 @@ const ITEM_DATA_SOURCE_METADATA = new Map<string, DataSourceMetadata<Item>>([
 
 export function getDataSourceProvider(data: Observable<Item[]>) {
   return () => {
-    return new DataSource({data, metadata: ITEM_DATA_SOURCE_METADATA});
+    return new DataSource<Item>({data, metadata: ITEM_DATA_SOURCE_METADATA});
   };
 }

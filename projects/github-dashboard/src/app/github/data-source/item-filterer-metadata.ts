@@ -237,7 +237,7 @@ export const ITEM_FILTERER_METADATA = new Map<string, FiltererMetadata<Item, Mat
 export function getFiltererProvider(
     labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>,
     getRecommendations: (item, recommendations: Recommendation[], labelsMap: Map<string, Label>) =>
-        Recommendation[]): (initialState?: FiltererState) => Filterer<Item, MatcherContext> {
+        Recommendation[]): (initialState?: FiltererState) => Filterer<any, any> {
   return (initialState?: FiltererState) => {
     const contextProvider =
         createFiltererContextProvider(labels, recommendations, getRecommendations);

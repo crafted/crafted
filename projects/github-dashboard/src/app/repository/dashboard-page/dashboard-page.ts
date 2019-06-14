@@ -11,7 +11,6 @@ import {
   Widget,
   WidgetConfig
 } from '@crafted/components';
-import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
@@ -21,7 +20,7 @@ import {Item} from '../../github/app-types/item';
 import {selectIsDarkTheme} from '../../store/theme/theme.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
-import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP} from '../repository';
+import {DATA_RESOURCES_MAP as DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 import {AppState} from '../store';

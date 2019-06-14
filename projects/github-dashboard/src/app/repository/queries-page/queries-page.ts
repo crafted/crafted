@@ -1,10 +1,9 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {DataResources} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {delay, map} from 'rxjs/operators';
 import {Query} from '../model/query';
-import {DATA_RESOURCES_MAP} from '../repository';
+import {DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {HeaderContentAction} from '../shared/header-content/header-content';
 import {AppState} from '../store';
 import {NavigateToQuery, NavigateToQueryType} from '../store/query/query.action';

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataResources, DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
+import {DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, switchMap, take} from 'rxjs/operators';
@@ -9,7 +9,7 @@ import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';
 import {Query} from '../model/query';
-import {DATA_RESOURCES_MAP} from '../repository';
+import {DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -21,6 +21,7 @@ import {selectQueryById} from '../store/query/query.reducer';
 import {selectRepositoryName} from '../store/repository/repository.reducer';
 
 interface QueryResources {
+  loading: Observable<boolean>;
   viewer: Viewer;
   filterer: Filterer;
   grouper: Grouper;
@@ -60,6 +61,7 @@ export class QueryPage {
         if (query.dataType) {
           const dataResource = this.dataResourcesMap.get(query.dataType);
           return {
+            loading: dataResource.loading,
             viewer: dataResource.viewer(query.viewerState),
             filterer: dataResource.filterer(query.filtererState),
             grouper: dataResource.grouper(query.grouperState),

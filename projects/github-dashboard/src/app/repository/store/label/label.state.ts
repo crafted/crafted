@@ -3,5 +3,6 @@ import {Label} from '../../../github/app-types/label';
 
 export interface LabelState extends EntityState<Label> {
   ids: string[];
+  loading: boolean;
 }
 

@@ -41,6 +41,8 @@ export class ItemsList<T> {
 
   @Input() viewer: Viewer<T>;
 
+  @Input() loading: boolean;
+
   @Output() itemSelected = new EventEmitter<T>();
 
   itemCount: Observable<number>;

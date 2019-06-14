@@ -11,6 +11,7 @@ export const entityAdapter: EntityAdapter<Label> =
 const initialState: LabelState = {
   ids: entityAdapter.getInitialState().ids as string[],
   entities: entityAdapter.getInitialState().entities,
+  loading: false,
 };
 
 export function labelActionReducer(state: LabelState = initialState, action: LabelAction): LabelState {
@@ -19,7 +20,11 @@ export function labelActionReducer(state: LabelState = initialState, action: Lab
     case LabelActionTypes.UPDATE_FROM_GITHUB:
       return entityAdapter.upsertMany(action.payload.labels, state);
 
+    case LabelActionTypes.LOAD:
+      return {...state, loading: true};
+
     case LabelActionTypes.LOAD_COMPLETE:
+      state = {...state, loading: false};
       return entityAdapter.addAll(action.payload.labels, state);
 
     case LabelActionTypes.REMOVE_ALL:
@@ -41,3 +46,5 @@ const selectLabelState = createSelector(getRepoState, repoState => repoState.lab
 export const selectLabelIds = createSelector(selectLabelState, selectIds);
 export const selectLabels = createSelector(selectLabelState, selectAll);
 export const selectLabelTotal = createSelector(selectLabelState, selectTotal);
+export const selectLabelsLoading =
+  createSelector(selectLabelState, state => state.loading);

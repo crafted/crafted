@@ -11,6 +11,7 @@ export const entityAdapter: EntityAdapter<Item> =
 const initialState: ItemState = {
   ids: entityAdapter.getInitialState().ids as string[],
   entities: entityAdapter.getInitialState().entities,
+  loading: false,
 };
 
 export function itemActionReducer(state: ItemState = initialState, action: ItemAction): ItemState {
@@ -19,7 +20,11 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
     case ItemActionTypes.UPDATE_ITEMS_FROM_GITHUB:
       return entityAdapter.upsertMany(action.payload.items, state);
 
+    case ItemActionTypes.LOAD:
+      return {...state, loading: true};
+
     case ItemActionTypes.LOAD_COMPLETE:
+      state = {...state, loading: false};
       return entityAdapter.addAll(action.payload.items, state);
 
     case ItemActionTypes.REMOVE_ALL:
@@ -79,3 +84,5 @@ export const selectItemEntities = createSelector(selectItemState, selectEntities
 export const selectItemTotal = createSelector(selectItemState, selectTotal);
 export const selectItems = createSelector(selectItemState, selectAll);
 export const selectItemById = (id) => createSelector(selectItemEntities, items => items[id]);
+export const selectItemsLoading =
+  createSelector(selectItemState, state => state.loading);

@@ -10,6 +10,7 @@
               [dataSource]="resources.dataSource" [filterer]="resources.filterer"
               [grouper]="resources.grouper"
               [sorter]="resources.sorter"
+              [loading]="resources.loading | async"
               [viewer]="resources.viewer">
   </items-list>
 </div>

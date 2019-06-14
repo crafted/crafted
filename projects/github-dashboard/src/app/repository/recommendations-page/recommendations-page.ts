@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataResources, DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
+import {DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {Recommendation} from '../model/recommendation';
-import {DATA_RESOURCES_MAP} from '../repository';
+import {DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {Header} from '../services/header';
 import {RecommendationDialog} from '../shared/dialog/recommendation/recommendation-dialog';
 import {HeaderContentAction} from '../shared/header-content/header-content';

@@ -11,6 +11,7 @@ export const entityAdapter: EntityAdapter<Query> =
 const initialState: QueryState = {
   ids: entityAdapter.getInitialState().ids as string[],
   entities: entityAdapter.getInitialState().entities,
+  loading: false,
 };
 
 // TODO: Add created and modified date
@@ -20,7 +21,11 @@ export function queryActionReducer(state: QueryState = initialState, action: Que
       action.payload.queries.forEach(o => o.dbModified = new Date().toISOString());
       return entityAdapter.upsertMany(action.payload.queries, state);
 
+    case QueryActionTypes.LOAD:
+      return {...state, loading: true};
+
     case QueryActionTypes.LOAD_COMPLETE:
+      state = {...state, loading: false};
       return entityAdapter.addAll(action.payload.queries, state);
 
     case QueryActionTypes.REMOVE:
@@ -41,3 +46,5 @@ const selectQueryState = createSelector(getRepoState, repoState => repoState.que
 export const selectQueryEntities = createSelector(selectQueryState, selectEntities);
 export const selectQueryList = createSelector(selectQueryState, selectAll);
 export const selectQueryById = (id) => createSelector(selectQueryEntities, entities => entities[id]);
+export const selectQueriesLoading =
+  createSelector(selectQueryEntities, state => state.loading);
