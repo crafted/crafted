@@ -11,7 +11,7 @@ import {AppState} from '../store';
 import {RemoveAllContributors} from '../store/contributor/contributor.action';
 import {RemoveAllItems} from '../store/item/item.action';
 import {RemoveAllLabels} from '../store/label/label.action';
-import {selectRepositoryName} from '../store/repository/repository.reducer';
+import {selectRepositoryName} from '../store/name/name.reducer';
 
 @Injectable()
 export class Remover {

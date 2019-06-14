@@ -12,7 +12,7 @@ import {UpdateItemsFromGithub} from '../store/item/item.action';
 import {selectItems} from '../store/item/item.reducer';
 import {UpdateLabelsFromGithub} from '../store/label/label.action';
 import {selectLabels} from '../store/label/label.reducer';
-import {selectRepositoryName} from '../store/repository/repository.reducer';
+import {selectRepositoryName} from '../store/name/name.reducer';
 import {compareLocalToRemote} from '../utility/compare-local-to-remote';
 
 export interface StaleIssuesState {

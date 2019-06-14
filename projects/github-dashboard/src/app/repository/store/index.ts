@@ -13,13 +13,13 @@ import {ItemState} from './item/item.state';
 import {LabelEffects} from './label/label.effects';
 import {labelActionReducer} from './label/label.reducer';
 import {LabelState} from './label/label.state';
+import {nameActionReducer} from './name/name.reducer';
 import {QueryEffects} from './query/query.effects';
 import {queryActionReducer} from './query/query.reducer';
 import {QueryState} from './query/query.state';
 import {RecommendationEffects} from './recommendation/recommendation.effects';
 import {recommendationActionReducer} from './recommendation/recommendation.reducer';
 import {RecommendationState} from './recommendation/recommendation.state';
-import {nameActionReducer} from './repository/repository.reducer';
 
 export interface RepoState {
   name: string;

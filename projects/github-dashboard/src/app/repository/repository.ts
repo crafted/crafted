@@ -43,11 +43,11 @@ import {LoadItems} from './store/item/item.action';
 import {selectItems, selectItemsLoading} from './store/item/item.reducer';
 import {LoadLabels} from './store/label/label.action';
 import {selectLabels} from './store/label/label.reducer';
+import {SetName} from './store/name/name.action';
 import {LoadQueries} from './store/query/query.action';
 import {selectQueryList} from './store/query/query.reducer';
 import {LoadRecommendations} from './store/recommendation/recommendation.action';
 import {selectRecommendations} from './store/recommendation/recommendation.reducer';
-import {SetName} from './store/repository/repository.action';
 import {getRecommendations} from './utility/get-recommendations';
 
 export interface DataResources {
@@ -119,15 +119,8 @@ export class Repository {
   constructor(
       private router: Router, private updater: Updater, private remover: Remover,
       private repoGist: RepoGist, private config: Config, private store: Store<AppState>) {
-    this.activeRepository.pipe(takeUntil(this.destroyed)).subscribe(repository => {
-      this.store.select(selectIsRepoLoaded(repository)).pipe(take(1)).subscribe(isRepoLoaded => {
-        if (!isRepoLoaded) {
-          this.router.navigate(['']);
-        }
-
-        this.loadRepository(repository);
-      });
-    });
+    this.activeRepository.pipe(takeUntil(this.destroyed))
+        .subscribe(repository => this.loadRepository(repository));
 
     this.activeRepository.pipe(switchMap(
         repository =>
@@ -154,13 +147,20 @@ export class Repository {
   }
 
   private loadRepository(repository: string) {
-    this.store.dispatch(new SetName({repository}));
-    this.store.dispatch(new LoadContributors({repository}));
-    this.store.dispatch(new LoadDashboards({repository}));
-    this.store.dispatch(new LoadItems({repository}));
-    this.store.dispatch(new LoadLabels({repository}));
-    this.store.dispatch(new LoadQueries({repository}));
-    this.store.dispatch(new LoadRecommendations({repository}));
+    this.store.select(selectIsRepoLoaded(repository)).pipe(take(1)).subscribe(isRepoLoaded => {
+      if (!isRepoLoaded) {
+        this.router.navigate(['']);
+        return;
+      }
+
+      this.store.dispatch(new SetName({repository}));
+      this.store.dispatch(new LoadContributors({repository}));
+      this.store.dispatch(new LoadDashboards({repository}));
+      this.store.dispatch(new LoadItems({repository}));
+      this.store.dispatch(new LoadLabels({repository}));
+      this.store.dispatch(new LoadQueries({repository}));
+      this.store.dispatch(new LoadRecommendations({repository}));
+    });
   }
 }
 

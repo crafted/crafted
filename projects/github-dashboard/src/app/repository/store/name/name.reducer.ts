@@ -1,9 +1,9 @@
 import {createSelector} from '@ngrx/store';
 import {RepoState} from '../index';
 import {getRepoState} from '../repo-state.selector';
-import {RepositoryAction, RepositoryActionTypes} from './repository.action';
+import {NameAction, RepositoryActionTypes} from './name.action';
 
-export function nameActionReducer(state = '', action: RepositoryAction): string {
+export function nameActionReducer(state = '', action: NameAction): string {
   switch (action.type) {
     case RepositoryActionTypes.SET_NAME:
       return action.payload.repository;

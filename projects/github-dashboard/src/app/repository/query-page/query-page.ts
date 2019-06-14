@@ -16,9 +16,9 @@ import {HeaderContentAction} from '../shared/header-content/header-content';
 import {AppState} from '../store';
 import {UpdateItemsFromGithub} from '../store/item/item.action';
 import {selectItemById} from '../store/item/item.reducer';
+import {selectRepositoryName} from '../store/name/name.reducer';
 import {CreateQuery} from '../store/query/query.action';
 import {selectQueryById} from '../store/query/query.reducer';
-import {selectRepositoryName} from '../store/repository/repository.reducer';
 
 interface QueryResources {
   loading: Observable<boolean>;

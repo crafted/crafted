@@ -7,14 +7,14 @@ import {map, take} from 'rxjs/operators';
 import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
 import {selectAuthState} from '../../../store/auth/auth.reducer';
 import {selectLoadedRepos} from '../../../store/loaded-repos/loaded-repos.reducer';
-import {selectQueryList} from '../../store/query/query.reducer';
-import {selectDashboards} from '../../store/dashboard/dashboard.reducer';
-import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
 import {ThemeToggle} from '../../../store/theme/theme.action';
 import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
 import {AppState} from '../../store';
+import {selectDashboards} from '../../store/dashboard/dashboard.reducer';
 import {selectItemTotal} from '../../store/item/item.reducer';
-import {selectRepositoryName} from '../../store/repository/repository.reducer';
+import {selectRepositoryName} from '../../store/name/name.reducer';
+import {selectQueryList} from '../../store/query/query.reducer';
+import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
 
 export interface NavLink {
   route: string;

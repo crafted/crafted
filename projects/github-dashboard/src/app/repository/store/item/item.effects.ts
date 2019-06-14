@@ -8,7 +8,7 @@ import {RepositoryDatabase} from '../../../service/repository-database';
 import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
 import {Updater} from '../../services/updater';
 import {AppState} from '../index';
-import {selectRepositoryName} from '../repository/repository.reducer';
+import {selectRepositoryName} from '../name/name.reducer';
 import {
   ItemActionTypes,
   ItemAddAssigneeAction,

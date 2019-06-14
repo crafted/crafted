@@ -9,4 +9,4 @@ export class SetName implements Action {
   constructor(public payload: {repository: string}) {}
 }
 
-export type RepositoryAction = SetName;
+export type NameAction = SetName;

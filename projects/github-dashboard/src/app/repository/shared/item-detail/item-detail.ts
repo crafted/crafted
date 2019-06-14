@@ -21,8 +21,8 @@ import {
 } from '../../store/item/item.action';
 import {selectItemById, selectItems} from '../../store/item/item.reducer';
 import {selectLabels} from '../../store/label/label.reducer';
+import {selectRepositoryName} from '../../store/name/name.reducer';
 import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
-import {selectRepositoryName} from '../../store/repository/repository.reducer';
 import {getRecommendations} from '../../utility/get-recommendations';
 
 export interface Activity {

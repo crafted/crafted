@@ -5,7 +5,7 @@ import {AppState} from '../store';
 import {selectContributorTotal} from '../store/contributor/contributor.reducer';
 import {selectItemTotal} from '../store/item/item.reducer';
 import {selectLabelIds, selectLabelTotal} from '../store/label/label.reducer';
-import {selectRepositoryName} from '../store/repository/repository.reducer';
+import {selectRepositoryName} from '../store/name/name.reducer';
 
 @Component({
   selector: 'database-page',

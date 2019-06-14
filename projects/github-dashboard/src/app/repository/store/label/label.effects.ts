@@ -7,7 +7,7 @@ import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
 import {Updater} from '../../services/updater';
 import {AppState} from '../index';
 import {ItemActionTypes, RemoveAllItems} from '../item/item.action';
-import {selectRepositoryName} from '../repository/repository.reducer';
+import {selectRepositoryName} from '../name/name.reducer';
 import {
   LabelActionTypes,
   LoadLabels,

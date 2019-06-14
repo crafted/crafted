@@ -8,7 +8,7 @@ import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
 import {ItemActionTypes} from '../item/item.action';
-import {selectRepositoryName} from '../repository/repository.reducer';
+import {selectRepositoryName} from '../name/name.reducer';
 
 import {
   CreateDashboard,
