@@ -3,10 +3,8 @@
   </advanced-search>
 
   <div class="options">
-    <div class="item-count" *ngIf="itemCount | async; let count">
-      <ng-container *ngIf="count !== undefined && count !== null">
-        {{count}} Results
-      </ng-container>
+    <div class="item-count">
+      {{itemCount | async}} Results
     </div>
     <div class="item-count">
     </div>
