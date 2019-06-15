@@ -3,8 +3,8 @@ import {MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {Store} from '@ngrx/store';
-import {combineLatest, Observable, of} from 'rxjs';
-import {filter, map, mergeMap, shareReplay, switchMap, take} from 'rxjs/operators';
+import {combineLatest, Observable, of, ReplaySubject, Subject} from 'rxjs';
+import {filter, map, mergeMap, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
 import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';
@@ -18,7 +18,7 @@ import {UpdateItemsFromGithub} from '../store/item/item.action';
 import {selectItemById} from '../store/item/item.reducer';
 import {selectRepositoryName} from '../store/name/name.reducer';
 import {CreateQuery} from '../store/query/query.action';
-import {selectQueriesLoading, selectQueryById} from '../store/query/query.reducer';
+import {selectQueryById} from '../store/query/query.reducer';
 
 interface QueryResources {
   loading: Observable<boolean>;
@@ -50,13 +50,7 @@ export class QueryPage {
 
   dataResourceOptions: {id: string, label: string}[];
 
-  // TODO: Make subject and improve UX of loading an existing query (currently shows select datatype)
-  query: Observable<Query> = this.activatedRoute.params.pipe(
-      mergeMap(
-          params => (params.id !== 'new') ?
-              this.store.select(selectQueryById(params.id)).pipe(filter(query => !!query)) :
-              this.newQuery()),
-      shareReplay(1));
+  query = new ReplaySubject<Query>(1);
 
   queryResources: Observable<QueryResources> = this.query.pipe(
       map(query => {
@@ -73,8 +67,6 @@ export class QueryPage {
         }
       }),
       filter(v => !!v), shareReplay(1));
-
-  queriesLoading = this.store.select(selectQueriesLoading);
 
   canSave =
       combineLatest(this.query, this.queryResources).pipe(mergeMap(([query, queryResources]) => {
@@ -106,6 +98,8 @@ export class QueryPage {
 
   listWidth = 500;
 
+  destroyed = new Subject();
+
   constructor(
       private store: Store<AppState>, private github: Github,
       @Inject(DATA_RESOURCES_MAP) public dataResourcesMap: Map<string, DataResources>,
@@ -115,6 +109,22 @@ export class QueryPage {
     this.dataResourcesMap.forEach(
         dataResource =>
             this.dataResourceOptions.push({id: dataResource.type, label: dataResource.label}));
+
+    this.activatedRoute.params
+        .pipe(
+            mergeMap(
+                params => (params.id !== 'new') ?
+                    this.store.select(selectQueryById(params.id)).pipe(filter(query => !!query)) :
+                    this.newQuery()),
+            takeUntil(this.destroyed))
+        .subscribe(query => {
+          this.query.next(query);
+        });
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   openSaveAsDialog() {
@@ -180,11 +190,8 @@ export class QueryPage {
   }
 
   createQueryWithType(dataType: string) {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute.parent,
-      queryParams: {query: JSON.stringify({name: 'New Query', dataType})},
-      replaceUrl: true,
-      queryParamsHandling: 'merge',
+    this.query.pipe(take(1)).subscribe(query => {
+      this.query.next({...query, dataType});
     });
   }
 
@@ -196,7 +203,7 @@ export class QueryPage {
             return of(JSON.parse(query));
           }
 
-          return of();
+          return of({name: 'New Query'} as Query);
         }),
         take(1));
   }

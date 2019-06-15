@@ -3,39 +3,41 @@
                 [name]="(query | async)?.name">
 </header-content>
 
-<div [style.width.px]="listWidth" class="master">
-  <items-list (itemSelected)="navigateToItem($event.id)"
-              *ngIf="queryResources | async as resources; else selectType"
-              [activeItem]="item$ | async"
-              [dataSource]="resources.dataSource" [filterer]="resources.filterer"
-              [grouper]="resources.grouper"
-              [sorter]="resources.sorter"
-              [loading]="resources.loading | async"
-              [viewer]="resources.viewer">
-  </items-list>
-</div>
-
-<drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
-
-<div *ngIf="!isMobile()" class="detail">
-  <item-detail *ngIf="itemId$ | async as itemId" [itemId]="itemId"></item-detail>
-</div>
-
-<ng-template #selectType>
-  <div class="select-type">
-    <div class="empty-state-title">
-      Select data to query
-    </div>
-    <div class="type-options">
-      <button type="button" (click)="createQueryWithType(option.id)"
-              *ngFor="let option of dataResourceOptions"
-              color="primary"
-              mat-stroked-button>
-        {{option.label}}
-      </button>
-    </div>
+<ng-container *ngIf="query | async; else loading">
+  <div [style.width.px]="listWidth" class="master">
+    <items-list (itemSelected)="navigateToItem($event.id)"
+                *ngIf="queryResources | async as resources; else selectType"
+                [activeItem]="item$ | async"
+                [dataSource]="resources.dataSource" [filterer]="resources.filterer"
+                [grouper]="resources.grouper"
+                [sorter]="resources.sorter"
+                [loading]="resources.loading | async"
+                [viewer]="resources.viewer">
+    </items-list>
   </div>
-</ng-template>
+
+  <drag-line (dragged)="listWidth = listWidth + $event"></drag-line>
+
+  <div *ngIf="!isMobile()" class="detail">
+    <item-detail *ngIf="itemId$ | async as itemId" [itemId]="itemId"></item-detail>
+  </div>
+
+  <ng-template #selectType>
+    <div class="select-type">
+      <div class="empty-state-title">
+        Select data to query
+      </div>
+      <div class="type-options">
+        <button type="button" (click)="createQueryWithType(option.id)"
+                *ngFor="let option of dataResourceOptions"
+                color="primary"
+                mat-stroked-button>
+          {{option.label}}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
 
 <ng-template #loading>
   <div class="loading-query">
