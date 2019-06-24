@@ -6,7 +6,9 @@
   <mat-sidenav-content>
     <app-header [sidenav]="sidenav"></app-header>
 
-    <div class="router-content">
+    <loading *ngIf="isDataLoading | async" label="stored data"></loading>
+
+    <div class="router-content" [style.display]="(isDataLoading | async) ? 'none' : ''">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

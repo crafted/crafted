@@ -13,6 +13,7 @@ import {Updater} from './services/updater';
 import {ConfirmConfigUpdatesModule} from './shared/dialog/confirm-config-updates/confirm-config-updates.module';
 import {DeleteConfirmationModule} from './shared/dialog/delete-confirmation/delete-confirmation.module';
 import {HeaderModule} from './shared/header/header.module';
+import {LoadingModule} from './shared/loading/loading.module';
 import {NavModule} from './shared/nav/nav.module';
 import {effects, reducers} from './store';
 
@@ -62,6 +63,7 @@ export class RepositoryRoutingModule {
     NavModule,
     HeaderModule,
     RouterModule,
+    LoadingModule,
     RepositoryRoutingModule,
     DeleteConfirmationModule,
     ConfirmConfigUpdatesModule,

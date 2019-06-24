@@ -38,12 +38,13 @@ import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
 import {AppState} from './store';
 import {LoadContributors} from './store/contributor/contributor.action';
+import {selectContributorsLoading} from './store/contributor/contributor.reducer';
 import {LoadDashboards} from './store/dashboard/dashboard.action';
 import {selectDashboards} from './store/dashboard/dashboard.reducer';
 import {LoadItems} from './store/item/item.action';
 import {selectItems, selectItemsLoading} from './store/item/item.reducer';
 import {LoadLabels} from './store/label/label.action';
-import {selectLabels} from './store/label/label.reducer';
+import {selectLabels, selectLabelsLoading} from './store/label/label.reducer';
 import {SetName} from './store/name/name.action';
 import {selectRepositoryName} from './store/name/name.reducer';
 import {LoadRepositoryPermission} from './store/permission/permission.action';
@@ -118,6 +119,12 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
   providers: [{provide: DATA_RESOURCES_MAP, useFactory: provideDataResourcesMap, deps: [Store]}]
 })
 export class Repository {
+  isDataLoading =
+      combineLatest(
+          this.store.select(selectItemsLoading), this.store.select(selectContributorsLoading),
+          this.store.select(selectLabelsLoading))
+          .pipe(map(result => result.some(v => v)));
+
   private destroyed = new Subject();
 
   private activeRepository = this.router.events.pipe(toActiveRepositoryName);
@@ -138,10 +145,9 @@ export class Repository {
     // Load repository permissions when the repository name or user name changes.
     combineLatest(this.store.select(selectRepositoryName), this.store.select(selectUserName))
         .pipe(takeUntil(this.destroyed))
-        .subscribe(
-            ([repository, user]) => {
-              this.store.dispatch(new LoadRepositoryPermission({repository, user}));
-            });
+        .subscribe(([repository, user]) => {
+          this.store.dispatch(new LoadRepositoryPermission({repository, user}));
+        });
   }
 
   ngOnDestroy() {
