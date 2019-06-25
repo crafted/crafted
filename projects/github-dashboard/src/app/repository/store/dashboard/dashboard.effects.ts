@@ -7,7 +7,6 @@ import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
-import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../name/name.reducer';
 
 import {
@@ -27,7 +26,7 @@ import {selectDashboardEntities} from './dashboard.reducer';
 export class DashboardEffects {
   @Effect()
   load = this.actions.pipe(
-    ofType<LoadDashboards>(ItemActionTypes.LOAD), switchMap(action => {
+    ofType<LoadDashboards>(DashboardActionTypes.LOAD), switchMap(action => {
       return this.repositoryDatabase.getValues(action.payload.repository)
         .dashboards.pipe(
           take(1),

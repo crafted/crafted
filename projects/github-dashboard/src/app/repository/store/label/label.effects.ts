@@ -6,7 +6,7 @@ import {RepositoryDatabase} from '../../../service/repository-database';
 import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
 import {Updater} from '../../services/updater';
 import {AppState} from '../index';
-import {ItemActionTypes, RemoveAllItems} from '../item/item.action';
+import {RemoveAllItems} from '../item/item.action';
 import {selectRepositoryName} from '../name/name.reducer';
 import {
   LabelActionTypes,
@@ -19,7 +19,7 @@ import {
 export class LabelEffects {
   @Effect()
   load = this.actions.pipe(
-      ofType<LoadLabels>(ItemActionTypes.LOAD), switchMap(action => {
+      ofType<LoadLabels>(LabelActionTypes.LOAD), switchMap(action => {
         return this.repositoryDatabase.getValues(action.payload.repository)
             .labels.pipe(take(1), map(labels => new LoadLabelsComplete({labels})));
       }));

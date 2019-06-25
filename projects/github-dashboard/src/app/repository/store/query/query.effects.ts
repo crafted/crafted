@@ -7,7 +7,6 @@ import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
 import {AppState} from '../index';
-import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../name/name.reducer';
 
 import {
@@ -28,7 +27,7 @@ import {selectQueryEntities} from './query.reducer';
 export class QueryEffects {
   @Effect()
   load = this.actions.pipe(
-    ofType<LoadQueries>(ItemActionTypes.LOAD), switchMap(action => {
+    ofType<LoadQueries>(QueryActionTypes.LOAD), switchMap(action => {
       return this.repositoryDatabase.getValues(action.payload.repository)
         .queries.pipe(
           take(1),

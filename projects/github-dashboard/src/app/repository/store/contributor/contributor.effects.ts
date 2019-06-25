@@ -6,7 +6,6 @@ import {RepositoryDatabase} from '../../../service/repository-database';
 import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
 import {Updater} from '../../services/updater';
 import {AppState} from '../index';
-import {ItemActionTypes} from '../item/item.action';
 import {selectRepositoryName} from '../name/name.reducer';
 import {
   ContributorActionTypes,
@@ -19,7 +18,7 @@ import {
 export class ContributorEffects {
   @Effect()
   load = this.actions.pipe(
-      ofType<LoadContributors>(ItemActionTypes.LOAD), switchMap(action => {
+      ofType<LoadContributors>(ContributorActionTypes.LOAD), switchMap(action => {
         return this.repositoryDatabase.getValues(action.payload.repository)
             .contributors.pipe(
                 take(1),
