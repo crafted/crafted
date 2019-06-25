@@ -3,7 +3,7 @@ import {AppIndexedDb, StoreId} from '../utility/app-indexed-db';
 
 @Injectable({providedIn: 'root'})
 export class RepositoryDatabase {
-  private openDatabases = new Map<string, AppIndexedDb>();
+  private database: AppIndexedDb;
 
   getValues(repository: string) {
     return this.getDatabase(repository).initialValues;
@@ -22,10 +22,15 @@ export class RepositoryDatabase {
   }
 
   private getDatabase(repository: string) {
-    if (!this.openDatabases.has(repository)) {
-      this.openDatabases.set(repository, new AppIndexedDb(repository));
+    if (this.database && this.database.name === repository) {
+      return this.database;
     }
 
-    return this.openDatabases.get(repository);
+    if (this.database) {
+      this.database.close();
+    }
+
+    this.database = new AppIndexedDb(repository);
+    return this.database;
   }
 }

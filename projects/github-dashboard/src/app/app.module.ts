@@ -36,7 +36,7 @@ const IMPORTS = [
   HttpClientModule,
   StoreModule.forRoot(reducers, {metaReducers}),
   StoreDevtoolsModule.instrument({
-    maxAge: 5, // Retains last 5 states
+    maxAge: 15, // Retains last n states
     logOnly: environment.production, // Restrict extension to log-only mode
   }),
   EffectsModule.forRoot(effects),
