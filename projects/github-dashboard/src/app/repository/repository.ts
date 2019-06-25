@@ -171,7 +171,7 @@ export class Repository {
   private loadRepository(repository: string) {
     this.store.select(selectIsRepoLoaded(repository)).pipe(take(1)).subscribe(isRepoLoaded => {
       if (!isRepoLoaded) {
-        this.router.navigate(['config/database']);
+        this.router.navigate(['']);
         return;
       }
 

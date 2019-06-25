@@ -1,20 +1,22 @@
-<button (click)="navigateHome()" class="home theme-background-app-bar" mat-button>
-  <mat-icon>home</mat-icon>
-  GitHub Explorer
-</button>
+<div class="header theme-background">
+  <button (click)="navigateHome()" class="home" mat-icon-button matTooltip="Home page">
+    <mat-icon>home</mat-icon>
+  </button>
 
-<div *ngIf="repositories$ | async as repositories" class="repository">
-  <mat-select (selectionChange)="router.navigate([$event.value])"
-              *ngIf="repositories.length > 1; else singleRepository"
-              [value]="activeRepository | async">
-    <mat-option *ngFor="let repository of repositories" [value]="repository">
-      {{repository}}
-    </mat-option>
-  </mat-select>
+  <div *ngIf="repositories$ | async as repositories" class="repository">
+    <mat-select (selectionChange)="router.navigate([$event.value])"
+                *ngIf="repositories.length > 1; else singleRepository"
+                [value]="activeRepository | async">
+      <mat-option *ngFor="let repository of repositories" [value]="repository">
+        {{repository}}
+      </mat-option>
+    </mat-select>
 
-  <ng-template #singleRepository>
-    {{activeRepository | async}}
-  </ng-template>
+    <ng-template #singleRepository>
+      {{activeRepository | async}}
+    </ng-template>
+  </div>
+
 </div>
 
 <mat-divider></mat-divider>

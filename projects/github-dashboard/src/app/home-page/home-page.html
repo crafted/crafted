@@ -3,7 +3,10 @@
 
   <div class="autocomplete">
     <mat-form-field appearance="outline">
-      <input matInput autofocus [matAutocomplete]="auto" [formControl]="autocompleteControl" placeholder="Find your repo...">
+      <input matInput autofocus
+             #repoInput
+             (keyup.Enter)="load(repoInput.value)"
+             [matAutocomplete]="auto" [formControl]="autocompleteControl" placeholder="Find your repo...">
       <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true" (optionSelected)="autocompleteSelected($event)">
         <mat-option *ngFor="let repo of (autocompleteResult$ | async)" [value]="repo">
           {{repo}}
