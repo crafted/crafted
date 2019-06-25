@@ -1,5 +1,5 @@
 import {SorterMetadata} from '@crafted/data';
-import {Recommendation} from '../../model/recommendation';
+import {Recommendation} from '../../../model/recommendation';
 
 export const RECOMMENDATION_SORTER_METADATA = new Map<string, SorterMetadata<Recommendation>>([
   [

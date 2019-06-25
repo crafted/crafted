@@ -10,10 +10,10 @@ import {
 } from '@angular/material';
 import {RouterModule, Routes} from '@angular/router';
 import {AdvancedSearchModule} from '@crafted/components';
-import {CollectionPageEmptyStateModule} from '../shared/collection-page-empty-state/collection-page-empty-state.module';
-import {RecommendationDialogModule} from '../shared/dialog/recommendation/recommendation-dialog.module';
-import {HeaderContentModule} from '../shared/header-content/header-content.module';
-import {LoadingModule} from '../shared/loading/loading.module';
+import {CollectionPageEmptyStateModule} from '../../shared/collection-page-empty-state/collection-page-empty-state.module';
+import {RecommendationDialogModule} from '../../shared/dialog/recommendation/recommendation-dialog.module';
+import {HeaderContentModule} from '../../shared/header-content/header-content.module';
+import {LoadingModule} from '../../shared/loading/loading.module';
 import {RecommendationViewModule} from './recommendation-view/recommendation-view.module';
 import {RecommendationsPage} from './recommendations-page';
 

@@ -22,8 +22,8 @@ const routes: Routes = [{
   component: Repository,
   children: [
     {
-      path: 'database',
-      loadChildren: './database-page/database-page.module#DatabasePageModule',
+      path: 'config',
+      loadChildren: './config-page/config-page.module#ConfigPageModule',
     },
     {
       path: 'dashboards',
@@ -41,12 +41,7 @@ const routes: Routes = [{
       path: 'query/:id',
       loadChildren: './query-page/query-page.module#QueryPageModule',
     },
-    {
-      path: 'recommendations',
-      loadChildren: './recommendations-page/recommendations-page.module#RecommendationsPageModule',
-    },
-
-    {path: '', redirectTo: 'database', pathMatch: 'full'},
+    {path: '', redirectTo: 'queries', pathMatch: 'full'},
   ]
 }];
 

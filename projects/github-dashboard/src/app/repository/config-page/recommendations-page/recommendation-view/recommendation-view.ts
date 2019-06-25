@@ -5,12 +5,12 @@ import {Filterer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../model/recommendation';
-import {DATA_RESOURCES_MAP, DataResources} from '../../repository';
-import {RecommendationDialog} from '../../shared/dialog/recommendation/recommendation-dialog';
-import {AppState} from '../../store';
-import {NavigateToQuery, NavigateToQueryType} from '../../store/query/query.action';
-import {CreateRecommendation} from '../../store/recommendation/recommendation.action';
+import {ACTION_TYPES, Recommendation, RECOMMENDATION_TYPES} from '../../../model/recommendation';
+import {DATA_RESOURCES_MAP, DataResources} from '../../../repository';
+import {RecommendationDialog} from '../../../shared/dialog/recommendation/recommendation-dialog';
+import {AppState} from '../../../store';
+import {NavigateToQuery, NavigateToQueryType} from '../../../store/query/query.action';
+import {CreateRecommendation} from '../../../store/recommendation/recommendation.action';
 
 const equalityToString = {
   notContains: `does not contain`,

@@ -1,6 +1,6 @@
 <header-content (actionSelected)="handleHeaderAction($event)"
                 [actions]="headerActions | async"
-                name="Recommendations">
+                name="Config">
 </header-content>
 
 <ng-container *ngIf="dataSource.data | async as recommendations">

@@ -5,7 +5,7 @@ export interface AddLabelAction {
   labels: string[];
 }
 export interface AddAssigneeAction {
-  assignee: string[];
+  assignees: string[];
 }
 
 export type Action = AddLabelAction|AddAssigneeAction;

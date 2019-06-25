@@ -1,0 +1,16 @@
+<header-content name="Config">
+</header-content>
+
+<nav mat-tab-nav-bar class="theme-background-app-bar">
+  <a mat-tab-link
+     *ngFor="let link of navLinks"
+     [routerLink]="link.path"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{link.label}}
+  </a>
+</nav>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

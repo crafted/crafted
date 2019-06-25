@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {UpdatableType, Updater, UpdateState} from '../../services/updater';
+import {UpdatableType, Updater, UpdateState} from '../../../services/updater';
 
 @Component({
   selector: 'update-action',

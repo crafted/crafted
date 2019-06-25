@@ -14,7 +14,6 @@ import {selectDashboards} from '../../store/dashboard/dashboard.reducer';
 import {selectItemTotal} from '../../store/item/item.reducer';
 import {selectRepositoryName} from '../../store/name/name.reducer';
 import {selectQueryList} from '../../store/query/query.reducer';
-import {selectRecommendations} from '../../store/recommendation/recommendation.reducer';
 
 export interface NavLink {
   route: string;
@@ -46,6 +45,12 @@ export class Nav {
 
   links: NavLink[] = [
     {
+      route: 'config',
+      subRoute: 'config',
+      label: 'Config',
+      icon: 'build',
+    },
+    {
       route: 'dashboards',
       subRoute: 'dashboard',
       label: 'Dashboards',
@@ -61,17 +66,6 @@ export class Nav {
       disabled: this.isEmpty,
       subItems: this.store.select(selectQueryList).pipe(take(5))
     },
-  ];
-
-  configLinks: NavLink[] = [
-    {
-      route: 'recommendations',
-      label: 'Recommendations',
-      icon: 'label',
-      disabled: this.isEmpty,
-      subItems: this.store.select(selectRecommendations)
-    },
-    {route: 'database', label: 'Database', icon: 'archive'},
   ];
 
   repositories$ = combineLatest(this.activeRepository, this.store.select(selectLoadedRepos))

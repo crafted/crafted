@@ -44,7 +44,9 @@ export class HeaderContent<T> {
   }
 
   ngOnChanges() {
-    this.windowTitle.setTitle(this.name);
+    if (this.name) {
+      this.windowTitle.setTitle(this.name);
+    }
   }
 
   ngOnDestroy() {

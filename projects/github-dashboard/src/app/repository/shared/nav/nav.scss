@@ -1,5 +1,6 @@
 @import '../../../constants';
 @import '~@angular/material/theming';
+// @import '../../../../../../../dist/components/common';
 
 :host {
   display: flex;
@@ -13,25 +14,37 @@ mat-nav-list {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .spacer {
   flex: 1;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
+.repository {
+  mat-select {
+    border: none;
+
+    ::ng-deep .mat-select-trigger {
+      padding: 0 16px;
+    }
+
+    ::ng-deep .mat-select-value {
+      height: 48px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.home {
+  font-size: 16px;
+  text-align: left;
   height: 64px;
-}
+  border-radius: 0;
 
-mat-select {
-  font-weight: bold;
-}
-
-button.home {
-  margin-right: 8px;
+  mat-icon {
+    margin-right: 8px;
+  }
 }
 
 .settings {
@@ -112,7 +125,7 @@ button.sign-in {
 }
 
 .link-text {
-  font-size: 16px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   z-index: 1;
