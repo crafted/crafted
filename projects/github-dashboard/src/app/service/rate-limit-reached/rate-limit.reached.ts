@@ -5,7 +5,7 @@ import {Observable, Subject, timer} from 'rxjs';
 import {filter, map, take, takeUntil, tap} from 'rxjs/operators';
 import {AppState} from '../../store';
 import {AuthSignIn} from '../../store/auth/auth.action';
-import {selectAuthState} from '../../store/auth/auth.reducer';
+import {selectAuthState, selectCanAuth} from '../../store/auth/auth.reducer';
 
 
 @Component({
@@ -17,7 +17,9 @@ export class RateLimitReached {
 
   secondsLeftMessage: Observable<string>;
 
-  destroyed = new Subject();
+  canAuth = this.store.select(selectCanAuth);
+
+  private destroyed = new Subject();
 
   constructor(
       private store: Store<AppState>,

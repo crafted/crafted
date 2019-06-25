@@ -16,15 +16,17 @@
       Retrying in {{secondsLeftMessage | async}}
     </div>
 
-    <div> or </div>
+    <ng-container *ngIf="canAuth | async">
+      <div> or </div>
 
-    <div>
-      Sign in to Github for higher rates.
-    </div>
+      <div>
+        Sign in to Github for higher rates.
+      </div>
+    </ng-container>
   </div>
 </div>
 
-<div class="sign-in">
+<div class="sign-in" *ngIf="canAuth | async">
   <button mat-raised-button color="accent" (click)="signIn()"> Sign In
   </button>
 </div>

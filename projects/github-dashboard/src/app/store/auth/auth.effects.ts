@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Optional} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {MatDialog} from '@angular/material';
 import {Actions, Effect, ofType} from '@ngrx/effects';
@@ -48,8 +48,8 @@ export class AuthEffects {
       switchMap(() => from(this.afAuth.auth.signOut())), map(() => new AuthSignOutSuccess()));
 
   constructor(
-      private actions: Actions, private store: Store<AppState>, private afAuth: AngularFireAuth,
-      private dialog: MatDialog) {}
+      private actions: Actions, private store: Store<AppState>,
+      @Optional() private afAuth: AngularFireAuth, private dialog: MatDialog) {}
 }
 
 function saveAuthStateToStorage(authState: AuthState) {

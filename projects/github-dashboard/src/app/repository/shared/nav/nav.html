@@ -19,7 +19,7 @@
 </div>
 
 <mat-divider></mat-divider>
-<mat-nav-list> 
+<mat-nav-list>
   <ng-container *ngFor="let link of links">
     <a  mat-list-item (click)="sidenav.close()" class="link theme-text"
         *ngIf="!(link.disabled | async)"
@@ -47,8 +47,8 @@
         {{link.label}}
       </div>
     </a>
-  </ng-container>    
-  <div class="settings">
+  </ng-container>
+  <div class="settings" *ngIf="canAuth | async">
     <ng-container *ngIf="accessToken | async; let token; else settingsLabel">
       <ng-container *ngIf="user | async; let user">
         <div class="pic"

@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {AuthSignIn, AuthSignOut} from '../../../store/auth/auth.action';
-import {selectAuthState} from '../../../store/auth/auth.reducer';
+import {selectAuthState, selectCanAuth} from '../../../store/auth/auth.reducer';
 import {selectLoadedRepos} from '../../../store/loaded-repos/loaded-repos.reducer';
 import {ThemeToggle} from '../../../store/theme/theme.action';
 import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
@@ -41,6 +41,8 @@ export class Nav {
   activeRepository = this.store.select(selectRepositoryName);
 
   isEmpty = this.store.select(selectItemTotal).pipe(map(total => total === 0));
+
+  canAuth = this.store.select(selectCanAuth);
 
   links: NavLink[] = [
     {
