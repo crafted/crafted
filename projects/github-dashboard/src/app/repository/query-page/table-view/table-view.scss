@@ -1,3 +1,5 @@
+@import '../../../../../../../dist/components/common';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -30,4 +32,21 @@
 
 table {
   width: 100%;
+}
+
+button.mat-menu-item {
+  mat-icon {
+    visibility: hidden;
+  }
+
+  &.selected {
+    font-weight: bold;
+    mat-icon {
+      visibility: visible;
+    }
+  }
+}
+
+.mat-menu-item {
+  @include slim-menu-item();
 }

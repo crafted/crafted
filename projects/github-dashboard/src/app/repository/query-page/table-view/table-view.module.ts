@@ -1,6 +1,12 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatButtonModule, MatDividerModule, MatIconModule, MatTableModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatDividerModule,
+  MatIconModule,
+  MatMenuModule,
+  MatTableModule
+} from '@angular/material';
 import {AdvancedSearchModule, DisplayOptionsModule, RenderedViewModule} from '@crafted/components';
 import {TableView} from './table-view';
 
@@ -15,6 +21,7 @@ import {TableView} from './table-view';
     MatIconModule,
     MatDividerModule,
     RenderedViewModule,
+    MatMenuModule,
   ],
   declarations: [TableView],
   exports: [TableView],

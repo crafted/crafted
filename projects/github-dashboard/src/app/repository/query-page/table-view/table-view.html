@@ -10,7 +10,7 @@
     {{itemCount | async}} Results
   </div>
   <div class="header-actions">
-    <button mat-icon-button>
+    <button mat-icon-button [matMenuTriggerFor]="viewingMenu">
       <mat-icon>view_column</mat-icon>
     </button>
   </div>
@@ -47,3 +47,15 @@
     <tr mat-row *matRowDef="let item; columns: displayedColumns | async;"></tr>
   </table>
 </div>
+
+<!-- View Menu -->
+<mat-menu #viewingMenu="matMenu">
+  <button mat-menu-item *ngFor="let view of views"
+          [class.selected]="(viewer.state | async).views.indexOf(view.id) !== -1"
+          (click)="viewer.toggle(view.id); $event.stopPropagation();">
+    <div class="button-content">
+      <mat-icon>check</mat-icon>
+      {{view.label}}
+    </div>
+  </button>
+</mat-menu>

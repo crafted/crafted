@@ -44,8 +44,10 @@ export class TableView {
   ngOnInit() {
     this.data = this.dataSource.data.pipe(this.filterer.filter(), map(data => data.slice(0, 20)));
 
-    this.displayedColumns = this.viewer.state.pipe(map(state => state.views));
     this.views = this.viewer.getViews();
+    this.displayedColumns = this.viewer.state.pipe(map(state => {
+      return this.views.map(v => v.id).filter(v => state.views.indexOf(v) !== -1);
+    }));
 
     this.renderedHtml = this.data.pipe(map(items => {
       const renderedHtml = new Map<Item, Map<string, Observable<RenderedView>>>();
