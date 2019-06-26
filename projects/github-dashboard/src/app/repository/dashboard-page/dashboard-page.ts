@@ -7,6 +7,7 @@ import {
   getCountWidgetConfig,
   getListWidgetConfig,
   hasWidgets,
+  ListDataResourcesMap,
   SavedFiltererState,
   Widget,
   WidgetConfig
@@ -56,8 +57,7 @@ export class DashboardPage {
 
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
     count: getCountWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
-    list: getListWidgetConfig(
-        this.dataResourcesMap,
+    list: getListWidgetConfig(convertToListDataResourcesMap(this.dataResourcesMap),
         (item: Item) => {
           this.dialog.open(ItemDetailDialog, {data: {itemId: item.id}, width: '80vw'});
         },
@@ -125,4 +125,20 @@ function getSavedFiltererStates(queries: Query[], recommendations: Recommendatio
   }));
 
   return savedFiltererStates;
+}
+
+function convertToListDataResourcesMap(dataResourcesMap: Map<string, DataResources>):
+  ListDataResourcesMap {
+  const listDataResourcesMap: ListDataResourcesMap = new Map();
+  dataResourcesMap.forEach((value, key) => {
+    listDataResourcesMap.set(key, {
+      type: value.type,
+      label: value.label,
+      filterer: value.filterer,
+      sorter: value.sorter,
+      viewer: value.summaryViewer,
+      dataSource: value.dataSource
+    });
+  });
+  return listDataResourcesMap;
 }

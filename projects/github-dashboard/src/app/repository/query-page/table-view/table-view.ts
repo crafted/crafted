@@ -42,7 +42,7 @@ export class TableView {
   data: Observable<Item[]>;
 
   ngOnInit() {
-    this.data = this.dataSource.data.pipe(this.filterer.filter());
+    this.data = this.dataSource.data.pipe(this.filterer.filter(), map(data => data.slice(0, 20)));
 
     this.displayedColumns = this.viewer.state.pipe(map(state => state.views));
     this.views = this.viewer.getViews();

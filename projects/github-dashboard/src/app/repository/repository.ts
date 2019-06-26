@@ -28,6 +28,7 @@ import {getDataSourceProvider} from '../github/data-source/item-data-source-meta
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
+import {getTableViewerProvider} from '../github/data-source/item-table-viewer-metadata';
 import {getViewerProvider} from '../github/data-source/item-viewer-metadata';
 import {Config} from '../service/config';
 import {selectUserName} from '../store/auth/auth.reducer';
@@ -58,7 +59,8 @@ export interface DataResources {
   type: string;
   label: string;
   loading: Observable<boolean>;
-  viewer: (initialState?: ViewerState) => Viewer;
+  summaryViewer: (initialState?: ViewerState) => Viewer;
+  tableViewer: (initialState?: ViewerState) => Viewer;
   filterer: (initialState?: FiltererState) => Filterer;
   grouper: (initialState?: GrouperState) => Grouper;
   sorter: (initialState?: SorterState) => Sorter;
@@ -91,7 +93,8 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
         label: 'Issues',
         loading: store.select(selectItemsLoading),
         dataSource: getDataSourceProvider(issues) as (() => DataSource<any>),
-        viewer: getViewerProvider(labels, issueRecommendations),
+        summaryViewer: getViewerProvider(labels, issueRecommendations),
+        tableViewer: getTableViewerProvider(labels, issueRecommendations),
         filterer: getFiltererProvider(labels, issueRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),
@@ -103,7 +106,8 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
         label: 'Pull Requests',
         loading: store.select(selectItemsLoading),
         dataSource: getDataSourceProvider(prs),
-        viewer: getViewerProvider(labels, prRecommendations),
+        summaryViewer: getViewerProvider(labels, prRecommendations),
+        tableViewer: getTableViewerProvider(labels, prRecommendations),
         filterer: getFiltererProvider(labels, prRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),

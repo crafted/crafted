@@ -65,25 +65,31 @@ export class QueryPage {
 
   query = new ReplaySubject<Query>(1);
 
-  queryResources: Observable<QueryResources> = this.query.pipe(
-      map(query => {
-        if (query.dataType) {
-          const dataResource = this.dataResourcesMap.get(query.dataType);
-          return {
-            loading: dataResource.loading,
-            viewer: dataResource.viewer(query.viewerState),
-            filterer: dataResource.filterer(query.filtererState),
-            grouper: dataResource.grouper(query.grouperState),
-            sorter: dataResource.sorter(query.sorterState),
-            dataSource: dataResource.dataSource()
-          };
-        }
-      }),
-      filter(v => !!v), shareReplay(1));
+  view = new ReplaySubject<QueryView>(1);
+
+  queryResources: Observable<QueryResources> =
+      combineLatest(this.query, this.view)
+          .pipe(
+              map(([query, view]) => {
+                if (query.dataType) {
+                  const dataResource = this.dataResourcesMap.get(query.dataType);
+                  return {
+                    loading: dataResource.loading,
+                    viewer: view === 'list' ? dataResource.summaryViewer(query.viewerState) :
+                                              dataResource.tableViewer(query.viewerState),
+                    filterer: dataResource.filterer(query.filtererState),
+                    grouper: dataResource.grouper(query.grouperState),
+                    sorter: dataResource.sorter(query.sorterState),
+                    dataSource: dataResource.dataSource()
+                  };
+                }
+              }),
+              filter(v => !!v), shareReplay(1));
 
   canSave =
-      combineLatest(this.query, this.queryResources).pipe(mergeMap(([query, queryResources]) => {
+      combineLatest(this.query, this.queryResources, this.view).pipe(mergeMap(([query, queryResources, view]) => {
         return combineLatest(
+                   of(query.view === view),
                    queryResources.viewer.isEquivalent(query.viewerState),
                    queryResources.filterer.isEquivalent(query.filtererState),
                    queryResources.grouper.isEquivalent(query.grouperState),
@@ -95,8 +101,6 @@ export class QueryPage {
 
   item$ = this.itemId$.pipe(mergeMap(itemId => this.store.select(selectItemById(itemId))));
 
-  view = new ReplaySubject<QueryView>(1);
-
   headerActions: Observable<HeaderContentAction[]> =
       combineLatest(this.query, this.canSave, this.view).pipe(map(([query, canSave, view]) => {
         const setViewAction = view === 'list' ? SET_TABLE_VIEW_ACTION : SET_LIST_VIEW_ACTION;
@@ -105,12 +109,14 @@ export class QueryPage {
           return [setViewAction, ...NEW_QUERY_HEADER_ACTIONS];
         }
 
-        return [setViewAction, {
-          id: 'save',
-          isPrimary: true,
-          isDisabled: !canSave,
-          text: 'Save',
-        }];
+        return [
+          setViewAction, {
+            id: 'save',
+            isPrimary: true,
+            isDisabled: !canSave,
+            text: 'Save',
+          }
+        ];
       }));
 
   listWidth = 500;
@@ -165,7 +171,9 @@ export class QueryPage {
                 resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState, this.view).pipe(take(1)).subscribe(([query, state, view]) => {
+    combineLatest(this.query, currentState, this.view).pipe(take(1)).subscribe(([
+                                                                                 query, state, view
+                                                                               ]) => {
       const states = {
         filtererState: state[0],
         grouperState: state[1],
@@ -227,7 +235,7 @@ export class QueryPage {
             return of(JSON.parse(query));
           }
 
-          return of({name: 'New Query'} as Query);
+          return of({name: 'New Query', view: 'list'} as Query);
         }),
         take(1));
   }
