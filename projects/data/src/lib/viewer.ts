@@ -47,7 +47,7 @@ export class Viewer<T = any, C = any> {
 
   constructor(options: ViewerOptions<T, C> = {}) {
     this.metadata = options.metadata || new Map();
-    this.state.next(options.initialState || {views: this.getViews().map(v => v.id)});
+    this.setState(options.initialState || {views: this.getViews().map(v => v.id)});
     this.contextProvider = options.contextProvider || EMPTY.pipe(startWith(() => null));
   }
 
@@ -74,7 +74,9 @@ export class Viewer<T = any, C = any> {
   }
 
   setState(state: ViewerState) {
-    this.state.next({...state});
+    // Remove any state keys that are not valid
+    const views = state.views.filter(view => !!this.metadata.get(view));
+    this.state.next({views});
   }
 
   isEquivalent(otherState?: ViewerState): Observable<boolean> {

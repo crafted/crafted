@@ -53,7 +53,7 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     'title-detailed',
     {
       label: 'Title (detailed)',
-      render: item => ({
+      render: (item, context) => ({
         children: [
           {
             styles: {
@@ -83,7 +83,8 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
               padding: '2px 0',
             },
             text: `${item.reporter}`
-          }
+          },
+          createLabelsContainer(context.labelsMap, item.labels, 'small')
         ]
       }),
     },
@@ -211,39 +212,34 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     'labels',
     {
       label: 'Labels',
-      render: (item, context) => {
-        if (!item.labels.length) {
-          return null;
-        }
-
-        const containerStyles = {
-          display: 'flex',
-          flexWrap: 'wrap',
-          fontSize: '13px',
-          marginTop: '8px',
-          padding: '2px 0'
-        };
-
-        return {
-          styles: containerStyles,
-          children: item.labels.map(id => createLabel(context.labelsMap.get(`${id}`)))
-        };
-      },
+      render: (item, context) => createLabelsContainer(context.labelsMap, item.labels, 'large')
     },
   ],
 ]);
 
-function createLabel(label): RenderedView {
+function createLabelsContainer(labelsMap: Map<string, Label>, labelIds: string[], density: 'small'|'large') {
+  if (!labelIds) {
+    return null;
+  }
+
+  return {
+    styles: {fontSize: density === 'small' ? '11px' : '13px'},
+    children: labelIds.map(id => createLabel(labelsMap.get(`${id}`), density))
+  };
+}
+
+function createLabel(label: Label, density: 'small'|'large'): RenderedView {
   if (!label) {
     return {text: ''};
   }
 
   const styles = {
     display: 'inline-block',
-    padding: '4px 8px',
+    padding: density === 'small' ? '2px 4px' : '4px 8px',
     borderRadius: '4px',
     marginRight: '4px',
     marginBottom: '4px',
+    fontWeight: density === 'small' ? 'bold' : '',
     color: getTextColor(label.color),
     borderColor: getBorderColor(label.color),
     backgroundColor: '#' + label.color,
