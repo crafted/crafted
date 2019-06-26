@@ -1,5 +1,5 @@
 import {DatePipe} from '@angular/common';
-import {Viewer, ViewerMetadata, ViewerState} from '@crafted/data';
+import {RenderedView, Viewer, ViewerMetadata, ViewerState} from '@crafted/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Recommendation} from '../../repository/model/recommendation';
@@ -17,7 +17,7 @@ interface ViewContext {
 
 const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewContext>>([
   [
-    'Number',
+    'number',
     {
       label: 'Number',
       render: item => ({
@@ -48,6 +48,47 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     },
   ],
 
+
+  [
+    'title-detailed',
+    {
+      label: 'Title (detailed)',
+      render: item => ({
+        children: [
+          {
+            styles: {
+              display: 'block',
+              marginBottom: '2px',
+              fontSize: '14px',
+              padding: '2px 0',
+            },
+            text: `${item.title}`
+          },
+          {
+            classList: 'theme-secondary-text',
+            styles: {
+              display: 'inline-block',
+              marginRight: '24px',
+              fontSize: '12px',
+              padding: '2px 0',
+            },
+            text: `#${item.number}`
+          },
+          {
+            classList: 'theme-secondary-text',
+            styles: {
+              display: 'inline-block',
+              marginRight: '24px',
+              fontSize: '12px',
+              padding: '2px 0',
+            },
+            text: `${item.reporter}`
+          }
+        ]
+      }),
+    },
+  ],
+
   [
     'reporter',
     {
@@ -70,8 +111,8 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
 
       render: item => {
         return {
-              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-              text: `${item.state}`,
+          styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+          text: `${item.state}`,
         };
       },
     },
@@ -85,8 +126,8 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
       render: item => {
         const datePipe = new DatePipe('en-us');
         return {
-              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-              text: `${datePipe.transform(item.created)}`,
+          styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+          text: `${datePipe.transform(item.created)}`,
         };
       },
     },
@@ -99,8 +140,8 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
       render: item => {
         const datePipe = new DatePipe('en-us');
         return {
-              styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
-              text: `${datePipe.transform(item.updated)}`,
+          styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+          text: `${datePipe.transform(item.updated)}`,
         };
       },
     },
@@ -132,11 +173,11 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
         const suggestions = getRecommendations(item, allSuggestions, context.labelsMap);
 
         return {
-              children: suggestions.map(r => ({
-                                          text: r.message || '',
-                                          styles: {display: 'block', padding: '2px 0'},
-                                        })),
-              styles: {fontSize: '13px'},
+          children: suggestions.map(r => ({
+                                      text: r.message || '',
+                                      styles: {display: 'block', padding: '2px 0'},
+                                    })),
+          styles: {fontSize: '13px'},
         };
       },
     },
@@ -156,11 +197,11 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
 
         return {
           classList: 'theme-warn',
-              children: warnings.map(r => ({
-                                       text: r.message || '',
-                                       styles: {display: 'block', padding: '2px 0'},
-                                     })),
-              styles: {fontSize: '13px'},
+          children: warnings.map(r => ({
+                                   text: r.message || '',
+                                   styles: {display: 'block', padding: '2px 0'},
+                                 })),
+          styles: {fontSize: '13px'},
         };
       },
     },
@@ -183,40 +224,37 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
           padding: '2px 0'
         };
 
-        const labelStyles = {
-          display: 'inline-block',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          marginRight: '4px',
-          marginBottom: '4px',
-        };
-
         return {
-          styles: containerStyles, children: item.labels.map(id => {
-            const label = context.labelsMap.get(`${id}`);
-
-            if (!label) {
-              return {text: ''};
-            }
-
-            const styles = {
-              ...labelStyles,
-              color: getTextColor(label.color),
-              borderColor: getBorderColor(label.color),
-              backgroundColor: '#' + label.color,
-            };
-
-            return {text: label.name, styles};
-          }),
+          styles: containerStyles,
+          children: item.labels.map(id => createLabel(context.labelsMap.get(`${id}`)))
         };
       },
     },
   ],
 ]);
 
+function createLabel(label): RenderedView {
+  if (!label) {
+    return {text: ''};
+  }
+
+  const styles = {
+    display: 'inline-block',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    marginRight: '4px',
+    marginBottom: '4px',
+    color: getTextColor(label.color),
+    borderColor: getBorderColor(label.color),
+    backgroundColor: '#' + label.color,
+  };
+
+  return {text: label.name, styles};
+}
+
 export function getTableViewerProvider(
-  labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):
-  (initialState?: ViewerState) => Viewer<Item, ViewContext> {
+    labels: Observable<Label[]>, recommendations: Observable<Recommendation[]>):
+    (initialState?: ViewerState) => Viewer<Item, ViewContext> {
   return (initialState?: ViewerState) => {
     const contextProvider = createContextProvider(labels, recommendations);
     return new Viewer({metadata: ITEM_TABLE_VIEWER_METADATA, contextProvider, initialState});
@@ -224,7 +262,7 @@ export function getTableViewerProvider(
 }
 
 function createContextProvider(
-  labels$: Observable<Label[]>, recommendations$: Observable<Recommendation[]>) {
+    labels$: Observable<Label[]>, recommendations$: Observable<Recommendation[]>) {
   return combineLatest(recommendations$, labels$).pipe(map(([recommendations, labels]) => {
     return (item: Item) => ({item, labelsMap: createLabelsMap(labels), recommendations});
   }));
