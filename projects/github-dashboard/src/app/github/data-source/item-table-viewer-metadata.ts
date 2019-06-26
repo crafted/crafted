@@ -17,11 +17,26 @@ interface ViewContext {
 
 const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewContext>>([
   [
+    'Number',
+    {
+      label: 'Number',
+      render: item => ({
+        styles: {
+          display: 'block',
+          marginBottom: '4px',
+          fontSize: '15px',
+          padding: '2px 0',
+        },
+        text: `${item.number}`
+      }),
+    },
+  ],
+
+  [
     'title',
     {
       label: 'Title',
       render: item => ({
-        classList: 'title theme-text',
         styles: {
           display: 'block',
           marginBottom: '4px',
@@ -38,7 +53,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     {
       label: 'Reporter',
       render: item => ({
-        classList: 'theme-secondary-text',
         styles: {
           display: 'block',
           fontSize: '13px',
@@ -56,7 +70,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
 
       render: item => {
         return {
-          classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `${item.state}`,
         };
@@ -72,7 +85,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
       render: item => {
         const datePipe = new DatePipe('en-us');
         return {
-          classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `${datePipe.transform(item.created)}`,
         };
@@ -87,7 +99,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
       render: item => {
         const datePipe = new DatePipe('en-us');
         return {
-          classList: 'theme-secondary-text',
               styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
               text: `${datePipe.transform(item.updated)}`,
         };
@@ -105,7 +116,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
         }
 
         return {
-          classList: 'theme-secondary-text',
           styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
           text: `${item.assignees.join(',')}`
         };
@@ -122,7 +132,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
         const suggestions = getRecommendations(item, allSuggestions, context.labelsMap);
 
         return {
-          classList: 'section theme-secondary-text',
               children: suggestions.map(r => ({
                                           text: r.message || '',
                                           styles: {display: 'block', padding: '2px 0'},
@@ -168,7 +177,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
 
         const containerStyles = {
           display: 'flex',
-          justifyContent: 'flex-end',
           flexWrap: 'wrap',
           fontSize: '13px',
           marginTop: '8px',
