@@ -10,6 +10,7 @@ import {ItemDetailModule} from '../shared/item-detail/item-detail.module';
 import {QueryMenuModule} from '../shared/query-menu/query-menu.module';
 import {DragLineModule} from './drag-line/drag-line.module';
 import {QueryPage} from './query-page';
+import {TableViewModule} from './table-view/table-view.module';
 
 
 const routes: Routes = [{
@@ -34,6 +35,7 @@ export class QueryPageRoutingModule {
     QueryMenuModule,
     QueryDialogModule,
     DragLineModule,
+    TableViewModule,
   ],
   declarations: [QueryPage],
   exports: [QueryPage],

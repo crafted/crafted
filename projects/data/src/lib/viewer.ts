@@ -96,4 +96,10 @@ export class Viewer<T = any, C = any> {
       return views.map(view => view.render(item, context(item)));
     }));
   }
+
+  getRenderedView(item: T, view: string): Observable<RenderedView> {
+    return this.contextProvider.pipe(map(context => {
+      return this.metadata.get(view).render(item, context(item));
+    }));
+  }
 }

@@ -1,5 +1,7 @@
 import {FiltererState, GrouperState, SorterState, ViewerState} from '@crafted/data';
 
+export type QueryView = 'list'|'table';
+
 export interface Query {
   id?: string;
   dbAdded?: string;
@@ -11,4 +13,5 @@ export interface Query {
   grouperState?: GrouperState;
   sorterState?: SorterState;
   viewerState?: ViewerState;
+  view?: QueryView;
 }

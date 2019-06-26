@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.filter {
+  max-width: 650px;
+  margin: 8px auto;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.item-count {
+  flex: 1;
+  padding-left: 24px;
+}
+
+.header-actions {
+  padding: 16px;
+}
+
+.table-container {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}

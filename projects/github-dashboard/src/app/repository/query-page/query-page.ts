@@ -8,7 +8,7 @@ import {filter, map, mergeMap, shareReplay, switchMap, take, takeUntil} from 'rx
 import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';
-import {Query} from '../model/query';
+import {Query, QueryView} from '../model/query';
 import {DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {ItemDetailDialog} from '../shared/dialog/item-detail-dialog/item-detail-dialog';
 import {QueryDialog} from '../shared/dialog/query/query-dialog';
@@ -29,7 +29,7 @@ interface QueryResources {
   dataSource: DataSource;
 }
 
-type QueryPageHeaderAction = 'save'|'saveAs';
+type QueryPageHeaderAction = 'save'|'saveAs'|'table-view'|'list-view';
 
 const NEW_QUERY_HEADER_ACTIONS: HeaderContentAction<QueryPageHeaderAction>[] = [
   {
@@ -38,6 +38,19 @@ const NEW_QUERY_HEADER_ACTIONS: HeaderContentAction<QueryPageHeaderAction>[] = [
     text: 'Save Query As',
   },
 ];
+
+const SET_TABLE_VIEW_ACTION: HeaderContentAction<QueryPageHeaderAction> = {
+  id: 'table-view',
+  icon: 'view_headline',
+  tooltip: 'Show table view'
+};
+
+
+const SET_LIST_VIEW_ACTION: HeaderContentAction<QueryPageHeaderAction> = {
+  id: 'list-view',
+  icon: 'vertical_split',
+  tooltip: 'Show list view',
+};
 
 @Component({
   styleUrls: ['query-page.scss'],
@@ -82,13 +95,17 @@ export class QueryPage {
 
   item$ = this.itemId$.pipe(mergeMap(itemId => this.store.select(selectItemById(itemId))));
 
+  view = new ReplaySubject<QueryView>(1);
+
   headerActions: Observable<HeaderContentAction[]> =
-      combineLatest(this.query, this.canSave).pipe(map(([query, canSave]) => {
+      combineLatest(this.query, this.canSave, this.view).pipe(map(([query, canSave, view]) => {
+        const setViewAction = view === 'list' ? SET_TABLE_VIEW_ACTION : SET_LIST_VIEW_ACTION;
+
         if (!query.id) {
-          return NEW_QUERY_HEADER_ACTIONS;
+          return [setViewAction, ...NEW_QUERY_HEADER_ACTIONS];
         }
 
-        return [{
+        return [setViewAction, {
           id: 'save',
           isPrimary: true,
           isDisabled: !canSave,
@@ -119,6 +136,7 @@ export class QueryPage {
             takeUntil(this.destroyed))
         .subscribe(query => {
           this.query.next(query);
+          this.view.next(query.view || 'list');
         });
   }
 
@@ -147,14 +165,14 @@ export class QueryPage {
                 resources.viewer.state)),
         take(1));
 
-    combineLatest(this.query, currentState).pipe(take(1)).subscribe(([query, state]) => {
+    combineLatest(this.query, currentState, this.view).pipe(take(1)).subscribe(([query, state, view]) => {
       const states = {
         filtererState: state[0],
         grouperState: state[1],
         sorterState: state[2],
         viewerState: state[3],
       };
-      this.store.dispatch(new CreateQuery({query: {...query, ...states, name, group}}));
+      this.store.dispatch(new CreateQuery({query: {...query, ...states, name, group, view}}));
     });
   }
 
@@ -185,6 +203,12 @@ export class QueryPage {
         break;
       case 'saveAs':
         this.openSaveAsDialog();
+        break;
+      case 'table-view':
+        this.view.next('table');
+        break;
+      case 'list-view':
+        this.view.next('list');
         break;
     }
   }
