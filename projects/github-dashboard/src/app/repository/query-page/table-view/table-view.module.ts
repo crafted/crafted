@@ -5,6 +5,7 @@ import {
   MatDividerModule,
   MatIconModule,
   MatMenuModule,
+  MatPaginatorModule,
   MatTableModule
 } from '@angular/material';
 import {AdvancedSearchModule, DisplayOptionsModule, RenderedViewModule} from '@crafted/components';
@@ -22,6 +23,7 @@ import {TableView} from './table-view';
     MatDividerModule,
     RenderedViewModule,
     MatMenuModule,
+    MatPaginatorModule,
   ],
   declarations: [TableView],
   exports: [TableView],

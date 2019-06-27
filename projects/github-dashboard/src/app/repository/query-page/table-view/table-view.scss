@@ -14,12 +14,19 @@
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .item-count {
-  flex: 1;
   padding-left: 24px;
+}
+
+advanced-search {
+  flex: 1;
+  margin-top: 12px;
+  padding-left: 24px;
+  max-width: 650px;
 }
 
 .header-actions {

@@ -1,14 +1,7 @@
-<div class="filter">
+<div class="header theme-background-card">
   <advanced-search [filterer]="filterer" [dataSource]="dataSource">
   </advanced-search>
-</div>
 
-<mat-divider></mat-divider>
-
-<div class="header theme-background-card">
-  <div class="item-count" *ngIf="!loading">
-    {{itemCount | async}} Results
-  </div>
   <div class="header-actions">
     <button mat-icon-button [matMenuTriggerFor]="viewingMenu">
       <mat-icon>view_column</mat-icon>
@@ -16,10 +9,8 @@
   </div>
 </div>
 
-<mat-divider></mat-divider>
-
 <div class="table-container">
-  <table mat-table [dataSource]="data">
+  <table mat-table [dataSource]="renderedData">
     <ng-container *ngFor="let view of views" [matColumnDef]="view.id">
       <th mat-header-cell *matHeaderCellDef>
         {{view.label}}
@@ -38,6 +29,11 @@
     <tr mat-row *matRowDef="let item; columns: displayedColumns | async;"></tr>
   </table>
 </div>
+
+<mat-divider></mat-divider>
+
+<mat-paginator (page)="setPage($event)" [pageSize]="(page | async).size" [length]="itemCount | async">
+</mat-paginator>
 
 <!-- View Menu -->
 <mat-menu #viewingMenu="matMenu">

@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {PageEvent} from '@angular/material';
 import {
   DataSource,
   Filterer,
@@ -8,9 +9,14 @@ import {
   Viewer,
   ViewLabel
 } from '@crafted/data';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';
+
+interface TablePage {
+  index: number;
+  size: number;
+}
 
 @Component({
   selector: 'table-view',
@@ -39,26 +45,40 @@ export class TableView {
 
   itemCount: Observable<number>;
 
-  data: Observable<Item[]>;
+  page: BehaviorSubject<TablePage> = new BehaviorSubject({size: 20, index: 0});
+
+  renderedData: Observable<Item[]>;
 
   ngOnInit() {
-    this.data = this.dataSource.data.pipe(this.filterer.filter(), map(data => data.slice(0, 20)));
+    // TODO: Cannot be in ngOnInit since the inputs may change
+    const filteredData = this.dataSource.data.pipe(this.filterer.filter());
+    this.renderedData =
+        combineLatest(filteredData, this.page)
+            .pipe(
+                map(([data, page]) =>
+                        data.slice(page.index * page.size, page.index * page.size + page.size)));
+    this.itemCount = filteredData.pipe(map(d => d.length));
 
     this.views = this.viewer.getViews();
     this.displayedColumns = this.viewer.state.pipe(map(state => {
       return this.views.map(v => v.id).filter(v => state.views.indexOf(v) !== -1);
     }));
 
-    this.renderedHtml = this.data.pipe(map(items => {
-      const renderedHtml = new Map<Item, Map<string, Observable<RenderedView>>>();
-      items.forEach(item => {
-        const itemRenderedViews = new Map<string, Observable<RenderedView>>();
-        this.views.forEach(view => itemRenderedViews.set(view.id, this.viewer.getRenderedView(item, view.id)));
-        renderedHtml.set(item, itemRenderedViews);
-      });
-      return renderedHtml;
-    }), shareReplay(1));
+    this.renderedHtml = this.renderedData.pipe(
+        map(items => {
+          const renderedHtml = new Map<Item, Map<string, Observable<RenderedView>>>();
+          items.forEach(item => {
+            const itemRenderedViews = new Map<string, Observable<RenderedView>>();
+            this.views.forEach(
+                view => itemRenderedViews.set(view.id, this.viewer.getRenderedView(item, view.id)));
+            renderedHtml.set(item, itemRenderedViews);
+          });
+          return renderedHtml;
+        }),
+        shareReplay(1));
+  }
 
-    this.itemCount = this.data.pipe(map(d => d.length));
+  setPage(event: PageEvent) {
+    this.page.next({index: event.pageIndex, size: event.pageSize});
   }
 }

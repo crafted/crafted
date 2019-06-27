@@ -20,15 +20,7 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     'number',
     {
       label: 'Number',
-      render: item => ({
-        styles: {
-          display: 'block',
-          marginBottom: '4px',
-          fontSize: '15px',
-          padding: '2px 0',
-        },
-        text: `${item.number}`
-      }),
+      render: item => ({text: `${item.number}`}),
     },
   ],
 
@@ -36,15 +28,7 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
     'title',
     {
       label: 'Title',
-      render: item => ({
-        styles: {
-          display: 'block',
-          marginBottom: '4px',
-          fontSize: '15px',
-          padding: '2px 0',
-        },
-        text: `${item.title}`
-      }),
+      render: item => ({text: `${item.title}`}),
     },
   ],
 
@@ -60,7 +44,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
               display: 'block',
               marginBottom: '2px',
               fontSize: '14px',
-              padding: '2px 0',
             },
             text: `${item.title}`
           },
@@ -70,7 +53,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
               display: 'inline-block',
               marginRight: '24px',
               fontSize: '12px',
-              padding: '2px 0',
             },
             text: `#${item.number}`
           },
@@ -80,7 +62,6 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
               display: 'inline-block',
               marginRight: '24px',
               fontSize: '12px',
-              padding: '2px 0',
             },
             text: `${item.reporter}`
           },
@@ -217,7 +198,8 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
   ],
 ]);
 
-function createLabelsContainer(labelsMap: Map<string, Label>, labelIds: string[], density: 'small'|'large') {
+function createLabelsContainer(
+    labelsMap: Map<string, Label>, labelIds: string[], density: 'small'|'large') {
   if (!labelIds) {
     return null;
   }
