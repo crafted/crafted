@@ -10,6 +10,7 @@ import {githubLabelToLabel, Label} from '../github/app-types/label';
 import {GithubComment} from '../github/github-types/comment';
 import {GithubContributor} from '../github/github-types/contributor';
 import {Gist} from '../github/github-types/gist';
+import {GithubGraphQLStatuses} from '../github/github-types/graphql-statuses';
 import {GithubIssue} from '../github/github-types/issue';
 import {GithubLabel} from '../github/github-types/label';
 import {PermissionResponse, RepositoryPermission} from '../github/github-types/permission';
@@ -237,6 +238,57 @@ export class Github {
   addAssignee(repo: string, issue: string, assignee: string): Observable<HttpResponse<any>|null> {
     const url = constructUrl(`repos/${repo}/issues/${issue}/assignees`);
     return this.post(url, {assignees: [assignee]});
+  }
+
+  getPullRequestStatuses(repo: string, pullRequests: string[]):
+      Observable<CombinedPagedResults<{number: string, statuses: any}>> {
+    const paginationSize = 25;
+
+    let completed = 0;
+    let accumulated: any[] = [];
+    const total = Math.ceil(pullRequests.length / paginationSize);
+
+    return this.getPullRequestStatusesPaged(repo, pullRequests.slice(0, paginationSize))
+        .pipe(
+            expand(() => {
+              const start = paginationSize * completed;
+              const end = start + paginationSize;
+              if (start <= pullRequests.length) {
+                return this.getPullRequestStatusesPaged(repo, pullRequests.slice(start, end));
+              } else {
+                return EMPTY;
+              }
+            }),
+            map(result => {
+              completed++;
+              const transformedResponse = result;
+              const current = transformedResponse;
+              accumulated = accumulated.concat(transformedResponse);
+              return {completed, total, current, accumulated};
+            }));
+  }
+
+  private getPullRequestStatusesPaged(repo: string, pullRequests: string[]):
+      Observable<{number: string, statuses: any}[]> {
+    const url = `https://api.github.com/graphql`;
+    const owner = repo.split('/')[0];
+    const name = repo.split('/')[1];
+    const body = getStatusGraphQLBody(owner, name, pullRequests);
+
+    return this.post<GithubGraphQLStatuses>(url, body).pipe(map(response => {
+      const data = response.body.data;
+      const result: {number: string, statuses: any}[] = [];
+      Object.keys(data).forEach(d => {
+        const status = data[d].pullRequest;
+        const lastCommitStatus = status.commits.nodes[0].commit.status;
+        if (lastCommitStatus) {
+          result.push({number: `${status.number}`, statuses: lastCommitStatus.contexts});
+        }
+      });
+
+      console.log(result);
+      return result;
+    }));
   }
 
   private getPagedResults<T, R>(
@@ -514,4 +566,30 @@ export function completedPagedResults<T>(): (results: Observable<CombinedPagedRe
 function constructUrl(path: string, query = '', avoidCache = true) {
   const domain = 'https://api.github.com';
   return `${domain}/${path}?${query}${avoidCache ? '&' + new Date().toISOString() : ''}`;
+}
+
+function getStatusGraphQLBody(owner, name, ids: string[]) {
+  let requests = ``;
+  ids.forEach(id => {
+    requests += `
+        pr${id} : repository(owner: "${owner}", name: "${name}") {
+          pullRequest(number: ${id}) {
+            number
+            commits(last: 1) {
+              nodes {
+                commit {
+                  status {
+                    contexts {
+                      context
+                      state
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+  });
+  return {query: `query { ${requests} }`};
 }

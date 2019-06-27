@@ -8,7 +8,7 @@ import {Contributor} from '../../github/app-types/contributor';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {AppState} from '../../repository/store';
-import {Github} from '../github';
+import {CombinedPagedResults, Github} from '../github';
 
 interface StorageState {
   id: string;
@@ -52,8 +52,7 @@ export class LoadRepository {
   private destroyed = new Subject();
 
   constructor(
-      private store: Store<AppState>, private github: Github,
-      private cd: ChangeDetectorRef,
+      private store: Store<AppState>, private github: Github, private cd: ChangeDetectorRef,
       @Inject(MAT_DIALOG_DATA) public data: LoadRepositoryData,
       private dialogRef: MatDialogRef<LoadRepository, LoadRepositoryResult>) {
     const lastMonth = new Date();
@@ -74,33 +73,39 @@ export class LoadRepository {
     };
 
     const getLabels = this.getValues(
-        'labels', r => this.github.getLabels(r), values => result.labels.push(...values));
+        'labels', () => this.github.getLabels(this.data.name),
+        values => result.labels.push(...values));
 
     const getContributors = this.getValues(
-        'contributors', r => this.github.getContributors(r),
+        'contributors', () => this.github.getContributors(this.data.name),
         values => result.contributors.push(...values));
 
     const getIssues = this.getValues(
-        'issues', r => this.github.getIssues(r, this.getIssuesDateSince()),
+        'issues', () => this.github.getIssues(this.data.name, this.getIssuesDateSince()),
         values => result.items.push(...values));
 
-    this.loadSubscription =
-        getLabels
-            .pipe(
-                mergeMap(() => getContributors), mergeMap(() => getIssues),
-                takeUntil(this.destroyed))
-            .subscribe(() => this.dialogRef.close(result));
+    const getStatuses = this.getValues(
+        'pull request statuses', () => this.getPullRequestStatuses(result.items),
+        values => {
+          console.log(values);
+        });
+
+    this.loadSubscription = getIssues
+                                .pipe(
+                                    mergeMap(() => getContributors), mergeMap(() => getIssues),
+                                    mergeMap(() => getStatuses), takeUntil(this.destroyed))
+                                .subscribe(() => this.dialogRef.close(result));
   }
 
   getValues(
-      type: string, loadFn: (repository: string) => Observable<any>,
-      saver: (values: any) => void): Observable<void> {
+      type: string, loadFn: () => Observable<CombinedPagedResults<any>>,
+      saver: (values: any) => void): Observable<CombinedPagedResults<any>> {
     return of(null).pipe(
         tap(() => {
           this.loadingState = {id: 'loading', label: `Loading ${type}`, progress: 0};
           this.cd.markForCheck();
         }),
-        mergeMap(() => loadFn(this.data.name)), tap(result => {
+        mergeMap(() => loadFn()), tap(result => {
           this.loadingState.progress = result.completed / result.total * 100;
           this.cd.markForCheck();
           saver(result.current);
@@ -117,5 +122,11 @@ export class LoadRepository {
     }
 
     return since;
+  }
+
+  private getPullRequestStatuses(items: Item[]): Observable<CombinedPagedResults<any>> {
+    const openPullRequests =
+        items.filter(item => !!item.pr).map(item => `${item.number}`);
+    return this.github.getPullRequestStatuses(this.data.name, openPullRequests);
   }
 }
