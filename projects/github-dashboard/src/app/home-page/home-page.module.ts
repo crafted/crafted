@@ -8,6 +8,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 
 import {RouterModule} from '@angular/router';
 import {LoadingModule} from '../repository/shared/loading/loading.module';
+import {SigninButtonModule} from '../repository/shared/signin-button/signin-button.module';
 import {LoadRepositoryModule} from '../service/load-repository/load-repository.module';
 import {HomePage} from './home-page';
 
@@ -22,6 +23,7 @@ import {HomePage} from './home-page';
     RouterModule,
     LoadingModule,
     LoadRepositoryModule,
+    SigninButtonModule,
   ],
   declarations: [HomePage],
   exports: [HomePage],
