@@ -1,0 +1,29 @@
+.pic {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 32px;
+  border-radius: 8px;
+  margin: 0 12px 0 4px;
+}
+
+.username {
+  word-break: break-all;
+  font-size: 14px;
+  flex: 1;
+}
+
+.settings {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+}
+
+.logout {
+  font-size: 14px;
+  padding: 0 8px;
+  width: 100%;
+  text-align: left;
+}

@@ -41,33 +41,9 @@
 
 <mat-divider></mat-divider>
 
-<div class="settings" *ngIf="canAuth | async">
-  <ng-container *ngIf="accessToken | async; let token; else settingsLabel">
-    <ng-container *ngIf="user | async; let user">
-      <div class="pic"
-           [style.backgroundImage]="'url(https://github.com/' + user + '.png)'">
-      </div>
-      <div class="username"> {{user}} </div>
-    </ng-container>
-  </ng-container>
-  <ng-template #settingsLabel>
-    <button mat-button (click)="$event.stopPropagation(); signIn()" class="sign-in">
-      Login to GitHub
-    </button>
-  </ng-template>
-  <button mat-icon-button [mat-menu-trigger-for]="settings">
-    <mat-icon> settings </mat-icon>
-  </button>
-</div>
-
-<mat-menu #settings="matMenu">
+<signin-button>
   <button mat-menu-item (click)="toggleTheme()">
     <mat-icon> wb_sunny </mat-icon>
     Use {{(isDarkTheme | async) ? 'Light' : 'Dark' }} Theme
   </button>
-
-  <button mat-menu-item (click)="signOut()" *ngIf="accessToken | async">
-    <mat-icon> exit_to_app </mat-icon>
-    Logout
-  </button>
-</mat-menu>
+</signin-button>

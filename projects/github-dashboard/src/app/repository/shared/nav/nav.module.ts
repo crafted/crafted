@@ -12,6 +12,7 @@ import {
 } from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {Nav} from './nav';
+import {SigninButtonModule} from '../signin-button/signin-button.module'
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import {Nav} from './nav';
     MatIconModule,
     ReactiveFormsModule,
     RouterModule,
+    SigninButtonModule,
   ],
   declarations: [Nav],
   exports: [Nav],
