@@ -114,6 +114,27 @@ const ITEM_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewContext>>(
   ],
 
   [
+    'status',
+    {
+      label: 'Status',
+      render: item => {
+        if (!item.statuses || !item.statuses.length) {
+          return null;
+        }
+
+        // TODO: Better view of the statuses
+        const success = item.statuses.every(s => s.state === 'SUCCESS');
+
+        return {
+          classList: 'theme-secondary-text',
+          styles: {display: 'block', fontSize: '13px', padding: '2px 0'},
+          text: `Status: ${success ? 'Success' : 'Not success'}`
+        };
+      }
+    },
+  ],
+
+  [
     'suggestions',
     {
       label: 'Suggestions',

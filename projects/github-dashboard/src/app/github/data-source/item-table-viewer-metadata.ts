@@ -147,6 +147,28 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
   ],
 
   [
+    'status',
+    {
+      label: 'Status',
+      render: item => {
+        if (!item.statuses || !item.statuses.length) {
+          return null;
+        }
+
+        // TODO: Better view of the statuses
+        const success = item.statuses.every(s => s.state === 'SUCCESS');
+
+        return {
+          classList: 'theme-secondary-text',
+          styles: {display: 'block', fontSize: '13px'},
+          text: `${success ? 'Success' : 'Not success'}`
+        };
+      }
+    },
+  ],
+
+
+  [
     'suggestions',
     {
       label: 'Suggestions',
@@ -156,9 +178,9 @@ const ITEM_TABLE_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewCont
 
         return {
           children: suggestions.map(r => ({
-                                      text: r.message || '',
-                                      styles: {display: 'block', padding: '2px 0'},
-                                    })),
+            text: r.message || '',
+            styles: {display: 'block', padding: '2px 0'},
+          })),
           styles: {fontSize: '13px'},
         };
       },

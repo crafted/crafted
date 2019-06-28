@@ -9,5 +9,7 @@ interface PullRequestStatus {
 
 interface StatusContext {
   context: string;
-  state: string;
+  state: 'PENDING' | 'ERROR' | 'SUCCESS';
 }
+
+

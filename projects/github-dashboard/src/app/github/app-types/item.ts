@@ -1,6 +1,11 @@
 import {GithubIssue} from '../github-types/issue';
 import {Reactions} from '../github-types/reactions';
 
+export interface ItemStatus {
+  name: string;
+  state: 'PENDING' | 'ERROR' | 'SUCCESS';
+}
+
 export interface Item {
   id: string;
   assignees: string[];
@@ -17,6 +22,7 @@ export interface Item {
   reactions: Reactions;
   pr: boolean;
   url: string;
+  statuses: ItemStatus[];
   dbAdded?: string;
   dbModified?: string;
 }
@@ -36,6 +42,7 @@ export function githubIssueToIssue(o: GithubIssue): Item {
     closed: o.closed_at,
     updated: o.updated_at,
     reactions: o.reactions,
+    statuses: [],  // Not provided from GithubIssue, needs to be requested
     pr: !!o.pull_request,
     url: o.html_url,
   };

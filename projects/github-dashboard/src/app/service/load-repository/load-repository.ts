@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {Observable, of, Subject, Subscription} from 'rxjs';
 import {filter, map, mergeMap, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {Contributor} from '../../github/app-types/contributor';
-import {Item} from '../../github/app-types/item';
+import {Item, ItemStatus} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {AppState} from '../../repository/store';
 import {CombinedPagedResults, Github} from '../github';
@@ -84,22 +84,29 @@ export class LoadRepository {
         'issues', () => this.github.getIssues(this.data.name, this.getIssuesDateSince()),
         values => result.items.push(...values));
 
-    const getStatuses = this.getValues(
+    const getStatuses = this.getValues<{number: number, statuses: ItemStatus[]}>(
         'pull request statuses', () => this.getPullRequestStatuses(result.items),
         values => {
+          const statusMap = new Map<number, ItemStatus[]>();
+          values.forEach(v => statusMap.set(v.number, v.statuses));
+          result.items.forEach(item => {
+            if (statusMap.has(item.number)) {
+              console.log(item);
+            }
+          });
           console.log(values);
         });
 
-    this.loadSubscription = getIssues
+    this.loadSubscription = getLabels
                                 .pipe(
                                     mergeMap(() => getContributors), mergeMap(() => getIssues),
                                     mergeMap(() => getStatuses), takeUntil(this.destroyed))
                                 .subscribe(() => this.dialogRef.close(result));
   }
 
-  getValues(
-      type: string, loadFn: () => Observable<CombinedPagedResults<any>>,
-      saver: (values: any) => void): Observable<CombinedPagedResults<any>> {
+  getValues<T = any>(
+      type: string, loadFn: () => Observable<CombinedPagedResults<T>>,
+      saver: (values: T[]) => void): Observable<CombinedPagedResults<T>> {
     return of(null).pipe(
         tap(() => {
           this.loadingState = {id: 'loading', label: `Loading ${type}`, progress: 0};

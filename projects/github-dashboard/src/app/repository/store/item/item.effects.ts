@@ -2,7 +2,17 @@ import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {combineLatest, interval, of} from 'rxjs';
-import {catchError, map, startWith, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom
+} from 'rxjs/operators';
+import {Item} from '../../../github/app-types/item';
 import {Github} from '../../../service/github';
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {selectIsAuthenticated} from '../../../store/auth/auth.reducer';
@@ -22,16 +32,15 @@ import {
   RemoveAllItems,
   UpdateItemsFromGithub
 } from './item.action';
-import {selectItemEntities} from './item.reducer';
+import {selectItemEntities, selectItems} from './item.reducer';
 
 @Injectable()
 export class ItemEffects {
   @Effect()
-  load = this.actions.pipe(
-      ofType<LoadItems>(ItemActionTypes.LOAD), switchMap(action => {
-        return this.repositoryDatabase.getValues(action.payload.repository)
-            .items.pipe(take(1), map(items => new LoadItemsComplete({items})));
-      }));
+  load = this.actions.pipe(ofType<LoadItems>(ItemActionTypes.LOAD), switchMap(action => {
+                             return this.repositoryDatabase.getValues(action.payload.repository)
+                                 .items.pipe(take(1), map(items => new LoadItemsComplete({items})));
+                           }));
 
   /**
    * After the items are loaded from the local database, request updates from GitHub periodically
@@ -42,10 +51,32 @@ export class ItemEffects {
       ofType(ItemActionTypes.LOAD_COMPLETE),
       switchMap(() => interval(10 * 1000 * 60).pipe(startWith(null))),
       switchMap(() => this.store.select(selectIsAuthenticated).pipe(take(1))),
+    filter(isAuthenticated => isAuthenticated),
       tap(isAuthenticated => {
         if (isAuthenticated) {
           this.updater.update('items');
         }
+      }));
+
+  /**
+   * Periodically update the pull request statuses
+   */
+  @Effect({dispatch: false})
+  periodicallyUpdatePullRequests = this.actions.pipe(
+      ofType(ItemActionTypes.LOAD_COMPLETE),
+      switchMap(() => interval(10 * 1000 * 60).pipe(startWith(null))),
+      switchMap(() => combineLatest(this.store.select(selectRepositoryName), this.store.select(selectItems)).pipe(take(1))),
+      switchMap(([repo, items]) => {
+        const openPullRequests = items.filter(i => !!i.pr && i.state === 'open').map(i => i.id);
+        return this.github.getPullRequestStatuses(repo, openPullRequests).pipe(filter(result => result.total === result.completed));
+      }),
+      withLatestFrom(this.store.select(selectItemEntities)),
+      tap(([statusResult, items]) => {
+        const pullRequests: Item[] = [];
+        statusResult.accumulated.forEach(result => {
+          pullRequests.push({...items[result.number], statuses: result.statuses});
+        });
+        this.store.dispatch(new UpdateItemsFromGithub({items: pullRequests}));
       }));
 
   @Effect({dispatch: false})

@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {BehaviorSubject, EMPTY, merge, Observable, of, timer} from 'rxjs';
 import {catchError, expand, filter, map, mergeMap, switchMap, take, tap} from 'rxjs/operators';
 import {Contributor, githubContributorToContributor} from '../github/app-types/contributor';
-import {githubIssueToIssue, Item} from '../github/app-types/item';
+import {githubIssueToIssue, Item, ItemStatus} from '../github/app-types/item';
 import {githubLabelToLabel, Label} from '../github/app-types/label';
 import {GithubComment} from '../github/github-types/comment';
 import {GithubContributor} from '../github/github-types/contributor';
@@ -60,7 +60,17 @@ export class Github {
 
   getItem(repo: string, id: string): Observable<Item> {
     const url = constructUrl(`repos/${repo}/issues/${id}`);
-    return this.get<GithubIssue>(url).pipe(map(response => githubIssueToIssue(response.body)));
+    return this.get<GithubIssue>(url).pipe(
+        map(response => githubIssueToIssue(response.body)), switchMap(item => {
+          if (item.pr) {
+            return this.getPullRequestStatuses(repo, [item.id]).pipe(take(1), map(result => {
+              item.statuses = result.accumulated[0].statuses;
+              return item;
+            }));
+          } else {
+            return of(item);
+          }
+        }));
   }
 
   getRepositoryPermission(repo: string, user: string): Observable<RepositoryPermission> {
@@ -241,7 +251,7 @@ export class Github {
   }
 
   getPullRequestStatuses(repo: string, pullRequests: string[]):
-      Observable<CombinedPagedResults<{number: string, statuses: any}>> {
+      Observable<CombinedPagedResults<{number: number, statuses: any}>> {
     const paginationSize = 25;
 
     let completed = 0;
@@ -269,7 +279,7 @@ export class Github {
   }
 
   private getPullRequestStatusesPaged(repo: string, pullRequests: string[]):
-      Observable<{number: string, statuses: any}[]> {
+      Observable<{number: number, statuses: ItemStatus[]}[]> {
     const url = `https://api.github.com/graphql`;
     const owner = repo.split('/')[0];
     const name = repo.split('/')[1];
@@ -277,16 +287,16 @@ export class Github {
 
     return this.post<GithubGraphQLStatuses>(url, body).pipe(map(response => {
       const data = response.body.data;
-      const result: {number: string, statuses: any}[] = [];
+      const result: {number: number, statuses: ItemStatus[]}[] = [];
       Object.keys(data).forEach(d => {
         const status = data[d].pullRequest;
         const lastCommitStatus = status.commits.nodes[0].commit.status;
         if (lastCommitStatus) {
-          result.push({number: `${status.number}`, statuses: lastCommitStatus.contexts});
+          const statuses: ItemStatus[] =
+              lastCommitStatus.contexts.map(c => ({name: c.context, state: c.state}));
+          result.push({number: status.number, statuses});
         }
       });
-
-      console.log(result);
       return result;
     }));
   }
