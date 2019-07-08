@@ -280,6 +280,10 @@ export class Github {
 
   private getPullRequestStatusesPaged(repo: string, pullRequests: string[]):
       Observable<{number: number, statuses: ItemStatus[]}[]> {
+    if (!pullRequests.length) {
+      return of([]);
+    }
+
     const url = `https://api.github.com/graphql`;
     const owner = repo.split('/')[0];
     const name = repo.split('/')[1];
