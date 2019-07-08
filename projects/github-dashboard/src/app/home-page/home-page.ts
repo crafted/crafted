@@ -18,7 +18,7 @@ import {
 import {RepositoryDatabase} from '../service/repository-database';
 import {AppState} from '../store';
 import {LoadedReposAdd} from '../store/loaded-repos/loaded-repos.action';
-import {selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
+import {selectIsRepoLoaded, selectLoadedRepos} from '../store/loaded-repos/loaded-repos.reducer';
 
 @Component({
   selector: 'home-page',
@@ -66,21 +66,15 @@ export class HomePage {
 
   /** Navigate to the select location from the autocomplete options. */
   autocompleteSelected(event: MatAutocompleteSelectedEvent) {
-    this.load(event.option.value);
+    this.open(event.option.value);
   }
 
-  load(repository: string) {
-    this.dialog
-        .open<LoadRepository, LoadRepositoryData, LoadRepositoryResult>(
-            LoadRepository, {data: {name: repository}, width: '500px'})
-        .afterClosed()
+  open(repository: string) {
+    this.store.select(selectIsRepoLoaded(repository))
         .pipe(take(1))
-        .subscribe(result => {
-          if (result) {
-            this.persistLoadedData(
-              repository, result.items, result.labels, result.contributors);
-          }
-        });
+        .subscribe(
+            isLoaded => isLoaded ? this.router.navigate([`${repository}`]) :
+                                   this.openLoadDialog(repository));
   }
 
   persistLoadedData(
@@ -94,6 +88,19 @@ export class HomePage {
           this.store.dispatch(new LoadedReposAdd({repo: repository}));
           this.snackbar.open(`Successfully loaded data`, '', {duration: 2000});
           this.router.navigate([`${repository}`]);
+        });
+  }
+
+  private openLoadDialog(repository: string) {
+    this.dialog
+        .open<LoadRepository, LoadRepositoryData, LoadRepositoryResult>(
+            LoadRepository, {data: {name: repository}, width: '500px'})
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe(result => {
+          if (result) {
+            this.persistLoadedData(repository, result.items, result.labels, result.contributors);
+          }
         });
   }
 }

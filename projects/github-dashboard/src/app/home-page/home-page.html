@@ -5,7 +5,7 @@
     <mat-form-field appearance="outline">
       <input matInput autofocus
              #repoInput
-             (keyup.Enter)="load(repoInput.value)"
+             (keyup.Enter)="open(repoInput.value)"
              [matAutocomplete]="auto" [formControl]="autocompleteControl" placeholder="Find your repo...">
       <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true" (optionSelected)="autocompleteSelected($event)">
         <mat-option *ngFor="let repo of (autocompleteResult$ | async)" [value]="repo">
@@ -29,7 +29,7 @@
          *ngIf="popularTypescriptRepos | async; let repos; else loading">
       <div class="repos-title mat-secondary-text"> Suggestions </div>
       <div class="repos">
-        <a mat-stroked-button *ngFor="let repo of repos" (click)="load(repo)">
+        <a mat-stroked-button *ngFor="let repo of repos" (click)="open(repo)">
           {{repo}} </a>
       </div>
     </div>
