@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {delay, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {Query} from '../model/query';
 import {DATA_RESOURCES_MAP, DataResources} from '../repository';
 import {HeaderContentAction} from '../shared/header-content/header-content';
@@ -71,7 +71,7 @@ export class QueriesPage {
     const filterer = dataSourceProvider.filterer(query.filtererState);
     const dataSource = dataSourceProvider.dataSource();
 
-    return dataSource.data.pipe(filterer.filter(), delay(250), map(result => result.length));
+    return dataSource.data.pipe(filterer.filter(), map(result => result.length));
   }
 
   private getSortedGroups(queries: Query[]) {
