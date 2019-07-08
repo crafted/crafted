@@ -42,12 +42,12 @@ export class LoadRepository {
   totalLabelsCount = this.github.getLabels(this.data.name)
                          .pipe(
                              filter(result => result.completed === result.total),
-                             map(result => result.accumulated.length));
+                             map(result => result.accumulated.length), startWith('..'));
 
   totalItemsCount =
       this.formGroup.valueChanges.pipe(startWith(null))
           .pipe(switchMap(
-              () => this.github.getItemsCount(this.data.name, this.getIssuesDateSince())));
+              () => this.github.getItemsCount(this.data.name, this.getIssuesDateSince())), startWith('..'));
 
   private destroyed = new Subject();
 
