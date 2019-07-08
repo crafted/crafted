@@ -76,8 +76,10 @@ export class HomePage {
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {
-          this.persistLoadedData(
+          if (result) {
+            this.persistLoadedData(
               repository, result.items, result.labels, result.contributors);
+          }
         });
   }
 
