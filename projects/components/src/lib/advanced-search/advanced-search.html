@@ -1,10 +1,5 @@
 <div class="search-bar">
   <input [formControl]="searchFormControl" placeholder="Search" class="search">
-  <button mat-icon-button [mat-menu-trigger-for]="filterTypesMenu" type="button"
-          *ngIf="filterOptions.length" matTooltip="Add filter"
-          class="new-filter">
-    <mat-icon> filter_list </mat-icon>
-  </button>
 </div>
 
 <div class="filter-container" [@expand]="expandState"
@@ -44,6 +39,14 @@
       </button>
     </ng-container>
   </div>
+</div>
+
+<div>
+  <button mat-button [mat-menu-trigger-for]="filterTypesMenu" type="button"
+          *ngIf="filterOptions.length" matTooltip="Add filter"
+          class="new-filter">
+    Add filter
+  </button>
 </div>
 
 <!-- Filter Types Menu -->

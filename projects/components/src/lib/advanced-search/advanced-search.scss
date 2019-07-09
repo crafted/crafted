@@ -3,17 +3,14 @@
 :host {
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
   flex: 1;
-
-  button.new-filter {
-    height: 48px;
-    width: 48px;
-  }
+  padding: 10px 20px 10px 0;
 }
 
 input {
@@ -57,4 +54,11 @@ input {
 
 .menu-title {
   @include menu-title();
+}
+
+.new-filter {
+  float:  right;
+  margin-bottom: 10px;
+  margin-right: 8px;
+  font-size: 12px;
 }
