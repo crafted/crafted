@@ -3,13 +3,13 @@
 </button>
 
 <mat-menu #rootMenu="matMenu">
-  <button mat-menu-item [matMenuTriggerFor]="groupingMenu">
+  <button *ngIf="grouper" mat-menu-item [matMenuTriggerFor]="groupingMenu">
     Group By
   </button>
-  <button mat-menu-item [matMenuTriggerFor]="sortingMenu">
+  <button *ngIf="sorter" mat-menu-item [matMenuTriggerFor]="sortingMenu">
     Sort By
   </button>
-  <button mat-menu-item [matMenuTriggerFor]="viewingMenu">
+  <button *ngIf="viewer" mat-menu-item [matMenuTriggerFor]="viewingMenu">
     View
   </button>
 </mat-menu>
