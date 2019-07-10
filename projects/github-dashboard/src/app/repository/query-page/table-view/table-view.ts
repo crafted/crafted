@@ -51,13 +51,13 @@ export class TableView {
 
   ngOnInit() {
     // TODO: Cannot be in ngOnInit since the inputs may change
-    const filteredData = this.dataSource.data.pipe(this.filterer.filter());
+    const curatedData = this.dataSource.data.pipe(this.filterer.filter(), this.sorter.sort());
     this.renderedData =
-        combineLatest(filteredData, this.page)
+        combineLatest(curatedData, this.page)
             .pipe(
                 map(([data, page]) =>
                         data.slice(page.index * page.size, page.index * page.size + page.size)));
-    this.itemCount = filteredData.pipe(map(d => d.length));
+    this.itemCount = curatedData.pipe(map(d => d.length));
 
     this.views = this.viewer.getViews();
     this.displayedColumns = this.viewer.state.pipe(map(state => {
