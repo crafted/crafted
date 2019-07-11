@@ -3,14 +3,14 @@
 :host {
   display: flex;
   flex-direction: column;
-  overflow: auto;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
   flex: 1;
-  padding: 10px 20px 10px 0;
+  padding: 8px 16px 8px 0;
+  height: 48px;
 }
 
 input {
@@ -56,9 +56,13 @@ input {
   @include menu-title();
 }
 
-.new-filter {
-  float:  right;
-  margin-bottom: 10px;
+.new-filter-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
   margin-right: 8px;
+}
+
+.new-filter {
   font-size: 12px;
 }
