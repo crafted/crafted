@@ -11,7 +11,6 @@ import {ThemeToggle} from '../../../store/theme/theme.action';
 import {selectIsDarkTheme} from '../../../store/theme/theme.reducer';
 import {AppState} from '../../store';
 import {selectDashboards} from '../../store/dashboard/dashboard.reducer';
-import {selectItemTotal} from '../../store/item/item.reducer';
 import {selectRepositoryName} from '../../store/name/name.reducer';
 import {selectQueryList} from '../../store/query/query.reducer';
 
@@ -38,8 +37,6 @@ export class Nav {
   accessToken = this.store.select(selectAuthState).pipe(map(authState => authState.accessToken));
 
   activeRepository = this.store.select(selectRepositoryName);
-
-  isEmpty = this.store.select(selectItemTotal).pipe(map(total => total === 0));
 
   links: NavLink[] = [
     {
