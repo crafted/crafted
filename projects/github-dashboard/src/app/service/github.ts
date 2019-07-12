@@ -256,7 +256,9 @@ export class Github {
 
     let completed = 0;
     let accumulated: any[] = [];
-    const total = Math.ceil(pullRequests.length / paginationSize);
+
+    // The total will be at least one request
+    const total = Math.ceil(pullRequests.length / paginationSize) || 1;
 
     return this.getPullRequestStatusesPaged(repo, pullRequests.slice(0, paginationSize))
         .pipe(
