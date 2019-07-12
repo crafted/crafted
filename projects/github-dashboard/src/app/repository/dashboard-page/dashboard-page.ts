@@ -15,7 +15,7 @@ import {
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {map, mergeMap, take, takeUntil} from 'rxjs/operators';
+import {filter, map, mergeMap, take, takeUntil} from 'rxjs/operators';
 
 import {Item} from '../../github/app-types/item';
 import {selectIsDarkTheme} from '../../store/theme/theme.reducer';
@@ -57,7 +57,8 @@ export class DashboardPage {
 
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
     count: getCountWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
-    list: getListWidgetConfig(convertToListDataResourcesMap(this.dataResourcesMap),
+    list: getListWidgetConfig(
+        convertToListDataResourcesMap(this.dataResourcesMap),
         (item: Item) => {
           this.dialog.open(ItemDetailDialog, {data: {itemId: item.id}, width: '80vw'});
         },
@@ -76,7 +77,8 @@ export class DashboardPage {
       Chart.defaults.global.defaultFontColor = isDarkTheme ? 'white' : 'black';
     });
 
-    this.dashboard.pipe(take(1)).subscribe(dashboard => this.edit.next(!hasWidgets(dashboard)));
+    this.dashboard.pipe(filter(d => !!d), take(1))
+        .subscribe(dashboard => this.edit.next(!hasWidgets(dashboard)));
   }
 
   ngOnDestroy() {
@@ -128,7 +130,7 @@ function getSavedFiltererStates(queries: Query[], recommendations: Recommendatio
 }
 
 function convertToListDataResourcesMap(dataResourcesMap: Map<string, DataResources>):
-  ListDataResourcesMap {
+    ListDataResourcesMap {
   const listDataResourcesMap: ListDataResourcesMap = new Map();
   dataResourcesMap.forEach((value, key) => {
     listDataResourcesMap.set(key, {
