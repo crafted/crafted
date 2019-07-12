@@ -8,10 +8,6 @@
     input.search {
       @include bottom-border($divider);
     }
-
-    .search-bar svg {
-      fill: mat-color($foreground, icon);
-    }
   }
 
   .advanced-search-filter-menu {
