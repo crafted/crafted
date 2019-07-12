@@ -23,7 +23,6 @@
 <mat-nav-list>
   <ng-container *ngFor="let link of links">
     <a  mat-list-item (click)="sidenav.close()" class="link theme-text"
-        *ngIf="!(link.disabled | async)"
         routerLinkActive="active" [routerLink]="link.route">
       <div class="link-text">
         <mat-icon>{{link.icon}}</mat-icon>
