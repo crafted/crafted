@@ -290,8 +290,13 @@ export class Github {
     const body = getStatusGraphQLBody(owner, name, pullRequests);
 
     return this.post<GithubGraphQLStatuses>(url, body).pipe(map(response => {
-      const data = response.body.data;
       const result: {number: number, statuses: ItemStatus[]}[] = [];
+
+      if (!response) {
+        return result;
+      }
+
+      const data = response.body.data;
       Object.keys(data).forEach(d => {
         const status = data[d].pullRequest;
         const lastCommitStatus = status.commits.nodes[0].commit.status;
