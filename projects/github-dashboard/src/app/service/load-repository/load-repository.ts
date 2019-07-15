@@ -89,12 +89,6 @@ export class LoadRepository {
         values => {
           const statusMap = new Map<number, ItemStatus[]>();
           values.forEach(v => statusMap.set(v.number, v.statuses));
-          result.items.forEach(item => {
-            if (statusMap.has(item.number)) {
-              console.log(item);
-            }
-          });
-          console.log(values);
         });
 
     this.loadSubscription = getLabels
