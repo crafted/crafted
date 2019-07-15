@@ -28,13 +28,14 @@ export interface CombinedPagedResults<T> {
   completed: number;
 }
 
-type RateLimitType = 'core'|'search';
+type RateLimitType = 'core'|'search'|'graphql';
 
 const GIST_DESCRIPTION = 'Dashboard Config';
 
 interface RateLimits {
   core: GithubRateLimit;
   search: GithubRateLimit;
+  graphql: GithubRateLimit;
 }
 
 @Injectable({providedIn: 'root'})
@@ -63,10 +64,11 @@ export class Github {
     return this.get<GithubIssue>(url).pipe(
         map(response => githubIssueToIssue(response.body)), switchMap(item => {
           if (item.pr) {
-            return this.getPullRequestStatuses(repo, [item.id]).pipe(take(1), map(result => {
-              item.statuses = result.accumulated[0].statuses;
-              return item;
-            }));
+            return this.getPullRequestStatuses(repo, [item.id])
+                .pipe(take(1), map(result => {
+                        item.statuses = result.accumulated[0].statuses;
+                        return item;
+                      }));
           } else {
             return of(item);
           }
@@ -136,6 +138,12 @@ export class Github {
         map(response => response.body.items.map((item: any) => item.full_name)));
   }
 
+  getMarkdown(text: string, context: string) {
+    const url = constructUrl('markdown');
+    return this.post(url, {text, mode: 'gfm', context}, false, 'core', 'text')
+        .pipe(map(response => response.body));
+  }
+
   getRateLimitsAndScopes(): void {
     const url = constructUrl(`rate_limit`);
     this.store.select(selectAuthState)
@@ -151,6 +159,7 @@ export class Github {
               return {
                 core: resources.core,
                 search: resources.search,
+                graphql: resources.graphql,
               };
             }),
             take(1))
@@ -355,8 +364,15 @@ export class Github {
               }));
   }
 
-  private post<T>(url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core'):
-      Observable<HttpResponse<T>|null> {
+  private post<T>(
+      url: string, body: any, needsAuth?: boolean, rateLimitType?: RateLimitType,
+      responseType?: 'json'): Observable<HttpResponse<T>>;
+  private post(
+      url: string, body: any, needsAuth?: boolean, rateLimitType?: RateLimitType,
+      responseType?: 'text'): Observable<HttpResponse<string>>;
+  private post<T>(
+      url: string, body: any, needsAuth = true, rateLimitType: RateLimitType = 'core',
+      responseType: 'json'|'text' = 'json'): Observable<HttpResponse<T|string>|null> {
     return this.store.select(selectAuthState)
         .pipe(take(1), mergeMap(authState => {
                 const token = authState.accessToken;
@@ -367,15 +383,33 @@ export class Github {
 
                 return this.waitForRateLimit(rateLimitType)
                     .pipe(
-                        mergeMap(() => this.http.post<T>(url, body, {
-                          observe: 'response',
-                          headers: new HttpHeaders({
-                            Authorization: token ? `token ${token}` : '',
-                          })
-                        })),
+                        mergeMap<any, HttpResponse<T|string>>(
+                            () => responseType === 'json' ? this.postJson<T>(url, body, token) :
+                                                            this.postText(url, body, token)),
                         tap(response => this.updateRateLimit(rateLimitType, response)),
                         tap(response => this.updateScopes(response)));
               }));
+  }
+
+  private postJson<T>(url, body, token): Observable<HttpResponse<T>> {
+    return this.http.post<T>(url, body, {
+      observe: 'response',
+      responseType: 'json',
+      headers: new HttpHeaders({
+        Authorization: token ? `token ${token}` : '',
+      })
+    });
+  }
+
+
+  private postText(url, body, token): Observable<HttpResponse<string>> {
+    return this.http.post(url, body, {
+      observe: 'response',
+      responseType: 'text',
+      headers: new HttpHeaders({
+        Authorization: token ? `token ${token}` : '',
+      })
+    });
   }
 
   private delete<T>(url: string, needsAuth = true, rateLimitType: RateLimitType = 'core'):

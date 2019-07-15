@@ -1,6 +1,11 @@
 import {ChangeDetectionStrategy, Component, Input, SimpleChanges} from '@angular/core';
-import {SafeHtml} from '@angular/platform-browser';
-import {Markdown} from '../../../services/markdown';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {Store} from '@ngrx/store';
+import {Observable, ReplaySubject} from 'rxjs';
+import {distinctUntilChanged, map, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
+import {Github} from '../../../../service/github';
+import {AppState} from '../../../store';
+import {selectRepositoryName} from '../../../store/name/name.reducer';
 
 @Component({
   selector: 'item-message',
@@ -15,13 +20,20 @@ export class ItemMessage {
 
   @Input() message: string;
 
-  messageMarkdown: SafeHtml;
+  message$ = new ReplaySubject<string>(1);
 
-  constructor(private markdown: Markdown) {}
+  messageMarkdown: Observable<SafeHtml> = this.message$.pipe(
+      distinctUntilChanged(), withLatestFrom(this.store.select(selectRepositoryName)),
+      switchMap(([message,
+                  repository]) => this.github.getMarkdown(message, repository).pipe(startWith(''))),
+      map(markdown => this.sanitizer.bypassSecurityTrustHtml(markdown)));
+
+  constructor(
+      private sanitizer: DomSanitizer, private store: Store<AppState>, private github: Github) {}
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.message) {
-      this.messageMarkdown = this.markdown.render(this.message);
+      this.message$.next(this.message);
     }
   }
 }

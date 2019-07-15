@@ -3,6 +3,6 @@
   <div>{{dateTime | date:'medium'}}</div>
 </div>
 
-<div class="message theme-border theme-background-card markdown"
-     [innerHTML]="messageMarkdown">
+<div class="message theme-border theme-background-card markdown-body"
+     [innerHTML]="messageMarkdown | async">
 </div>

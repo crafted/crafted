@@ -6,7 +6,6 @@ import {EffectsModule} from '@ngrx/effects';
 import {StoreModule} from '@ngrx/store';
 import {Repository} from './repository';
 import {Header} from './services/header';
-import {Markdown} from './services/markdown';
 import {Remover} from './services/remover';
 import {RepoGist} from './services/repo-gist';
 import {Updater} from './services/updater';
@@ -67,7 +66,7 @@ export class RepositoryRoutingModule {
   ],
   declarations: [Repository],
   exports: [Repository],
-  providers: [Header, Updater, Remover, Markdown, RepoGist]
+  providers: [Header, Updater, Remover, RepoGist]
 })
 export class RepositoryModule {
 }
