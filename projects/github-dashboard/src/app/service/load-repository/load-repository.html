@@ -18,7 +18,7 @@
         <div class="datepicker"
              *ngIf="formGroup.value.issueDateType === 'last updated since'">
           <input formControlName="issueDate" [matDatepicker]="picker"
-                 class="theme-border" (click)="picker.open()"
+                 (click)="picker.open()"
                  placeholder="Choose a date">
           <mat-datepicker #picker></mat-datepicker>
         </div>

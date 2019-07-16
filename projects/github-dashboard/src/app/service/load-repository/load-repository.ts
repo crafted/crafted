@@ -27,6 +27,7 @@ export interface LoadRepositoryResult {
 }
 
 @Component({
+  selector: 'load-repository',
   templateUrl: 'load-repository.html',
   styleUrls: ['load-repository.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

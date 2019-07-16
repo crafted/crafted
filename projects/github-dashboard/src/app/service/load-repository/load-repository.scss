@@ -1,3 +1,5 @@
+@import '../../../../../../dist/components/common';
+
 .mat-dialog-title {
   text-align: center;
   font-size: 24px;
@@ -42,19 +44,15 @@ mat-select {
 .datepicker {
   display: inline-block;
   margin-left: 16px;
+}
 
-  input {
-    border: none;
-    outline: none;
-    background: inherit;
-    color: inherit;
-    font-size: inherit;
-    width: 77px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    padding: 8px;
-    text-align: center;
-  }
+input {
+  @include unstyled-input();
+  width: 77px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding: 8px;
+  text-align: center;
 }
 
 .loading {

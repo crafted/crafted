@@ -3,6 +3,7 @@
 @import '../../../../dist/chartjs-widgets/theming';
 
 @import './repository/shared/nav/nav-theme';
+@import './service/load-repository/load-repository-theme';
 
 @mixin themed-styles($theme) {
   @include angular-material-theme($theme);
@@ -11,6 +12,7 @@
 
   // Import and load component-specific themes here.
   @include nav-theme($theme);
+  @include load-repository-theme($theme);
 
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);

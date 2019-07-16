@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+@import '../../../../../../dist/components/common';
+
+@mixin load-repository-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
+
+  load-repository {
+    input {
+      @include bottom-border($divider);
+    }
+  }
+}
+
