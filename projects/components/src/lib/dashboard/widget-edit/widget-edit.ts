@@ -37,11 +37,13 @@ export class WidgetEdit {
 
   editor: ComponentRef<WidgetEditor>;
 
+  defaultOptions: any = {};
+
   constructor(
       private dialogRef: MatDialogRef<WidgetEdit, Widget>,
       @Inject(MAT_DIALOG_DATA) public data: WidgetEditDialogData) {
     Object.keys(data.configs)
-      .forEach(id => this.typeOptions.push({id, label: data.configs[id].label}));
+        .forEach(id => this.typeOptions.push({id, label: data.configs[id].label}));
 
     if (data.widget) {
       this.form.setValue({
@@ -70,10 +72,18 @@ export class WidgetEdit {
   private attachEditor(type: string): ComponentRef<WidgetEditor> {
     this.portalOutlet.detach();
 
-    const widgetData: WidgetData<any, any> = {
-      options: this.data.widget ? this.data.widget.options : null,
-      config: this.data.configs[type].config,
-    };
+    // If the editor has already been opened, preserve the options that have so far been set by
+    // the user and use them as defaults.
+    if (this.editor) {
+      this.defaultOptions = {...this.defaultOptions, ...this.editor.instance.options};
+    }
+
+    let options = {...this.defaultOptions};
+    if (this.data.widget) {
+      options = {...this.data.widget.options, ...options};
+    }
+
+    const widgetData: WidgetData<any, any> = {options, config: this.data.configs[type].config};
 
     const injectionTokens = new WeakMap<any, any>([[WIDGET_DATA, widgetData]]);
     const widgetInjector = new PortalInjector(Injector.NULL, injectionTokens);
