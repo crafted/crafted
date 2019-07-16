@@ -12,12 +12,14 @@ import {
   Widget,
   WidgetConfig
 } from '@crafted/components';
+import {ViewerState} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
 import {filter, map, mergeMap, take, takeUntil} from 'rxjs/operators';
 
 import {Item} from '../../github/app-types/item';
+import {ViewType} from '../../github/data-source/item-viewer-metadata';
 import {selectIsDarkTheme} from '../../store/theme/theme.reducer';
 import {Query} from '../model/query';
 import {Recommendation} from '../model/recommendation';
@@ -138,7 +140,7 @@ function convertToListDataResourcesMap(dataResourcesMap: Map<string, DataResourc
       label: value.label,
       filterer: value.filterer,
       sorter: value.sorter,
-      viewer: value.summaryViewer,
+      viewer: (initialValue?: ViewerState) => value.viewer(of('list' as ViewType), initialValue),
       dataSource: value.dataSource
     });
   });

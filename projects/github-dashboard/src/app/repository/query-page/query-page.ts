@@ -67,35 +67,32 @@ export class QueryPage {
 
   view = new ReplaySubject<QueryView>(1);
 
-  queryResources: Observable<QueryResources> =
-      combineLatest(this.query, this.view)
-          .pipe(
-              map(([query, view]) => {
-                if (query.dataType) {
-                  const dataResource = this.dataResourcesMap.get(query.dataType);
-                  return {
-                    loading: dataResource.loading,
-                    viewer: view === 'list' ? dataResource.summaryViewer(query.viewerState) :
-                                              dataResource.tableViewer(query.viewerState),
-                    filterer: dataResource.filterer(query.filtererState),
-                    grouper: dataResource.grouper(query.grouperState),
-                    sorter: dataResource.sorter(query.sorterState),
-                    dataSource: dataResource.dataSource()
-                  };
-                }
-              }),
-              filter(v => !!v), shareReplay(1));
+  queryResources: Observable<QueryResources> = this.query.pipe(
+      map(query => {
+        if (query.dataType) {
+          const dataResource = this.dataResourcesMap.get(query.dataType);
+          return {
+            loading: dataResource.loading,
+            viewer: dataResource.viewer(this.view),
+            filterer: dataResource.filterer(query.filtererState),
+            grouper: dataResource.grouper(query.grouperState),
+            sorter: dataResource.sorter(query.sorterState),
+            dataSource: dataResource.dataSource()
+          };
+        }
+      }),
+      filter(v => !!v), shareReplay(1));
 
-  canSave =
-      combineLatest(this.query, this.queryResources, this.view).pipe(mergeMap(([query, queryResources, view]) => {
-        return combineLatest(
-                   of(query.view === view),
-                   queryResources.viewer.isEquivalent(query.viewerState),
-                   queryResources.filterer.isEquivalent(query.filtererState),
-                   queryResources.grouper.isEquivalent(query.grouperState),
-                   queryResources.sorter.isEquivalent(query.sorterState))
-            .pipe(map(equivalent => equivalent.some(r => !r)));
-      }));
+  canSave = combineLatest(this.query, this.queryResources, this.view)
+                .pipe(mergeMap(([query, queryResources, view]) => {
+                  return combineLatest(
+                             of(query.view === view),
+                             queryResources.viewer.isEquivalent(query.viewerState),
+                             queryResources.filterer.isEquivalent(query.filtererState),
+                             queryResources.grouper.isEquivalent(query.grouperState),
+                             queryResources.sorter.isEquivalent(query.sorterState))
+                      .pipe(map(equivalent => equivalent.some(r => !r)));
+                }));
 
   itemId$ = this.activatedRoute.queryParamMap.pipe(map(queryParamMap => queryParamMap.get('item')));
 
