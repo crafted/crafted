@@ -32,7 +32,7 @@ export class SortStateOption implements ControlValueAccessor {
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.sorter) {
       this.sorts = this.sorter.getSorts();
-      this.sortId.value = this.sorts[0];
+      this.sortId.value = this.sorts[0].id;
       this.sortDir.value = false;
     }
   }
