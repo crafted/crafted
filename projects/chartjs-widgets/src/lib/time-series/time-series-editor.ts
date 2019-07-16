@@ -35,12 +35,7 @@ export class TimeSeriesEditor implements WidgetEditor {
 
   constructor(@Inject(WIDGET_DATA) public data:
                   WidgetData<TimeSeriesOptions, TimeSeriesWidgetDataConfig>) {
-    const value = data.options;
-    if (value) {
-      this.initializeForm(value);
-    } else {
-      this.addDataset();
-    }
+    this.initializeForm(data.options);
   }
 
   removeDataset(index: number) {
@@ -70,14 +65,29 @@ export class TimeSeriesEditor implements WidgetEditor {
   }
 
   private initializeForm(value: TimeSeriesOptions) {
-    const datasetsFormArray = this.form.get('datasets') as FormArray;
-    value.datasets.forEach(dataset => {
-      const datasetFormGroup = createDataset();
-      dataset.actions.forEach(() => this.addAction(datasetFormGroup));
-      datasetsFormArray.push(datasetFormGroup);
-    });
+    if (value.end) {
+      this.form.get('end').setValue(value.end);
+    }
 
-    this.form.setValue(value);
+    if (value.start) {
+      this.form.get('start').setValue(value.start);
+    }
+
+    if (value.group) {
+      this.form.get('group').setValue(value.group);
+    }
+
+    if (value.datasets) {
+      const datasetsFormArray = this.form.get('datasets') as FormArray;
+      value.datasets.forEach(dataset => {
+        const datasetFormGroup = createDataset();
+        dataset.actions.forEach(() => this.addAction(datasetFormGroup));
+        datasetsFormArray.push(datasetFormGroup);
+      });
+      this.form.get('datasets').setValue(value.datasets);
+    } else {
+      this.addDataset();
+    }
   }
 }
 
