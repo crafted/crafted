@@ -30,7 +30,7 @@
       </div>
     </a>
     <a  mat-list-item *ngFor="let subLink of link.subItems | async"
-        (click)="sidenav.close()" class="sublink link theme-text"
+        (click)="sidenav.close()" class="sublink link theme-secondary-text"
         routerLinkActive="active" [routerLink]="[link.subRoute, subLink.id]">
       <div class="link-text">{{subLink.name}}</div>
   </a>

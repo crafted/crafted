@@ -75,6 +75,7 @@ button.sign-in {
 
   &.active {
     opacity: 1;
+    font-weight: bold;
   }
 
   &.disabled {
@@ -83,6 +84,7 @@ button.sign-in {
 
   &.sublink {
     padding-left: 40px;
+    height: 40px;
   }
 }
 
@@ -93,6 +95,6 @@ button.sign-in {
   z-index: 1;
 
   .sublink & {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
