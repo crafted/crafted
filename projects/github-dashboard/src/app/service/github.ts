@@ -310,6 +310,12 @@ export class Github {
       const data = response.body.data;
       Object.keys(data).forEach(d => {
         const status = data[d].pullRequest;
+
+        // Return in the case where there are no commits on the pull request.
+        if (!status.commits.nodes.length) {
+          return;
+        }
+
         const lastCommitStatus = status.commits.nodes[0].commit.status;
         if (lastCommitStatus) {
           const statuses: ItemStatus[] =
