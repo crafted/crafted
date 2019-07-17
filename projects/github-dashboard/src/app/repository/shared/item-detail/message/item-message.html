@@ -1,5 +1,5 @@
 <div class="heading theme-border theme-background-card theme-secondary-text">
-  <div>{{user}} commented {{dateTime | timeAgo}}</div>
+  <div>{{user}} commented {{transformedDateTime | async}}</div>
   <div>{{dateTime | date:'medium'}}</div>
 </div>
 

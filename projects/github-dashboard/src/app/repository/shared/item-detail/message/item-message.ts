@@ -6,6 +6,7 @@ import {distinctUntilChanged, map, startWith, switchMap, withLatestFrom} from 'r
 import {Github} from '../../../../service/github';
 import {AppState} from '../../../store';
 import {selectRepositoryName} from '../../../store/name/name.reducer';
+import {dateTimeToString} from '../../time-ago/time-ago';
 
 @Component({
   selector: 'item-message',
@@ -22,6 +23,10 @@ export class ItemMessage {
 
   message$ = new ReplaySubject<string>(1);
 
+  dateTime$ = new ReplaySubject<string>(1);
+
+  transformedDateTime = this.dateTime$.pipe(dateTimeToString());
+
   messageMarkdown: Observable<SafeHtml> = this.message$.pipe(
       distinctUntilChanged(), withLatestFrom(this.store.select(selectRepositoryName)),
       switchMap(([message,
@@ -34,6 +39,10 @@ export class ItemMessage {
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.message) {
       this.message$.next(this.message);
+    }
+
+    if (simpleChanges.dateTime) {
+      this.dateTime$.next(this.dateTime);
     }
   }
 }

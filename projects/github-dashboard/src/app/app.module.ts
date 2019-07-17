@@ -9,7 +9,6 @@ import {EffectsModule} from '@ngrx/effects';
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import 'hammerjs';
-import {TimeAgoPipe} from 'time-ago-pipe';
 import {environment} from '../environments/environment';
 
 import {App} from './app';
@@ -19,13 +18,6 @@ import {LoginModule} from './home-page/home-page.module';
 import {LoginDialogModule} from './service/login-dialog/login-dialog.module';
 import {RateLimitReachedModule} from './service/rate-limit-reached/rate-limit-reached.module';
 import {effects, metaReducers, reducers} from './store';
-
-@NgModule({
-  declarations: [TimeAgoPipe],
-  exports: [TimeAgoPipe],
-})
-export class TimeAgoPipeModule {
-}
 
 const IMPORTS = [
   MatSnackBarModule,
@@ -37,7 +29,7 @@ const IMPORTS = [
   StoreModule.forRoot(reducers, {metaReducers}),
   StoreDevtoolsModule.instrument({
     maxAge: 15, // Retains last n states
-    logOnly: environment.production, // Restrict extension to log-only mode
+    logOnly: environment.production, // Restrict extension to log-onlAy mode
   }),
   EffectsModule.forRoot(effects),
   RouterModule.forRoot(
@@ -50,6 +42,7 @@ const IMPORTS = [
     ],
     {preloadingStrategy: PreloadAllModules}),
 ];
+
 
 if (CAN_AUTH) {
   IMPORTS.push(AngularFireModule.initializeApp(FIREBASE_CONFIG));

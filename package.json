@@ -13,7 +13,8 @@
     "build-components": "ng build components; npm run build-components-sass-common; npm run build-components-sass-theming;",
     "build-chartjs-widgets-sass-theming": "./node_modules/scss-bundle/dist/bundle-cli.js -c projects/chartjs-widgets/sass-bundle-theming.json",
     "build-chartjs-widgets": "ng build chartjs-widgets; npm run build-chartjs-widgets-sass-theming;",
-    "build-all": "ng build data; npm run build-components; npm run build-chartjs-widgets"
+    "build-all": "ng build data; npm run build-components; npm run build-chartjs-widgets",
+    "deploy": "npm run build-all; ng build --prod; firebase deploy"
   },
   "private": true,
   "dependencies": {
@@ -43,7 +44,6 @@
     "hammerjs": "^2.0.8",
     "idb": "^3.0.2",
     "rxjs": "~6.3.3",
-    "time-ago-pipe": "^1.3.2",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },
