@@ -1,9 +1,12 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
 import {
   MatButtonModule,
   MatDividerModule,
+  MatFormFieldModule,
   MatIconModule,
+  MatInputModule,
   MatMenuModule,
   MatProgressSpinnerModule
 } from '@angular/material';
@@ -21,10 +24,13 @@ import {TimelineEventViewModule} from './timeline-event-view/timeline-event-view
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     ItemMessageModule,
     RecommendationActionModule,
     TimelineEventViewModule,
     MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
   ],
   declarations: [ItemDetail],
   exports: [ItemDetail],

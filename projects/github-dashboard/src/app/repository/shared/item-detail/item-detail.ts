@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Input} from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {Store} from '@ngrx/store';
-import {combineLatest, Observable, of, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -44,12 +45,15 @@ export class ItemDetail {
 
   private distinctItemId$ = this.itemId$.pipe(distinctUntilChanged());
 
+  newComment = new FormControl();
+
+  updateComments = new BehaviorSubject<null>(null);
+
   hasWritePermissions = this.store.select(selectHasWritePermissions);
 
   item$ = this.distinctItemId$.pipe(
       mergeMap(itemId => this.store.select(selectItemById(itemId))), filter(item => !!item));
 
-  // TODO: Recommendations should match the data type
   // TODO: Hide actions when not logged in
   recommendations =
       combineLatest(
@@ -66,7 +70,7 @@ export class ItemDetail {
 
   activities = this.distinctItemId$.pipe(
       tap(() => this.isLoadingActivities.next(true)),
-      switchMap(() => combineLatest(this.item$, this.store.select(selectRepositoryName))),
+      switchMap(() => combineLatest(this.item$, this.store.select(selectRepositoryName), this.updateComments)),
       switchMap(([item, repository]) => {
         // If the created date and updated date are equal, there are no comments or
         // activities.
@@ -131,6 +135,16 @@ export class ItemDetail {
     this.item$.pipe(take(1)).subscribe(item => {
       this.store.dispatch(new ItemAddAssigneeAction({itemId: item.id, assignee}));
     });
+  }
+
+  addComment() {
+    combineLatest(this.store.select(selectRepositoryName), this.itemId$).pipe(take(1)).subscribe(([repo, itemId]) => {
+      this.github.addComment(repo, itemId, this.newComment.value).pipe(take(1)).subscribe(() => {
+        this.updateComments.next(null);
+      });
+      this.newComment.reset();
+    });
+
   }
 }
 

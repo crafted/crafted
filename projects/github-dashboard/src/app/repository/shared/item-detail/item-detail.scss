@@ -96,3 +96,13 @@ item-message.comment {
 mat-spinner {
   margin-top: 16px;
 }
+
+.add-comment {
+  display: flex;
+  align-items: baseline;
+  padding: 16px 0;
+
+  mat-form-field {
+    flex: 1;
+  }
+}

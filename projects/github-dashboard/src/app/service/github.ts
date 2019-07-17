@@ -259,6 +259,11 @@ export class Github {
     return this.post(url, {assignees: [assignee]});
   }
 
+  addComment(repo: string, issue: string, body: string): Observable<HttpResponse<any>|null> {
+    const url = constructUrl(`repos/${repo}/issues/${issue}/comments`);
+    return this.post(url, {body});
+  }
+
   getPullRequestStatuses(repo: string, pullRequests: string[]):
       Observable<CombinedPagedResults<{number: number, statuses: any}>> {
     const paginationSize = 25;

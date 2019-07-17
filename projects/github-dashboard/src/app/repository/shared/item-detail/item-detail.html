@@ -70,6 +70,14 @@
                          [timelineEvent]="activity.context">
     </timeline-event-view>
   </ng-container>
+
+  <div class="add-comment">
+    <mat-form-field appearance="outline">
+      <mat-label> Add comment </mat-label>
+      <textarea matInput [formControl]="newComment" matTextareaAutosize></textarea>
+    </mat-form-field>
+    <button mat-button (click)="addComment()" [disabled]="!newComment.value"> Submit </button>
+  </div>
 </ng-template>
 
 <mat-menu #addAssigneeMenu="matMenu" class="option-menu">
