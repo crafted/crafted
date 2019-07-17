@@ -73,7 +73,7 @@ export class QueryPage {
           const dataResource = this.dataResourcesMap.get(query.dataType);
           return {
             loading: dataResource.loading,
-            viewer: dataResource.viewer(this.view),
+            viewer: dataResource.viewer(this.view, query.viewerState),
             filterer: dataResource.filterer(query.filtererState),
             grouper: dataResource.grouper(query.grouperState),
             sorter: dataResource.sorter(query.sorterState),
