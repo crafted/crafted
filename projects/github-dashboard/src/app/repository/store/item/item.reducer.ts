@@ -37,8 +37,7 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
         labels.push(action.payload.labelId);
       }
       item.labels = labels;
-
-      return {...state};
+      return entityAdapter.upsertOne(item, state);
     }
 
     case ItemActionTypes.REMOVE_LABEL: {
@@ -47,13 +46,13 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
       const index = labels.indexOf(action.payload.labelId);
       labels.splice(index, 1);
       item.labels = labels;
-      return {...state};
+      return entityAdapter.upsertOne(item, state);
     }
 
     case ItemActionTypes.ADD_ASSIGNEE: {
       const item = state.entities[action.payload.itemId];
       item.assignees.push(action.payload.assignee);
-      return {...state};
+      return entityAdapter.upsertOne(item, state);
     }
 
     case ItemActionTypes.REMOVE_ASSIGNEE: {
@@ -62,7 +61,7 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
       const index = assignees.indexOf(action.payload.assignee);
       assignees.splice(index, 1);
       item.assignees = assignees;
-      return {...state};
+      return entityAdapter.upsertOne(item, state);
     }
 
     default:
@@ -72,14 +71,12 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
 
 const {
   selectEntities,
-  selectIds,
   selectTotal,
   selectAll
 } = entityAdapter.getSelectors();
 
 const selectItemState = createSelector(getRepoState, repoState => repoState.items);
 
-export const selectItemIds = createSelector(selectItemState, selectIds);
 export const selectItemEntities = createSelector(selectItemState, selectEntities);
 export const selectItemTotal = createSelector(selectItemState, selectTotal);
 export const selectItems = createSelector(selectItemState, selectAll);
