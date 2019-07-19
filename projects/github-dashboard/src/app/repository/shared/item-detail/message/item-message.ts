@@ -27,11 +27,11 @@ export class ItemMessage {
 
   transformedDateTime = this.dateTime$.pipe(dateTimeToString());
 
-  messageMarkdown: Observable<SafeHtml> = this.message$.pipe(
+  messageMarkdown: Observable<SafeHtml|null> = this.message$.pipe(
       distinctUntilChanged(), withLatestFrom(this.store.select(selectRepositoryName)),
       switchMap(([message,
                   repository]) => this.github.getMarkdown(message, repository).pipe(startWith(''))),
-      map(markdown => this.sanitizer.bypassSecurityTrustHtml(markdown)));
+      map(markdown => markdown ? this.sanitizer.bypassSecurityTrustHtml(markdown) : null));
 
   constructor(
       private sanitizer: DomSanitizer, private store: Store<AppState>, private github: Github) {}

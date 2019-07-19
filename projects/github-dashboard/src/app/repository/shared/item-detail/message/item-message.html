@@ -3,6 +3,9 @@
   <div>{{dateTime | date:'medium'}}</div>
 </div>
 
+<mat-progress-bar *ngIf="!(messageMarkdown | async)" mode="indeterminate" color="accent"></mat-progress-bar>
+
 <div class="message theme-border theme-background-card markdown-body"
      [innerHTML]="messageMarkdown | async">
 </div>
+
