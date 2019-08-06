@@ -116,8 +116,8 @@ export class LoadRepository {
   }
 
   private getIssuesDateSince() {
-    const issueDateType = this.formGroup.value.issueDateType;
-    const issueDate = this.formGroup.value.issueDate;
+    const issueDateType = this.formGroup.get('issueDateType').value;
+    const issueDate = this.formGroup.get('issueDate').value;
     let since = '';
     if (issueDateType === 'last updated since') {
       since = new Date(issueDate).toISOString().substring(0, 10);
@@ -128,7 +128,7 @@ export class LoadRepository {
 
   private getPullRequestStatuses(items: Item[]): Observable<CombinedPagedResults<any>> {
     const openPullRequests =
-        items.filter(item => !!item.pr).map(item => `${item.number}`);
+        items.filter(item => !!item.pr && !item.closed).map(item => `${item.number}`);
     return this.github.getPullRequestStatuses(this.data.name, openPullRequests);
   }
 }
