@@ -4,7 +4,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {
   MatButtonModule,
   MatDatepickerModule,
-  MatDialogModule,
+  MatDialogModule, MatIconModule,
   MatNativeDateModule,
   MatProgressBarModule,
   MatSelectModule,
@@ -23,6 +23,7 @@ import {LoadRepository} from './load-repository';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
+    MatIconModule,
   ],
   declarations: [LoadRepository],
   exports: [LoadRepository],

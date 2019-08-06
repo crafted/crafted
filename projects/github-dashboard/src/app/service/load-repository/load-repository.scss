@@ -1,12 +1,19 @@
 @import '../../../../../../dist/components/common';
 
 .mat-dialog-title {
-  text-align: center;
+  display: flex;
+  align-items: center;
   font-size: 24px;
 }
 
 .mat-dialog-content {
   margin: 32px 0;
+}
+
+.repo-name {
+  flex: 1;
+  margin-left: 40px;
+  text-align: center;
 }
 
 .load {
@@ -27,7 +34,7 @@
 
 }
 
-button {
+.load-data {
   margin-right: 16px;
 }
 

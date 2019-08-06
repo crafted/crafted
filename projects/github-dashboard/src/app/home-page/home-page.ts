@@ -1,6 +1,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {MatAutocompleteSelectedEvent, MatDialog, MatSnackBar} from '@angular/material';
+import {
+  MatAutocompleteSelectedEvent,
+  MatDialog,
+  MatDialogConfig,
+  MatSnackBar
+} from '@angular/material';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {combineLatest, from} from 'rxjs';
@@ -92,9 +97,14 @@ export class HomePage {
   }
 
   private openLoadDialog(repository: string) {
+    const config: MatDialogConfig = {
+      data: {name: repository},
+      width: '500px',
+      disableClose: true,
+      autoFocus: false,
+    };
     this.dialog
-        .open<LoadRepository, LoadRepositoryData, LoadRepositoryResult>(
-            LoadRepository, {data: {name: repository}, width: '500px'})
+        .open<LoadRepository, LoadRepositoryData, LoadRepositoryResult>(LoadRepository, config)
         .afterClosed()
         .pipe(take(1))
         .subscribe(result => {
