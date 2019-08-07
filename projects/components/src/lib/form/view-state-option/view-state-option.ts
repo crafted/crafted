@@ -29,7 +29,14 @@ export class ViewStateOption implements ControlValueAccessor {
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.viewer) {
       this.options = this.viewer.getViews();
-      this.views = this.options.map(o => o.id);
+
+      if (this.views) {
+        this.views = this.options.map(o => o.id).filter(v => this.views.indexOf(v) !== -1);
+      }
+
+      if (!this.views || !this.views.length) {
+        this.views = this.options.map(o => o.id);
+      }
     }
   }
 
