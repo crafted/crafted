@@ -38,7 +38,7 @@ export class FilterStateOption implements ControlValueAccessor {
 
   private filtererStateSubscription: Subscription;
 
-  onChange: (...args: any) => any = () => {};
+  onChange: (...args: any[]) => any = () => {};
 
   onTouched = () => {};
 

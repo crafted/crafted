@@ -48,20 +48,19 @@ export class DatasetOption {
   ngOnInit() {
     this.actionsFormArray = this.controlContainer.control.get('actions') as FormArray;
 
-    this.dataResourcesMap.forEach(
-      d => this.dataTypeOptions.push({id: d.type, label: d.label}));
+    this.dataResourcesMap.forEach(d => this.dataTypeOptions.push({id: d.type, label: d.label}));
 
     const dataTypeForm = this.controlContainer.control.get('dataType');
     if (!dataTypeForm.value) {
       dataTypeForm.setValue(this.dataTypeOptions[0].id);
     }
 
-    dataTypeForm.valueChanges
-      .pipe(takeUntil(this.destroyed), startWith(dataTypeForm.value))
+    dataTypeForm.valueChanges.pipe(takeUntil(this.destroyed), startWith(dataTypeForm.value))
         .subscribe(value => {
           const dataSourceProvider = this.dataResourcesMap.get(value);
           this.dataSource = dataSourceProvider.dataSource();
-          this.filterer = dataSourceProvider.filterer();
+          this.filterer =
+              dataSourceProvider.filterer(this.controlContainer.control.get('filtererState').value);
         });
   }
 

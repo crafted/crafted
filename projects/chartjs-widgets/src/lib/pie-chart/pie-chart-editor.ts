@@ -3,7 +3,8 @@ import {FormControl, FormGroup} from '@angular/forms';
 
 import {SavedFiltererState, WIDGET_DATA, WidgetData, WidgetEditor} from '@crafted/components';
 import {DataSource, Filterer, Grouper} from '@crafted/data';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
 
 import {PieChartOptions, PieChartWidgetDataConfig} from './pie-chart';
 
@@ -28,6 +29,8 @@ export class PieChartEditor implements WidgetEditor {
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
 
+  destroyed = new Subject();
+
   get options(): PieChartOptions {
     return this.form.value;
   }
@@ -39,12 +42,8 @@ export class PieChartEditor implements WidgetEditor {
     this.data.config.dataResourcesMap.forEach(
       d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    const dataType = this.dataOptions[0].id;
-    this.form.get('dataType').setValue(dataType);
-    const dataSourceProvider = data.config.dataResourcesMap.get(dataType);
-    this.grouper = dataSourceProvider.grouper();
-    this.filterer = dataSourceProvider.filterer();
-    this.dataSource = dataSourceProvider.dataSource();
+    const dataTypeForm = this.form.get('dataType');
+    this.form.get('dataType').setValue(this.dataOptions[0].id);
 
     const value = data.options;
     if (value) {
@@ -61,5 +60,20 @@ export class PieChartEditor implements WidgetEditor {
         this.form.get('filtererState').setValue(value.filtererState);
       }
     }
+
+    dataTypeForm.valueChanges.pipe(startWith(dataTypeForm.value), takeUntil(this.destroyed))
+      .subscribe(dataType => this.handleDataTypeChange(dataType));
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
+  private handleDataTypeChange(dataType: string) {
+    const dataSourceProvider = this.data.config.dataResourcesMap.get(dataType);
+    this.grouper = dataSourceProvider.grouper(this.form.get('grouperState').value);
+    this.filterer = dataSourceProvider.filterer(this.form.get('filtererState').value);
+    this.dataSource = dataSourceProvider.dataSource();
   }
 }

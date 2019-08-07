@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer} from '@crafted/data';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form';
@@ -32,6 +33,8 @@ export class CountEditor implements WidgetEditor {
 
   countPropertyIdOptions: {id: string, label: string}[] = [];
 
+  destroyed = new Subject();
+
   get options(): CountOptions {
     return this.form.value;
   }
@@ -39,15 +42,10 @@ export class CountEditor implements WidgetEditor {
   constructor(@Inject(WIDGET_DATA) public data: WidgetData<CountOptions, CountWidgetDataConfig>) {
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-      d => this.dataOptions.push({id: d.type, label: d.label}));
+        d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    const dataType = this.dataOptions[0].id;
-    this.form.get('dataType').setValue(dataType);
-    const dataResource = data.config.dataResourcesMap.get(dataType);
-    this.filterer = dataResource.filterer();
-    this.dataSource = dataResource.dataSource();
-    this.countPropertyIdOptions = this.dataSource.getDataLabelsWithType('number');
-    this.form.get('valueProperty').setValue(this.countPropertyIdOptions[0].id);
+    const dataTypeForm = this.form.get('dataType');
+    dataTypeForm.setValue(this.dataOptions[0].id);
 
     const value = data.options;
     if (value) {
@@ -63,6 +61,27 @@ export class CountEditor implements WidgetEditor {
       if (value.filtererState) {
         this.form.get('filtererState').setValue(value.filtererState);
       }
+    }
+
+    dataTypeForm.valueChanges.pipe(startWith(dataTypeForm.value), takeUntil(this.destroyed))
+        .subscribe(dataType => this.handleDataTypeChange(dataType));
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
+  private handleDataTypeChange(dataType: string) {
+    const dataSourceProvider = this.data.config.dataResourcesMap.get(dataType);
+    this.filterer = dataSourceProvider.filterer(this.form.get('filtererState').value);
+    this.dataSource = dataSourceProvider.dataSource();
+    this.countPropertyIdOptions = this.dataSource.getDataLabelsWithType('number');
+
+    const valueProperty = this.data.options && this.data.options.valueProperty;
+    if (!valueProperty ||
+        this.countPropertyIdOptions.map(o => o.id).indexOf(valueProperty) === -1) {
+      this.form.get('valueProperty').setValue(this.countPropertyIdOptions[0].id);
     }
   }
 }

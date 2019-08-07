@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {DataSource, Filterer, Sorter, Viewer} from '@crafted/data';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
+import {startWith, takeUntil} from 'rxjs/operators';
 
 import {WIDGET_DATA, WidgetData, WidgetEditor} from '../../dashboard/dashboard';
 import {SavedFiltererState} from '../../form/filter-state-option/filter-state-option';
@@ -31,6 +32,8 @@ export class ListEditor implements WidgetEditor {
 
   savedFiltererStates: Observable<SavedFiltererState[]>;
 
+  destroyed = new Subject();
+
   get options(): ListOptions {
     return this.form.value;
   }
@@ -39,16 +42,10 @@ export class ListEditor implements WidgetEditor {
     // TODO: Filter based on data type
     this.savedFiltererStates = data.config.savedFiltererStates;
     this.data.config.dataResourcesMap.forEach(
-      d => this.dataOptions.push({id: d.type, label: d.label}));
+        d => this.dataOptions.push({id: d.type, label: d.label}));
 
-    const dataType = this.dataOptions[0].id;
-    this.form.get('dataType').setValue(dataType);
-
-    const dataSourceProvider = data.config.dataResourcesMap.get(dataType);
-    this.sorter = dataSourceProvider.sorter();
-    this.viewer = dataSourceProvider.viewer();
-    this.filterer = dataSourceProvider.filterer();
-    this.dataSource = dataSourceProvider.dataSource();
+    const dataTypeForm = this.form.get('dataType');
+    dataTypeForm.setValue(this.dataOptions[0].id);
 
     const value = data.options;
     if (value) {
@@ -68,5 +65,21 @@ export class ListEditor implements WidgetEditor {
         this.form.get('filtererState').setValue(value.filtererState);
       }
     }
+
+    dataTypeForm.valueChanges.pipe(startWith(dataTypeForm.value), takeUntil(this.destroyed))
+        .subscribe(dataType => this.handleDataTypeChange(dataType));
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
+  private handleDataTypeChange(dataType: string) {
+    const dataSourceProvider = this.data.config.dataResourcesMap.get(dataType);
+    this.sorter = dataSourceProvider.sorter(this.form.get('sorterState').value);
+    this.viewer = dataSourceProvider.viewer(this.form.get('viewerState').value);
+    this.filterer = dataSourceProvider.filterer(this.form.get('filtererState').value);
+    this.dataSource = dataSourceProvider.dataSource();
   }
 }
