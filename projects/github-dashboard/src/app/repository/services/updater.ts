@@ -2,8 +2,10 @@ import {Injectable} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';
+import {Contributor} from '../../github/app-types/contributor';
 
 import {Item} from '../../github/app-types/item';
+import {Label} from '../../github/app-types/label';
 import {Github} from '../../service/github';
 import {AppState} from '../store';
 import {UpdateContributorsFromGithub} from '../store/contributor/contributor.action';
@@ -61,7 +63,7 @@ export class Updater {
                                   map(result => result.accumulated));
 
     combineLatest(localList$, remoteLabels$).pipe(take(1)).subscribe(([local, remote]) => {
-      const comparison = compareLocalToRemote(local, remote);
+      const comparison = compareLocalToRemote<Label>(local, remote);
       this.store.dispatch(new UpdateLabelsFromGithub({labels: comparison.toUpdate}));
       this.setTypeState('labels', 'updated');
     });
@@ -78,7 +80,7 @@ export class Updater {
                                 map(result => result.accumulated));
 
     combineLatest(localList$, remoteList$).pipe(take(1)).subscribe(([local, remote]) => {
-      const comparison = compareLocalToRemote(local, remote);
+      const comparison = compareLocalToRemote<Contributor>(local, remote);
       this.store.dispatch(new UpdateContributorsFromGithub({contributors: comparison.toUpdate}));
       this.setTypeState('contributors', 'updated');
     });

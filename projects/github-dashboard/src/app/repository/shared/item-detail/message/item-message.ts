@@ -30,8 +30,8 @@ export class ItemMessage {
   messageMarkdown: Observable<SafeHtml|null> = this.message$.pipe(
       distinctUntilChanged(), withLatestFrom(this.store.select(selectRepositoryName)),
       switchMap(([message,
-                  repository]) => this.github.getMarkdown(message, repository).pipe(startWith(''))),
-      map(markdown => markdown ? this.sanitizer.bypassSecurityTrustHtml(markdown) : null));
+                  repository]) => this.github.getMarkdown(message, repository).pipe(startWith(null))),
+      map(markdown => markdown !== null ? this.sanitizer.bypassSecurityTrustHtml(markdown) : null));
 
   constructor(
       private sanitizer: DomSanitizer, private store: Store<AppState>, private github: Github) {}

@@ -21,8 +21,9 @@
     <ng-container *ngFor="let item of itemGroup.items; trackBy:trackByIndex">
       <mat-divider></mat-divider>
       <div class="selectable-item" mat-ripple
+           [matRippleDisabled]="activeItem === item"
            [class.selectable-item-active]="activeItem === item"
-           (click)="itemSelected.emit(item)">
+           (click)="activeItem !== item ? itemSelected.emit(item) : null">
         <item-summary [item]="item" [viewer]="viewer"></item-summary>
         <div class="active"
              [style.visibility]="activeItem === item ? 'visible' : 'hidden' ">
