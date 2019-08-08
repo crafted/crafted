@@ -42,6 +42,12 @@ export class StateFilter implements OnChanges {
         .subscribe(value => this.changed.next(value));
   }
 
+  ngOnInit() {
+    if (!this.state) {
+      this.form.get('state').setValue(this.states[0]);
+    }
+  }
+
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.equality) {
       this.form.get('equality').setValue(this.equality, {emitEvent: false});
