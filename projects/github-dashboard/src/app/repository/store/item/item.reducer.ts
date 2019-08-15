@@ -64,6 +64,18 @@ export function itemActionReducer(state: ItemState = initialState, action: ItemA
       return entityAdapter.upsertOne(item, state);
     }
 
+    case ItemActionTypes.UPDATE_TITLE: {
+      const item = state.entities[action.payload.itemId];
+      item.title = action.payload.newTitle;
+      return entityAdapter.upsertOne(item, state);
+    }
+
+    case ItemActionTypes.UPDATE_TITLE_FAILED: {
+      const item = state.entities[action.payload.itemId];
+      item.title = action.payload.oldTitle;
+      return entityAdapter.upsertOne(item, state);
+    }
+
     default:
       return state;
   }

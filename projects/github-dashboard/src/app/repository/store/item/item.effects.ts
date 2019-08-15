@@ -26,7 +26,7 @@ import {
   ItemAddLabelAction,
   ItemAddLabelFailedAction,
   ItemRemoveLabelAction,
-  ItemRemoveLabelFailedAction,
+  ItemRemoveLabelFailedAction, ItemUpdateTitleAction, ItemUpdateTitleFailedAction,
   LoadItems,
   LoadItemsComplete,
   RemoveAllItems,
@@ -51,8 +51,7 @@ export class ItemEffects {
       ofType(ItemActionTypes.LOAD_COMPLETE),
       switchMap(() => interval(10 * 1000 * 60).pipe(startWith(null))),
       switchMap(() => this.store.select(selectIsAuthenticated).pipe(take(1))),
-    filter(isAuthenticated => isAuthenticated),
-      tap(isAuthenticated => {
+      filter(isAuthenticated => isAuthenticated), tap(isAuthenticated => {
         if (isAuthenticated) {
           this.updater.update('items');
         }
@@ -65,13 +64,16 @@ export class ItemEffects {
   periodicallyUpdatePullRequests = this.actions.pipe(
       ofType(ItemActionTypes.LOAD_COMPLETE),
       switchMap(() => interval(10 * 1000 * 60).pipe(startWith(null))),
-      switchMap(() => combineLatest(this.store.select(selectRepositoryName), this.store.select(selectItems)).pipe(take(1))),
+      switchMap(
+          () =>
+              combineLatest(this.store.select(selectRepositoryName), this.store.select(selectItems))
+                  .pipe(take(1))),
       switchMap(([repo, items]) => {
         const openPullRequests = items.filter(i => !!i.pr && i.state === 'open').map(i => i.id);
-        return this.github.getPullRequestStatuses(repo, openPullRequests).pipe(filter(result => result.total === result.completed));
+        return this.github.getPullRequestStatuses(repo, openPullRequests)
+            .pipe(filter(result => result.total === result.completed));
       }),
-      withLatestFrom(this.store.select(selectItemEntities)),
-      tap(([statusResult, items]) => {
+      withLatestFrom(this.store.select(selectItemEntities)), tap(([statusResult, items]) => {
         const pullRequests: Item[] = [];
         statusResult.accumulated.forEach(result => {
           pullRequests.push({...items[result.number], statuses: result.statuses});
@@ -145,6 +147,34 @@ export class ItemEffects {
                 take(1))
             .subscribe();
       }));
+
+  @Effect({dispatch: false})
+  persistUpdateTitle = this.actions.pipe(
+    ofType<ItemUpdateTitleAction>(ItemActionTypes.UPDATE_TITLE),
+    withLatestFrom(combineLatest(
+      this.store.select(selectItemEntities), this.store.select(selectRepositoryName))),
+    map(([action, [items, repository]]) => {
+      this.repositoryDatabase.update(repository, 'items', [items[action.payload.itemId]]);
+      this.github.updateTitle(repository, action.payload.itemId, action.payload.newTitle)
+        .pipe(
+          catchError(error => {
+            console.log('Error from Github: ', error);
+            this.store.dispatch(new ItemUpdateTitleFailedAction(action.payload));
+            return of();
+          }),
+          take(1))
+        .subscribe();
+    }));
+
+
+  @Effect({dispatch: false})
+  persistUpdateTitleFailed = this.actions.pipe(
+    ofType<ItemUpdateTitleFailedAction>(ItemActionTypes.UPDATE_TITLE_FAILED),
+    withLatestFrom(combineLatest(
+      this.store.select(selectItemEntities), this.store.select(selectRepositoryName))),
+    map(([action, [items, repository]]) => {
+      this.repositoryDatabase.update(repository, 'items', [items[action.payload.itemId]]);
+    }));
 
   constructor(
       private actions: Actions, private store: Store<AppState>, private github: Github,

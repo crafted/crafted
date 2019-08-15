@@ -264,6 +264,11 @@ export class Github {
     return this.post(url, {body});
   }
 
+  updateTitle(repo: string, issue: string, title: string): Observable<HttpResponse<any>|null> {
+    const url = constructUrl(`repos/${repo}/issues/${issue}`);
+    return this.post(url, {title});
+  }
+
   getPullRequestStatuses(repo: string, pullRequests: string[]):
       Observable<CombinedPagedResults<{number: number, statuses: any}>> {
     const paginationSize = 25;
