@@ -31,8 +31,6 @@ export class ItemTitle {
 
   @Output() titleChanged = new EventEmitter<string>();
 
-  editing: boolean;
-
   titleFormControl = new FormControl();
 
   @ViewChild('input') input: ElementRef;
@@ -57,7 +55,7 @@ export class ItemTitle {
 
     this.input.nativeElement.blur();
   }
- 
+
   cancel() {
     this.titleFormControl.setValue(this.title);
     this.input.nativeElement.blur();
