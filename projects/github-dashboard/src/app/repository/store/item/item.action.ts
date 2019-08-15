@@ -14,6 +14,8 @@ export enum ItemActionTypes {
   REMOVE_ASSIGNEE = '[Item] remove assignee',
   REMOVE_ASSIGNEE_FAILED = '[Item] remove assignee failed',
   REMOVE_ALL = '[Item] remove all',
+  UPDATE_TITLE = '[Item] update title',
+  UPDATE_TITLE_FAILED = '[Item] update title failed',
 }
 
 export class UpdateItemsFromGithub implements Action {
@@ -71,10 +73,20 @@ export class ItemRemoveAssigneeFailedAction {
   constructor(public payload: {itemId: string, assignee: string}) {}
 }
 
+export class ItemUpdateTitleAction {
+  readonly type = ItemActionTypes.UPDATE_TITLE;
+  constructor(public payload: {itemId: string, oldTitle: string, newTitle: string}) {}
+}
+
+export class ItemUpdateTitleFailedAction {
+  readonly type = ItemActionTypes.UPDATE_TITLE_FAILED;
+  constructor(public payload: {itemId: string, oldTitle: string, newTitle: string}) {}
+}
+
 export class RemoveAllItems implements Action {
   readonly type = ItemActionTypes.REMOVE_ALL;
 }
 
 export type ItemAction =
     UpdateItemsFromGithub|ItemAddLabelAction|ItemRemoveLabelAction|LoadItems|
-    ItemAddAssigneeAction|ItemRemoveAssigneeAction|RemoveAllItems|LoadItemsComplete;
+    ItemAddAssigneeAction|ItemRemoveAssigneeAction|RemoveAllItems|LoadItemsComplete|ItemUpdateTitleAction|ItemUpdateTitleFailedAction;

@@ -1,0 +1,7 @@
+<input class="theme-border" #input
+       [formControl]="titleFormControl"
+       (keydown.Enter)="save()"
+       (keydown.Esc)="cancel()"
+       (blur)="save()">
+
+

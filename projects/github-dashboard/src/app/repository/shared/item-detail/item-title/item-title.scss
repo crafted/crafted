@@ -1,0 +1,13 @@
+@import "../../../../../../../../dist/components/common";
+
+input {
+  @include unstyled-input();
+  padding: 0 0 4px 0;
+  font: inherit;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+
+  &:not(:hover):not(:focus) {
+    border-bottom-color: transparent;
+  }
+}

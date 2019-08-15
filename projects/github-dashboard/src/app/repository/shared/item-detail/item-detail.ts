@@ -12,13 +12,14 @@ import {
   take,
   tap
 } from 'rxjs/operators';
+import {Item} from '../../../github/app-types/item';
 import {Label} from '../../../github/app-types/label';
 import {completedPagedResults, Github, TimelineEvent, UserComment} from '../../../service/github';
 import {AppState} from '../../store';
 import {
   ItemAddAssigneeAction,
   ItemAddLabelAction,
-  ItemRemoveLabelAction
+  ItemRemoveLabelAction, ItemUpdateTitleAction, UpdateItemsFromGithub
 } from '../../store/item/item.action';
 import {selectItemById, selectItems} from '../../store/item/item.reducer';
 import {selectLabels} from '../../store/label/label.reducer';
@@ -51,7 +52,7 @@ export class ItemDetail {
 
   hasWritePermissions = this.store.select(selectHasWritePermissions);
 
-  item$ = this.distinctItemId$.pipe(
+  item$: Observable<Item> = this.distinctItemId$.pipe(
       mergeMap(itemId => this.store.select(selectItemById(itemId))), filter(item => !!item));
 
   // TODO: Hide actions when not logged in
@@ -144,7 +145,12 @@ export class ItemDetail {
       });
       this.newComment.reset();
     });
+  }
 
+  saveTitle(title: string) {
+    this.item$.pipe(take(1)).subscribe(item => {
+      this.store.dispatch(new ItemUpdateTitleAction({itemId: item.id, oldTitle: item.title, newTitle: title}));
+    });
   }
 }
 

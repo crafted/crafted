@@ -1,8 +1,6 @@
 <ng-container *ngIf="item$ | async as item">
   <div class="header">
-    <div class="title">
-      {{item.title}}
-    </div>
+    <item-title [title]="item.title" (titleChanged)="saveTitle($event)"></item-title>
 
     <div class="header-details">
 
