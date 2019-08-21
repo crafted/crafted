@@ -399,7 +399,7 @@ export class Github {
 
                 return this.waitForRateLimit(rateLimitType)
                     .pipe(
-                        mergeMap<any, HttpResponse<T|string>>(
+                        mergeMap<any, Observable<HttpResponse<T>|HttpResponse<string>>>(
                             () => responseType === 'json' ? this.postJson<T>(url, body, token) :
                                                             this.postText(url, body, token)),
                         tap(response => this.updateRateLimit(rateLimitType, response)),

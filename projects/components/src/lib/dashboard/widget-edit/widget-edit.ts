@@ -26,7 +26,7 @@ export interface WidgetEditDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetEdit {
-  @ViewChild(CdkPortalOutlet) portalOutlet: CdkPortalOutlet;
+  @ViewChild(CdkPortalOutlet, { static: true }) portalOutlet: CdkPortalOutlet;
 
   form = new FormGroup({
     title: new FormControl(''),

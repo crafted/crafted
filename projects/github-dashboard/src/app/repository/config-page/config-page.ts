@@ -8,7 +8,7 @@ import {MatTabNav} from '@angular/material';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfigPage {
-  @ViewChild(MatTabNav) tabNav: MatTabNav;
+  @ViewChild(MatTabNav, { static: true }) tabNav: MatTabNav;
 
   navLinks: {label: string, path: string}[] = [
     {label: 'GitHub Data', path: 'database'},

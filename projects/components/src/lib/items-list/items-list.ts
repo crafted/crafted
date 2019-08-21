@@ -53,7 +53,7 @@ export class ItemsList<T> {
 
   hasMore = this.renderState.pipe(map(state => state.count < state.total));
 
-  @ViewChild(CdkScrollable) scrollableContainer: CdkScrollable;
+  @ViewChild(CdkScrollable, { static: true }) scrollableContainer: CdkScrollable;
 
   private destroyed = new Subject();
 

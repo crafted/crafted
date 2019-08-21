@@ -15,7 +15,7 @@ export class FormFieldLabel extends CdkPortal {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormField {
-  @ContentChild(FormFieldLabel) templateLabel: FormFieldLabel;
+  @ContentChild(FormFieldLabel, {static: true}) templateLabel: FormFieldLabel;
 
   @Input() label: string;
 }

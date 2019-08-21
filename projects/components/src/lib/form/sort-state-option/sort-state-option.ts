@@ -13,9 +13,9 @@ import {Sorter, SorterState, SortLabel} from '@crafted/data';
 export class SortStateOption implements ControlValueAccessor {
   sorts: SortLabel[] = [];
 
-  @ViewChild('sortIdSelect') sortId: MatSelect;
+  @ViewChild('sortIdSelect', { static: true }) sortId: MatSelect;
 
-  @ViewChild('sortDirSelect') sortDir: MatSelect;
+  @ViewChild('sortDirSelect', { static: true }) sortDir: MatSelect;
 
   @Input() label: string;
 

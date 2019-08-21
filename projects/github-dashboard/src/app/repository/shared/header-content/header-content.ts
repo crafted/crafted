@@ -32,7 +32,7 @@ export class HeaderContent<T> {
 
   @Output() actionSelected = new EventEmitter<T>();
 
-  @ViewChild(CdkPortal) headerPortal: CdkPortal;
+  @ViewChild(CdkPortal, { static: true }) headerPortal: CdkPortal;
 
   constructor(public header: Header, private windowTitle: WindowTitle) {
   }
