@@ -1,13 +1,11 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {
-  MatButtonModule,
-  MatDividerModule,
-  MatIconModule,
-  MatMenuModule,
-  MatPaginatorModule,
-  MatTableModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import {AdvancedSearchModule, DisplayOptionsModule, RenderedViewModule} from '@crafted/components';
 import {TableView} from './table-view';
 

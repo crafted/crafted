@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {getPieChartWidgetConfig, getTimeSeriesWidgetConfig} from '@crafted/chartjs-widgets';
 import {

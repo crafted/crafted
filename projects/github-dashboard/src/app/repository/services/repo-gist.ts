@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {Dashboard} from '@crafted/components';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, Subject} from 'rxjs';

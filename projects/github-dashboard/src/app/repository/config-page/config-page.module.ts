@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatListModule, MatTabsModule} from '@angular/material';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import {RouterModule, Routes} from '@angular/router';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {ConfigPage} from './config-page';

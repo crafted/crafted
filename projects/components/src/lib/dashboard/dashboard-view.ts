@@ -1,6 +1,6 @@
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {take} from 'rxjs/operators';
 import {SavedFiltererState} from '../form/filter-state-option/filter-state-option';
 import {Column, ColumnGroup, Dashboard, Widget, WidgetConfig} from './dashboard';

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../../store';
 import {selectItemById} from '../../../store/item/item.reducer';

@@ -1,7 +1,9 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonToggleModule, MatDividerModule, MatRippleModule} from '@angular/material';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
 import {FilterStateOptionModule} from '../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../form/form-field/form-field.module';
 import {SortStateOptionModule} from '../../form/sort-state-option/sort-state-option.module';

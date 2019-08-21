@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {Store} from '@ngrx/store';
