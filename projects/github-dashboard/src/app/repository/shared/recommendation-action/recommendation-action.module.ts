@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatIconModule} from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 import {LabelListModule} from '../label-list/label-list.module';
 import {RecommendationAction} from './recommendation-action';
 

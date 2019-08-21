@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {MatDividerModule} from '@angular/material';
+import { MatDividerModule } from '@angular/material/divider';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {PieChartModule, TimeSeriesModule} from '@crafted/chartjs-widgets';

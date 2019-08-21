@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, Query} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {Dashboard} from '@crafted/components';
 import {Recommendation} from '../../../model/recommendation';
 import {LocalToRemoteComparison} from '../../../utility/compare-local-to-remote';

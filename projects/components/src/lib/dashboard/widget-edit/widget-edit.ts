@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {startWith} from 'rxjs/operators';
 
 import {Widget, WIDGET_DATA, WidgetConfig, WidgetData, WidgetEditor} from '../dashboard';

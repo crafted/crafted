@@ -1,12 +1,10 @@
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {
-  MatDividerModule,
-  MatIconModule,
-  MatProgressSpinnerModule,
-  MatRippleModule
-} from '@angular/material';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {AdvancedSearchModule} from '../advanced-search/advanced-search.module';
 import {DisplayOptionsModule} from '../display-options/display-options.module';
 import {ItemSummaryModule} from '../item-summary/item-summary.module';

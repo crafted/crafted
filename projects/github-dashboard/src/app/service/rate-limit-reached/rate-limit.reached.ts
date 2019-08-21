@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from '@angular/material';
+import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {Observable, Subject, timer} from 'rxjs';
 import {filter, map, take, takeUntil, tap} from 'rxjs/operators';

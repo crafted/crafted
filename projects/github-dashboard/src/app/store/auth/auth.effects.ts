@@ -1,6 +1,6 @@
 import {Injectable, Optional} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {from} from 'rxjs';

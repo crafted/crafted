@@ -1,7 +1,8 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonToggleModule, MatSelectModule} from '@angular/material';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import {FiltererState} from '@crafted/data';
 import {FilterStateOptionModule} from '../../form/filter-state-option/filter-state-option.module';
 import {FormFieldModule} from '../../form/form-field/form-field.module';

@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatListModule, MatTabsModule} from '@angular/material';
+import { MatListModule } from '@angular/material/list';
+import { MatTabsModule } from '@angular/material/tabs';
 import {RouterModule, Routes} from '@angular/router';
 import {HeaderContentModule} from '../shared/header-content/header-content.module';
 import {ConfigPage} from './config-page';
@@ -11,11 +12,11 @@ const routes: Routes = [{
   children: [
     {
       path: 'database',
-      loadChildren: './database-page/database-page.module#DatabasePageModule',
+      loadChildren: () => import('./database-page/database-page.module').then(m => m.DatabasePageModule),
     },
     {
       path: 'recommendations',
-      loadChildren: './recommendations-page/recommendations-page.module#RecommendationsPageModule',
+      loadChildren: () => import('./recommendations-page/recommendations-page.module').then(m => m.RecommendationsPageModule),
     },
     {path: '', redirectTo: 'database', pathMatch: 'full'},
   ],

@@ -1,11 +1,8 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {
-  MatAutocompleteSelectedEvent,
-  MatDialog,
-  MatDialogConfig,
-  MatSnackBar
-} from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 import {combineLatest, from} from 'rxjs';

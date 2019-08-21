@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {MatTabNav} from '@angular/material';
+import { MatTabNav } from '@angular/material/tabs';
 
 @Component({
   selector: 'config-page',
@@ -14,8 +14,4 @@ export class ConfigPage {
     {label: 'GitHub Data', path: 'database'},
     {label: 'Recommendations', path: 'recommendations'},
   ];
-
-  ngAfterViewInit() {
-    this.tabNav._alignInkBar();
-  }
 }

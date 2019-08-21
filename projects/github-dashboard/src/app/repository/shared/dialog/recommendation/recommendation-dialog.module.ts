@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
-import {MatDialogModule, MatSnackBarModule} from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {DeleteConfirmationModule} from '../delete-confirmation/delete-confirmation.module';
 import {RecommendationDialog} from './recommendation-dialog';
 import {RecommendationEditModule} from './recommendation-edit/recommendation-edit.module';

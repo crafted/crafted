@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {take} from 'rxjs/operators';

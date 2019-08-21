@@ -1,7 +1,9 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule, MatButtonToggleModule, MatDatepickerModule} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import {FilterStateOptionModule, FormFieldModule} from '@crafted/components';
 import {DatasetOptionModule} from './dataset-option/dataset-option.module';
 import {TimeSeries} from './time-series';

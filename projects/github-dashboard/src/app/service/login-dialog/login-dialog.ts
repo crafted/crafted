@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, NgZone} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormControl} from '@angular/forms';
-import {MatDialogRef} from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import {auth} from 'firebase/app';
 import {GithubAuthScope} from '../../store/auth/auth.reducer';
 

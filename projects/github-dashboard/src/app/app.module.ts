@@ -2,7 +2,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule} from '@angular/fire/auth';
-import {MatIconRegistry, MatSnackBarModule} from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {PreloadAllModules, RouterModule} from '@angular/router';
 import {EffectsModule} from '@ngrx/effects';
@@ -40,7 +41,7 @@ import {effects, metaReducers, reducers} from './store';
           {path: '', component: HomePage},
           {
             path: ':org/:name',
-            loadChildren: './repository/repository.module#RepositoryModule',
+            loadChildren: () => import('./repository/repository.module').then(m => m.RepositoryModule),
           },
         ],
         {preloadingStrategy: PreloadAllModules}),
