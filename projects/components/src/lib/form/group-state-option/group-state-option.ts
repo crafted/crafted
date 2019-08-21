@@ -12,7 +12,7 @@ import {Grouper, GrouperState, GroupLabel} from '@crafted/data';
 export class GroupStateOption implements ControlValueAccessor {
   groups: GroupLabel[] = [];
 
-  @ViewChild('groupSelect') groupSelect: MatSelect;
+  @ViewChild('groupSelect', { static: true }) groupSelect: MatSelect;
 
   @Input() label: string;
 

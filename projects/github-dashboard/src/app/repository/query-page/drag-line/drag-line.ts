@@ -11,7 +11,7 @@ import {Subject} from 'rxjs';
 export class DragLine {
   @Output() dragged = new EventEmitter<number>();
 
-  @ViewChild(CdkDrag) draggable: CdkDrag;
+  @ViewChild(CdkDrag, { static: true }) draggable: CdkDrag;
 
   private destroyed = new Subject<any>();
 

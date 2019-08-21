@@ -44,7 +44,7 @@ export interface PieChartOptions {
 export class PieChart<T, G> {
   chart: Chart;
 
-  @ViewChild('canvas') canvas: ElementRef;
+  @ViewChild('canvas', { static: true }) canvas: ElementRef;
 
   private destroyed = new Subject();
 

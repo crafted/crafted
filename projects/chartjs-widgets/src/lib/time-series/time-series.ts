@@ -76,7 +76,7 @@ export interface TimeSeriesOptions {
 export class TimeSeries<T> {
   chart: Chart;
 
-  @ViewChild('canvas') canvas: ElementRef;
+  @ViewChild('canvas', { static: true }) canvas: ElementRef;
 
   private destroyed = new Subject();
 

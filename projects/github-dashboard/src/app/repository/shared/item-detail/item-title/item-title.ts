@@ -33,7 +33,7 @@ export class ItemTitle {
 
   titleFormControl = new FormControl();
 
-  @ViewChild('input') input: ElementRef;
+  @ViewChild('input', { static: true }) input: ElementRef;
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.title) {
