@@ -11,11 +11,11 @@ const routes: Routes = [{
   children: [
     {
       path: 'database',
-      loadChildren: './database-page/database-page.module#DatabasePageModule',
+      loadChildren: () => import('./database-page/database-page.module').then(m => m.DatabasePageModule),
     },
     {
       path: 'recommendations',
-      loadChildren: './recommendations-page/recommendations-page.module#RecommendationsPageModule',
+      loadChildren: () => import('./recommendations-page/recommendations-page.module').then(m => m.RecommendationsPageModule),
     },
     {path: '', redirectTo: 'database', pathMatch: 'full'},
   ],

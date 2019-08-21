@@ -40,7 +40,7 @@ import {effects, metaReducers, reducers} from './store';
           {path: '', component: HomePage},
           {
             path: ':org/:name',
-            loadChildren: './repository/repository.module#RepositoryModule',
+            loadChildren: () => import('./repository/repository.module').then(m => m.RepositoryModule),
           },
         ],
         {preloadingStrategy: PreloadAllModules}),

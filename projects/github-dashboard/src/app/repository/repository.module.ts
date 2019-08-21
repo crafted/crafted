@@ -22,23 +22,23 @@ const routes: Routes = [{
   children: [
     {
       path: 'config',
-      loadChildren: './config-page/config-page.module#ConfigPageModule',
+      loadChildren: () => import('./config-page/config-page.module').then(m => m.ConfigPageModule),
     },
     {
       path: 'dashboards',
-      loadChildren: './dashboards-page/dashboards-page.module#DashboardsPageModule',
+      loadChildren: () => import('./dashboards-page/dashboards-page.module').then(m => m.DashboardsPageModule),
     },
     {
       path: 'dashboard/:id',
-      loadChildren: './dashboard-page/dashboard-page.module#DashboardPageModule',
+      loadChildren: () => import('./dashboard-page/dashboard-page.module').then(m => m.DashboardPageModule),
     },
     {
       path: 'queries',
-      loadChildren: './queries-page/queries-page.module#QueriesPageModule',
+      loadChildren: () => import('./queries-page/queries-page.module').then(m => m.QueriesPageModule),
     },
     {
       path: 'query/:id',
-      loadChildren: './query-page/query-page.module#QueryPageModule',
+      loadChildren: () => import('./query-page/query-page.module').then(m => m.QueryPageModule),
     },
     {path: '', redirectTo: 'queries', pathMatch: 'full'},
   ]
