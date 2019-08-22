@@ -1,4 +1,6 @@
 {
-  "entry": "projects/components/src/lib/_common.scss",
-  "dest": "./dist/components/common.scss"
+  "bundlerOptions": {
+    "entryFile": "projects/components/src/lib/_common.scss",
+    "outFile": "./dist/components/common.scss"
+  }
 }

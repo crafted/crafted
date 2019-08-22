@@ -1,34 +1,15 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Event, NavigationEnd, Router} from '@angular/router';
-import {
-  DataSource,
-  Filterer,
-  FiltererState,
-  Grouper,
-  GrouperState,
-  Sorter,
-  SorterState,
-  Viewer,
-  ViewerState,
-} from '@crafted/data';
+import {DataSource, Filterer, FiltererState, Grouper, GrouperState, Sorter, SorterState, Viewer, ViewerState,} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 
 import {getDataSourceProvider} from '../github/data-source/item-data-source-metadata';
 import {getFiltererProvider} from '../github/data-source/item-filterer-metadata';
 import {getGrouperProvider} from '../github/data-source/item-grouper-metadata';
 import {getSorterProvider} from '../github/data-source/item-sorter-metadata';
-import {getViewerProvider, ViewType} from '../github/data-source/item-viewer-metadata';
+import {DEFAULT_ISSUE_VIEWS, DEFAULT_PR_VIEWS, getViewerProvider, ViewType} from '../github/data-source/item-viewer-metadata';
 import {Config} from '../service/config';
 import {selectUserName} from '../store/auth/auth.reducer';
 import {selectIsRepoLoaded} from '../store/loaded-repos/loaded-repos.reducer';
@@ -63,6 +44,7 @@ export interface DataResources {
   grouper: (initialState?: GrouperState) => Grouper;
   sorter: (initialState?: SorterState) => Sorter;
   dataSource: () => DataSource;
+  defaultViews: string[];
 }
 
 // TODO: Move this to a model folder
@@ -95,6 +77,7 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
         filterer: getFiltererProvider(labels, issueRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),
+        defaultViews: DEFAULT_ISSUE_VIEWS,
       }
     ],
     [
@@ -107,6 +90,7 @@ export const provideDataResourcesMap = (store: Store<AppState>) => {
         filterer: getFiltererProvider(labels, prRecommendations, getRecommendations),
         grouper: getGrouperProvider(labels),
         sorter: getSorterProvider(),
+        defaultViews: DEFAULT_PR_VIEWS,
       }
     ],
   ]);
