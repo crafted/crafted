@@ -220,7 +220,9 @@ export class QueryPage {
 
   createQueryWithType(dataType: string) {
     this.query.pipe(take(1)).subscribe(query => {
-      this.query.next({...query, dataType});
+      query.dataType = dataType;
+      query.viewerState = {views: this.dataResourcesMap.get(dataType).defaultViews};
+      this.query.next({...query});
     });
   }
 

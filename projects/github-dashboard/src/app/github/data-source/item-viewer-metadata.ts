@@ -18,6 +18,9 @@ interface ViewContext {
   recommendations: Recommendation[];
 }
 
+export const DEFAULT_ISSUE_VIEWS = ['title', 'reporter', 'state', 'updatedDate', 'labels'];
+export const DEFAULT_PR_VIEWS = ['title', 'reporter', 'state', 'updatedDate', 'labels'];
+
 const ITEM_VIEWER_METADATA = new Map<string, ViewerMetadata<Item, ViewContext>>([
   [
     'title',
