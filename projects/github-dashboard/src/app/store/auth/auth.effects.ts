@@ -45,7 +45,7 @@ export class AuthEffects {
   @Effect()
   signOutFromFirebase = this.actions.pipe(
       ofType<AuthSignIn>(AuthActionTypes.SIGN_OUT),
-      switchMap(() => from(this.afAuth.auth.signOut())), map(() => new AuthSignOutSuccess()));
+      switchMap(() => from(this.afAuth.signOut())), map(() => new AuthSignOutSuccess()));
 
   constructor(
       private actions: Actions, private store: Store<AppState>,
