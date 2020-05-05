@@ -9,11 +9,11 @@ export class RepositoryDatabase {
     return this.getDatabase(repository).initialValues;
   }
 
-  update(repository: string, type: StoreId, entities: any[]): Promise<void> {
+  update(repository: string, type: StoreId, entities: any[]): Promise<any> {
     return this.getDatabase(repository).updateValues(entities, type);
   }
 
-  remove(repository: string, type: StoreId, ids: string[]): Promise<void> {
+  remove(repository: string, type: StoreId, ids: string[]): Promise<any> {
     return this.getDatabase(repository).removeValues(ids, type);
   }
 

@@ -1,4 +1,4 @@
-import {DB, deleteDb, ObjectStore, openDb} from 'idb';
+import {deleteDB, IDBPDatabase, IDBPObjectStore, openDB} from 'idb';
 import {ReplaySubject, Subject} from 'rxjs';
 import {DEMO_DASHBOARDS} from '../repository/utility/demo-config/demo-dashboards';
 import {DEMO_RECOMMENDATIONS} from '../repository/utility/demo-config/demo-recommendations';
@@ -16,7 +16,7 @@ export class AppIndexedDb {
 
   name: string;
 
-  private db: Promise<DB>;
+  private db: Promise<IDBPDatabase>;
 
   private destroyed = new Subject();
 
@@ -39,7 +39,7 @@ export class AppIndexedDb {
     this.db
         .then(db => {
           db.close();
-          return deleteDb(this.name);
+          return deleteDB(this.name);
         })
         .then(() => this.openDb());
   }
@@ -49,7 +49,7 @@ export class AppIndexedDb {
       const transaction = db.transaction(collectionId, 'readwrite');
       const store = transaction.objectStore(collectionId);
       values.forEach(v => store.put(v));
-      return transaction.complete;
+      return transaction.oncomplete;
     });
   }
 
@@ -58,7 +58,7 @@ export class AppIndexedDb {
       const transaction = db.transaction(collectionId, 'readwrite');
       const store = transaction.objectStore(collectionId);
       ids.forEach(id => store.delete(id));
-      return transaction.complete;
+      return transaction.oncomplete;
     });
   }
 
@@ -71,17 +71,20 @@ export class AppIndexedDb {
   }
 
   private openDb() {
-    this.db = openDb(this.name, DB_VERSION, db => {
-      STORE_IDS.forEach(collectionId => {
-        if (!db.objectStoreNames.contains(collectionId)) {
-          const objectStore = db.createObjectStore(collectionId, {keyPath: 'id'});
+    this.db = openDB(this.name, DB_VERSION, {
+      upgrade: db => {
+        STORE_IDS.forEach(collectionId => {
+          if (!db.objectStoreNames.contains(collectionId)) {
+            const objectStore = db.createObjectStore(collectionId, {keyPath: 'id'});
 
-          if (this.name === 'angular/components') {
-            initializeDemoConfig(collectionId, objectStore);
+            if (this.name === 'angular/components') {
+              initializeDemoConfig(collectionId, objectStore);
+            }
           }
-        }
-      });
+        });
+      },
     });
+
     this.db.then(() => this.initializeAllValues());
   }
 
@@ -98,7 +101,7 @@ export class AppIndexedDb {
   }
 }
 
-function initializeDemoConfig(collectionId: string, objectStore: ObjectStore<any, any>) {
+function initializeDemoConfig(collectionId: string, objectStore: IDBPObjectStore<any, any, any>) {
   switch (collectionId) {
     case 'dashboards':
       DEMO_DASHBOARDS.forEach(d => objectStore.add(d));

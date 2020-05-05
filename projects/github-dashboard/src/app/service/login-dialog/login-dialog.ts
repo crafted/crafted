@@ -2,7 +2,9 @@ import {ChangeDetectionStrategy, Component, NgZone} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {FormControl} from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import {auth} from 'firebase/app';
+import { auth } from 'firebase/app';
+import 'firebase/auth';
+
 import {GithubAuthScope} from '../../store/auth/auth.reducer';
 
 export interface LoginDialogResult {
@@ -36,7 +38,7 @@ export class LoginDialog {
     const provider = new auth.GithubAuthProvider();
     scopes.forEach(scope => provider.addScope(scope));
 
-    return this.afAuth.auth.signInWithPopup(provider)
+    return this.afAuth.signInWithPopup(provider)
         .then(result => {
           if (!result) {
             this.dialogRef.close(null);
