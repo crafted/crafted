@@ -18,8 +18,10 @@ export function dashboardActionReducer(
     state: DashboardState = initialState, action: DashboardAction): DashboardState {
   switch (action.type) {
     case DashboardActionTypes.UPSERT_DASHBOARDS:
-      action.payload.dashboards.forEach(o => o.dbModified = new Date().toISOString());
-      return entityAdapter.upsertMany(action.payload.dashboards, state);
+      const dashboards = action.payload.dashboards.map(d => {
+        return {...d, dbModified: new Date().toISOString()};
+      });
+      return entityAdapter.upsertMany(dashboards, state);
 
     case DashboardActionTypes.LOAD:
       return {...state, loading: true};

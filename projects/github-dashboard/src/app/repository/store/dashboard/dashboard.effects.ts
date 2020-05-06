@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {Dashboard} from '../../../../../../components/src/lib/dashboard';
 
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';
@@ -36,9 +37,10 @@ export class DashboardEffects {
   @Effect()
   createNewDashboard = this.actions.pipe(
       ofType<CreateDashboard>(DashboardActionTypes.CREATE_DASHBOARD), switchMap(() => {
-        const newDashboard = {
+        const newDashboard: Dashboard = {
           id: createId(),
           dbAdded: new Date().toISOString(),
+          dbModified: new Date().toISOString(),
           name: 'New Dashboard',
           columnGroups: [
             {columns: [{widgets: []}, {widgets: []}, {widgets: []}]},

@@ -66,7 +66,7 @@ export class DashboardPage {
         },
         this.savedFiltererStates),
     pie: getPieChartWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
-    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
+    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates, this.edit),
   };
 
   destroyed = new Subject();

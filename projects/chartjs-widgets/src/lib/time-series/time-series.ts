@@ -25,6 +25,7 @@ export type TimeSeriesDataResourcesMap = Map<string, {
 export interface TimeSeriesWidgetDataConfig {
   dataResourcesMap: TimeSeriesDataResourcesMap;
   savedFiltererStates: Observable<SavedFiltererState[]>;
+  onLayoutChange: Observable<void>;
 }
 
 interface DateCount {
@@ -94,6 +95,14 @@ export class TimeSeries<T> {
     combineLatest(datasetData)
         .pipe(takeUntil(this.destroyed))
         .subscribe(results => this.render(results));
+
+    this.data.config.onLayoutChange.pipe(takeUntil(this.destroyed)).subscribe(() => {
+      if (this.chart) {
+        setTimeout(() => {
+          this.chart.resize();
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -230,12 +239,13 @@ export class TimeSeries<T> {
 export function getTimeSeriesWidgetConfig(
     dataResourcesMap: TimeSeriesDataResourcesMap,
     savedFiltererStates: Observable<SavedFiltererState[]> =
-        of([])): WidgetConfig<TimeSeriesWidgetDataConfig> {
+        of([]),
+    onLayoutChange = of<any>()): WidgetConfig<TimeSeriesWidgetDataConfig> {
   return {
     id: 'timeSeries',
     label: 'Time Series',
     viewer: TimeSeries,
     editor: TimeSeriesEditor,
-    config: {dataResourcesMap, savedFiltererStates}
+    config: {dataResourcesMap, savedFiltererStates, onLayoutChange}
   };
 }
