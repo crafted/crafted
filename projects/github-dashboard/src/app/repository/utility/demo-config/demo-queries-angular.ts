@@ -2,6 +2,7 @@ import {Query} from '../../model/query';
 
 export const DEMO_QUERIES_ANGULAR: Query[] = [
   {
+    id: 'query1',
     name: 'Open Issues',
     view: 'list',
     dataType: 'issue',
@@ -15,6 +16,7 @@ export const DEMO_QUERIES_ANGULAR: Query[] = [
     group: 'My Saved Queries',
   },
   {
+    id: 'query2',
     name: 'Top Open Issues by Reaction',
     view: 'list',
     dataType: 'issue',
@@ -28,6 +30,7 @@ export const DEMO_QUERIES_ANGULAR: Query[] = [
     group: 'My Saved Queries',
   },
   {
+    id: 'query3',
     name: 'Needs Labels',
     view: 'list',
     dataType: 'issue',
