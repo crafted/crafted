@@ -5,6 +5,7 @@ import {DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
+import {Widget} from '@crafted/components';
 import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';
@@ -229,9 +230,19 @@ export class QueryPage {
   newQuery(): Observable<Query> {
     return this.activatedRoute.queryParamMap.pipe(
         mergeMap(queryParamMap => {
-          const query = queryParamMap.get('query');
+          const query = JSON.parse(queryParamMap.get('query')) as Query;
           if (query) {
-            return of(JSON.parse(query));
+            return of(query);
+          }
+
+          const widget = JSON.parse(queryParamMap.get('widget')) as Widget;
+          if (widget) {
+            const dataType = widget.options.dataType;
+            return of({
+              name: widget.title,
+              viewerState: {views: this.dataResourcesMap.get(dataType).defaultViews},
+              ...widget.options
+            });
           }
 
           return of({name: 'New Query', view: 'list'} as Query);

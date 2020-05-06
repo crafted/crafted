@@ -1,7 +1,10 @@
 import {deleteDB, IDBPDatabase, IDBPObjectStore, openDB} from 'idb';
 import {ReplaySubject, Subject} from 'rxjs';
-import {DEMO_DASHBOARDS} from '../repository/utility/demo-config/demo-dashboards';
-import {DEMO_RECOMMENDATIONS} from '../repository/utility/demo-config/demo-recommendations';
+import {DEMO_DASHBOARDS_ANGULAR} from '../repository/utility/demo-config/demo-dashboards-angular';
+import {DEMO_DASHBOARDS_COMPONENTS} from '../repository/utility/demo-config/demo-dashboards-components';
+import {DEMO_QUERIES_ANGULAR} from '../repository/utility/demo-config/demo-queries-angular';
+import {DEMO_RECOMMENDATIONS_COMPONENTS} from '../repository/utility/demo-config/demo-recommendations-angular';
+import {DEMO_RECOMMENDATIONS_ANGULAR} from '../repository/utility/demo-config/demo-recommendations-components';
 
 const DB_VERSION = 1;
 
@@ -78,7 +81,10 @@ export class AppIndexedDb {
             const objectStore = db.createObjectStore(collectionId, {keyPath: 'id'});
 
             if (this.name === 'angular/components') {
-              initializeDemoConfig(collectionId, objectStore);
+              initializeDemoConfigComponents(collectionId, objectStore);
+            }
+            if (this.name === 'angular/angular') {
+              initializeDemoConfigAngular(collectionId, objectStore);
             }
           }
         });
@@ -101,16 +107,31 @@ export class AppIndexedDb {
   }
 }
 
-function initializeDemoConfig(collectionId: string, objectStore: IDBPObjectStore<any, any, any>) {
+function initializeDemoConfigComponents(collectionId: string, objectStore: IDBPObjectStore<any, any, any>) {
   switch (collectionId) {
     case 'dashboards':
-      DEMO_DASHBOARDS.forEach(d => objectStore.add(d));
+      DEMO_DASHBOARDS_COMPONENTS.forEach(d => objectStore.add(d));
       break;
     case 'queries':
       // TODO: Add some demo queries
       break;
     case 'recommendations':
-      DEMO_RECOMMENDATIONS.forEach(d => objectStore.add(d));
+      DEMO_RECOMMENDATIONS_COMPONENTS.forEach(d => objectStore.add(d));
+      break;
+
+  }
+}
+
+function initializeDemoConfigAngular(collectionId: string, objectStore: IDBPObjectStore<any, any, any>) {
+  switch (collectionId) {
+    case 'dashboards':
+      DEMO_DASHBOARDS_ANGULAR.forEach(d => objectStore.add(d));
+      break;
+    case 'queries':
+      DEMO_QUERIES_ANGULAR.forEach(d => objectStore.add(d));
+      break;
+    case 'recommendations':
+      DEMO_RECOMMENDATIONS_ANGULAR.forEach(d => objectStore.add(d));
       break;
 
   }

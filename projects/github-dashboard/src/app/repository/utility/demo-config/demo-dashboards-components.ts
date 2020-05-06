@@ -1,4 +1,4 @@
-export const DEMO_DASHBOARDS = [
+export const DEMO_DASHBOARDS_COMPONENTS = [
   {
     name: 'andrewseguin',
     columnGroups: [{

@@ -1,4 +1,4 @@
-export const DEMO_RECOMMENDATIONS = [
+export const DEMO_RECOMMENDATIONS_COMPONENTS = [
   {
     message: 'This mentions accessibility',
     type: 'suggestion',
@@ -29,9 +29,6 @@ export const DEMO_RECOMMENDATIONS = [
       ],
       search: 'Please describe the feature you would like to request.'
     },
-    id: '4091fd646a9c3',
-    dbAdded: '2019-05-09T04:56:14.967Z',
-    dbModified: '2019-05-09T04:56:14.967Z'
   },
   {
     message: 'This issue needs a priority',
@@ -51,8 +48,21 @@ export const DEMO_RECOMMENDATIONS = [
       ],
       search: ''
     },
-    id: '64f5276d8b46',
-    dbAdded: '2019-05-09T04:53:28.250Z',
-    dbModified: '2019-05-09T04:53:28.250Z'
+  },
+  {
+    name: 'Needs Labels',
+    view: 'list',
+    dataType: 'issue',
+    viewerState: {views: ['title', 'reporter', 'state', 'updatedDate', 'labels']},
+    filtererState: {
+      filters: [
+        {id: 'recommendation', type: 'state', state: 'at least one warning', equality: 'is'}
+      ],
+      search: ''
+    },
+    grouperState: {group: 'all'},
+    sorterState: {sort: 'created', reverse: true},
+    group: 'Triage',
+    dbModified: '2020-05-06T17:09:23.599Z'
   }
 ];
