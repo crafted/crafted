@@ -57,6 +57,8 @@ export class DashboardPage {
     }];
   }));
 
+  layoutChange = combineLatest(this.edit, this.dashboard);
+
   widgetConfigs: {[key in string]: WidgetConfig<any>} = {
     count: getCountWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
     list: getListWidgetConfig(
@@ -66,7 +68,7 @@ export class DashboardPage {
         },
         this.savedFiltererStates),
     pie: getPieChartWidgetConfig(this.dataResourcesMap, this.savedFiltererStates),
-    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates, this.edit),
+    timeSeries: getTimeSeriesWidgetConfig(this.dataResourcesMap, this.savedFiltererStates, this.layoutChange),
   };
 
   destroyed = new Subject();
