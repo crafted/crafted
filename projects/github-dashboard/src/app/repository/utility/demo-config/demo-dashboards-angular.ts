@@ -1,6 +1,7 @@
 import {Dashboard} from '@crafted/components';
 
 export const DEMO_DASHBOARDS_ANGULAR: Partial<Dashboard>[] = [{
+  id: 'dashboard1',
   name: 'Issues Overview',
   columnGroups: [
     {

@@ -3,8 +3,8 @@ import {ReplaySubject, Subject} from 'rxjs';
 import {DEMO_DASHBOARDS_ANGULAR} from '../repository/utility/demo-config/demo-dashboards-angular';
 import {DEMO_DASHBOARDS_COMPONENTS} from '../repository/utility/demo-config/demo-dashboards-components';
 import {DEMO_QUERIES_ANGULAR} from '../repository/utility/demo-config/demo-queries-angular';
-import {DEMO_RECOMMENDATIONS_COMPONENTS} from '../repository/utility/demo-config/demo-recommendations-angular';
-import {DEMO_RECOMMENDATIONS_ANGULAR} from '../repository/utility/demo-config/demo-recommendations-components';
+import {DEMO_RECOMMENDATIONS_ANGULAR} from '../repository/utility/demo-config/demo-recommendations-angular';
+import {DEMO_RECOMMENDATIONS_COMPONENTS} from '../repository/utility/demo-config/demo-recommendations-components';
 
 const DB_VERSION = 1;
 
