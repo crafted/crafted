@@ -369,5 +369,8 @@
       }
     }
   },
-  "defaultProject": "github-dashboard"
+  "defaultProject": "github-dashboard",
+  "cli": {
+    "analytics": false
+  }
 }
