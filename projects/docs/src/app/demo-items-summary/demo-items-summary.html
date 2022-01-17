@@ -1,9 +1,0 @@
-<editable-chip-list [values]="(viewer.state | async)?.views"
-                    [options]="viewOptions"
-                    (valuesChange)="viewer.setState({views: $event})">
-</editable-chip-list>
-
-<ng-container *ngFor="let item of exampleItems.slice(0, 10)">
-  <item-summary [item]="item" [viewer]="viewer"></item-summary>
-  <mat-divider></mat-divider>
-</ng-container>

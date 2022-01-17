@@ -1,7 +1,7 @@
 import {DatePipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, Inject, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Filterer} from '@crafted/data';
+import {Filterer} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';

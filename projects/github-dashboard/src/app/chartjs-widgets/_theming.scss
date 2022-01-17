@@ -1,0 +1,10 @@
+@import "time-series/action-option/action-option-theme";
+@import "time-series/dataset-option/dataset-option-theme";
+@import "time-series/time-series-editor-theme";
+@import "../components/common";
+
+@mixin chartjs-widgets-theme($theme) {
+  @include action-option-theme($theme);
+  @include dataset-option-theme($theme);
+  @include time-series-editor-theme($theme);
+}

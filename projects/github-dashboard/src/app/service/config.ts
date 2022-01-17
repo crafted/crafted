@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 import {Store} from '@ngrx/store';
 import {Observable, of} from 'rxjs';
 import {filter, map, mergeMap, take} from 'rxjs/operators';

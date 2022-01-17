@@ -1,4 +1,4 @@
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 
 export const DEMO_DASHBOARDS_ANGULAR: Partial<Dashboard>[] = [{
   id: 'dashboard1',

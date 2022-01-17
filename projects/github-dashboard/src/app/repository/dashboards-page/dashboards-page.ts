@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';

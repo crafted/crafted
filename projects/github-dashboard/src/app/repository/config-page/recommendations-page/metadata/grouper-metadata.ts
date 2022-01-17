@@ -1,4 +1,4 @@
-import {getGroupByValue, GrouperMetadata} from '@crafted/data';
+import {getGroupByValue, GrouperMetadata} from 'projects/github-dashboard/src/app/data';
 import {Recommendation} from '../../../model/recommendation';
 
 export const RECOMMENDATION_GROUPER_METADATA = new Map<string, GrouperMetadata<Recommendation>>([

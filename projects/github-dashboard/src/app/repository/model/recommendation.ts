@@ -1,4 +1,4 @@
-import {FiltererState} from 'projects/data/src/lib/filterer';
+import {FiltererState} from 'projects/github-dashboard/src/app/data';
 import {DataType} from '../repository';
 
 export interface AddLabelAction {

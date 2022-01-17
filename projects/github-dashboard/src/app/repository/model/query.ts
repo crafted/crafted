@@ -1,4 +1,4 @@
-import {FiltererState, GrouperState, SorterState, ViewerState} from '@crafted/data';
+import {FiltererState, GrouperState, SorterState, ViewerState} from 'projects/github-dashboard/src/app/data';
 
 export type QueryView = 'list'|'table';
 

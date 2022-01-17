@@ -1,4 +1,4 @@
-import {filterItems, searchItems} from '@crafted/data';
+import {filterItems, searchItems} from 'projects/github-dashboard/src/app/data';
 import {Item} from '../../github/app-types/item';
 import {Label} from '../../github/app-types/label';
 import {ITEM_FILTERER_METADATA} from '../../github/data-source/item-filterer-metadata';

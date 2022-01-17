@@ -8,7 +8,7 @@ import {
   Sorter,
   Viewer,
   ViewLabel
-} from '@crafted/data';
+} from 'projects/github-dashboard/src/app/data';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, shareReplay} from 'rxjs/operators';
 import {Item} from '../../../github/app-types/item';

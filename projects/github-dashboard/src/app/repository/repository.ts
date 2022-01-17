@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, InjectionToken} from '@angular/core';
 import {Event, NavigationEnd, Router} from '@angular/router';
-import {DataSource, Filterer, FiltererState, Grouper, GrouperState, Sorter, SorterState, Viewer, ViewerState,} from '@crafted/data';
+import {DataSource, Filterer, FiltererState, Grouper, GrouperState, Sorter, SorterState, Viewer, ViewerState,} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap} from 'rxjs/operators';

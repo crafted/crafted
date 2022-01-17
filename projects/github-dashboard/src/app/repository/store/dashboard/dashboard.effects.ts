@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
-import {Dashboard} from '../../../../../../components/src/lib/dashboard';
+import {Dashboard} from 'projects/github-dashboard/src/app/components/dashboard';
 
 import {RepositoryDatabase} from '../../../service/repository-database';
 import {createId} from '../../../utility/create-id';

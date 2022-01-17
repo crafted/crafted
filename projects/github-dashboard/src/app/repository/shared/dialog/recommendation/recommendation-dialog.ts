@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {DataSource, Filterer, FiltererState} from '@crafted/data';
+import {DataSource, Filterer, FiltererState} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import {of} from 'rxjs';
 import {take} from 'rxjs/operators';

@@ -1,6 +1,0 @@
-{
-  "bundlerOptions": {
-    "entryFile": "projects/chartjs-widgets/src/lib/_theming.scss",
-    "outFile": "./dist/chartjs-widgets/theming.scss"
-  }
-}

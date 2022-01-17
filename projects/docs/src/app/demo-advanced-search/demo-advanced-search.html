@@ -1,9 +1,0 @@
-<advanced-search [filterer]="filterer" [dataSource]="dataSource">
-</advanced-search>
-
-<div class="items">
-  <ng-container *ngFor="let item of (exampleItems | async)?.slice(0, 10)">
-    <item-summary [item]="item" [viewer]="viewer"></item-summary>
-    <mat-divider></mat-divider>
-  </ng-container>
-</div>

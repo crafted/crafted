@@ -1,4 +1,4 @@
-import {DataSource, DataSourceMetadata} from '@crafted/data';
+import {DataSource, DataSourceMetadata} from 'projects/github-dashboard/src/app/data';
 import {Observable} from 'rxjs';
 import {Item} from '../app-types/item';
 

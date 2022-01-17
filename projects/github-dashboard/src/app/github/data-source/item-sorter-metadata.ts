@@ -1,4 +1,4 @@
-import {Sorter, SorterMetadata, SorterState} from '@crafted/data';
+import {Sorter, SorterMetadata, SorterState} from 'projects/github-dashboard/src/app/data';
 import {Item} from '../app-types/item';
 
 const ITEM_SORTER_METADATA = new Map<string, SorterMetadata<Item>>([

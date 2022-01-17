@@ -8,7 +8,7 @@ import {
   stateMatchesEquality,
   textArrayMatchesEquality,
   textMatchesEquality
-} from '@crafted/data';
+} from 'projects/github-dashboard/src/app/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Recommendation} from '../../repository/model/recommendation';

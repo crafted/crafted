@@ -1,4 +1,4 @@
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 import {Update} from '@ngrx/entity';
 import {Action} from '@ngrx/store';
 

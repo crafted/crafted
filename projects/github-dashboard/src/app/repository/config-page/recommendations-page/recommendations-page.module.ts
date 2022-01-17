@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
-import {AdvancedSearchModule} from '@crafted/components';
+import {AdvancedSearchModule} from 'projects/github-dashboard/src/app/components';
 import {CollectionPageEmptyStateModule} from '../../shared/collection-page-empty-state/collection-page-empty-state.module';
 import {RecommendationDialogModule} from '../../shared/dialog/recommendation/recommendation-dialog.module';
 import {HeaderContentModule} from '../../shared/header-content/header-content.module';
