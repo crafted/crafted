@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataSource, Filterer, Grouper, Sorter, Viewer} from '@crafted/data';
+import {DataSource, Filterer, Grouper, Sorter, Viewer} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {filter, map, mergeMap, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
-import {Widget} from '@crafted/components';
+import {Widget} from 'projects/github-dashboard/src/app/components';
 import {Github} from '../../service/github';
 
 import {isMobile} from '../../utility/media-matcher';

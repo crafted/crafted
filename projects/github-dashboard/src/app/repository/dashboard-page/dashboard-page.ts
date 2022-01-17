@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, ElementRef, Inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
-import {getPieChartWidgetConfig, getTimeSeriesWidgetConfig} from '@crafted/chartjs-widgets';
+import {getPieChartWidgetConfig, getTimeSeriesWidgetConfig} from 'projects/github-dashboard/src/app/chartjs-widgets';
 import {
   Dashboard,
   getCountWidgetConfig,
@@ -11,8 +11,8 @@ import {
   SavedFiltererState,
   Widget,
   WidgetConfig
-} from '@crafted/components';
-import {ViewerState} from '@crafted/data';
+} from 'projects/github-dashboard/src/app/components';
+import {ViewerState} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import * as Chart from 'chart.js';
 import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';

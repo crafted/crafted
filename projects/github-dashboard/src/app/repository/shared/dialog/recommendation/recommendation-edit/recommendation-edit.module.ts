@@ -12,7 +12,7 @@ import {
   EditableChipListModule,
   FilterStateOptionModule,
   FormFieldModule
-} from '@crafted/components';
+} from 'projects/github-dashboard/src/app/components';
 import {RecommendationEdit} from './recommendation-edit';
 
 @NgModule({

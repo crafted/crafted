@@ -1,4 +1,4 @@
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 import {createEntityAdapter, EntityAdapter} from '@ngrx/entity';
 import {createSelector} from '@ngrx/store';
 import {getRepoState} from '../repo-state.selector';

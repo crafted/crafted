@@ -1,5 +1,6 @@
 @import '~@angular/material/theming';
-@import '../../../../../../dist/components/common';
+@import '../../components/common';
+@import '../../components/common';
 
 @mixin load-repository-theme($theme) {
   $foreground: map-get($theme, foreground);

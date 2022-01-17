@@ -1,5 +1,5 @@
 import {DatePipe} from '@angular/common';
-import {RenderedView, Viewer, ViewerMetadata, ViewerState} from '@crafted/data';
+import {RenderedView, Viewer, ViewerMetadata, ViewerState} from 'projects/github-dashboard/src/app/data';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Recommendation} from '../../repository/model/recommendation';

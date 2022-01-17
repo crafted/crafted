@@ -1,0 +1,16 @@
+@import "../../../components/common";
+
+@mixin action-option-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $divider: mat-color($foreground, divider);
+
+  action-option {
+    mat-select {
+      @include bottom-border($divider);
+    }
+
+    .desc {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+}

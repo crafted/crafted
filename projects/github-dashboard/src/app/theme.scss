@@ -1,6 +1,6 @@
 @import '~@angular/material/theming';
-@import '../../../../dist/components/theming';
-@import '../../../../dist/chartjs-widgets/theming';
+@import './components/theming';
+@import './chartjs-widgets/theming';
 
 @import './repository/shared/nav/nav-theme';
 @import './service/load-repository/load-repository-theme';

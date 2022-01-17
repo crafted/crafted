@@ -1,0 +1,28 @@
+@import "../../components/common";
+
+@mixin time-series-editor-theme($theme) {
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+  $divider: mat-color($foreground, divider);
+
+  time-series-editor {
+    .dataset {
+      border-color: $divider;
+      background: mat-color($background, hover);
+    }
+
+    .add-dataset {
+      border-color: $divider;
+      background: mat-color($background, hover);
+    }
+
+    .add-dataset {
+      border-color: $divider;
+      background: mat-color($background, hover);
+    }
+
+    input[matInput] {
+      @include bottom-border($divider);
+    }
+  }
+}

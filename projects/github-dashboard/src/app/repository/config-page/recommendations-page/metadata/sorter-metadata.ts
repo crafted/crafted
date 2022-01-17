@@ -1,4 +1,4 @@
-import {SorterMetadata} from '@crafted/data';
+import {SorterMetadata} from 'projects/github-dashboard/src/app/data';
 import {Recommendation} from '../../../model/recommendation';
 
 export const RECOMMENDATION_SORTER_METADATA = new Map<string, SorterMetadata<Recommendation>>([

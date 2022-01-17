@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import {Dashboard} from '@crafted/components';
+import {Dashboard} from 'projects/github-dashboard/src/app/components';
 import {Store} from '@ngrx/store';
 import {combineLatest, Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';

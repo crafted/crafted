@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import {AdvancedSearchModule, DisplayOptionsModule, RenderedViewModule} from '@crafted/components';
+import {AdvancedSearchModule, DisplayOptionsModule, RenderedViewModule} from 'projects/github-dashboard/src/app/components';
 import {TableView} from './table-view';
 
 

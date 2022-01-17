@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {DataSource, Filterer, Group, Grouper, Sorter} from '@crafted/data';
+import {DataSource, Filterer, Group, Grouper, Sorter} from 'projects/github-dashboard/src/app/data';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';

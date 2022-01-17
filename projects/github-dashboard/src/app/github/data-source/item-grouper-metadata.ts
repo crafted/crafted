@@ -4,7 +4,7 @@ import {
   Grouper,
   GrouperMetadata,
   GrouperState
-} from '@crafted/data';
+} from 'projects/github-dashboard/src/app/data';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Item} from '../app-types/item';
